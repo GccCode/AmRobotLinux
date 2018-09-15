@@ -64,31 +64,28 @@ class BaseAction(object):
 
     def input(self, content, *locator):
         try:
-            time.sleep(random.randint(1, 3))
-            # browser.execute_script('window.stop()')
             input_box = self.driver.find_element(*locator)
         except Exception as e:
             print(type(e))
         else:
-            if input_box.is_displayed():
-                self.driver.set_page_load_timeout(1)
-                self.driver.set_script_timeout(1)
-                for character in content:
+            self.driver.set_page_load_timeout(1)
+            self.driver.set_script_timeout(1)
+            for character in content:
+                try:
+                    input_box.send_keys(character)
+                    time.sleep(random.randint(100, 800) / 1000)  # pause for 0.3 seconds
+                except Exception as e:
+                    print(type(e))
                     try:
                         input_box.send_keys(character)
                         time.sleep(random.randint(100, 800) / 1000)  # pause for 0.3 seconds
                     except Exception as e:
                         print(type(e))
-                        try:
-                            input_box.send_keys(character)
-                            time.sleep(random.randint(100, 800) / 1000)  # pause for 0.3 seconds
-                        except Exception as e:
-                            print(type(e))
-                            pass
-                        finally:
-                            pass
-                self.driver.set_page_load_timeout(30)
-                self.driver.set_script_timeout(30)
+                        pass
+                    finally:
+                        pass
+            self.driver.set_page_load_timeout(60)
+            self.driver.set_script_timeout(60)
 
     def random_sleep(self, begin, end):
         if end != 0:
