@@ -301,7 +301,6 @@ if __name__ == "__main__":
             t2 = time.time()
             print("总耗时：" + format(t2 - t1))
             driver.quit()
-            display.stop()
         count += 1
 
     print("* 任务全部完成！！！！")
