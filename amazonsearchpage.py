@@ -106,8 +106,8 @@ class AmazonSearchPage(AmazonPage):
             if sponsored_lens > 1 and sponsored_lens < 4:
                 sponsored_lens = 2
             elif sponsored_lens >= 5:
-                sponsored_lens = random.randint(1, 4)
-                
+                sponsored_lens = random.randint(2, 3)
+
             for i in range(0, sponsored_lens):
                 asin = sponsored_selected_asin[i]
                 asinresult = self.find_target_asin(asin, "sponsored")
