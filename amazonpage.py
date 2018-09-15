@@ -10,6 +10,7 @@ from locator import AmazonPageLocator
 import pyautogui
 import configparser
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 
 
 class AmazonPage(BaseAction):
@@ -54,13 +55,17 @@ class AmazonPage(BaseAction):
                     })
 
     def enter_amazon_page(self, begin, end):
-        country = self.cf.get("account", "country")
-        if country == 'us':
-            self.driver.get('https://www.amazon.com')
-        elif country == 'jp':
-            self.driver.get('https://www.amazon.co.jp')
-        elif country == 'ca':
-            self.driver.get('https://www.amazon.ca')
+        try:
+            country = self.cf.get("account", "country")
+            if country == 'us':
+                self.driver.get('https://www.amazon.com')
+            elif country == 'jp':
+                self.driver.get('https://www.amazon.co.jp')
+            elif country == 'ca':
+                self.driver.get('https://www.amazon.ca')
+        except TimeoutException:
+            self.driver.execute_script("window.stop();")
+
         self.random_sleep(begin, end)
         if os.path.exists('cookies.json'):
             print(("** 加载cookies。。。。"), flush=True)
