@@ -250,17 +250,16 @@ if __name__ == "__main__":
     min_time = cf.get("search", "view_time_min")
     max_time = cf.get("search", "view_time_max")
     admin = Administrator()
-
-    while False:#admin.is_all_over() == False:
+    count = 0
+    while count < 1:#admin.is_all_over() == False:
         change_proxy()
         generate_info_file()
         keyword = admin.get_random_task()
-        print(keyword)
         driver = customized_broswer()
         t1 = time.time()
         try:
             amazonpage = AmazonPage(driver)
-            amazonpage.change_random_resolution()
+            #amazonpage.change_random_resolution()
             count = 40 #random.randint(1, 100)
             if count < 30:
                 ## registeration
@@ -303,6 +302,7 @@ if __name__ == "__main__":
             t2 = time.time()
             print("总耗时：" + format(t2 - t1))
             driver.quit()
+        count += 1
 
     print("* 任务全部完成！！！！")
 
