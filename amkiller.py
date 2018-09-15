@@ -256,9 +256,9 @@ if __name__ == "__main__":
         keyword = admin.get_random_task()
         driver = customized_broswer()
         t1 = time.time()
+        amazonpage = AmazonPage(driver)
+        display = amazonpage.change_random_resolution()
         try:
-            amazonpage = AmazonPage(driver)
-            #amazonpage.change_random_resolution()
             count = 40 #random.randint(1, 100)
             if count < 30:
                 ## registeration
@@ -301,6 +301,7 @@ if __name__ == "__main__":
             t2 = time.time()
             print("总耗时：" + format(t2 - t1))
             driver.quit()
+            display.stop()
         count += 1
 
     print("* 任务全部完成！！！！")

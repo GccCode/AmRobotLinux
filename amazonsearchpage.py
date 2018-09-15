@@ -280,7 +280,7 @@ class AmazonSearchPage(AmazonPage):
         country = self.cf.get("account", "country")
         option = random.randint(1, 2)
         if option == 1:
-            print(("**** enter by image link..\n"), flush=True)
+            print(("**** enter by image link.."), flush=True)
             if country == 'us':
                 if int(asinresult.size['width']) > 500:
                     self.click_asin_by_img_us(asinresult, asin)
@@ -289,7 +289,7 @@ class AmazonSearchPage(AmazonPage):
             elif country == "jp":
                 self.click_asin_by_img_jp_small(asinresult, asin)
         else:
-            print(("**** enter by title link..\n"), flush=True)
+            print(("**** enter by title link.."), flush=True)
             if country == 'us':
                 if int(asinresult.size['width']) > 500:
                     self.click_asin_by_title_us(asinresult, asin)

@@ -62,7 +62,6 @@ class AmazonPage(BaseAction):
         elif country == 'ca':
             self.driver.get('https://www.amazon.ca')
         self.random_sleep(begin, end)
-        self.wait_page_loaded(*self.locator.LOGO)
         if os.path.exists('cookies.json'):
             print(("** 加载cookies。。。。"), flush=True)
             self.load_cookies()
