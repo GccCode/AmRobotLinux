@@ -80,33 +80,36 @@ class AmazonSearchPage(AmazonPage):
         count = 0
         limit = random.randint(1, 2)
         while count < limit:
-            normal, sponsored = self.filter_asin(asin)
-            normal_selected = []
-            sponsored_selected = []
-            if len(normal) != 0:
-                if len(normal) == 1:
-                    normal_selected = random.sample(normal, 1)
-                else:
-                    normal_selected = random.sample(normal, random.randint(1, 2))
+            try:
+                normal, sponsored = self.filter_asin(asin)
+                normal_selected = []
+                sponsored_selected = []
+                if len(normal) != 0:
+                    if len(normal) == 1:
+                        normal_selected = random.sample(normal, 1)
+                    else:
+                        normal_selected = random.sample(normal, random.randint(1, 2))
 
-                for index in range(0, len(normal_selected)):
-                    currenthandle = self.enter_asin_page(normal_selected[index], normal_selected[index].get_attribute('data-asin'), 10000, 15000)
-                    print(("*** 点击Normal产品：" + normal_selected[index].get_attribute('data-asin')), flush=True)
-                    self.back_prev_page_by_country(currenthandle, 3000, 5000)
+                    for index in range(0, len(normal_selected)):
+                        print(("*** 点击Normal产品：" + normal_selected[index].get_attribute('data-asin')), flush=True)
+                        currenthandle = self.enter_asin_page(normal_selected[index], normal_selected[index].get_attribute('data-asin'), 10000, 15000)
+                        self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
-            if len(sponsored) != 0:
-                if len(sponsored) == 1:
-                    sponsored_selected = random.sample(sponsored, 1)
-                else:
-                    sponsored_selected = random.sample(sponsored, random.randint(1, 2))
+                if len(sponsored) != 0:
+                    if len(sponsored) == 1:
+                        sponsored_selected = random.sample(sponsored, 1)
+                    else:
+                        sponsored_selected = random.sample(sponsored, random.randint(1, 2))
 
-                for index in range(0, (len(sponsored_selected) - 1)):
-                    currenthandle = self.enter_asin_page(sponsored_selected[index], sponsored_selected[index].get_attribute('data-asin'), 20000, 35000)
-                    print(("*** 点击Sponsored产品：" + sponsored_selected[index].get_attribute('data-asin')), flush=True)
-                    self.back_prev_page_by_country(currenthandle, 3000, 5000)
+                    for index in range(0, (len(sponsored_selected) - 1)):
+                        print(("*** 点击Sponsored产品：" + sponsored_selected[index].get_attribute('data-asin')), flush=True)
+                        currenthandle = self.enter_asin_page(sponsored_selected[index], sponsored_selected[index].get_attribute('data-asin'), 20000, 35000)
+                        self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
-            count += 1
-            self.enter_next_page(3000, 5000)
+                count += 1
+                self.enter_next_page(3000, 5000)
+            except:
+                print(("*** unknown error!!!!"), flush=True)
 
 
 

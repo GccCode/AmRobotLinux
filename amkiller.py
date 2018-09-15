@@ -251,10 +251,11 @@ if __name__ == "__main__":
     max_time = cf.get("search", "view_time_max")
     admin = Administrator()
 
-    while admin.is_all_over() == False:
+    while False:#admin.is_all_over() == False:
         change_proxy()
         generate_info_file()
         keyword = admin.get_random_task()
+        print(keyword)
         driver = customized_broswer()
         t1 = time.time()
         try:
