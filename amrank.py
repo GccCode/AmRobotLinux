@@ -75,7 +75,7 @@ if __name__ == "__main__":
     except TimeoutException as msg:
         print(("* 网页加载超时。。。"), flush=True)
     except:
-        pass
+        print(("* 其他未知异常。。。"), flush=True)
     finally:
         t2 = time.time()
         print("总耗时：" + format(t2 - t1))
