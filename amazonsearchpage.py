@@ -80,7 +80,7 @@ class AmazonSearchPage(AmazonPage):
         count = 0
         limit = random.randint(1, 2)
         while count < limit:
-            normal, sponsored = self.filter_asin()
+            normal, sponsored = self.filter_asin(asin)
             normal_selected = []
             sponsored_selected = []
             if len(normal) != 0:

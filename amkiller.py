@@ -124,7 +124,7 @@ def generate_address():
     url = r'https://fakena.me/random-real-address/'
     referer = r'https://fakena.me'
     header = {'user-agent': generate_user_agent(), 'referer': referer}
-    text = requests.get(url, headers=header).text
+    text = requests.get(url, headers=header, verify=False).text
     pattern = re.compile('<strong>(.+)<br>(.+)</strong>')
     result = re.findall(pattern, text)
     if result:  # sometimes the result is empty
@@ -189,9 +189,9 @@ def generate_info_file():
 
 def customized_broswer():
     option = webdriver.ChromeOptions()
-    index = random.randint(0, (len(useragentlist) - 1))
-    useragent = "--user-agent=" + useragentlist[index]
-    option.add_argument(useragent)
+    # index = random.randint(0, (len(useragentlist) - 1))
+    # useragent = "--user-agent=" + useragentlist[index]
+    # option.add_argument(useragent)
     driver =  webdriver.Chrome(chrome_options=option)
     driver.set_page_load_timeout(60)
     driver.set_script_timeout(60)
@@ -285,7 +285,7 @@ if __name__ == "__main__":
                     paymentpage.add_new_payment(5000, 10000)
 
             amazonpage.enter_amazon_page(3000, 5000)
-
+            amazonpage.wait_searchbox_exsist()
             searchpage = AmazonSearchPage(driver)
             print(("* 开始搜索关键词。。。"), flush=True)
             amazonpage.search_asin(keyword, 5000, 8000)
