@@ -76,46 +76,42 @@ class AmazonSearchPage(AmazonPage):
         for i in range(0, items):
             self.enter_random_product(asin, random.randint(start_time, end_time), begin, end)
 
-    def click_random_products(self, asin):
-        count = 0
-        limit = random.randint(1, 2)
-        while count < limit:
-            try:
-                normal, sponsored = self.filter_asin(asin)
-                normal_selected = []
-                sponsored_selected = []
-                if len(normal) != 0:
-                    if len(normal) == 1:
-                        normal_selected = random.sample(normal, 1)
-                        print("*** only normal：", flush=True)
-                    else:
-                        print("*** not only normal：", flush=True)
-                        normal_selected = random.sample(normal, random.randint(1, 2))
+    def click_random_products_per_page(self, whiteasin):
+        normal, sponsored = self.filter_asin(whiteasin)
 
-                    for index in range(0, len(normal_selected)):
-                        print(("*** 点击Normal产品：" + normal_selected[index].get_attribute('data-asin')), flush=True)
-                        currenthandle = self.enter_asin_page(normal_selected[index], normal_selected[index].get_attribute('data-asin'), 10000, 15000)
-                        self.back_prev_page_by_country(currenthandle, 3000, 5000)
+        normal_selected = random.sample(normal, random.randint(1, len(normal)))
+        normal_selected_asin = []
+        for index in range(0, len(normal_selected)):
+            normal_selected_asin.append(normal_selected[index].get_attribute('data-asin'))
 
-                print("*** fix....：" , flush=True)
-                if len(sponsored) != 0:
-                    if len(sponsored) == 1:
-                        print("*** only sponsored：", flush=True)
-                        sponsored_selected = random.sample(sponsored, 1)
-                    else:
-                        print("*** not only sponsored：", flush=True)
-                        sponsored_selected = random.sample(sponsored, random.randint(1, 2))
+        sponsored_selected = random.sample(sponsored, random.randint(1, len(sponsored)))
+        sponsored_selected_asin = []
+        for index in range(0, len(sponsored_selected)):
+            sponsored_selected_asin.append(sponsored_selected[index].get_attribute('data-asin'))
 
-                    for index in range(0, (len(sponsored_selected) - 1)):
-                        print(("*** 点击Sponsored产品：" + sponsored_selected[index].get_attribute('data-asin')), flush=True)
-                        currenthandle = self.enter_asin_page(sponsored_selected[index], sponsored_selected[index].get_attribute('data-asin'), 20000, 35000)
-                        self.back_prev_page_by_country(currenthandle, 3000, 5000)
-                print("*** fix2....：", flush=True)
-                count += 1
-                self.enter_next_page(3000, 5000)
-            except:
-                print(("*** unknown error!!!!"), flush=True)
+        for i in range(0, len(normal_selected_asin)):
+            asin = normal_selected_asin[i]
+            asinresult = self.find_target_asin(asin, "normal")
+            if asinresult != False:
+                currenthandle = self.enter_asin_page(asinresult, asin, 8000, 15000)
+                self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
+
+        for i in range(0, len(sponsored_selected_asin)):
+            asin = sponsored_selected_asin[i]
+            asinresult = self.find_target_asin(asin, "sponsored")
+            if asinresult != False:
+                currenthandle = self.enter_asin_page(asinresult, asin, 20000, 35000)
+                self.back_prev_page_by_country(currenthandle, 3000, 5000)
+
+
+    def click_random_products(self, whiteasin):
+        page = 0
+        pages = random.randint(1, 2)
+        while page < pages:
+            self.click_random_products_per_page(whiteasin)
+            self.enter_next_page(3000, 5000)
+            page += 1
 
 
     def enter_random_product(self, asin, count, begin, end):

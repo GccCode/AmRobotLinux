@@ -195,7 +195,6 @@ def customized_broswer():
     driver =  webdriver.Chrome(chrome_options=option)
     driver.set_page_load_timeout(60)
     driver.set_script_timeout(60)
-    driver.maximize_window()
     return driver
 
 class Administrator():
@@ -289,7 +288,7 @@ if __name__ == "__main__":
             searchpage = AmazonSearchPage(driver)
             print(("* 开始搜索关键词。。。"), flush=True)
             amazonpage.search_asin(keyword, 5000, 8000)
-            searchpage.click_random_products(False)
+            searchpage.click_random_products("B0756GYPNS")
             admin.finish_task(keyword)
             time.sleep(random.randint(min_time, max_time))
         except NoSuchElementException as msg:
