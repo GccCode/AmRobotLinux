@@ -89,20 +89,31 @@ class AmazonSearchPage(AmazonPage):
         for index in range(0, len(sponsored_selected)):
             sponsored_selected_asin.append(sponsored_selected[index].get_attribute('data-asin'))
 
-        for i in range(0, len(normal_selected_asin)):
-            asin = normal_selected_asin[i]
-            asinresult = self.find_target_asin(asin, "normal")
-            if asinresult != False:
-                currenthandle = self.enter_asin_page(asinresult, asin, 8000, 15000)
-                self.back_prev_page_by_country(currenthandle, 3000, 5000)
+        normal_lens = len(normal_selected_asin)
+        if normal_lens != 0:
+            if normal_lens > 1:
+                normal_lens = random.randint(1, 2)
 
+            for i in range(0, normal_lens):
+                asin = normal_selected_asin[i]
+                asinresult = self.find_target_asin(asin, "normal")
+                if asinresult != False:
+                    currenthandle = self.enter_asin_page(asinresult, asin, 8000, 15000)
+                    self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
-        for i in range(0, len(sponsored_selected_asin)):
-            asin = sponsored_selected_asin[i]
-            asinresult = self.find_target_asin(asin, "sponsored")
-            if asinresult != False:
-                currenthandle = self.enter_asin_page(asinresult, asin, 20000, 35000)
-                self.back_prev_page_by_country(currenthandle, 3000, 5000)
+        sponsored_lens = len(sponsored_selected_asin)
+        if sponsored_lens != 0:
+            if sponsored_lens > 1 and sponsored_lens < 4:
+                sponsored_lens = 2
+            elif sponsored_lens >= 5:
+                sponsored_lens = random.randint(1, 4)
+                
+            for i in range(0, sponsored_lens):
+                asin = sponsored_selected_asin[i]
+                asinresult = self.find_target_asin(asin, "sponsored")
+                if asinresult != False:
+                    currenthandle = self.enter_asin_page(asinresult, asin, 20000, 35000)
+                    self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
 
     def click_random_products(self, whiteasin):

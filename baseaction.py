@@ -87,7 +87,6 @@ class BaseAction(object):
         while count < timeout:
             status = self.is_element_exsist(*locator)
             if status == displayed:
-                print(("TIME - " + str(count)), flush=True)
                 return True
             else:
                 count += 1
