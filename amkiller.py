@@ -193,8 +193,8 @@ def customized_broswer():
     # useragent = "--user-agent=" + useragentlist[index]
     # option.add_argument(useragent)
     driver =  webdriver.Chrome(chrome_options=option)
-    driver.set_page_load_timeout(60)
-    driver.set_script_timeout(60)
+    driver.set_page_load_timeout(30)
+    driver.set_script_timeout(30)
     return driver
 
 class Administrator():
