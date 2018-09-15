@@ -32,6 +32,30 @@ class BaseAction(object):
         finally:
             return status
 
+    def wait_until_exsist(self, *locator, timeout):
+        count = 0;
+        while count < timeout:
+            if self.is_element_exsist(*locator) == True:
+                print(("TIME - " + str(count)), flush=True)
+                return True
+            else:
+                count += 1
+                time.sleep(1)
+        print(("TIMEOUT - 目标元素并未找到。。。"), flush=True)
+        return False
+
+    def wait_until_gone(self, *locator, timeout):
+        count = 0;
+        while count < timeout:
+            if self.is_element_exsist(*locator) == False:
+                print(("TIME - " + str(count)), flush=True)
+                return True
+            else:
+                count += 1
+                time.sleep(1)
+        print(("TIMEOUT - 目标元素并未消失。。。"), flush=True)
+        return False
+
     def  wait_element_match(self, timeout, displayed, begin, end, *locator):
         count = 0
         while count < timeout:

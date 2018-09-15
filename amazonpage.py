@@ -156,6 +156,9 @@ class AmazonPage(BaseAction):
         self.input(keyword, *self.locator.SEARCH)
         self.click(*self.locator.SUBMITKEYWORD)
 
+    def wait_searchbox_exsist(self):
+        return self.wait_until_exsist(*self.locator.SEARCH, 60)
+
 # if __name__ == "__main__":
 #     #option = webdriver.ChromeOptions()
 #     #option.add_argument(r"user-data-dir=C:\Users\Administrator\AppData\Local\Google\Chrome\User Data\Profile 6")
