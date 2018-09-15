@@ -35,22 +35,14 @@ class BaseAction(object):
     def change_random_proxy(self):
         pass
 
-    def change_random_resolution(self, display):
+    def change_random_resolution(self):
         linux_resolution = ["1024x768", "1280x1024", "1280x960", "1280x800", "1280x768", "800x600"]
-        index = random.randint(0, len(linux_resolution))
+        index = random.randint(0, (len(linux_resolution) - 1))
         x, y = linux_resolution[index].split("x")
         print(("** 设置分辨率：" + str(x) + " x " + str(y)), flush=True)
         display = Display(visible=0, size=(int(x), int(y)))
         display.start()
         return display
-
-    # def change_random_resolution(self):
-    #     linux_resolution = ["1024x768", "1280x1024", "1280x960", "1280x800", "1280x768", "800x600"]
-    #     index = random.randint(0, len(linux_resolution))
-    #     ret1 = subprocess.call(["xrandr", "-s", linux_resolution[index]], shell=False)
-    #     while ret1 != 0:
-    #         print(("重试设置分辨率: " + linux_resolution[index]), flush=True)
-    #         ret1 = subprocess.call(["xrandr", "-s", linux_resolution[index]], shell=False)
 
     def change_mac_address(self, passwd):
         self.shell_sudo_command("sudo ifconfig eth0 down", passwd)
