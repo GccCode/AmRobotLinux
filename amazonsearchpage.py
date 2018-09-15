@@ -76,6 +76,40 @@ class AmazonSearchPage(AmazonPage):
         for i in range(0, items):
             self.enter_random_product(asin, random.randint(start_time, end_time), begin, end)
 
+    def click_random_products(self, asin):
+        count = 0
+        limit = random.randint(1, 2)
+        while count < limit:
+            normal, sponsored = self.filter_asin()
+            normal_selected = []
+            sponsored_selected = []
+            if len(normal) != 0:
+                if len(normal) == 1:
+                    normal_selected = random.sample(normal, 1)
+                else:
+                    normal_selected = random.sample(normal, random.randint(1, 2))
+
+                for index in range(0, len(normal_selected)):
+                    currenthandle = self.enter_asin_page(normal_selected[index], normal_selected[index].get_attribute('data-asin'), 10000, 15000)
+                    print(("*** 点击Normal产品：" + normal_selected[index].get_attribute('data-asin')), flush=True)
+                    self.back_prev_page_by_country(currenthandle, 3000, 5000)
+
+            if len(sponsored) != 0:
+                if len(sponsored) == 1:
+                    sponsored_selected = random.sample(sponsored, 1)
+                else:
+                    sponsored_selected = random.sample(sponsored, random.randint(1, 2))
+
+                for index in range(0, (len(sponsored_selected) - 1)):
+                    currenthandle = self.enter_asin_page(sponsored_selected[index], sponsored_selected[index].get_attribute('data-asin'), 20000, 35000)
+                    print(("*** 点击Sponsored产品：" + sponsored_selected[index].get_attribute('data-asin')), flush=True)
+                    self.back_prev_page_by_country(currenthandle, 3000, 5000)
+
+            count += 1
+            self.enter_next_page(3000, 5000)
+
+
+
     def enter_random_product(self, asin, count, begin, end):
         t1 = tm.time()
         index = 0
@@ -125,6 +159,29 @@ class AmazonSearchPage(AmazonPage):
                 return asinresult
 
         return False
+
+    def filter_asin(self, whiteasin):
+        normal = []
+        sponsored = []
+        asinresults = self.driver.find_elements(*self.locator.ASINRESULTS)
+        for asinresult in asinresults:
+            if self.is_asin_sponsored(asinresult, asinresult.get_attribute('data-asin')) != True:
+                print(("** 找到目标产品 - 普通。。。"), flush=True)
+                if whiteasin != False:
+                    if whiteasin != asinresult.get_attribute('data-asin'):
+                        normal.append(asinresult)
+                else:
+                    normal.append(asinresult)
+            elif self.is_asin_sponsored(asinresult, asinresult.get_attribute('data-asin')):
+                print(("** 找到目标产品 - 广告。。。"), flush=True)
+                if whiteasin != False:
+                    if whiteasin != asinresult.get_attribute('data-asin'):
+                        sponsored.append(asinresult)
+                else:
+                    sponsored.append(asinresult)
+
+        return normal, sponsored
+
 
     def is_asin_amazon_choice(self, asinresult, asin):
         status = True
