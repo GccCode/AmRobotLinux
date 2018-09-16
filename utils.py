@@ -32,7 +32,7 @@ def random_sleep(begin, end):
 def change_mac_address(passwd):
     shell_sudo_command("sudo ifconfig eth0 down", passwd)
     random_sleep(1000, 1500)
-    cmd = "sudo ifconfig eth0 hw ether " + self.generate_random_mac_address()
+    cmd = "sudo ifconfig eth0 hw ether " + generate_random_mac_address()
     shell_sudo_command(cmd, passwd)
     random_sleep(1000, 1500)
     shell_sudo_command("sudo ifconfig eth0 up", passwd)

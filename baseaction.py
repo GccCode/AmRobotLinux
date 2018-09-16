@@ -21,7 +21,7 @@ class BaseAction(object):
         cc = time.gmtime()
         bmpname = str(cc[0]) + str(cc[1]) + str(cc[2]) + str(cc[3] + 8) + str(cc[4]) + str(cc[5]) + '.bmp'
         tmpname = filename + "-" + bmpname
-        im = ImageGrab.grab((0, 60, 1024, 600))
+        im = ImageGrab.grab((60, 60, 1024, 600))
         im.save(tmpname)
 
     def is_element_exsist(self, *locator):
