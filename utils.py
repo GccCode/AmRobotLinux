@@ -12,5 +12,5 @@ def change_random_resolution():
         ret = subprocess.Popen(start_cmd, shell=False, stdout=open('/dev/null','w'),stderr=open('/dev/null','w'))
         os.environ['DISPLAY'] = ":5"
 
-# if __name__ == "__main__":
-#     change_random_resolution()
+if __name__ == "__main__":
+    change_random_resolution()
