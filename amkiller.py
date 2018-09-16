@@ -34,8 +34,8 @@ if __name__ == "__main__":
         t1 = time.time()
         amazonpage = AmazonPage(driver)
         try:
-            count = 40 #random.randint(1, 100)
-            if count < 30:
+            random.randint(1, 100)
+            if count < 50:
                 ## registeration
                 amazonpage.enter_amazon_page(3000, 5000)
                 amazonpage.enter_register_page(3000, 5000)
