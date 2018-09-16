@@ -69,6 +69,7 @@ def input_wait(tip, timeout):
     t = threading.Thread(target=input_func, args=(context,))
     t.start()
     t.join(timeout)
+    return context.get('data')
 
 def change_random_resolution():
         linux_resolution = ["1024x768x8", "1366x768x8", "1280x768x8", "800x600x8", "1920x1080x8"]
@@ -81,5 +82,6 @@ def change_random_resolution():
 
 if __name__ == "__main__":
     #change_random_resolution()
-    input_wait("Please input: ", 5)
+    tmp = input_wait("Please input: ", 5)
+    print("input is: " + tmp)
     window_capture("shot")
