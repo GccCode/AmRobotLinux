@@ -26,7 +26,7 @@ if __name__ == "__main__":
     admin = utils.Administrator()
     count = 0
     while admin.is_all_over() == False:
-        change_random_resolution()
+        #change_random_resolution()
         utils.generate_info_file()
         keyword = admin.get_random_task()
         whiteasin = admin.get_whiteasin(keyword)
