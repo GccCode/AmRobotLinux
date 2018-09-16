@@ -16,6 +16,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from utils import change_random_resolution
 import utils
+from xvfbwrapper import Xvfb
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -26,7 +27,11 @@ if __name__ == "__main__":
     admin = utils.Administrator()
     count = 0
     while admin.is_all_over() == False:
-        #change_random_resolution()
+        linux_resolution = ["1024x768", "1366x768", "1280x768", "800x600", "1920x1080"]
+        index = random.randint(0, (len(linux_resolution) - 1))
+        x,y = linux_resolution[index].split("x")
+        xvfb = Xvfb(int(x), int(y))
+        xvfb.start()
         utils.generate_info_file()
         keyword = admin.get_random_task()
         whiteasin = admin.get_whiteasin(keyword)
@@ -34,7 +39,7 @@ if __name__ == "__main__":
         t1 = time.time()
         amazonpage = AmazonPage(driver)
         try:
-            random.randint(1, 100)
+            count = 60 # random.randint(1, 100)
             if count < 50:
                 ## registeration
                 print(("* 注册会员。。。"), flush=True)
@@ -51,15 +56,15 @@ if __name__ == "__main__":
                     accountpage.enter_address_page(3000, 5000)
                     addresspage = AmazonAddressPage(driver)
                     addresspage.add_address("bill", 5000, 10000)
-                tmp = random.randint(1, 100)
-                if tmp < 30:
-                    ## add payment
-                    print(("* 添加卡。。。"), flush=True)
-                    amazonpage.enter_account_page(3000, 5000)
-                    accountpage = AmazonAccountPage(driver)
-                    accountpage.enter_payment_page(3000, 5000)
-                    paymentpage = AmazonPaymentPage(driver)
-                    paymentpage.add_new_payment(5000, 10000)
+                    tmp = random.randint(1, 100)
+                    if tmp < 30:
+                        ## add payment
+                        print(("* 添加卡。。。"), flush=True)
+                        amazonpage.enter_account_page(3000, 5000)
+                        accountpage = AmazonAccountPage(driver)
+                        accountpage.enter_payment_page(3000, 5000)
+                        paymentpage = AmazonPaymentPage(driver)
+                        paymentpage.add_new_payment(5000, 10000)
 
             amazonpage.enter_amazon_page(3000, 5000)
             amazonpage.wait_searchbox_exsist()
@@ -79,6 +84,7 @@ if __name__ == "__main__":
             pass
         finally:
             driver.quit()
+            xvfb.stop()
 
         count += 1
 
