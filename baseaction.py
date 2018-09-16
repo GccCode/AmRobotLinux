@@ -41,7 +41,7 @@ class BaseAction(object):
         stop_cmd = ["killall", "Xvfb"]
         subprocess.call(stop_cmd, shell=False)
         start_cmd = ["Xvfb", ":5", "-ac", "-screen", "0", linux_resolution[index]]
-        subprocess.Popen(start_cmd, shell=False, stdout=open('/dev/null', 'w'), stderr=open('/dev/null', 'w'))
+        subprocess.Popen(start_cmd, shell=False)
         os.environ['DISPLAY'] = ":5"
         print("** 分辨率：" + pyautogui.size())
 
