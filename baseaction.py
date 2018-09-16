@@ -42,9 +42,10 @@ class BaseAction(object):
         stop_cmd = ["killall", "Xvfb"]
         subprocess.call(stop_cmd, shell=False)
         start_cmd = ["Xvfb", ":5", "-ac", "-screen", "0", linux_resolution[index]]
-        subprocess.Popen(start_cmd, shell=False)
+        subprocess.Popen(start_cmd, shell=False, stdout=open('/dev/null','w'),stderr=open('/dev/null','w'))
         os.environ['DISPLAY'] = ":5"
-        print("** 分辨率：" + str(pyautogui.size()))
+        print("** 分辨率：" + str(pyautogui.size()), flush=True)
+        self.random_sleep(2500, 3000)
 
     def change_mac_address(self, passwd):
         self.shell_sudo_command("sudo ifconfig eth0 down", passwd)
