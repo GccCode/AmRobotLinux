@@ -12,6 +12,7 @@ import pexpect
 import subprocess
 import os
 
+
 class BaseAction(object):
     def __init__(self, driver):
         self.driver = driver
@@ -43,16 +44,7 @@ class BaseAction(object):
         start_cmd = ["Xvfb", ":5", "-ac", "-screen", "0", linux_resolution[index]]
         subprocess.Popen(start_cmd, shell=False)
         os.environ['DISPLAY'] = ":5"
-        print("** 分辨率：" + pyautogui.size())
-
-    # def change_random_resolution(self):
-    #     linux_resolution = ["1024x768", "1280x1024", "1280x960", "1280x800", "1280x768", "800x600"]
-    #     index = random.randint(0, (len(linux_resolution) - 1))
-    #     print(("设置分辨率: " + linux_resolution[index]), flush=True)
-    #     ret1 = subprocess.call(["xrandr", "-s", linux_resolution[index]], shell=False)
-    #     while ret1 != 0:
-    #         print(("重试设置分辨率: " + linux_resolution[index]), flush=True)
-    #         ret1 = subprocess.call(["xrandr", "-s", linux_resolution[index]], shell=False)
+        print("** 分辨率：" + str(pyautogui.size()))
 
     def change_mac_address(self, passwd):
         self.shell_sudo_command("sudo ifconfig eth0 down", passwd)
