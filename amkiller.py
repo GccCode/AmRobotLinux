@@ -257,7 +257,7 @@ if __name__ == "__main__":
         driver = customized_broswer()
         t1 = time.time()
         amazonpage = AmazonPage(driver)
-        display = amazonpage.change_random_resolution()
+        amazonpage.change_random_resolution()
         try:
             count = 40 #random.randint(1, 100)
             if count < 30:

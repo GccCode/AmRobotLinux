@@ -10,7 +10,7 @@ from selenium.common.exceptions import NoSuchElementException
 import pyscreenshot as ImageGrab
 import pexpect
 import subprocess
-from pyvirtualdisplay import Display
+import os
 
 class BaseAction(object):
     def __init__(self, driver):
@@ -36,13 +36,22 @@ class BaseAction(object):
         pass
 
     def change_random_resolution(self):
-        linux_resolution = ["1024x768", "1280x1024", "1280x960", "1280x800", "1280x768", "800x600"]
-        index = random.randint(0, len(linux_resolution))
-        print(("设置分辨率: " + linux_resolution[index]), flush=True)
-        ret1 = subprocess.call(["xrandr", "-s", linux_resolution[index]], shell=False)
-        while ret1 != 0:
-            print(("重试设置分辨率: " + linux_resolution[index]), flush=True)
-            ret1 = subprocess.call(["xrandr", "-s", linux_resolution[index]], shell=False)
+        linux_resolution = ["1024x768x8", "1366x768x8", "1280x768x8", "800x600x8", "1920x1080x8"]
+        index = random.randint(0, (len(linux_resolution) - 1))
+        stop_cmd = ["killall", "Xvfb"]
+        subprocess.call(stop_cmd, shell=False)
+        start_cmd = ["Xvfb", ":5", "-ac", "-screen", "0", linux_resolution[index]]
+        subprocess.Popen(start_cmd, shell=False, stdout=open('/dev/null', 'w'), stderr=open('/dev/null', 'w'))
+        os.environ['DISPLAY'] = ":5"
+
+    # def change_random_resolution(self):
+    #     linux_resolution = ["1024x768", "1280x1024", "1280x960", "1280x800", "1280x768", "800x600"]
+    #     index = random.randint(0, (len(linux_resolution) - 1))
+    #     print(("设置分辨率: " + linux_resolution[index]), flush=True)
+    #     ret1 = subprocess.call(["xrandr", "-s", linux_resolution[index]], shell=False)
+    #     while ret1 != 0:
+    #         print(("重试设置分辨率: " + linux_resolution[index]), flush=True)
+    #         ret1 = subprocess.call(["xrandr", "-s", linux_resolution[index]], shell=False)
 
     def change_mac_address(self, passwd):
         self.shell_sudo_command("sudo ifconfig eth0 down", passwd)
