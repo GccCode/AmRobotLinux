@@ -370,6 +370,7 @@ def change_random_resolution():
         start_cmd = ["Xvfb", ":5", "-ac", "-screen", "0", linux_resolution[index]]
         ret = subprocess.Popen(start_cmd, shell=False, stdout=open('/dev/null','w'),stderr=open('/dev/null','w'))
         os.environ['DISPLAY'] = ":5"
+        time.sleep(5)
 
 class Administrator():
     def __init__(self):
