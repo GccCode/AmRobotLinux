@@ -15,7 +15,6 @@ import io
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from utils import change_random_resolution
-from utils import input_wait
 import utils
 
 if __name__ == "__main__":
@@ -30,9 +29,8 @@ if __name__ == "__main__":
         change_random_resolution()
         utils.generate_info_file()
         keyword = admin.get_random_task()
+        whiteasin = admin.get_whiteasin(keyword)
         driver = utils.customized_broswer()
-        driver.get("http://ip.42.pl/raw")
-        print(driver.page_source)
         t1 = time.time()
         amazonpage = AmazonPage(driver)
         try:
@@ -65,9 +63,11 @@ if __name__ == "__main__":
             searchpage = AmazonSearchPage(driver)
             print(("* 开始搜索关键词。。。"), flush=True)
             amazonpage.search_asin(keyword, 5000, 8000)
-            searchpage.click_random_products("B0756GYPNS")
+            searchpage.click_random_products(whiteasin)
             admin.finish_task(keyword)
-            time.sleep(random.randint(min_time, max_time))
+            t2 = time.time()
+            print("总耗时：" + format(t2 - t1))
+            time.sleep(random.randint(int(min_time), int(max_time)))
         except NoSuchElementException as msg:
             print(("* 找不到元素。。。"), flush=True)
         except TimeoutException as msg:
@@ -75,13 +75,8 @@ if __name__ == "__main__":
         except:
             pass
         finally:
-            t2 = time.time()
-            print("总耗时：" + format(t2 - t1))
             driver.quit()
-            tmp = input_wait("退出请按1: ", 5)
-            time.sleep(6)
-            if tmp == "1":
-                break
+
         count += 1
 
     print("* 任务全部完成！！！！")
