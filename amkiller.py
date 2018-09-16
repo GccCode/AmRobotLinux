@@ -21,6 +21,7 @@ import os
 import io
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
+from utils import change_random_resolution
 
 
 #0)
@@ -252,12 +253,12 @@ if __name__ == "__main__":
     count = 0
     while count < 1:#admin.is_all_over() == False:
         change_proxy()
+        change_random_resolution()
         generate_info_file()
         keyword = admin.get_random_task()
         driver = customized_broswer()
         t1 = time.time()
         amazonpage = AmazonPage(driver)
-        amazonpage.change_random_resolution()
         try:
             count = 40 #random.randint(1, 100)
             if count < 30:
