@@ -292,7 +292,6 @@ def customized_broswer():
         proxy_password=passwd.lower()
     )
     option.add_extension(proxyauth_plugin_path)
-    option.add_argument('--headless')
     option.add_argument('--no-sandbox')
     option.add_argument('--disable-gpu')
     option.add_argument('--disable-dev-shm-usage')
