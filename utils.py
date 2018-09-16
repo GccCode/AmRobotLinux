@@ -65,7 +65,7 @@ def input_wait(tip, timeout):
     def input_func(context):
         context['data'] = input(tip)
 
-    context = {'data': 'default'}
+    context = {'data': '0'}
     t = threading.Thread(target=input_func, args=(context,))
     t.start()
     t.join(timeout)
@@ -82,6 +82,3 @@ def change_random_resolution():
 
 if __name__ == "__main__":
     change_random_resolution()
-    tmp = input_wait("Please input: ", 5)
-    print("input is: " + tmp)
-    window_capture("shot")
