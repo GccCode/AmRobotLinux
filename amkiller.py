@@ -22,6 +22,7 @@ import io
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from utils import change_random_resolution
+from utils import input_wait
 
 
 #0)
@@ -251,7 +252,7 @@ if __name__ == "__main__":
     max_time = cf.get("search", "view_time_max")
     admin = Administrator()
     count = 0
-    while count < 1:#admin.is_all_over() == False:
+    while admin.is_all_over() == False:
         change_proxy()
         change_random_resolution()
         generate_info_file()
@@ -302,6 +303,9 @@ if __name__ == "__main__":
             t2 = time.time()
             print("总耗时：" + format(t2 - t1))
             driver.quit()
+            tmp = input_wait("退出请按1: ", 5)
+            if tmp == "1":
+                break
         count += 1
 
     print("* 任务全部完成！！！！")
