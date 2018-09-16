@@ -31,6 +31,8 @@ if __name__ == "__main__":
         utils.generate_info_file()
         keyword = admin.get_random_task()
         driver = utils.customized_broswer()
+        driver.get("http://ip.42.pl/raw")
+        print(driver.page_source)
         t1 = time.time()
         amazonpage = AmazonPage(driver)
         try:

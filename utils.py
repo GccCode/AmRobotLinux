@@ -416,7 +416,7 @@ class Administrator():
 
 if __name__ == "__main__":
     change_random_resolution()
-    driver = customized_broswer()
-    driver.get("https://www.whatismyipaddress.com")
-    input("xxx")
-    driver.quit()
+    # driver = customized_broswer()
+    # driver.get("https://www.whatismyipaddress.com")
+    # input("xxx")
+    # driver.quit()
