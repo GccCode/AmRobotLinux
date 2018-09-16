@@ -7,7 +7,6 @@ import json
 import os
 from baseaction import BaseAction
 from locator import AmazonPageLocator
-import pyautogui
 import configparser
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
@@ -19,8 +18,6 @@ class AmazonPage(BaseAction):
         self.locator = AmazonPageLocator
         self.cf = configparser.ConfigParser()
         self.cf.read("info.txt")
-        self.screen_width = pyautogui.size()[0]
-        self.screen_heigth = pyautogui.size()[1]
 
     def get_cookies(self):
         return self.driver.get_cookies()

@@ -3,7 +3,7 @@
 
 import time
 import time as tm
-import pyautogui
+# import pyautogui
 import random
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
@@ -13,8 +13,6 @@ import pyscreenshot as ImageGrab
 class BaseAction(object):
     def __init__(self, driver):
         self.driver = driver
-        self.screen_width = pyautogui.size()[0]
-        self.screen_heigth = pyautogui.size()[1]
 
     def window_capture(self, filename):
         self.random_sleep(3000, 5000)
@@ -93,19 +91,19 @@ class BaseAction(object):
 
     def mouse_move(self, x, y):
         move_time = random.randint(100, 500) / 1000
-        pyautogui.moveTo(x, y, move_time)
+        # pyautogui.moveTo(x, y, move_time)
 
     def random_mouse_move(self):
         t1 = tm.time()
         move_count = 0
         count = random.randint(1, 3)
         while move_count < count:
-            x = random.randint(0, int(self.screen_width / 3))
-            y = random.randint(0, int(self.screen_heigth / 3)) + 200
+            x = random.randint(0, int(1024 / 3))
+            y = random.randint(0, int(768 / 3)) + 200
             if (y > 0) and (y < 200):
                 y = y + 200
             move_time = random.randint(1, 20) * 1000 / 10000
-            pyautogui.moveTo(x, y, move_time)
+            # pyautogui.moveTo(x, y, move_time)
             self.random_sleep(500, 1500)
             move_count += 1
 
@@ -131,7 +129,7 @@ class BaseAction(object):
 
     def mouse_scoll(self, direction):
         scroll_count = random.randint(1, 10)
-        pyautogui.scroll(scroll_count * direction)
+        # pyautogui.scroll(scroll_count * direction)
 
     def enter_back(self):
         return

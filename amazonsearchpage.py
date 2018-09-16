@@ -6,7 +6,6 @@ from amazonpage import AmazonPage
 from locator import AmazonSearchPageLocator
 import configparser
 import time as tm
-import pyautogui
 from selenium.common.exceptions import NoSuchElementException
 import random
 
@@ -17,8 +16,6 @@ class AmazonSearchPage(AmazonPage):
         self.locator = AmazonSearchPageLocator
         self.cf = configparser.ConfigParser()
         self.cf.read("info.txt")
-        self.screen_width = pyautogui.size()[0]
-        self.screen_heigth = pyautogui.size()[1]
 
     def find_target_asin_rank(self, asin, type):
         index = 1
