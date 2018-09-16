@@ -37,6 +37,7 @@ if __name__ == "__main__":
             random.randint(1, 100)
             if count < 50:
                 ## registeration
+                print(("* 注册会员。。。"), flush=True)
                 amazonpage.enter_amazon_page(3000, 5000)
                 amazonpage.enter_register_page(3000, 5000)
                 registerpage = AmazonRegisterPage(driver)
@@ -44,6 +45,7 @@ if __name__ == "__main__":
                 tmp = random.randint(1, 100)
                 if tmp < 30:
                     ## add bill address
+                    print(("* 添加账单地址。。。"), flush=True)
                     amazonpage.enter_account_page(3000, 5000)
                     accountpage = AmazonAccountPage(driver)
                     accountpage.enter_address_page(3000, 5000)
@@ -52,6 +54,7 @@ if __name__ == "__main__":
                 tmp = random.randint(1, 100)
                 if tmp < 30:
                     ## add payment
+                    print(("* 添加卡。。。"), flush=True)
                     amazonpage.enter_account_page(3000, 5000)
                     accountpage = AmazonAccountPage(driver)
                     accountpage.enter_payment_page(3000, 5000)
@@ -66,7 +69,7 @@ if __name__ == "__main__":
             searchpage.click_random_products(whiteasin)
             admin.finish_task(keyword)
             t2 = time.time()
-            print("总耗时：" + format(t2 - t1))
+            print("总耗时：" + format(t2 - t1), flush=True)
             time.sleep(random.randint(int(min_time), int(max_time)))
         except NoSuchElementException as msg:
             print(("* 找不到元素。。。"), flush=True)
