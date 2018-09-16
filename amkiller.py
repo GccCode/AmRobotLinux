@@ -304,6 +304,7 @@ if __name__ == "__main__":
             print("总耗时：" + format(t2 - t1))
             driver.quit()
             tmp = input_wait("退出请按1: ", 5)
+            time.sleep(6)
             if tmp == "1":
                 break
         count += 1
