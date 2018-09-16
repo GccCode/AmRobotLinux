@@ -281,15 +281,15 @@ def customized_broswer():
     # option.add_argument(useragent)
     proxy_line = getrandomline("proxy.txt")
     ip, port, username, passwd = proxy_line.split(":")
-    print("ip : " + ip, flush=True)
+    print("ip : " + ip.lower(), flush=True)
     print("port : " + port, flush=True)
-    print("username : " + username, flush=True)
-    print("passwd : " + passwd, flush=True)
+    print("username : " + username.lower(), flush=True)
+    print("passwd : " + passwd.lower(), flush=True)
     proxyauth_plugin_path = create_proxyauth_extension(
-        proxy_host=ip,
+        proxy_host=ip.lower(),
         proxy_port=int(port),
-        proxy_username=username,
-        proxy_password=passwd
+        proxy_username=username.lower(),
+        proxy_password=passwd.lower()
     )
     option.add_extension(proxyauth_plugin_path)
     driver =  webdriver.Chrome(chrome_options=option)
