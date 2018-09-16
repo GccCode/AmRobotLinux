@@ -173,6 +173,7 @@ def create_proxyauth_extension(proxy_host, proxy_port,
 
 def chrome_proxy_setup(option):
     proxy_line = getrandomline("proxy.txt")
+    print("proxy_line is : " + proxy_line, flush=True)
     ip, port, username, passwd = proxy_line.split(":")
     proxyauth_plugin_path = create_proxyauth_extension(
         proxy_host=ip,
