@@ -43,6 +43,7 @@ class BaseAction(object):
         start_cmd = ["Xvfb", ":5", "-ac", "-screen", "0", linux_resolution[index]]
         subprocess.Popen(start_cmd, shell=False, stdout=open('/dev/null', 'w'), stderr=open('/dev/null', 'w'))
         os.environ['DISPLAY'] = ":5"
+        print("** 分辨率：" + pyautogui.size())
 
     # def change_random_resolution(self):
     #     linux_resolution = ["1024x768", "1280x1024", "1280x960", "1280x800", "1280x768", "800x600"]
