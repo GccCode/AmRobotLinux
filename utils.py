@@ -439,13 +439,13 @@ class Administrator():
 
 
     def get_whiteasin(self, section):
-        if self.cf.has_section(section):
+        if self.cf.has_option(section, "whiteasin"):
             return self.cf.get(section, "whiteasin")
         else:
             return False
 
     def get_blackasin(self, section):
-        if self.cf.has_section(section):
+        if self.cf.has_option(section, "blackasin"):
             return self.cf.get(section, "blackasin")
         else:
             return False
