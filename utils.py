@@ -235,7 +235,7 @@ def generate_card():
     #     print(str(i) + " : " + info[i]['value'])
     # name_phone = info[0]['value'] + '#' + info[9]['value']
     # name_visa = info[0]['value'] + '#' + info[11]['value'] + '#' + info[13]['value']
-    return [info[5]['value'], info[21]['value'], info[23]['value']]
+    return [info[5]['value'], info[22]['value'], info[24]['value']]
 
 def generate_info_file():
     cf_info = configparser.ConfigParser()
@@ -259,16 +259,19 @@ def generate_info_file():
     zipcode = address[3]
     cf_info.set("bill_address", "postalcode", zipcode)
     cardinfo = generate_card()
+    print(cardinfo, flush=True)
     phonenumber = cardinfo[0]
     cf_info.set("bill_address", "phone", phonenumber)
     cf_info.add_section("cardinfo")
     cardnumber = cardinfo[1]
     cf_info.set("cardinfo", "cardnumber", cardnumber)
     validmonth = cardinfo[2].split('/')[0]
+    # validmonth = str(random.randint(1, 12))
     cf_info.set("cardinfo", "month", validmonth)
     validyear = cardinfo[2].split('/')[1]
     if int(validyear) < 2019:
         validyear = "2019"
+    # validyear = str(random.randint(2019, 2025))
     cf_info.set("cardinfo", "year", validyear)
 
     cf_info.write(open('info.txt', 'w'))
@@ -419,7 +422,8 @@ class Administrator():
             self.delete_task(section)
 
 if __name__ == "__main__":
-    change_random_resolution()
+    generate_info_file()
+    # change_random_resolution()
     # driver = customized_broswer()
     # driver.get("https://www.whatismyipaddress.com")
     # input("xxx")
