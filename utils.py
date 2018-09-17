@@ -175,6 +175,10 @@ def chrome_proxy_setup(option):
     proxy_line = getrandomline("proxy.txt")
     print("proxy_line is : " + proxy_line, flush=True)
     ip, port, username, passwd = proxy_line.split(":")
+    # print("ip : " + ip.lower(), flush=True)
+    # print("port : " + port, flush=True)
+    # print("username : " + username.lower(), flush=True)
+    # print("passwd : " + passwd.lower(), flush=True)
     proxyauth_plugin_path = create_proxyauth_extension(
         proxy_host=ip.lower(),
         proxy_port=int(port),
@@ -182,6 +186,7 @@ def chrome_proxy_setup(option):
         proxy_password=passwd.lower()
     )
     option.add_extension(proxyauth_plugin_path)
+    return ip.lower(), port, username.lower(), passwd.lower()
 
 def generate_username():
     return (getrandomline('usernames') + " " + getrandomline('usernames'))
@@ -228,11 +233,18 @@ def generate_card():
     url = r'http://www.fakeaddressgenerator.com/World/us_address_generator'
     referer = r'http://www.fakeaddressgenerator.com/World'
     header = {'user-agent': generate_user_agent(), 'referer': referer}
-    text = requests.get(url, headers=header).text
+    proxy_line = getrandomline("proxy.txt")
+    print("proxy_line is : " + proxy_line, flush=True)
+    ip, port, username, passwd = proxy_line.split(":")
+    proxy_dict = {
+        "http": "http://" + username.lower() + ":" + passwd.lower() + ":" + ip.lower() + ":" + port.lower(),
+        "https": "https://" + username.lower() + ":" + passwd.lower() + ":" + ip.lower() + ":" + port.lower()
+    }
+    text = requests.get(url, headers=header, proxies=proxy_dict).text
     soup = BeautifulSoup(text, 'lxml')
     info = soup.find_all('input')
-    # for i in range(0, 25):
-    #     print(str(i) + " : " + info[i]['value'])
+    for i in range(0, (len(info) - 1)):
+        print(str(i) + " : " + info[i]['value'])
     # name_phone = info[0]['value'] + '#' + info[9]['value']
     # name_visa = info[0]['value'] + '#' + info[11]['value'] + '#' + info[13]['value']
     return [info[5]['value'], info[22]['value'], info[24]['value']]
