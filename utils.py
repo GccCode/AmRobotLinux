@@ -274,7 +274,7 @@ def generate_info_file():
     cf_info.set("bill_address", "postalcode", zipcode)
     cardinfo = generate_card()
     if cardinfo == False:
-        print(("* 随机生成卡资料。。。"), flush=True)
+        print(("* Generate Info In Failure..."), flush=True)
         return False
     phonenumber = cardinfo[0]
     cf_info.set("bill_address", "phone", phonenumber)
@@ -291,7 +291,7 @@ def generate_info_file():
     cf_info.set("cardinfo", "year", validyear)
 
     cf_info.write(open('info.txt', 'w'))
-    print(("* 随机生成身份资料。。。"), flush=True)
+    print(("* Generate Info Sucessfully..."), flush=True)
     return True
 
 def customized_broswer():

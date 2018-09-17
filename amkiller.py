@@ -25,7 +25,7 @@ if __name__ == "__main__":
     max_time = cf.get("search", "view_time_max")
     admin = utils.Administrator()
     count = 0
-    print("* 分辨率为：" + str(pyautogui.size()))
+    print("* resolution：" + str(pyautogui.size()))
     while count < 1:#admin.is_all_over() == False:
         ret = utils.generate_info_file()
         if ret == False:
@@ -39,7 +39,7 @@ if __name__ == "__main__":
             random.randint(1, 100)
             if count < 50:
                 ## registeration
-                print(("* 注册会员。。。"), flush=True)
+                print(("* Registeration..."), flush=True)
                 amazonpage.enter_amazon_page(3000, 5000)
                 amazonpage.enter_register_page(3000, 5000)
                 registerpage = AmazonRegisterPage(driver)
@@ -47,7 +47,7 @@ if __name__ == "__main__":
                 tmp = random.randint(1, 100)
                 if tmp < 30:
                     ## add bill address
-                    print(("* 添加账单地址。。。"), flush=True)
+                    print(("* Add Bill Address..."), flush=True)
                     amazonpage.enter_account_page(3000, 5000)
                     accountpage = AmazonAccountPage(driver)
                     accountpage.enter_address_page(3000, 5000)
@@ -56,7 +56,7 @@ if __name__ == "__main__":
                     tmp = random.randint(1, 100)
                     if tmp < 30:
                         ## add payment
-                        print(("* 添加卡。。。"), flush=True)
+                        print(("* Add Card..."), flush=True)
                         amazonpage.enter_account_page(3000, 5000)
                         accountpage = AmazonAccountPage(driver)
                         accountpage.enter_payment_page(3000, 5000)
@@ -66,17 +66,17 @@ if __name__ == "__main__":
             amazonpage.enter_amazon_page(3000, 5000)
             amazonpage.wait_searchbox_exsist()
             searchpage = AmazonSearchPage(driver)
-            print(("* 开始搜索关键词。。。"), flush=True)
+            print(("* Start Search Keyword...."), flush=True)
             amazonpage.search_asin(keyword, 5000, 8000)
             searchpage.click_random_products(whiteasin)
             admin.finish_task(keyword)
             t2 = time.time()
-            print("总耗时：" + format(t2 - t1), flush=True)
+            print("Total Time：" + format(t2 - t1), flush=True)
             time.sleep(random.randint(int(min_time), int(max_time)))
         except NoSuchElementException as msg:
-            print(("* 找不到元素。。。"), flush=True)
+            print(("* NoSuchElementException...."), flush=True)
         except TimeoutException as msg:
-            print(("* 网页加载超时。。。"), flush=True)
+            print(("* Loaded Timeout...."), flush=True)
         except:
             pass
         finally:
@@ -84,5 +84,5 @@ if __name__ == "__main__":
 
         count += 1
 
-    print("* 任务全部完成！！！！")
+    print("* Task Finished...")
 

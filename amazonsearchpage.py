@@ -163,10 +163,10 @@ class AmazonSearchPage(AmazonPage):
             if asinresult.get_attribute('data-asin') == asin:
                 if type == "normal":
                     if self.is_asin_sponsored(asinresult, asin) != True:
-                        print(("** 找到目标产品 - 普通。。。"), flush=True)
+                        print(("** Target found - Normal..."), flush=True)
                 elif type == "sponsored":
                     if self.is_asin_sponsored(asinresult, asin):
-                        print(("** 找到目标产品 - 广告。。。"), flush=True)
+                        print(("** Target found - Sponsored..."), flush=True)
 
                 return asinresult
 
@@ -294,7 +294,7 @@ class AmazonSearchPage(AmazonPage):
                     self.click_asin_by_title_us_small(asinresult, asin)
             elif country == "jp":
                 self.click_asin_by_title_jp(asinresult, asin)
-        print(("*** 进入产品页面 + " + asin), flush=True)
+        print(("*** Enter Product Item: " + asin), flush=True)
         self.random_sleep(begin, end)
         return self.driver.current_window_handle
 
@@ -327,11 +327,11 @@ class AmazonSearchPage(AmazonPage):
             self.switch_to_new_page(prev_handle)
             self.navigation_back(begin, end)
             self.driver.switch_to_window(prev_handle)
-        print(("*** 返回上一页。。。"), flush=True)
+        print(("*** Return Previous Page..."), flush=True)
         self.random_sleep(begin, end)
 
 
     def enter_next_page(self, begin, end):
-        print(("** 翻到下一页。。。"), flush=True)
+        print(("** Goto Next Page..."), flush=True)
         self.click(*self.locator.PAGENEXTSTRING)
         self.random_sleep(begin, end)
