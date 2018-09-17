@@ -246,8 +246,8 @@ def generate_card():
     lens = len(info)
     if lens == 0:
         return False
-    for i in range(0, 25):
-        print(str(i) + " : " + info[i]['value'], flush=True)
+    # for i in range(0, 25):
+    #     print(str(i) + " : " + info[i]['value'], flush=True)
     # name_phone = info[0]['value'] + '#' + info[9]['value']
     # name_visa = info[0]['value'] + '#' + info[11]['value'] + '#' + info[13]['value']
     return [info[5]['value'], info[22]['value'], info[24]['value']]
@@ -275,6 +275,7 @@ def generate_info_file():
     cf_info.set("bill_address", "postalcode", zipcode)
     cardinfo = generate_card()
     if cardinfo == False:
+        print(("* 随机生成卡资料。。。"), flush=True)
         return False
     phonenumber = cardinfo[0]
     cf_info.set("bill_address", "phone", phonenumber)
@@ -291,8 +292,8 @@ def generate_info_file():
     cf_info.set("cardinfo", "year", validyear)
 
     cf_info.write(open('info.txt', 'w'))
-    return True
     print(("* 随机生成身份资料。。。"), flush=True)
+    return True
 
 def customized_broswer():
     option = webdriver.ChromeOptions()
