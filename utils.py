@@ -237,8 +237,8 @@ def generate_card():
     print("proxy_line is : " + proxy_line, flush=True)
     ip, port, username, passwd = proxy_line.split(":")
     proxy_dict = {
-        "http": "http://" + username.lower() + ":" + passwd.lower() + ":" + ip.lower() + ":" + port.lower(),
-        "https": "https://" + username.lower() + ":" + passwd.lower() + ":" + ip.lower() + ":" + port.lower()
+        "http": "http://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower(),
+        "https": "https://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower()
     }
     text = requests.get(url, headers=header, proxies=proxy_dict).text
     soup = BeautifulSoup(text, 'lxml')
