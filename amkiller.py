@@ -27,7 +27,9 @@ if __name__ == "__main__":
     admin = utils.Administrator()
     count = 0
     while admin.is_all_over() == False:
-        utils.generate_info_file()
+        ret = utils.generate_info_file()
+        if ret == False:
+            continue
         keyword = admin.get_random_task()
         whiteasin = admin.get_whiteasin(keyword)
         driver = utils.customized_broswer()
