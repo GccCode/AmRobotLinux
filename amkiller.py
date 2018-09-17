@@ -21,7 +21,8 @@ if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     cf = configparser.ConfigParser()
     cf.read("task.txt")
-    click_task_file = sys.argv[1]
+    click_task_file = sys.argv[2]
+    print(click_task_file)
     min_time = cf.get("search", "view_time_min")
     max_time = cf.get("search", "view_time_max")
     admin = utils.Administrator(click_task_file)
