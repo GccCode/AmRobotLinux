@@ -95,7 +95,7 @@ class AmazonSearchPage(AmazonPage):
                 asin = normal_selected_asin[i]
                 asinresult = self.find_target_asin(asin, "normal")
                 if asinresult != False:
-                    currenthandle = self.enter_asin_page(asinresult, asin, 8000, 15000)
+                    currenthandle = self.enter_asin_page(asinresult, asin, 28000, 35000)
                     self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
         sponsored_lens = len(sponsored_selected_asin)
@@ -109,7 +109,7 @@ class AmazonSearchPage(AmazonPage):
                 asin = sponsored_selected_asin[i]
                 asinresult = self.find_target_asin(asin, "sponsored")
                 if asinresult != False:
-                    currenthandle = self.enter_asin_page(asinresult, asin, 20000, 35000)
+                    currenthandle = self.enter_asin_page(asinresult, asin, 60000, 85000)
                     self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
 

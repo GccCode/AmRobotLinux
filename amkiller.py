@@ -14,9 +14,8 @@ from amazonsearchpage import  AmazonSearchPage
 import io
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
-from utils import change_random_resolution
 import utils
-from xvfbwrapper import Xvfb
+import pyautogui
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -26,7 +25,8 @@ if __name__ == "__main__":
     max_time = cf.get("search", "view_time_max")
     admin = utils.Administrator()
     count = 0
-    while admin.is_all_over() == False:
+    print("* 分辨率为：" + str(pyautogui.size()))
+    while count < 1:#admin.is_all_over() == False:
         ret = utils.generate_info_file()
         if ret == False:
             continue
@@ -36,7 +36,7 @@ if __name__ == "__main__":
         t1 = time.time()
         amazonpage = AmazonPage(driver)
         try:
-            count = 60 # random.randint(1, 100)
+            random.randint(1, 100)
             if count < 50:
                 ## registeration
                 print(("* 注册会员。。。"), flush=True)
@@ -81,7 +81,6 @@ if __name__ == "__main__":
             pass
         finally:
             driver.quit()
-            # xvfb.stop()
 
         count += 1
 

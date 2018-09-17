@@ -234,7 +234,6 @@ def generate_card():
     referer = r'http://www.fakeaddressgenerator.com/World'
     header = {'user-agent': generate_user_agent(), 'referer': referer}
     proxy_line = getrandomline("proxy.txt")
-    print("proxy_line is : " + proxy_line, flush=True)
     ip, port, username, passwd = proxy_line.split(":")
     proxy_dict = {
         "http": "http://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower(),
