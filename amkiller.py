@@ -27,11 +27,11 @@ if __name__ == "__main__":
     admin = utils.Administrator()
     count = 0
     while admin.is_all_over() == False:
-        linux_resolution = ["1024x768", "1366x768", "1280x768", "800x600", "1920x1080"]
-        index = random.randint(0, (len(linux_resolution) - 1))
-        x,y = linux_resolution[index].split("x")
-        xvfb = Xvfb(int(x), int(y))
-        xvfb.start()
+        # linux_resolution = ["1024x768", "1366x768", "1280x768", "800x600", "1920x1080"]
+        # index = random.randint(0, (len(linux_resolution) - 1))
+        # x,y = linux_resolution[index].split("x")
+        # xvfb = Xvfb(int(x), int(y))
+        # xvfb.start()
         utils.generate_info_file()
         keyword = admin.get_random_task()
         whiteasin = admin.get_whiteasin(keyword)
@@ -84,7 +84,7 @@ if __name__ == "__main__":
             pass
         finally:
             driver.quit()
-            xvfb.stop()
+            # xvfb.stop()
 
         count += 1
 
