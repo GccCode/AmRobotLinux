@@ -21,9 +21,10 @@ if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     cf = configparser.ConfigParser()
     cf.read("task.txt")
+    click_task_file = sys.argv[1]
     min_time = cf.get("search", "view_time_min")
     max_time = cf.get("search", "view_time_max")
-    admin = utils.Administrator()
+    admin = utils.Administrator(click_task_file)
     count = 0
     print("* resolution：" + str(pyautogui.size()))
     while count < 1:#admin.is_all_over() == False:
@@ -32,6 +33,7 @@ if __name__ == "__main__":
             continue
         keyword = admin.get_random_task()
         whiteasin = admin.get_whiteasin(keyword)
+        blackasin = admin.get_blackasin(keyword)
         driver = utils.customized_broswer()
         t1 = time.time()
         amazonpage = AmazonPage(driver)
@@ -68,7 +70,8 @@ if __name__ == "__main__":
             searchpage = AmazonSearchPage(driver)
             print(("* Start Search Keyword...."), flush=True)
             amazonpage.search_asin(keyword, 5000, 8000)
-            searchpage.click_random_products(whiteasin)
+            asins = searchpage.click_random_products(blackasin, whiteasin)
+            admin.record_tasks(keyword, asins)
             admin.finish_task(keyword)
             t2 = time.time()
             print("Total Time：" + format(t2 - t1), flush=True)

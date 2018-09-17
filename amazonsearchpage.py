@@ -73,7 +73,8 @@ class AmazonSearchPage(AmazonPage):
         for i in range(0, items):
             self.enter_random_product(asin, random.randint(start_time, end_time), begin, end)
 
-    def click_random_products_per_page(self, whiteasin):
+    def click_random_products_per_page(self, blackaisn, whiteasin):
+        sponsored_asins = []
         normal, sponsored = self.filter_asin(whiteasin)
 
         normal_selected = random.sample(normal, random.randint(1, len(normal)))
@@ -105,21 +106,42 @@ class AmazonSearchPage(AmazonPage):
             elif sponsored_lens >= 5:
                 sponsored_lens = random.randint(2, 3)
 
+            black_clicked_flag = False
             for i in range(0, sponsored_lens):
                 asin = sponsored_selected_asin[i]
+                sponsored_asins.append(asin)
+                if blackaisn != False:
+                    if blackaisn == asin:
+                        black_clicked_flag = True
                 asinresult = self.find_target_asin(asin, "sponsored")
                 if asinresult != False:
                     currenthandle = self.enter_asin_page(asinresult, asin, 60000, 85000)
                     self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
+            if blackaisn != False:
+                if black_clicked_flag == False:
+                    asinresult = self.find_target_asin(blackaisn, "sponsored")
+                    if asinresult != False:
+                        sponsored_asins.append(blackaisn)
+                        currenthandle = self.enter_asin_page(asinresult, blackaisn, 60000, 85000)
+                        self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
-    def click_random_products(self, whiteasin):
+
+        return sponsored_asins
+
+
+    def click_random_products(self, blackasin, whiteasin):
+        asins = []
         page = 0
         pages = random.randint(1, 2)
         while page < pages:
-            self.click_random_products_per_page(whiteasin)
+            sponsored_asins = self.click_random_products_per_page(blackasin, whiteasin)
+            for i in range(0, len(sponsored_asins)):
+                asins.append(sponsored_asins[i])
             self.enter_next_page(3000, 5000)
             page += 1
+
+        return asins
 
 
     def enter_random_product(self, asin, count, begin, end):

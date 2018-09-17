@@ -14,6 +14,7 @@ import configparser
 from selenium import webdriver
 import string
 import zipfile
+import datetime
 
 
 #0)
@@ -394,9 +395,31 @@ def change_random_resolution():
         time.sleep(5)
 
 class Administrator():
-    def __init__(self):
+    def __init__(self, filename):
         self.cf = configparser.ConfigParser()
-        self.cf.read("click_task.txt")
+        self.cf.read(filename)
+        self.record_cf = configparser.ConfigParser()
+        nowdate = datetime.datetime.now().strftime('%Y-%m-%d')
+        self.recordfile = nowdate + "_" + filename
+        if os.path.exists(self.recordfile) != True:
+            file = open(self.recordfile, 'w')
+            file.close()
+        self.record_cf.read(self.recordfile)
+
+    def record_tasks(self, keyword, asins):
+        if len(asins) != 0:
+            if self.record_cf.has_section(keyword) == False:
+                self.record_cf.add_section(keyword)
+
+            for i in range(0, len(asins)):
+                if self.record_cf.has_option(keyword, asins[i]) == False:
+                    self.record_cf.set(keyword, asins[i], "1")
+                else:
+                    count = int(self.record_cf.get(keyword, asins[i]))
+                    count += 1
+                    self.record_cf.set(keyword, asins[i], str(count))
+
+            self.record_cf.write(open(self.recordfile, 'w'))
 
     def get_tasks(self):
         return self.cf.sections()
@@ -416,7 +439,16 @@ class Administrator():
 
 
     def get_whiteasin(self, section):
-        return self.cf.get(section, "whiteasin")
+        if self.cf.has_section(section):
+            return self.cf.get(section, "whiteasin")
+        else:
+            return False
+
+    def get_blackasin(self, section):
+        if self.cf.has_section(section):
+            return self.cf.get(section, "blackasin")
+        else:
+            return False
 
     def is_all_over(self):
         if len(self.cf.sections()) == 0:
@@ -439,9 +471,12 @@ class Administrator():
             self.delete_task(section)
 
 if __name__ == "__main__":
-    generate_info_file()
+    # generate_info_file()
     # change_random_resolution()
     # driver = customized_broswer()
     # driver.get("https://www.whatismyipaddress.com")
     # input("xxx")
     # driver.quit()
+    admin = Administrator("click_task.txt")
+    asins = ['a', 'b', 'c']
+    admin.record_tasks("hello", asins)
