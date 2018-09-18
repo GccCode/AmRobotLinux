@@ -299,7 +299,7 @@ class AmazonSearchPage(AmazonPage):
         country = self.cf.get("account", "country")
         option = random.randint(1, 2)
         if option == 1:
-            print(("**** enter by image link.."), flush=True)
+            print(("**** Enter " + asin + " By Image Link.."), flush=True)
             if country == 'us':
                 if int(asinresult.size['width']) > 500:
                     self.click_asin_by_img_us(asinresult, asin)
@@ -308,7 +308,7 @@ class AmazonSearchPage(AmazonPage):
             elif country == "jp":
                 self.click_asin_by_img_jp_small(asinresult, asin)
         else:
-            print(("**** enter by title link.."), flush=True)
+            print(("**** Enter " + asin + " By Title Link.."), flush=True)
             if country == 'us':
                 if int(asinresult.size['width']) > 500:
                     self.click_asin_by_title_us(asinresult, asin)
@@ -316,7 +316,6 @@ class AmazonSearchPage(AmazonPage):
                     self.click_asin_by_title_us_small(asinresult, asin)
             elif country == "jp":
                 self.click_asin_by_title_jp(asinresult, asin)
-        print(("*** Enter Product Item: " + asin), flush=True)
         self.random_sleep(begin, end)
         return self.driver.current_window_handle
 

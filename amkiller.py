@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     admin = utils.Administrator(amkillerfile)
     count = 0
-    print("* resolution：" + str(pyautogui.size()))
+    print("* Resolution：" + str(pyautogui.size()))
     while count < 1:#admin.is_all_over() == False:
         ret = utils.generate_info_file()
         if ret == False:
@@ -69,7 +69,7 @@ if __name__ == "__main__":
             amazonpage.enter_amazon_page(3000, 5000)
             amazonpage.wait_searchbox_exsist()
             searchpage = AmazonSearchPage(driver)
-            print(("* Start Search Keyword...."), flush=True)
+            print(("* Start Search Keyword.... + " + keyword), flush=True)
             amazonpage.search_asin(keyword, 5000, 8000)
             asins = searchpage.click_random_products(blackasin, whiteasin)
             admin.record_tasks(keyword, asins)
