@@ -398,6 +398,7 @@ class Administrator():
     def __init__(self, filename):
         self.cf = configparser.ConfigParser()
         self.cf.read(filename)
+        self.taskfile = filename
         self.record_cf = configparser.ConfigParser()
         nowdate = datetime.datetime.now().strftime('%Y-%m-%d')
         self.recordfile = nowdate + "_" + filename
@@ -418,7 +419,7 @@ class Administrator():
                     count = int(self.record_cf.get(keyword, asins[i]))
                     count += 1
                     self.record_cf.set(keyword, asins[i], str(count))
-
+            print("* Recording Task....", flush=True)
             self.record_cf.write(open(self.recordfile, 'w'))
 
     def get_tasks(self):
@@ -459,16 +460,18 @@ class Administrator():
     def delete_task(self, section):
         if self.is_run_out(section):
             self.cf.remove_section(section)
-            self.cf.write(open('click_task.txt', 'w'))
-            self.cf.read("click_task.txt")
+            self.cf.write(open(self.taskfile, 'w'))
+            self.cf.read(self.taskfile)
 
     def finish_task(self, section):
         count = int(self.cf.get(section, "count"))
         count -= 1
         self.cf.set(section, "count", str(count))
-        self.cf.write(open('click_task.txt', 'w'))
+        self.cf.write(open(self.taskfile, 'w'))
         if count <= 0:
             self.delete_task(section)
+
+        print("* Finishing Task....", flush=True)
 
 if __name__ == "__main__":
     # generate_info_file()
