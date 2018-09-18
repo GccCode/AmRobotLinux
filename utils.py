@@ -4,7 +4,7 @@ import threading
 import pexpect
 import pyscreenshot as ImageGrab
 import random
-import string
+import urllib3
 import time
 import requests
 from bs4 import BeautifulSoup
@@ -85,6 +85,20 @@ def getrandomline(filename):
         filename,
         random.randint(0, getfilelines(filename)),
     ).decode().strip().title()
+
+def change_proxy():
+    cur_cwd = os.getcwd()
+    os.chdir("D:\Program Files\911S5 2018-05-23 fixed\ProxyTool")
+    # os.popen("Autoproxytool.exe -changeproxy/US/CA")
+    if is_proxy_file_exist() == False:
+        os.popen("Autoproxytool.exe -changeproxy/US/CA")
+    else:
+        ip = getrandomproxy()
+        cmd = "Autoproxytool.exe -changeproxy/ -ip=" + ip
+        os.popen(cmd)
+    os.chdir(cur_cwd)
+    time.sleep(5)
+    print(("* Switch ip from 911.re"), flush=True)
 
 
 def create_proxyauth_extension(proxy_host, proxy_port,
@@ -217,6 +231,7 @@ def generate_address():
     url = r'https://fakena.me/random-real-address/'
     referer = r'https://fakena.me'
     header = {'user-agent': generate_user_agent(), 'referer': referer}
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     text = requests.get(url, headers=header, verify=False).text
     pattern = re.compile('<strong>(.+)<br>(.+)</strong>')
     result = re.findall(pattern, text)
@@ -240,6 +255,7 @@ def generate_card():
         "http": "http://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower(),
         "https": "https://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower()
     }
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     text = requests.get(url, headers=header, proxies=proxy_dict).text
     soup = BeautifulSoup(text, 'lxml')
     info = soup.find_all('input')
@@ -439,7 +455,6 @@ class Administrator():
         else:
             return False
 
-
     def get_whiteasin(self, section):
         if self.cf.has_option(section, "whiteasin"):
             return self.cf.get(section, "whiteasin")
@@ -451,6 +466,30 @@ class Administrator():
             return self.cf.get(section, "blackasin")
         else:
             return False
+
+    def is_super_link(self, section):
+        return self.cf.get(section, "link")
+
+    def is_qa_submit_needed(self, section):
+        return self.cf.get(section, "qa_submit")
+
+    def is_qa_submit_image(self, section):
+        return self.cf.get(section, "qa_submit_image")
+
+    def get_qa_content(self, section):
+        return self.cf.get(section, "content")
+
+    def is_add_to_card_needed(self, section):
+        return self.cf.get(section, "addcart")
+
+    def is_add_wishlist_needed(self, section):
+        return self.cf.get(section, "wishlist")
+
+    def is_add_wishlist_image(self, section):
+        return self.cf.get(section, "wishlist_image")
+
+    def get_keyword(self, section):
+        return self.cf.get(section, "keyword")
 
     def is_all_over(self):
         if len(self.cf.sections()) == 0:

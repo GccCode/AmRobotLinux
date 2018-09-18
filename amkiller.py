@@ -21,10 +21,11 @@ if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     cf = configparser.ConfigParser()
     cf.read("task.txt")
-    click_task_file = sys.argv[2]
+    amkillerfile = cf.get("configfile", "amkiller")
     min_time = cf.get("search", "view_time_min")
     max_time = cf.get("search", "view_time_max")
-    admin = utils.Administrator(click_task_file)
+
+    admin = utils.Administrator(amkillerfile)
     count = 0
     print("* resolution：" + str(pyautogui.size()))
     while count < 1:#admin.is_all_over() == False:
