@@ -414,10 +414,11 @@ class Administrator():
     def __init__(self, filename):
         self.cf = configparser.ConfigParser()
         self.cf.read(filename)
+        outputdir = self.cf.get("output","dir")
         self.taskfile = filename
         self.record_cf = configparser.ConfigParser()
         nowdate = datetime.datetime.now().strftime('%Y-%m-%d')
-        self.recordfile = nowdate + "_" + filename
+        self.recordfile = outputdir + nowdate + "_" + filename
         if os.path.exists(self.recordfile) != True:
             file = open(self.recordfile, 'w')
             file.close()

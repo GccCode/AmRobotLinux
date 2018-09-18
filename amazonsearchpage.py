@@ -126,8 +126,6 @@ class AmazonSearchPage(AmazonPage):
                         self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
 
-
-
     def click_random_products(self, admin, keyword, blackasin, whiteasin):
         page = 0
         pages = random.randint(1, 2)
