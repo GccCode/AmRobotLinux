@@ -419,7 +419,8 @@ class Administrator():
                     count = int(self.record_cf.get(keyword, asins[i]))
                     count += 1
                     self.record_cf.set(keyword, asins[i], str(count))
-            print("* Recording Task....", flush=True)
+            print(asins, flush=True)
+            print("* Recording Task: ", flush=True)
             self.record_cf.write(open(self.recordfile, 'w'))
 
     def get_tasks(self):
@@ -471,7 +472,7 @@ class Administrator():
         if count <= 0:
             self.delete_task(section)
 
-        print("* Finishing Task....", flush=True)
+        print("* Finishing Task.... + " + str(count), flush=True)
 
 if __name__ == "__main__":
     # generate_info_file()
