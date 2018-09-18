@@ -411,14 +411,18 @@ def change_random_resolution():
         time.sleep(5)
 
 class Administrator():
-    def __init__(self, filename):
+    def __init__(self, taskfile):
         self.cf = configparser.ConfigParser()
-        self.cf.read(filename)
+        self.cf.read("task.txt")
         outputdir = self.cf.get("output","dir")
-        self.taskfile = filename
+
+        self.task_cf = configparser.ConfigParser()
+        self.task_cf.read(taskfile)
+        self.taskfile = taskfile
+
         self.record_cf = configparser.ConfigParser()
         nowdate = datetime.datetime.now().strftime('%Y-%m-%d')
-        self.recordfile = outputdir + nowdate + "_" + filename
+        self.recordfile = outputdir + nowdate + "_" + taskfile
         if os.path.exists(self.recordfile) != True:
             file = open(self.recordfile, 'w')
             file.close()
@@ -441,7 +445,7 @@ class Administrator():
             self.record_cf.write(open(self.recordfile, 'w'))
 
     def get_tasks(self):
-        return self.cf.sections()
+        return self.task_cf.sections()
 
     def get_tasks_len(self):
         return len(self.get_tasks())
@@ -450,65 +454,65 @@ class Administrator():
         return self.get_tasks()[random.randint(0, (self.get_tasks_len() - 1))]
 
     def is_run_out(self, section):
-        count = self.cf.get(section, "count")
+        count = self.task_cf.get(section, "count")
         if int(count) <= 0:
             return True
         else:
             return False
 
     def get_whiteasin(self, section):
-        if self.cf.has_option(section, "whiteasin"):
-            return self.cf.get(section, "whiteasin")
+        if self.task_cf.has_option(section, "whiteasin"):
+            return self.task_cf.get(section, "whiteasin")
         else:
             return False
 
     def get_blackasin(self, section):
-        if self.cf.has_option(section, "blackasin"):
-            return self.cf.get(section, "blackasin")
+        if self.task_cf.has_option(section, "blackasin"):
+            return self.task_cf.get(section, "blackasin")
         else:
             return False
 
     def is_super_link(self, section):
-        return self.cf.get(section, "link")
+        return self.task_cf.get(section, "link")
 
     def is_qa_submit_needed(self, section):
-        return self.cf.get(section, "qa_submit")
+        return self.task_cf.get(section, "qa_submit")
 
     def is_qa_submit_image(self, section):
-        return self.cf.get(section, "qa_submit_image")
+        return self.task_cf.get(section, "qa_submit_image")
 
     def get_qa_content(self, section):
-        return self.cf.get(section, "content")
+        return self.task_cf.get(section, "content")
 
     def is_add_to_card_needed(self, section):
-        return self.cf.get(section, "addcart")
+        return self.task_cf.get(section, "addcart")
 
     def is_add_wishlist_needed(self, section):
-        return self.cf.get(section, "wishlist")
+        return self.task_cf.get(section, "wishlist")
 
     def is_add_wishlist_image(self, section):
-        return self.cf.get(section, "wishlist_image")
+        return self.task_cf.get(section, "wishlist_image")
 
     def get_keyword(self, section):
-        return self.cf.get(section, "keyword")
+        return self.task_cf.get(section, "keyword")
 
     def is_all_over(self):
-        if len(self.cf.sections()) == 0:
+        if len(self.task_cf.sections()) == 0:
             return True
         else:
             return False
 
     def delete_task(self, section):
         if self.is_run_out(section):
-            self.cf.remove_section(section)
-            self.cf.write(open(self.taskfile, 'w'))
-            self.cf.read(self.taskfile)
+            self.task_cf.remove_section(section)
+            self.task_cf.write(open(self.taskfile, 'w'))
+            self.task_cf.read(self.taskfile)
 
     def finish_task(self, section):
-        count = int(self.cf.get(section, "count"))
+        count = int(self.task_cf.get(section, "count"))
         count -= 1
-        self.cf.set(section, "count", str(count))
-        self.cf.write(open(self.taskfile, 'w'))
+        self.task_cf.set(section, "count", str(count))
+        self.task_cf.write(open(self.taskfile, 'w'))
         if count <= 0:
             self.delete_task(section)
 
