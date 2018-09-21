@@ -198,7 +198,6 @@ def jp_node_gather(driver):
                 if page != 0:
                     tmp_symbol = CRITICAL_RANK_PREFIX + str(i + 1) + CRITICAL_RANK_POSTFIX + '1]'
                 if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                    print(tmp_symbol)
                     element = driver.find_element_by_xpath(tmp_symbol)
                     print("Top Rank is: " + element.text, flush=True)
                     print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
@@ -220,8 +219,8 @@ def jp_node_gather(driver):
                 else:
                     print(asin_info_data['asin'], flush=True)
 
-                driver.get(url)
-                amazonpage.random_sleep(3000, 5000)
+                # driver.get(url)
+                # amazonpage.random_sleep(3000, 5000)
                 print("** ------------------- **", flush=True)
 
             for i in range(0, 17):
@@ -310,8 +309,8 @@ def jp_node_gather(driver):
                 else:
                     print(asin_info_data['asin'], flush=True)
 
-                driver.get(url)
-                amazonpage.random_sleep(3000, 5000)
+                # driver.get(url)
+                # amazonpage.random_sleep(3000, 5000)
 
                 print("** ------------------- **", flush=True)
         amazonpage.random_sleep(2000, 5000)
