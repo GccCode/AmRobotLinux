@@ -107,8 +107,7 @@ def getqa(template):
     slotList = re.findall(rule, template)
     return slotList[0]
 
-def jp_node_gather(driver):
-    amazonpage = AmazonPage(driver)
+def jp_node_gather():
     node = '2285178051'
     type = None
     asin_info_data = {
@@ -127,8 +126,21 @@ def jp_node_gather(driver):
         'status'    : 'ok'
     }
     asin_info_array = []
-    try:
-        for page in range(1, 5):
+
+    for page in range(1, 5):
+        chrome_options = webdriver.ChromeOptions()
+        prefs = {
+            'profile.default_content_setting_values': {
+                'images': 2,
+                # 'javascript': 2
+            }
+        }
+        chrome_options.add_experimental_option("prefs", prefs)
+        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver.set_page_load_timeout(60)
+        driver.set_script_timeout(60)
+        try:
+            amazonpage = AmazonPage(driver)
             url = "https://www.amazon.co.jp/gp/bestsellers/electronics/" + node + "#" + str(page + 1)
             driver.get(url)
             amazonpage.random_sleep(3000, 5000)
@@ -280,28 +292,43 @@ def jp_node_gather(driver):
                 # print(asin_info_data['asin'], flush=True)
                 print("** ------------------- **", flush=True)
 
+            amazonpage.random_sleep(2000, 5000)
+        except NoSuchElementException as msg:
+            print("Except: NoSuchElementException", flush=True)
+        except Exception as e:
+            print(e, flush=True)
+        finally:
+            driver.quit()
+
+        chrome_options = webdriver.ChromeOptions()
+        prefs = {
+            'profile.default_content_setting_values': {
+                'images': 2,
+                'javascript': 2
+            }
+        }
+        chrome_options.add_experimental_option("prefs", prefs)
+        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver.set_page_load_timeout(60)
+        driver.set_script_timeout(60)
+        try:
             for i in range(0, (len(asin_info_array) - 1)):
                 tmp_info = asin_info_array[i]
-                status = get_inventory_jp(False, tmp_info['asin'])
+                status = get_inventory_jp(driver, tmp_info['asin'])
                 if status == False:
                     tmp_info['status'] = 'err'
                 else:
                     tmp_info['seller'] = status['seller']
                     tmp_info['qa'] = status['qa']
-                    tmp_info['limited'] =  status['limited']
-                    tmp_info['inventory'] =  status['inventory']
+                    tmp_info['limited'] = status['limited']
+                    tmp_info['inventory'] = status['inventory']
 
             for i in range(0, (len(asin_info_array) - 1)):
                 print(asin_info_array[i])
-
-        amazonpage.random_sleep(2000, 5000)
-    except NoSuchElementException as msg:
-        print("Except: NoSuchElementException", flush=True)
-    except Exception as e:
-        print(e, flush=True)
-    finally:
-        input("waiting.....")
-        driver.quit()
+        except Exception as e:
+            print(str(e), flush=True)
+        finally:
+            driver.quit()
 
 def us_node_gather(url):
     item_prefix = "//*[@id=\'zg-ordered-list\']/li[position()="
@@ -504,18 +531,18 @@ def get_inventory_jp(driver_upper, asin):
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    chrome_options = webdriver.ChromeOptions()
-    prefs = {
-        'profile.default_content_setting_values': {
-            'images': 2,
-            # 'javascript': 2
-        }
-    }
-    chrome_options.add_experimental_option("prefs", prefs)
-    driver = webdriver.Chrome(chrome_options=chrome_options)
-    driver.set_page_load_timeout(60)
-    driver.set_script_timeout(60)
-    jp_node_gather(driver)
+    # chrome_options = webdriver.ChromeOptions()
+    # prefs = {
+    #     'profile.default_content_setting_values': {
+    #         'images': 2,
+    #         # 'javascript': 2
+    #     }
+    # }
+    # chrome_options.add_experimental_option("prefs", prefs)
+    # driver = webdriver.Chrome(chrome_options=chrome_options)
+    # driver.set_page_load_timeout(60)
+    # driver.set_script_timeout(60)
+    jp_node_gather()
     # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
     # for i in range(0, 100):
     #     t1 = time.time()
@@ -526,4 +553,4 @@ if __name__ == "__main__":
     #     print("总耗时：" + format(t2 - t1))
     #     print("Test End\n", flush=True)
     # get_inventory_jp(driver, "B07G56GT24")
-    driver.quit()
+    # driver.quit()
