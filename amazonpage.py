@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-import time as tm
+
 import random
 import json
 import os
@@ -112,16 +112,16 @@ class AmazonPage(BaseAction):
         self.driver.back()
         self.random_sleep(begin, end)
 
-    def random_walk(self, count):
-        t1 = tm.time()
-        i = 0
-        while i < count:
-            self.random_mouse_move()
-            self.random_mouse_scoll()
-            i += 1
-
-        t2 = tm.time()
-        print(("**** random walk次数：" + str(count) + " + 总耗时： " + format(t2 - t1)), flush=True)
+    # def random_walk(self, count):
+    #     t1 = tm.time()
+    #     i = 0
+    #     while i < count:
+    #         self.random_mouse_move()
+    #         self.random_mouse_scoll()
+    #         i += 1
+    #
+    #     t2 = tm.time()
+    #     print(("**** random walk次数：" + str(count) + " + 总耗时： " + format(t2 - t1)), flush=True)
 
     def enter_signin_page(self, begin, end):
         self.hover(*self.locator.ACCOUNT)

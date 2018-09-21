@@ -3,8 +3,9 @@
 
 import time
 import time as tm
-# import pyautogui
+import pyautogui
 import random
+from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 import pyscreenshot as ImageGrab
@@ -91,7 +92,7 @@ class BaseAction(object):
 
     def mouse_move(self, x, y):
         move_time = random.randint(100, 500) / 1000
-        # pyautogui.moveTo(x, y, move_time)
+        pyautogui.moveTo(x, y, move_time)
 
     def random_mouse_move(self):
         t1 = tm.time()
@@ -103,7 +104,7 @@ class BaseAction(object):
             if (y > 0) and (y < 200):
                 y = y + 200
             move_time = random.randint(1, 20) * 1000 / 10000
-            # pyautogui.moveTo(x, y, move_time)
+            pyautogui.moveTo(x, y, move_time)
             self.random_sleep(500, 1500)
             move_count += 1
 
@@ -125,11 +126,11 @@ class BaseAction(object):
             scroll_count += 1
 
         t2 = tm.time()
-        # print("random_mouse_scroll-总耗时：" + format(t2 - t1))
+        print("random_mouse_scroll-总耗时：" + format(t2 - t1))
 
     def mouse_scoll(self, direction):
         scroll_count = random.randint(1, 10)
-        # pyautogui.scroll(scroll_count * direction)
+        pyautogui.scroll(scroll_count * direction)
 
     def enter_back(self):
         return
@@ -140,3 +141,23 @@ class BaseAction(object):
     def scoll_to_top(self):
         js = "var q=document.documentElement.scrollTop=0"
         self.driver.execut_script(js)
+
+    def random_walk(self, count):
+        t1 = tm.time()
+        i = 0
+        while i < count:
+            self.random_mouse_move()
+            self.random_mouse_scoll()
+            i += 1
+
+        t2 = tm.time()
+        print(("**** random walk次数：" + str(count) + " + 总耗时： " + format(t2 - t1)), flush=True)
+
+if __name__ == "__main__":
+    driver = webdriver.Chrome()
+    driver.get("https://www.taobao.com/")
+    driver.maximize_window()
+    bc = BaseAction(driver)
+    bc.random_walk(20) # 10 ~= 1min
+    input("xxx")
+    driver.quit()
