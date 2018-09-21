@@ -439,7 +439,7 @@ def get_inventory_jp(driver, asin):
             element = driver.find_element(*BUYER_COUNT)
             data['seller'] = int(getseller(element.text))
 
-            print("seller is: " + data['seller'])
+            print("seller is: " + str(data['seller']))
             print(element.text, flush=True)
         else:
             data['seller'] = 0
@@ -517,5 +517,5 @@ if __name__ == "__main__":
     #     t2 = time.time()
     #     print("总耗时：" + format(t2 - t1))
     #     print("Test End\n", flush=True)
-    get_inventory_jp(driver, 'B07G56GT24')
+    get_inventory_jp(driver, "B07G56GT24")
     driver.quit()
