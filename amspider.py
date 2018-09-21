@@ -206,8 +206,7 @@ def jp_node_gather(driver):
                     asin_info_data['seller'] = status['seller']
                     asin_info_data['limited'] = status['limited']
                     asin_info_data['qa'] = status['qa']
-                    print(status)
-                print(asin_info_data)
+                print(asin_info_data, flush=True)
                 print("** ------------------- **", flush=True)
 
             for i in range(0, 17):
@@ -282,9 +281,8 @@ def jp_node_gather(driver):
                     asin_info_data['seller'] = status['seller']
                     asin_info_data['limited'] = status['limited']
                     asin_info_data['qa'] = status['qa']
-                    print(status)
-                    
-                print(asin_info_data)
+
+                print(asin_info_data, flush=True)
                 print("** ------------------- **", flush=True)
         amazonpage.random_sleep(2000, 5000)
     except NoSuchElementException as msg:
