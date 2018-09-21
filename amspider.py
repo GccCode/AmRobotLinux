@@ -393,19 +393,19 @@ def test_get_inventory_jp(driver, asin):
         amazonasinpage.random_sleep(1000, 2000)
         if amazonasinpage.is_element_exsist(*QA_COUNT):
             element = driver.find_element(*QA_COUNT)
-            data['qa'] = int(getqa(element.text))
+            # data['qa'] = int(getqa(element.text)[0])
+            print(getqa(element.text), flush=True)
         else:
             data['qa'] = 0
 
-        print("qa_count is: " + str(data['qa']), flush=True)
 
         if amazonasinpage.is_element_exsist(*BUYER_COUNT):
             element = driver.find_element(*BUYER_COUNT)
-            data['seller'] = int(getseller(element.text))
+            # data['seller'] = int(getseller(element.text))
+            print(getseller(element.text), flush=True)
         else:
             data['seller'] = 0
 
-        print("seller count is: " + str(data['seller']), flush=True)
 
         amazonasinpage.add_cart(8000, 10000)
 
