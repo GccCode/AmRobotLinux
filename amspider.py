@@ -97,6 +97,11 @@ def getimgidfromhref(template):
     slotList = re.findall(rule, template)
     return slotList[0]
 
+def getsale(template):
+    rule = r'、(.*?)点'
+    slotList = re.findall(rule, template)
+    return slotList[0]
+
 def jp_node_gather():
     driver = webdriver.Chrome()
     driver.set_page_load_timeout(60)
@@ -415,27 +420,6 @@ def test_get_inventory_jp(): # driver, asin):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(8000, 10000)
 
-
-        # status = amazonasinpage.select(9, *ITEM_SELECT_JP_XX)
-        # if status == False:
-        #     print("Can't find the quality select")
-        # else:
-        # TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'quantity\.\']')
-        # if amazonasinpage.is_element_exsist(*TMP_ITME):
-        #     print("sdfsd")
-        #     amazonasinpage.input("999", *TMP_ITME)
-        #     TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'submit.update-quantity\.\']')
-        #     amazonasinpage.random_sleep(3000, 5000)
-        #     amazonasinpage.click(*TMP_ITME)
-        #     TMP_ITME = (By.XPATH, '//*[@id=\'cart-important-message-box\']/div/div/div/p')
-        #     if amazonasinpage.is_element_exsist(*TMP_ITME):
-        #         element = driver.find_element(*TMP_ITME)
-        #         print(element.text)
-        #     amazonasinpage.random_sleep(3000, 5000)
-        #     TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'submit.delete\.\']')
-        #     amazonasinpage.click(*TMP_ITME)
-        # else:
-        #     print(";jk;j")
         amazonasinpage.input("999", *ITEM_INPUT_JP)
         amazonasinpage.random_sleep(3000, 5000)
 
@@ -448,7 +432,7 @@ def test_get_inventory_jp(): # driver, asin):
         if '客様お一人' in element.text:
             print("Check limited")
         else:
-            print(element.text)
+            print(getsale(element.text))
 
         amazonasinpage.click(*ITEM_DELETE_JP)
     except NoSuchElementException as msg:
