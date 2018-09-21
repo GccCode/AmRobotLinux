@@ -198,6 +198,7 @@ def jp_node_gather(driver):
                 if page != 0:
                     tmp_symbol = CRITICAL_RANK_PREFIX + str(i + 1) + CRITICAL_RANK_POSTFIX + '1]'
                 if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                    print(tmp_symbol)
                     element = driver.find_element_by_xpath(tmp_symbol)
                     print("Top Rank is: " + element.text, flush=True)
                     print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
