@@ -404,7 +404,7 @@ def test_get_inventory_jp(driver, asin):
             element = driver.find_element(*BUYER_COUNT)
             # data['seller'] = int(getseller(element.text))
             print("seller is:")
-            print(getseller(element.text), flush=True)
+            print(element.text, flush=True)
         else:
             data['seller'] = 0
 
