@@ -355,6 +355,8 @@ def test_get_inventory_us():
         amazonasinpage.random_sleep(8000, 10000)
 
         element = driver.find_element(*INVENTORY_TIPS_US)
+        # この出品者からは、ご注文数はお一人様10点までに制限されています。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
+        #
         print(element.text)
 
         amazonasinpage.click(*ITEM_DELETE_US)
@@ -372,7 +374,8 @@ def test_get_inventory_jp(): # driver, asin):
     driver.set_script_timeout(60)
     try:
         # url = 'ttps://www.amazon.co.jp/dp/' + asin
-        driver.get("https://www.amazon.co.jp/dp/B07BGXF6KF")
+        driver.get("https://www.amazon.co.jp/dp/B077HLQ81K")
+        # driver.get("https://www.amazon.co.jp/dp/B07BGXF6KF")
         amazonasinpage = AmazonAsinPage(driver)
         if amazonasinpage.is_element_exsist(*FBA_FLAG):
             print("product is fba...", flush=True)
