@@ -201,12 +201,18 @@ def jp_node_gather(driver):
                     element = driver.find_element_by_xpath(tmp_symbol)
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
                     # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
-
+                count = 0
                 status = get_inventory_jp(driver, asin_info_data['asin'])
+                while status == False and count > 0:
+                    status = get_inventory_jp(driver, asin_info_data['asin'])
+                    count -= 1
+
                 if status != False:
                     asin_info_data['seller'] = status['seller']
                     asin_info_data['limited'] = status['limited']
                     asin_info_data['qa'] = status['qa']
+                else:
+                    sys.exit(-1)
                 print(asin_info_data, flush=True)
                 t2 = time.time()
                 print("总耗时：" + format(t2 - t1), flush=True)
@@ -282,11 +288,18 @@ def jp_node_gather(driver):
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
                     # print("Top Rank is: " + element.text.strip(), flush=True)
 
+                count = 0
                 status = get_inventory_jp(driver, asin_info_data['asin'])
+                while status == False and count > 0:
+                    status = get_inventory_jp(driver, asin_info_data['asin'])
+                    count -= 1
+
                 if status != False:
                     asin_info_data['seller'] = status['seller']
                     asin_info_data['limited'] = status['limited']
                     asin_info_data['qa'] = status['qa']
+                else:
+                    sys.exit(-1)
 
                 print(asin_info_data, flush=True)
                 t2 = time.time()
@@ -442,26 +455,34 @@ def get_inventory_jp(driver, asin):
         elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(3000, 5000)
-
-        amazonasinpage.input("999", *ITEM_INPUT_JP)
-
-        amazonasinpage.click(*ITEM_SUBMIT_JP)
-        amazonasinpage.random_sleep(3000, 5000)
-
-        element = driver.find_element(*INVENTORY_TIPS_JP)
-        # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
-        # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
-        if '客様お一人' in element.text:
-            # print("check limited", flush= True)
-            data['limited'] = 'yes'
-            data['inventory'] = 0
+        if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP) == False:
+            status = False
         else:
-            data['inventory'] = int(getsale(element.text))
-            # print("inventory is: " + str(data['inventory']))
-
-        amazonasinpage.click(*ITEM_DELETE_JP)
-        print(data, flush=True)
-        status = data
+            amazonasinpage.input("999", *ITEM_INPUT_JP)
+            if amazonasinpage.is_element_exsist(*ITEM_SUBMIT_JP) == False:
+                status = False
+            else:
+                amazonasinpage.click(*ITEM_SUBMIT_JP)
+                amazonasinpage.random_sleep(3000, 5000)
+                if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_JP) == False:
+                    status = False
+                else:
+                    element = driver.find_element(*INVENTORY_TIPS_JP)
+                    # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
+                    # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
+                    if '客様お一人' in element.text:
+                        # print("check limited", flush= True)
+                        data['limited'] = 'yes'
+                        data['inventory'] = 0
+                    else:
+                        data['inventory'] = int(getsale(element.text))
+                        # print("inventory is: " + str(data['inventory']))
+                    if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
+                        status = False
+                    else:
+                        amazonasinpage.click(*ITEM_DELETE_JP)
+                        print(data, flush=True)
+                        status = data
     except NoSuchElementException as msg:
         status = False
         print("Except: NoSuchElementException", flush=True)
@@ -469,8 +490,6 @@ def get_inventory_jp(driver, asin):
         status = False
         print(e, flush=True)
     finally:
-        # input("waiting....")
-        # driver.quit()
         return status
 
 if __name__ == "__main__":

@@ -66,7 +66,16 @@ class BaseAction(object):
         hover.perform()
 
     def click(self, *locator):
-        self.driver.find_element(*locator).click()
+        status = True
+        try:
+            self.driver.find_element(*locator).click()
+        except NoSuchElementException as msg:
+            status = False
+        except:
+            status = False
+        finally:
+            return status
+
 
     def select(self, index, *locator):
         status = True
