@@ -373,8 +373,9 @@ def test_get_inventory_jp(): # driver, asin):
     chrome_options = webdriver.ChromeOptions()
     prefs = {
         'profile.default_content_setting_values': {
-            'images': 2
-        }
+            'images': 2,
+            'javascript': 2
+    }
     }
     chrome_options.add_experimental_option("prefs", prefs)
     driver = webdriver.Chrome(chrome_options = chrome_options)
