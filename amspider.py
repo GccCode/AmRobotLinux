@@ -317,9 +317,8 @@ def jp_node_gather():
         driver.set_script_timeout(60)
         inventory_array = []
         try:
-            for i in range(0, len(asin_info_array) - 1):
+            for i in range(0, len(asin_info_array)):
                 tmp_info = asin_info_array[i]
-                print(asin_info_array[i])
                 status = get_inventory_jp(driver, tmp_info['asin'])
                 if status == False:
                     tmp_info['status'] = 'err'
