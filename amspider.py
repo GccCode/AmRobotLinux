@@ -126,7 +126,7 @@ def jp_node_gather(driver):
         'img_url'   : None
     }
     try:
-        for page in range(1, 5):
+        for page in range(2, 5):
             url = "https://www.amazon.co.jp/gp/bestsellers/electronics/" + node + "#" + str(page + 1)
             driver.get(url)
             amazonpage.random_sleep(3000, 5000)
