@@ -125,9 +125,9 @@ def jp_node_gather():
         'img_url'   : None,
         'status'    : 'ok'
     }
-    asin_info_array = []
 
     for page in range(1, 5):
+        asin_info_array = []
         chrome_options = webdriver.ChromeOptions()
         prefs = {
             'profile.default_content_setting_values': {
@@ -216,9 +216,10 @@ def jp_node_gather():
                     # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
-                # print(asin_info_data['asin'], flush=True)
+
                 asin_info_array.append(asin_info_data)
-                print("** ------------------- **", flush=True)
+                # print(asin_info_data['asin'], flush=True)
+                # print("** ------------------- **", flush=True)
 
             for i in range(0, 17):
                 t1 = time.time()
@@ -290,7 +291,7 @@ def jp_node_gather():
 
                 asin_info_array.append(asin_info_data)
                 # print(asin_info_data['asin'], flush=True)
-                print("** ------------------- **", flush=True)
+                # print("** ------------------- **", flush=True)
 
             amazonpage.random_sleep(2000, 5000)
         except NoSuchElementException as msg:
@@ -299,6 +300,8 @@ def jp_node_gather():
             print(e, flush=True)
         finally:
             driver.quit()
+
+        print(len(asin_info_array))
 
         chrome_options = webdriver.ChromeOptions()
         prefs = {
