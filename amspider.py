@@ -381,7 +381,7 @@ def test_get_inventory_jp(driver, asin):
         'seller'    : None,
         'qa'        : None,
         'inventory' : None,
-        'limited'   : None
+        'limited'   : 'no'
     }
     try:
         url = 'https://www.amazon.co.jp/dp/' + asin
@@ -468,9 +468,12 @@ if __name__ == "__main__":
     driver.set_script_timeout(60)
     asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
     for i in range(0, 100):
+        t1 = time.time()
         print("Testing <" + str(i) + '>', flush=True)
         test_get_inventory_jp(driver, asin_array[random.randint(0, (len(asin_array)) - 1)])
         time.sleep(random.randint(3, 5))
+        t2 = time.time()
+        print("random_mouse_scroll-总耗时：" + format(t2 - t1))
         print("Test End\n", flush=True)
 
     driver.quit()
