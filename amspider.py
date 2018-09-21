@@ -34,12 +34,10 @@ ITEM_SELECT_JP_XX = (By.XPATH,
                            '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/span[position()=1]/select')
 ITEM_INPUT_JP_XX = (By.XPATH,
                           '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/input[position()=1]')
-ITEM_INPUT_JP = (By.CSS_SELECTOR, 'input[name=quantityBox')
-ITEM_SUBMIT_JP = (By.ID, 'a-autoid-1')
-INVENTORY_TIPS_JP = (By.XPATH,
-                              '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]/div[position()=4]/div[position()=1]/div/div/div/span')
-ITEM_DELETE_JP = (By.XPATH,
-                           '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]/div[position()=4]/div[position()=2]/div[position()=1]/div/div/div[position()=2]/div/span[position()=1]')
+ITEM_INPUT_JP = (By.CSS_SELECTOR, 'input[name ^=\'quantity\.\']')
+ITEM_SUBMIT_JP = (By.CSS_SELECTOR, 'input[name ^=\'submit.update-quantity\.\']')
+INVENTORY_TIPS_JP = (By.XPATH, '//*[@id=\'cart-important-message-box\']/div/div/div/p')
+ITEM_DELETE_JP = (By.CSS_SELECTOR, 'input[name ^=\'submit.delete\.\']')
 
 CRITICAL_TITLE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_TITLE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/a[position()=1]'
@@ -417,44 +415,42 @@ def test_get_inventory_jp(): # driver, asin):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(8000, 10000)
 
-        # driver.execute_script("document.getElementsByClassName(\"sc-cart-spinner\").style.display='block'; ")
-        # driver.execute_script("document.getElementsByClassName(\"sc-cart-overwrap\").style.display='block'; ")
 
         # status = amazonasinpage.select(9, *ITEM_SELECT_JP_XX)
         # if status == False:
         #     print("Can't find the quality select")
         # else:
-        TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'quantity\.\']')
-        if amazonasinpage.is_element_exsist(*TMP_ITME):
-            print("sdfsd")
-            amazonasinpage.input("999", *TMP_ITME)
-            TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'submit.update-quantity\.\']')
-            amazonasinpage.random_sleep(3000, 5000)
-            amazonasinpage.click(*TMP_ITME)
-            TMP_ITME = (By.XPATH, "//*[@id=\'cart-important-message-box\']/div/div/div/p")
-            if amazonasinpage.is_element_exsist(*TMP_ITME):
-                element = driver.find_element(*TMP_ITME)
-                print(element.text)
-            amazonasinpage.random_sleep(3000, 5000)
-            TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'submit.delete\.\']')
-            amazonasinpage.click(*TMP_ITME)
-        else:
-            print(";jk;j")
-        # amazonasinpage.input("999", *ITEM_INPUT_JP)
-        # amazonasinpage.random_sleep(3000, 5000)
-        #
-        # amazonasinpage.click(*ITEM_SUBMIT_JP)
-        # amazonasinpage.random_sleep(8000, 10000)
-        #
-        # element = driver.find_element(*INVENTORY_TIPS_JP)
-        # # この出品者のお取り扱い数は275点です。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
-        # # この出品者からは、ご注文数はお一人様10点までに制限されています。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
-        # if '一人様1' in element.text:
-        #     print("Check limited")
+        # TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'quantity\.\']')
+        # if amazonasinpage.is_element_exsist(*TMP_ITME):
+        #     print("sdfsd")
+        #     amazonasinpage.input("999", *TMP_ITME)
+        #     TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'submit.update-quantity\.\']')
+        #     amazonasinpage.random_sleep(3000, 5000)
+        #     amazonasinpage.click(*TMP_ITME)
+        #     TMP_ITME = (By.XPATH, '//*[@id=\'cart-important-message-box\']/div/div/div/p')
+        #     if amazonasinpage.is_element_exsist(*TMP_ITME):
+        #         element = driver.find_element(*TMP_ITME)
+        #         print(element.text)
+        #     amazonasinpage.random_sleep(3000, 5000)
+        #     TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'submit.delete\.\']')
+        #     amazonasinpage.click(*TMP_ITME)
         # else:
-        #     print(element.text)
-        #
-        # amazonasinpage.click(*ITEM_DELETE_JP)
+        #     print(";jk;j")
+        amazonasinpage.input("999", *ITEM_INPUT_JP)
+        amazonasinpage.random_sleep(3000, 5000)
+
+        amazonasinpage.click(*ITEM_SUBMIT_JP)
+        amazonasinpage.random_sleep(3000, 5000)
+
+        element = driver.find_element(*INVENTORY_TIPS_JP)
+        # この出品者のお取り扱い数は275点です。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
+        # この出品者からは、ご注文数はお一人様10点までに制限されています。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
+        if '客様お一人' in element.text:
+            print("Check limited")
+        else:
+            print(element.text)
+
+        amazonasinpage.click(*ITEM_DELETE_JP)
     except NoSuchElementException as msg:
         print("Except: NoSuchElementException", flush=True)
     except Exception as e:

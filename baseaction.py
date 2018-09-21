@@ -73,6 +73,7 @@ class BaseAction(object):
         except Exception as e:
             print(type(e))
         else:
+            input_box.clear()
             self.driver.set_page_load_timeout(1)
             self.driver.set_script_timeout(1)
             for character in content:
