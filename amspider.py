@@ -29,11 +29,12 @@ ITEM_DELETE_US = (By.XPATH,
 
 PRODUCT_ITEM_JP = (By.XPATH,
                         '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]')
-ITEM_SELECT_JP_XX = (By.CSS_SELECTOR, 'select[name=quantity]')
-ITEM_SELECT_JP = (By.XPATH,
+ITEM_SELECT_JP = (By.CSS_SELECTOR, 'select[name=quantity]')
+ITEM_SELECT_JP_XX = (By.XPATH,
                            '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/span[position()=1]/select')
-ITEM_INPUT_JP = (By.XPATH,
+ITEM_INPUT_JP_XX = (By.XPATH,
                           '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/input[position()=1]')
+ITEM_INPUT_JP = (By.CSS_SELECTOR, 'input[name=quantityBox')
 ITEM_SUBMIT_JP = (By.ID, 'a-autoid-1')
 INVENTORY_TIPS_JP = (By.XPATH,
                               '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]/div[position()=4]/div[position()=1]/div/div/div/span')
@@ -421,7 +422,7 @@ def test_get_inventory_jp(): # driver, asin):
             print("Can't find the quality select")
         else:
             amazonasinpage.input("999", *ITEM_INPUT_JP)
-            amazonasinpage.random_sleep(8000, 10000)
+            amazonasinpage.random_sleep(3000, 5000)
 
             amazonasinpage.click(*ITEM_SUBMIT_JP)
             amazonasinpage.random_sleep(8000, 10000)
