@@ -420,23 +420,23 @@ def test_get_inventory_jp(): # driver, asin):
             print("1111")
         else:
             print("2222")
-        # status = amazonasinpage.select(9, *ITEM_SELECT_JP)
-        # if status == False:
-        #     print("Can't find the quality select")
-        # else:
-        #     amazonasinpage.input("999", *ITEM_INPUT_JP)
-        #     amazonasinpage.random_sleep(8000, 10000)
-        #
-        #     amazonasinpage.click(*ITEM_SUBMIT_JP)
-        #     amazonasinpage.random_sleep(8000, 10000)
-        #
-        #     element = driver.find_element(*INVENTORY_TIPS_JP)
-        #     # この出品者のお取り扱い数は275点です。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
-        #     # この出品者からは、ご注文数はお一人様10点までに制限されています。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
-        #     if '一人様1' in element.text:
-        #         print("eoroor")
-        #     else:
-        #         print(element.text)
+        status = amazonasinpage.select(9, *ITEM_SELECT_JP)
+        if status == False:
+            print("Can't find the quality select")
+        else:
+            amazonasinpage.input("999", *ITEM_INPUT_JP)
+            amazonasinpage.random_sleep(8000, 10000)
+
+            amazonasinpage.click(*ITEM_SUBMIT_JP)
+            amazonasinpage.random_sleep(8000, 10000)
+
+            element = driver.find_element(*INVENTORY_TIPS_JP)
+            # この出品者のお取り扱い数は275点です。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
+            # この出品者からは、ご注文数はお一人様10点までに制限されています。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
+            if '一人様1' in element.text:
+                print("eoroor")
+            else:
+                print(element.text)
 
             amazonasinpage.click(*ITEM_DELETE_JP)
     except NoSuchElementException as msg:
