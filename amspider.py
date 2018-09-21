@@ -31,11 +31,6 @@ ITEM_DELETE_US = (By.XPATH,
 
 PRODUCT_ITEM_JP = (By.XPATH,
                         '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]')
-ITEM_SELECT_JP = (By.CSS_SELECTOR, 'select[name=quantity]')
-ITEM_SELECT_JP_XX = (By.XPATH,
-                           '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/span[position()=1]/select')
-ITEM_INPUT_JP_XX = (By.XPATH,
-                          '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/input[position()=1]')
 ITEM_INPUT_JP = (By.CSS_SELECTOR, 'input[name ^=\'quantity\.\']')
 ITEM_SUBMIT_JP = (By.CSS_SELECTOR, 'input[name ^=\'submit.update-quantity\.\']')
 INVENTORY_TIPS_JP = (By.XPATH, '//*[@id=\'cart-important-message-box\']/div/div/div/p')
@@ -374,28 +369,25 @@ def test_get_inventory_us():
         input("xxx")
         driver.quit()
 
-def test_get_inventory_jp(): # driver, asin):
-    chrome_options = webdriver.ChromeOptions()
-    prefs = {
-        'profile.default_content_setting_values': {
-            'images': 2,
-            'javascript': 2
-    }
-    }
-    chrome_options.add_experimental_option("prefs", prefs)
-    driver = webdriver.Chrome(chrome_options = chrome_options)
-    driver.set_page_load_timeout(60)
-    driver.set_script_timeout(60)
+def test_get_inventory_jp(driver, asin):
+    # chrome_options = webdriver.ChromeOptions()
+    # prefs = {
+    #     'profile.default_content_setting_values': {
+    #         'images': 2,
+    #         'javascript': 2
+    # }
+    # }
+    # chrome_options.add_experimental_option("prefs", prefs)
+    # driver = webdriver.Chrome(chrome_options = chrome_options)
+    # driver.set_page_load_timeout(60)
+    # driver.set_script_timeout(60)
     status = True
     try:
-        # url = 'https://www.amazon.co.jp/dp/' + asin
-        driver.get("https://www.amazon.co.jp/dp/B077HLQ81K")
+        url = 'https://www.amazon.co.jp/dp/' + asin
+        driver.get(url)
+        # driver.get("https://www.amazon.co.jp/dp/B077HLQ81K")
         # driver.get("https://www.amazon.co.jp/dp/B07BGXF6KF")
         amazonasinpage = AmazonAsinPage(driver)
-        # if amazonasinpage.is_element_exsist(*FBA_FLAG):
-        #     print("product is fba...", flush=True)
-        # else:
-        #     print("product is fbm or not exsist...", flush=True)
 
         amazonasinpage.random_sleep(1000, 2000)
         if amazonasinpage.is_element_exsist(*QA_COUNT):
@@ -433,9 +425,9 @@ def test_get_inventory_jp(): # driver, asin):
         # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
         # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
         if '客様お一人' in element.text:
-            print("Check limited")
+            print("Check limited", flush=True)
         else:
-            print(getsale(element.text))
+            print(getsale(element.text), flush=True)
 
         amazonasinpage.click(*ITEM_DELETE_JP)
     except NoSuchElementException as msg:
@@ -446,13 +438,28 @@ def test_get_inventory_jp(): # driver, asin):
         print(e, flush=True)
     finally:
         # input("waiting....")
-        driver.quit()
+        # driver.quit()
         return status
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     #jp_node_gather()
-    for i in range(0, 10):
-        print("Testing <" + str(i) + '>\n', flush=True)
-        test_get_inventory_jp()
+    chrome_options = webdriver.ChromeOptions()
+    prefs = {
+        'profile.default_content_setting_values': {
+            'images': 2,
+            'javascript': 2
+        }
+    }
+    chrome_options.add_experimental_option("prefs", prefs)
+    driver = webdriver.Chrome(chrome_options=chrome_options)
+    driver.set_page_load_timeout(60)
+    driver.set_script_timeout(60)
+    asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF']
+    for i in range(0, 100):
+        print("Testing <" + str(i) + '>', flush=True)
+        test_get_inventory_jp(driver, asin_array[random.randint(0, (len(asin_array)) - 1)])
         time.sleep(random.randint(3, 5))
+        print("Test End\n", flush=True)
+
+    driver.quit()
