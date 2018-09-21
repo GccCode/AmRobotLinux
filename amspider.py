@@ -408,7 +408,10 @@ def test_get_inventory_jp(): # driver, asin):
         elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(8000, 10000)
-
+        if amazonasinpage.is_element_exsist(*ITEM_SELECT_JP_XX):
+            print("1111")
+        else:
+            print("2222")
         status = amazonasinpage.select(9, *ITEM_SELECT_JP)
         if status == False:
             print("Can't find the quality select")
@@ -427,7 +430,7 @@ def test_get_inventory_jp(): # driver, asin):
             else:
                 print(element.text)
 
-        amazonasinpage.click(*ITEM_DELETE_JP)
+            amazonasinpage.click(*ITEM_DELETE_JP)
     except NoSuchElementException as msg:
         print("Except: NoSuchElementException", flush=True)
     except Exception as e:
