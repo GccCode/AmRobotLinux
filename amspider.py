@@ -392,8 +392,8 @@ def test_get_inventory_jp(driver, asin):
         if amazonasinpage.is_element_exsist(*QA_COUNT):
             element = driver.find_element(*QA_COUNT)
             data['qa'] = int(getqa(element.text))
-            print("qa is:")
-            print(getqa(element.text), flush=True)
+            # print("qa is:")
+            # print(getqa(element.text), flush=True)
         else:
             data['qa'] = 0
 
@@ -402,8 +402,8 @@ def test_get_inventory_jp(driver, asin):
             element = driver.find_element(*BUYER_COUNT)
             data['seller'] = getseller(element.text)
 
-            print("seller is: " + data['seller'])
-            print(element.text, flush=True)
+            # print("seller is: " + data['seller'])
+            # print(element.text, flush=True)
         else:
             data['seller'] = 0
 
@@ -431,12 +431,12 @@ def test_get_inventory_jp(driver, asin):
         # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
         # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
         if '客様お一人' in element.text:
-            print("check limited", flush= True)
+            # print("check limited", flush= True)
             data['limited'] = 'yes'
             data['inventory'] = 0
         else:
             data['inventory'] = int(getsale(element.text))
-            print("inventory is: " + str(data['inventory']))
+            # print("inventory is: " + str(data['inventory']))
 
         amazonasinpage.click(*ITEM_DELETE_JP)
         print(data, flush=True)
