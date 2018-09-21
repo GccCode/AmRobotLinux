@@ -99,13 +99,20 @@ def getsale(template):
     slotList = re.findall(rule, template)
     return slotList[0]
 
-def jp_node_gather():
-    driver = webdriver.Chrome()
-    driver.set_page_load_timeout(60)
-    driver.set_script_timeout(60)
+def getseller(template):
+    rule = r'新品の出品：(.*?)'
+    slotList = re.findall(rule, template)
+    return slotList[0]
+
+def getqa(template):
+    rule = r'(.*?)人'
+    slotList = re.findall(rule, template)
+    return slotList[0]
+
+def jp_node_gather(driver):
     amazonpage = AmazonPage(driver)
     node = '2285178051'
-    type = 'top'
+    type = None
     asin_info_data = {
         'rank'      : None,
         'asin'      : None,
@@ -115,6 +122,7 @@ def jp_node_gather():
         'rate'      : None,
         'qa'        : 0,
         'shipping'  : None,
+        'seller'    : 0,
         'avg_sale'  : 0,
         'limited'   : 'no',
         'img_url'   : None
@@ -370,37 +378,34 @@ def test_get_inventory_us():
         driver.quit()
 
 def test_get_inventory_jp(driver, asin):
-    # chrome_options = webdriver.ChromeOptions()
-    # prefs = {
-    #     'profile.default_content_setting_values': {
-    #         'images': 2,
-    #         'javascript': 2
-    # }
-    # }
-    # chrome_options.add_experimental_option("prefs", prefs)
-    # driver = webdriver.Chrome(chrome_options = chrome_options)
-    # driver.set_page_load_timeout(60)
-    # driver.set_script_timeout(60)
     status = True
+    data = {
+        'seller'    : None,
+        'qa'        : None,
+        'inventory' : None,
+        'limited'   : None
+    }
     try:
         url = 'https://www.amazon.co.jp/dp/' + asin
         driver.get(url)
-        # driver.get("https://www.amazon.co.jp/dp/B077HLQ81K")
-        # driver.get("https://www.amazon.co.jp/dp/B07BGXF6KF")
         amazonasinpage = AmazonAsinPage(driver)
 
         amazonasinpage.random_sleep(1000, 2000)
         if amazonasinpage.is_element_exsist(*QA_COUNT):
             element = driver.find_element(*QA_COUNT)
-            print(element.text)
+            data['qa'] = int(getqa(element.text))
         else:
-            print("qa_count not exsist...", flush=True)
+            data['qa'] = 0
+
+        print("qa_count is: " + str(data['qa']), flush=True)
 
         if amazonasinpage.is_element_exsist(*BUYER_COUNT):
             element = driver.find_element(*BUYER_COUNT)
-            print(element.text)
+            data['seller'] = int(getseller(element.text))
         else:
-            print("buy count no no", flush=True)
+            data['seller'] = 0
+
+        print("seller count is: " + str(data['seller']), flush=True)
 
         amazonasinpage.add_cart(8000, 10000)
 
@@ -425,11 +430,16 @@ def test_get_inventory_jp(driver, asin):
         # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
         # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
         if '客様お一人' in element.text:
-            print("Check limited", flush=True)
+            print("check limited", flush= True)
+            data['limited'] = 'yes'
+            data['inventory'] = 0
         else:
-            print(getsale(element.text), flush=True)
+            data['inventory'] = int(getsale(element.text))
+            print("inventory is: " + str(data['inventory']))
 
         amazonasinpage.click(*ITEM_DELETE_JP)
+        print(data, flush=True)
+        status = data
     except NoSuchElementException as msg:
         status = False
         print("Except: NoSuchElementException", flush=True)

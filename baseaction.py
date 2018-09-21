@@ -6,6 +6,8 @@ import time as tm
 import pyautogui
 import random
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 import pyscreenshot as ImageGrab
@@ -32,7 +34,17 @@ class BaseAction(object):
         finally:
             return status
 
-    def  wait_element_match(self, timeout, displayed, *locator):
+    def wait_element_presence(self, timeout, locator):
+        status = True
+        wait = WebDriverWait(self.driver, timeout, 0.5)
+        try:
+            wait.until(EC.presence_of_element_located(locator))
+        except:
+            status = False
+        finally:
+            return status
+
+    def wait_element_match(self, timeout, displayed, *locator):
         count = 0
         while count < timeout:
             status = self.is_element_exsist(*locator)
