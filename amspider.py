@@ -425,6 +425,7 @@ def test_get_inventory_jp(): # driver, asin):
         #     print("Can't find the quality select")
         # else:
         d = driver.find_element(*ITEM_INPUT_JP)
+        print("44444444", flush=True)
         driver.execute_script('arguments[0].removeAttribute(\"style\")', d)
         print("1123232", flush=True)
         amazonasinpage.input("999", *ITEM_INPUT_JP)
