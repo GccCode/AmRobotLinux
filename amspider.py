@@ -505,7 +505,7 @@ if __name__ == "__main__":
     prefs = {
         'profile.default_content_setting_values': {
             'images': 2,
-            'javascript': 2
+            # 'javascript': 2
         }
     }
     chrome_options.add_experimental_option("prefs", prefs)
