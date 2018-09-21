@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from amazonasinpage import AmazonAsinPage
 from selenium.common.exceptions import NoSuchElementException
 from amazonpage import AmazonPage
+from baseaction import BaseAction
 
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
@@ -417,7 +418,8 @@ def test_get_inventory_jp(): # driver, asin):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(8000, 10000)
 
-        amazonasinpage.random_walk(1)
+        bc = BaseAction(driver)
+        bc.random_walk(1)  # 10 ~= 1min
 
         status = amazonasinpage.select(9, *ITEM_SELECT_JP)
         if status == False:
