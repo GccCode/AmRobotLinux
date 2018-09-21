@@ -447,10 +447,10 @@ def test_get_inventory_jp(): # driver, asin):
         if status == False:
             print("Can't find the quality select")
         else:
-            d = driver.find_element(*ITEM_INPUT_JP)
-            print("44444444", flush=True)
-            driver.execute_script('arguments[0].removeAttribute(\"style\")', d)
-            print("1123232", flush=True)
+            # d = driver.find_element(*ITEM_INPUT_JP)
+            # print("44444444", flush=True)
+            # driver.execute_script('arguments[0].removeAttribute(\"style\")', d)
+            # print("1123232", flush=True)
             amazonasinpage.input("999", *ITEM_INPUT_JP)
             print("kfefefe", flush=True)
             amazonasinpage.random_sleep(8000, 10000)
