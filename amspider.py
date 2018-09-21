@@ -301,7 +301,7 @@ def jp_node_gather():
         finally:
             driver.quit()
 
-        print(asin_info_array)
+        # print(asin_info_array)
 
         chrome_options = webdriver.ChromeOptions()
         prefs = {
@@ -316,6 +316,7 @@ def jp_node_gather():
         driver.set_script_timeout(60)
         try:
             for i in range(0, (len(asin_info_array) - 1)):
+                print(i)
                 tmp_info = asin_info_array[i]
                 print(asin_info_array[i])
                 status = get_inventory_jp(driver, tmp_info['asin'])
