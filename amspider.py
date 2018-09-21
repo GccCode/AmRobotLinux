@@ -417,11 +417,12 @@ def test_get_inventory_jp(): # driver, asin):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(8000, 10000)
 
-        element = driver.find_element_by_css_selector('select[name=quantity]')
-        print(len(element))
         status = amazonasinpage.is_element_exsist(*ITEM_SELECT_JP)
         if status == False:
             print("Can't find the quality select")
+
+        element = driver.find_element_by_css_selector('select[name=quantity]')
+        print(element.size)
 
         # status = amazonasinpage.select(9, *ITEM_SELECT_JP)
         # if status == False:
