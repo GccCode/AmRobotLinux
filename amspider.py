@@ -417,8 +417,8 @@ def test_get_inventory_jp(): # driver, asin):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(8000, 10000)
 
-        driver.execute_script("document.getElementsByClassName(\"sc-cart-spinner\").style.display='block'; ")
-        driver.execute_script("document.getElementsByClassName(\"sc-cart-overwrap\").style.display='block'; ")
+        # driver.execute_script("document.getElementsByClassName(\"sc-cart-spinner\").style.display='block'; ")
+        # driver.execute_script("document.getElementsByClassName(\"sc-cart-overwrap\").style.display='block'; ")
 
         # status = amazonasinpage.select(9, *ITEM_SELECT_JP_XX)
         # if status == False:
