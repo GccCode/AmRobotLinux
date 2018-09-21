@@ -20,14 +20,11 @@ class AmazonAsinPage(AmazonPage):
             if self.is_element_exsist(*self.locator.ADDCARTBUTTON):
                 self.click(*self.locator.ADDCARTBUTTON)
                 self.random_sleep(begin, end)
+                print(("**** Add Cart。。。"), flush=True)
             else:
                 print("Addcart element can't find..", flush=True)
-        except NoSuchElementException as msg:
-            print("Addcart element can't find..", flush=True)
         except:
             print("Addcart element error..", flush=True)
-        else:
-            print(("**** Add Cart。。。"), flush=True)
 
     def ask_qa(self, content, begin, end):
         country = self.cf.get("account", "country")
