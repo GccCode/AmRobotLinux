@@ -126,8 +126,8 @@ def jp_node_gather():
         'status'    : 'ok'
     }
 
-    for page in range(1, 3):
-        asin_array = []
+    for page in range(1, 2):
+        asin_info_array = []
         chrome_options = webdriver.ChromeOptions()
         prefs = {
             'profile.default_content_setting_values': {
@@ -217,7 +217,7 @@ def jp_node_gather():
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
 
-                asin_array.append(asin_info_data['asin'])
+                asin_info_array.append(asin_info_data)
                 # print(asin_info_data['asin'], flush=True)
                 # print("** ------------------- **", flush=True)
 
@@ -289,7 +289,7 @@ def jp_node_gather():
                     # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
-                asin_array.append(asin_info_data['asin'])
+                asin_info_array.append(asin_info_data)
                 # print(asin_info_data['asin'], flush=True)
                 # print("** ------------------- **", flush=True)
 
@@ -333,8 +333,8 @@ def jp_node_gather():
         # finally:
         #     driver.quit()
 
-        for i in range(0, (len(asin_array) - 1)):
-            print(asin_array[i])
+        for i in range(0, (len(asin_info_array) - 1)):
+            print(asin_info_array[i]['asin'])
 
 def us_node_gather(url):
     item_prefix = "//*[@id=\'zg-ordered-list\']/li[position()="
