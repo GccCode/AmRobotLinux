@@ -100,7 +100,7 @@ def getsale(template):
     return slotList[0]
 
 def getseller(template):
-    return template[5:]
+    return template.split('：')[1]
 
 def getqa(template):
     rule = r'(.*?)人'
@@ -400,7 +400,7 @@ def test_get_inventory_jp(driver, asin):
 
         if amazonasinpage.is_element_exsist(*BUYER_COUNT):
             element = driver.find_element(*BUYER_COUNT)
-            data['seller'] = getseller(element.text)
+            data['seller'] = int(getseller(element.text))
 
             # print("seller is: " + data['seller'])
             # print(element.text, flush=True)
