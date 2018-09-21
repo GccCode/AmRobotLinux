@@ -24,6 +24,8 @@ class AmazonAsinPage(AmazonPage):
                 print("Addcart element can't find..", flush=True)
         except NoSuchElementException as msg:
             print("Addcart element can't find..", flush=True)
+        except:
+            print("Addcart element error..", flush=True)
         else:
             print(("**** Add Cart。。。"), flush=True)
 
