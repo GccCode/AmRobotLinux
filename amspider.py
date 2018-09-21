@@ -455,7 +455,7 @@ if __name__ == "__main__":
     driver = webdriver.Chrome(chrome_options=chrome_options)
     driver.set_page_load_timeout(60)
     driver.set_script_timeout(60)
-    asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF']
+    asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
     for i in range(0, 100):
         print("Testing <" + str(i) + '>', flush=True)
         test_get_inventory_jp(driver, asin_array[random.randint(0, (len(asin_array)) - 1)])
