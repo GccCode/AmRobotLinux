@@ -7,15 +7,12 @@ from amazonpage import AmazonPage
 from locator import AmazonAsinPageLocator
 import configparser
 
-
 class AmazonAsinPage(AmazonPage):
     def __init__(self, driver):
         self.driver = driver
         self.locator = AmazonAsinPageLocator
         self.cf = configparser.ConfigParser()
         self.cf.read("info.txt")
-        self.screen_width = GetSystemMetrics(0)
-        self.screen_heigth = GetSystemMetrics(1)
 
     def add_cart(self, begin, end):
         self.click(*self.locator.ADDCARTBUTTON)
