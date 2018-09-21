@@ -434,7 +434,7 @@ def test_get_inventory_jp(): # driver, asin):
             else:
                 print(element.text)
 
-        amazonasinpage.click(*ITEM_DELETE_JP)
+            amazonasinpage.click(*ITEM_DELETE_JP)
     except NoSuchElementException as msg:
         print("Except: NoSuchElementException", flush=True)
     except Exception as e:
