@@ -206,7 +206,7 @@ def jp_node_gather(driver):
                 while status == False and count > 0:
                     status = get_inventory_jp(driver, asin_info_data['asin'])
                     count -= 1
-                    print("get_inventory_jp retry...", flush=False)
+                    print("get_inventory_jp retry + " + str(count), flush=False)
 
                 if status != False:
                     asin_info_data['seller'] = status['seller']
@@ -215,11 +215,10 @@ def jp_node_gather(driver):
                     print(asin_info_data, flush=True)
                     t2 = time.time()
                     print("总耗时：" + format(t2 - t1), flush=True)
-                    driver.get(url)
-                    amazonpage.random_sleep(3000, 5000)
                 else:
                     print(asin_info_data['asin'], flush=True)
-
+                    driver.get(url)
+                    amazonpage.random_sleep(3000, 5000)
                 print("** ------------------- **", flush=True)
 
             for i in range(0, 17):
@@ -295,7 +294,7 @@ def jp_node_gather(driver):
                 while status == False and count > 0:
                     status = get_inventory_jp(driver, asin_info_data['asin'])
                     count -= 1
-                    print("get_inventory_jp retry...", flush=False)
+                    print("get_inventory_jp retry... + " + str(count), flush=False)
 
                 if status != False:
                     asin_info_data['seller'] = status['seller']
@@ -304,11 +303,10 @@ def jp_node_gather(driver):
                     print(asin_info_data, flush=True)
                     t2 = time.time()
                     print("总耗时：" + format(t2 - t1), flush=True)
-                    driver.get(url)
-                    amazonpage.random_sleep(3000, 5000)
                 else:
                     print(asin_info_data['asin'], flush=True)
-
+                    driver.get(url)
+                    amazonpage.random_sleep(3000, 5000)
 
                 print("** ------------------- **", flush=True)
         amazonpage.random_sleep(2000, 5000)
