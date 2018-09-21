@@ -377,7 +377,7 @@ def test_get_inventory_jp(): # driver, asin):
         }
     }
     chrome_options.add_experimental_option("prefs", prefs)
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(chrome_options = chrome_options)
     driver.set_page_load_timeout(60)
     driver.set_script_timeout(60)
     try:
