@@ -207,6 +207,7 @@ def jp_node_gather(driver):
                     asin_info_data['limited'] = status['limited']
                     asin_info_data['qa'] = status['qa']
                 print(asin_info_data, flush=True)
+                amazonpage.navigation_back(1000, 2000)
                 print("** ------------------- **", flush=True)
 
             for i in range(0, 17):
