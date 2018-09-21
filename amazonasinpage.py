@@ -17,8 +17,11 @@ class AmazonAsinPage(AmazonPage):
 
     def add_cart(self, begin, end):
         try:
-            self.click(*self.locator.ADDCARTBUTTON)
-            self.random_sleep(begin, end)
+            if self.is_element_exsist(*self.locator.ADDCARTBUTTON):
+                self.click(*self.locator.ADDCARTBUTTON)
+                self.random_sleep(begin, end)
+            else:
+                print("Addcart element can't find..", flush=True)
         except NoSuchElementException as msg:
             print("Addcart element can't find..", flush=True)
         else:
