@@ -360,7 +360,7 @@ def test_get_inventory_us():
 
         print(element.text)
 
-        amazonasinpage.click(*ITEM_DELETE_US)
+        # amazonasinpage.click(*ITEM_DELETE_US)
     except NoSuchElementException as msg:
         print("Except: NoSuchElementException", flush=True)
     except Exception as e:
