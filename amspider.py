@@ -126,7 +126,7 @@ def jp_node_gather():
         'status'    : 'ok'
     }
 
-    for page in range(1, 2):
+    for page in range(1, 3):
         asin_array = []
         chrome_options = webdriver.ChromeOptions()
         prefs = {
