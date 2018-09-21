@@ -394,6 +394,7 @@ def test_get_inventory_jp(driver, asin):
         if amazonasinpage.is_element_exsist(*QA_COUNT):
             element = driver.find_element(*QA_COUNT)
             # data['qa'] = int(getqa(element.text)[0])
+            print("qa is:")
             print(getqa(element.text), flush=True)
         else:
             data['qa'] = 0
@@ -402,6 +403,7 @@ def test_get_inventory_jp(driver, asin):
         if amazonasinpage.is_element_exsist(*BUYER_COUNT):
             element = driver.find_element(*BUYER_COUNT)
             # data['seller'] = int(getseller(element.text))
+            print("seller is:")
             print(getseller(element.text), flush=True)
         else:
             data['seller'] = 0
