@@ -107,14 +107,14 @@ def jp_node_gather():
     asin_info_data = {
         'rank'      : None,
         'asin'      : None,
-        'node'      : None,
+        'node'      : node,
         'price'     : None,
         'review'    : None,
         'rate'      : None,
-        'qa'        : None,
+        'qa'        : 0,
         'shipping'  : None,
-        'avg_sale'  : None,
-        'limited'   : None,
+        'avg_sale'  : 0,
+        'limited'   : 'no',
         'img_url'   : None
     }
     try:
