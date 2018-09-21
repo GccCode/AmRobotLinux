@@ -422,7 +422,6 @@ def test_get_inventory_jp(driver, asin):
             amazonasinpage.random_sleep(3000, 5000)
 
         amazonasinpage.input("999", *ITEM_INPUT_JP)
-        amazonasinpage.random_sleep(3000, 5000)
 
         amazonasinpage.click(*ITEM_SUBMIT_JP)
         amazonasinpage.random_sleep(3000, 5000)
@@ -473,7 +472,7 @@ if __name__ == "__main__":
         test_get_inventory_jp(driver, asin_array[random.randint(0, (len(asin_array)) - 1)])
         time.sleep(random.randint(3, 5))
         t2 = time.time()
-        print("random_mouse_scroll-总耗时：" + format(t2 - t1))
+        print("总耗时：" + format(t2 - t1))
         print("Test End\n", flush=True)
 
     driver.quit()
