@@ -212,6 +212,7 @@ def jp_node_gather(driver):
                     asin_info_data['limited'] = status['limited']
                     asin_info_data['qa'] = status['qa']
                 else:
+                    print(asin_info_data['asin'], flush=True)
                     sys.exit(-1)
                 print(asin_info_data, flush=True)
                 t2 = time.time()
@@ -299,6 +300,7 @@ def jp_node_gather(driver):
                     asin_info_data['limited'] = status['limited']
                     asin_info_data['qa'] = status['qa']
                 else:
+                    print(asin_info_data['asin'], flush=True)
                     sys.exit(-1)
 
                 print(asin_info_data, flush=True)
