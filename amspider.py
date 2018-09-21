@@ -419,6 +419,9 @@ def test_get_inventory_jp(): # driver, asin):
 
         element = driver.find_element_by_css_selector('select[name=quantity]')
         print(len(element))
+        status = amazonasinpage.is_element_exsist(*ITEM_SELECT_JP)
+        if status == False:
+            print("Can't find the quality select")
 
         # status = amazonasinpage.select(9, *ITEM_SELECT_JP)
         # if status == False:
