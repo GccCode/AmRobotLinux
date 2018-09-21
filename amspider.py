@@ -431,9 +431,12 @@ def test_get_inventory_jp(): # driver, asin):
             TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'submit.update-quantity\.\']')
             amazonasinpage.random_sleep(3000, 5000)
             amazonasinpage.click(*TMP_ITME)
+            TMP_ITME = (By.XPATH, '//*[@id=\"cart-important-message-box\"]/div/div/div/p/text()[3]')
+            element = driver.find_element(*TMP_ITME)
+            print(element.text)
             amazonasinpage.random_sleep(3000, 5000)
             TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'submit.delete\.\']')
-            amazonasinpage.click(*ITEM_DELETE_JP)
+            amazonasinpage.click(*TMP_ITME)
         else:
             print(";jk;j")
         # amazonasinpage.input("999", *ITEM_INPUT_JP)
