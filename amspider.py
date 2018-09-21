@@ -418,11 +418,17 @@ def test_get_inventory_jp(): # driver, asin):
             amazonasinpage.random_sleep(8000, 10000)
 
         driver.execute_script("document.getElementsByClassName(\"sc-cart-spinner\").style.display='block'; ")
+        driver.execute_script("document.getElementsByClassName(\"sc-cart-overwrap\").style.display='block'; ")
 
         # status = amazonasinpage.select(9, *ITEM_SELECT_JP_XX)
         # if status == False:
         #     print("Can't find the quality select")
         # else:
+        TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'quantity\.\']')
+        if amazonasinpage.is_element_exsist(*TMP_ITME):
+            print("sdfsd")
+        else:
+            print(";jk;j")
         amazonasinpage.input("999", *ITEM_INPUT_JP)
         amazonasinpage.random_sleep(3000, 5000)
 
