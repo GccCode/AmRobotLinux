@@ -57,6 +57,7 @@ class BaseAction(object):
         self.driver.find_element(*locator).click()
 
     def select(self, index, *locator):
+        self.wait_element_match(30, True, *locator)
         element = self.driver.find_element(*locator)
         self.random_sleep(1000, 2000)
         element.find_elements_by_tag_name("option")[index].click()
