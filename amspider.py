@@ -127,7 +127,7 @@ def jp_node_gather(driver):
     }
     try:
         for page in range(0, 5):
-            url = "https://www.amazon.co.jp/gp/bestsellers/electronics/2285178051#" + str(page + 1)
+            url = "https://www.amazon.co.jp/gp/bestsellers/electronics/" + node + "#" + str(page + 1)
             driver.get(url)
             amazonpage.random_sleep(3000, 5000)
             print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
@@ -137,61 +137,61 @@ def jp_node_gather(driver):
                 if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                     element = driver.find_element_by_xpath(tmp_symbol)
                     asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
-                    print("Asin is: " + asin_info_data['asin'], flush=True)
+                    # print("Asin is: " + asin_info_data['asin'], flush=True)
 
                 tmp_symbol = CRITICAL_REVIEWS_PREFIX + str(i + 1) + CRITICAL_REVIEWS_POSTFIX
                 has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
                 if has_review:
                     element = driver.find_element_by_xpath(tmp_symbol)
                     asin_info_data['review'] = int(element.text)
-                    print("Review Count is: " + element.text, flush=True)
+                    # print("Review Count is: " + element.text, flush=True)
                     tmp_symbol = CRITICAL_RATE_PREFIX + str(i + 1) + CRITICAL_RATE_POSTFIX
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
                         asin_info_data['rate'] = float(element.get_attribute('title').split(' ')[1])
-                        print("Rate is: " + element.get_attribute('title').split(' ')[1], flush=True)
+                        # print("Rate is: " + element.get_attribute('title').split(' ')[1], flush=True)
                 else:
                     asin_info_data['review'] = 0
-                    print("Review Count is: 0", flush=True)
+                    # print("Review Count is: 0", flush=True)
                     asin_info_data['rate'] = 0
-                    print("Rate is: 0", flush=True)
+                    # print("Rate is: 0", flush=True)
                 if has_review:
                     tmp_symbol = CRITICAL_FBA_PREFIX + str(i + 1) + CRITICAL_FBA_POSTFIX
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         asin_info_data['shipping'] = 'FBA'
-                        print("FBA", flush=True)
+                        # print("FBA", flush=True)
                         tmp_symbol = CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX + str(i + 1) + CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX
                     else:
                         asin_info_data['shipping'] = 'FBM'
-                        print("FBM", flush=True)
+                        # print("FBM", flush=True)
                         tmp_symbol = CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
                         asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
-                        print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                        # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
                 else:
                     tmp_symbol = CRITICAL_FBA_PREFIX + str(i + 1) + CRITICAL_FBA_POSTFIX
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         asin_info_data['shipping'] = 'FBA'
-                        print("FBA", flush=True)
+                        # print("FBA", flush=True)
                         tmp_symbol = CRITICAL_NO_REVIEW_FBA_PRICE_PREFIX + str(
                             i + 1) + CRITICAL_NO_REVIEW_FBA_PRICE_POSTFIX
                     else:
                         asin_info_data['shipping'] = 'FBM'
-                        print("FBM", flush=True)
+                        # print("FBM", flush=True)
                         tmp_symbol = CRITICAL_NO_REVIEW_FBM_PRICE_PREFIX + str(
                             i + 1) + CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
                         asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
-                        print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                        # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
 
                 tmp_symbol = CRITICAL_IMGSRC_PREFIX + str(i + 1) + CRITICAL_IMGSRC_POSTFIX
                 if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                     element = driver.find_element_by_xpath(tmp_symbol)
                     #  https://images-na.ssl-images-amazon.com/images/I/61EHMhJe1YL._SL500_SR160,160_.jpg
                     asin_info_data['img_url'] = getimgidfromhref(element.get_attribute('src'))
-                    print("ImgSrc is: " + element.get_attribute('src'), flush=True)
+                    # print("ImgSrc is: " + element.get_attribute('src'), flush=True)
 
                 tmp_symbol = CRITICAL_RANK_PREFIX + str(i + 1) + CRITICAL_RANK_POSTFIX + '2]'
                 if page != 0:
@@ -201,6 +201,12 @@ def jp_node_gather(driver):
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
                     print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
 
+                status = get_inventory_jp(driver, asin_info_data['asin'])
+                if status != False:
+                    asin_info_data['seller'] = status['seller']
+                    asin_info_data['limited'] = status['limited']
+                    asin_info_data['qa'] = status['qa']
+                    print(status)
                 print(asin_info_data)
                 print("** ------------------- **", flush=True)
 
@@ -270,6 +276,14 @@ def jp_node_gather(driver):
                     element = driver.find_element_by_xpath(tmp_symbol)
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
                     print("Top Rank is: " + element.text.strip(), flush=True)
+
+                status = get_inventory_jp(driver, asin_info_data['asin'])
+                if status != False:
+                    asin_info_data['seller'] = status['seller']
+                    asin_info_data['limited'] = status['limited']
+                    asin_info_data['qa'] = status['qa']
+                    print(status)
+                    
                 print(asin_info_data)
                 print("** ------------------- **", flush=True)
         amazonpage.random_sleep(2000, 5000)
@@ -375,7 +389,7 @@ def test_get_inventory_us():
         input("xxx")
         driver.quit()
 
-def test_get_inventory_jp(driver, asin):
+def get_inventory_jp(driver, asin):
     status = True
     data = {
         'seller'    : None,
@@ -453,7 +467,6 @@ def test_get_inventory_jp(driver, asin):
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    #jp_node_gather()
     chrome_options = webdriver.ChromeOptions()
     prefs = {
         'profile.default_content_setting_values': {
@@ -465,14 +478,15 @@ if __name__ == "__main__":
     driver = webdriver.Chrome(chrome_options=chrome_options)
     driver.set_page_load_timeout(60)
     driver.set_script_timeout(60)
-    asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
-    for i in range(0, 100):
-        t1 = time.time()
-        print("Testing <" + str(i) + '>', flush=True)
-        test_get_inventory_jp(driver, asin_array[random.randint(0, (len(asin_array)) - 1)])
-        time.sleep(random.randint(3, 5))
-        t2 = time.time()
-        print("总耗时：" + format(t2 - t1))
-        print("Test End\n", flush=True)
+    jp_node_gather(driver)
+    # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
+    # for i in range(0, 100):
+    #     t1 = time.time()
+    #     print("Testing <" + str(i) + '>', flush=True)
+    #     get_inventory_jp(driver, asin_array[random.randint(0, (len(asin_array)) - 1)])
+    #     time.sleep(random.randint(3, 5))
+    #     t2 = time.time()
+    #     print("总耗时：" + format(t2 - t1))
+    #     print("Test End\n", flush=True)
 
     driver.quit()
