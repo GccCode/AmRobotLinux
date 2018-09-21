@@ -119,7 +119,7 @@ def jp_node_gather():
     }
     try:
         for page in range(0, 5):
-            url = "https://www.amazon.co.jp/gp/new-releases/electronics/2285178051#" + str(page + 1)
+            url = "https://www.amazon.co.jp/gp/bestsellers/electronics/2285178051#" + str(page + 1)
             driver.get(url)
             amazonpage.random_sleep(3000, 5000)
             print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
