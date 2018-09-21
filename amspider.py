@@ -333,8 +333,8 @@ def jp_node_gather():
         # finally:
         #     driver.quit()
 
-        for i in range(0, (len(asin_info_array) - 1)):
-            print(asin_info_array[i])
+        for i in range(0, (len(asin_array) - 1)):
+            print(asin_array[i])
 
 def us_node_gather(url):
     item_prefix = "//*[@id=\'zg-ordered-list\']/li[position()="
