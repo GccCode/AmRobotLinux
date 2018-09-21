@@ -438,6 +438,7 @@ def test_get_inventory_jp(): # driver, asin):
             })();
             """
         )
+        amazonasinpage.random_sleep(3000, 5000)
         if amazonasinpage.wait_element_match(30, True, *ITEM_SELECT_JP):
             print("1111", flush=True)
         else:
