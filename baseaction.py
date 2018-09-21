@@ -148,22 +148,22 @@ class BaseAction(object):
         js = "var q=document.documentElement.scrollTop=0"
         self.driver.execut_script(js)
 
-    def random_walk(self, count):
-        t1 = tm.time()
-        i = 0
-        while i < count:
-            self.random_mouse_move()
-            self.random_mouse_scoll()
-            i += 1
-
-        t2 = tm.time()
-        print(("**** random walk次数：" + str(count) + " + 总耗时： " + format(t2 - t1)), flush=True)
+    # def random_walk(self, count):
+    #     t1 = tm.time()
+    #     i = 0
+    #     while i < count:
+    #         self.random_mouse_move()
+    #         self.random_mouse_scoll()
+    #         i += 1
+    #
+    #     t2 = tm.time()
+    #     print(("**** random walk次数：" + str(count) + " + 总耗时： " + format(t2 - t1)), flush=True)
 
 if __name__ == "__main__":
     driver = webdriver.Chrome()
     driver.get("https://www.taobao.com/")
     driver.maximize_window()
     bc = BaseAction(driver)
-    bc.random_walk(20) # 10 ~= 1min
+    # bc.random_walk(20) # 10 ~= 1min
     input("xxx")
     driver.quit()

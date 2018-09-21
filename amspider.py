@@ -417,19 +417,12 @@ def test_get_inventory_jp(): # driver, asin):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(8000, 10000)
 
-        if amazonasinpage.wait_element_match(30, True, *ITEM_SELECT_JP):
-            print("1111", flush=True)
-        else:
-            print("2222", flush=True)
+        amazonasinpage.random_walk(1)
 
         status = amazonasinpage.select(9, *ITEM_SELECT_JP)
         if status == False:
             print("Can't find the quality select")
         else:
-            # d = driver.find_element(*ITEM_INPUT_JP)
-            # print("44444444", flush=True)
-            # driver.execute_script('arguments[0].removeAttribute(\"style\")', d)
-            # print("1123232", flush=True)
             amazonasinpage.input("999", *ITEM_INPUT_JP)
             print("kfefefe", flush=True)
             amazonasinpage.random_sleep(8000, 10000)
