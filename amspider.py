@@ -417,28 +417,6 @@ def test_get_inventory_jp(): # driver, asin):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(8000, 10000)
 
-        driver.execute_script(
-            """
-            (function () {
-              var y = 0;
-              var step = 100;
-              window.scroll(0, 0);
-
-              function f() {
-                if (y < (document.body.scrollHeight)/5) {
-                  y += step;
-                  window.scroll(0, y);
-                  setTimeout(f, 100);
-                } else {
-                  window.scroll(0, 0);   //滑动到顶部
-                  document.title += "scroll-done";
-                }
-              }
-              setTimeout(f, 1000);
-            })();
-            """
-        )
-        amazonasinpage.random_sleep(3000, 5000)
         if amazonasinpage.wait_element_match(30, True, *ITEM_SELECT_JP):
             print("1111", flush=True)
         else:
