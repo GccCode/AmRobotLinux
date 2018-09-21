@@ -373,8 +373,8 @@ def test_get_inventory_jp(): # driver, asin):
     chrome_options = webdriver.ChromeOptions()
     prefs = {
         'profile.default_content_setting_values': {
-            'images': 2,
-            'javascript': 2
+            'images': 2
+            # 'javascript': 2
     }
     }
     chrome_options.add_experimental_option("prefs", prefs)
@@ -420,28 +420,49 @@ def test_get_inventory_jp(): # driver, asin):
             print("1111", flush=True)
         else:
             print("2222", flush=True)
-        # status = amazonasinpage.select(9, *ITEM_SELECT_JP)
-        # if status == False:
-        #     print("Can't find the quality select")
-        # else:
-        d = driver.find_element(*ITEM_INPUT_JP)
-        print("44444444", flush=True)
-        driver.execute_script('arguments[0].removeAttribute(\"style\")', d)
-        print("1123232", flush=True)
-        amazonasinpage.input("999", *ITEM_INPUT_JP)
-        print("kfefefe", flush=True)
-        amazonasinpage.random_sleep(8000, 10000)
+        driver.execute_script(
+            """
+            (function () {
+              var y = 0;
+              var step = 100;
+              window.scroll(0, 0);
 
-        amazonasinpage.click(*ITEM_SUBMIT_JP)
-        amazonasinpage.random_sleep(8000, 10000)
-
-        element = driver.find_element(*INVENTORY_TIPS_JP)
-        # この出品者のお取り扱い数は275点です。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
-        # この出品者からは、ご注文数はお一人様10点までに制限されています。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
-        if '一人様1' in element.text:
-            print("eoroor")
+              function f() {
+                if (y < (document.body.scrollHeight)/5) {
+                  y += step;
+                  window.scroll(0, y);
+                  setTimeout(f, 100);
+                } else {
+                  window.scroll(0, 0);   //滑动到顶部
+                  document.title += "scroll-done";
+                }
+              }
+              setTimeout(f, 1000);
+            })();
+            """
+        )
+        status = amazonasinpage.select(9, *ITEM_SELECT_JP)
+        if status == False:
+            print("Can't find the quality select")
         else:
-            print(element.text)
+            d = driver.find_element(*ITEM_INPUT_JP)
+            print("44444444", flush=True)
+            driver.execute_script('arguments[0].removeAttribute(\"style\")', d)
+            print("1123232", flush=True)
+            amazonasinpage.input("999", *ITEM_INPUT_JP)
+            print("kfefefe", flush=True)
+            amazonasinpage.random_sleep(8000, 10000)
+
+            amazonasinpage.click(*ITEM_SUBMIT_JP)
+            amazonasinpage.random_sleep(8000, 10000)
+
+            element = driver.find_element(*INVENTORY_TIPS_JP)
+            # この出品者のお取り扱い数は275点です。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
+            # この出品者からは、ご注文数はお一人様10点までに制限されています。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
+            if '一人様1' in element.text:
+                print("eoroor")
+            else:
+                print(element.text)
 
         amazonasinpage.click(*ITEM_DELETE_JP)
     except NoSuchElementException as msg:
