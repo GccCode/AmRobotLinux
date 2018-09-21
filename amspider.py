@@ -315,26 +315,29 @@ def jp_node_gather():
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.set_page_load_timeout(60)
         driver.set_script_timeout(60)
+        inventory_array = []
         try:
-            for i in range(0, (len(asin_info_array) - 1)):
-                print(i)
+            for i in range(0, len(asin_info_array) - 1):
                 tmp_info = asin_info_array[i]
                 print(asin_info_array[i])
                 status = get_inventory_jp(driver, tmp_info['asin'])
                 if status == False:
                     tmp_info['status'] = 'err'
+                    inventory_array.append('err')
                 else:
                     tmp_info['seller'] = status['seller']
                     tmp_info['qa'] = status['qa']
                     tmp_info['limited'] = status['limited']
                     tmp_info['inventory'] = status['inventory']
+                    inventory_array.append(copy.deepcopy(status))
 
         except Exception as e:
             print(str(e), flush=True)
         finally:
             driver.quit()
 
-        for i in range(0, (len(asin_info_array) - 1)):
+        for i in range(0, len(asin_info_array)):
+            print(inventory_array[i])
             print(asin_info_array[i])
 
 def us_node_gather(url):
@@ -524,7 +527,7 @@ def get_inventory_jp(driver_upper, asin):
                         status = False
                     else:
                         amazonasinpage.click(*ITEM_DELETE_JP)
-                        print(data, flush=True)
+                        # print(data, flush=True)
                         status = data
     except NoSuchElementException as msg:
         status = False
