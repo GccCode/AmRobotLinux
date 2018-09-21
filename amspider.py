@@ -366,11 +366,12 @@ def test_get_inventory_us():
         input("xxx")
         driver.quit()
 
-def test_get_inventory_jp():
+def test_get_inventory_jp(): # driver, asin):
     driver = webdriver.Chrome()
     driver.set_page_load_timeout(60)
     driver.set_script_timeout(60)
     try:
+        # url = 'ttps://www.amazon.co.jp/dp/' + asin
         driver.get("https://www.amazon.co.jp/dp/B07BGXF6KF")
         amazonasinpage = AmazonAsinPage(driver)
         if amazonasinpage.is_element_exsist(*FBA_FLAG):
@@ -427,4 +428,5 @@ def test_get_inventory_jp():
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    jp_node_gather()
+    #jp_node_gather()
+    test_get_inventory_jp()
