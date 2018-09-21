@@ -3,6 +3,8 @@
 
 from selenium import webdriver
 import re
+import time
+import random
 import sys
 import io
 from selenium.webdriver.common.by import By
@@ -384,15 +386,16 @@ def test_get_inventory_jp(): # driver, asin):
     driver = webdriver.Chrome(chrome_options = chrome_options)
     driver.set_page_load_timeout(60)
     driver.set_script_timeout(60)
+    status = True
     try:
-        # url = 'ttps://www.amazon.co.jp/dp/' + asin
+        # url = 'https://www.amazon.co.jp/dp/' + asin
         driver.get("https://www.amazon.co.jp/dp/B077HLQ81K")
         # driver.get("https://www.amazon.co.jp/dp/B07BGXF6KF")
         amazonasinpage = AmazonAsinPage(driver)
-        if amazonasinpage.is_element_exsist(*FBA_FLAG):
-            print("product is fba...", flush=True)
-        else:
-            print("product is fbm or not exsist...", flush=True)
+        # if amazonasinpage.is_element_exsist(*FBA_FLAG):
+        #     print("product is fba...", flush=True)
+        # else:
+        #     print("product is fbm or not exsist...", flush=True)
 
         amazonasinpage.random_sleep(1000, 2000)
         if amazonasinpage.is_element_exsist(*QA_COUNT):
@@ -427,8 +430,8 @@ def test_get_inventory_jp(): # driver, asin):
         amazonasinpage.random_sleep(3000, 5000)
 
         element = driver.find_element(*INVENTORY_TIPS_JP)
-        # この出品者のお取り扱い数は275点です。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
-        # この出品者からは、ご注文数はお一人様10点までに制限されています。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
+        # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
+        # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
         if '客様お一人' in element.text:
             print("Check limited")
         else:
@@ -436,14 +439,20 @@ def test_get_inventory_jp(): # driver, asin):
 
         amazonasinpage.click(*ITEM_DELETE_JP)
     except NoSuchElementException as msg:
+        status = False
         print("Except: NoSuchElementException", flush=True)
     except Exception as e:
+        status = False
         print(e, flush=True)
     finally:
-        input("waiting....")
+        # input("waiting....")
         driver.quit()
+        return status
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     #jp_node_gather()
-    test_get_inventory_jp()
+    for i in range(0, 10):
+        print("Testing <" + str(i) + '>\n', flush=True)
+        test_get_inventory_jp()
+        time.sleep(random.randint(3, 5))
