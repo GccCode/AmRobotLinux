@@ -350,15 +350,15 @@ def test_get_inventory_us():
         amazonasinpage.select(9, *ITEM_SELECT_US)
         amazonasinpage.random_sleep(8000, 10000)
 
-        amazonasinpage.input("999", *ITEM_INPUT_US)
-        amazonasinpage.random_sleep(8000, 10000)
-
-        amazonasinpage.click(*ITEM_SUBMIT_US)
-        amazonasinpage.random_sleep(8000, 10000)
-
-        element = driver.find_element(*INVENTORY_TIPS_US)
-
-        print(element.text)
+        # amazonasinpage.input("999", *ITEM_INPUT_US)
+        # amazonasinpage.random_sleep(8000, 10000)
+        #
+        # amazonasinpage.click(*ITEM_SUBMIT_US)
+        # amazonasinpage.random_sleep(8000, 10000)
+        #
+        # element = driver.find_element(*INVENTORY_TIPS_US)
+        #
+        # print(element.text)
 
         # amazonasinpage.click(*ITEM_DELETE_US)
     except NoSuchElementException as msg:
