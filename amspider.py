@@ -100,7 +100,7 @@ def getsale(template):
     return slotList[0]
 
 def getseller(template):
-    return template[13:]
+    return template[5:]
 
 def getqa(template):
     rule = r'(.*?)人'
