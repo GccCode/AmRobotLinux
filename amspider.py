@@ -462,7 +462,6 @@ if __name__ == "__main__":
         }
     }
     chrome_options.add_experimental_option("prefs", prefs)
-    chrome_options.add_argument('--headless')  # 浏览器不提供可视化页面. linux下如果系统不支持可视化不加这条会启动失败
     driver = webdriver.Chrome(chrome_options=chrome_options)
     driver.set_page_load_timeout(60)
     driver.set_script_timeout(60)
