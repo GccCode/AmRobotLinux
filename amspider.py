@@ -126,7 +126,7 @@ def jp_node_gather(driver):
         'img_url'   : None
     }
     try:
-        for page in range(2, 5):
+        for page in range(1, 5):
             url = "https://www.amazon.co.jp/gp/bestsellers/electronics/" + node + "#" + str(page + 1)
             driver.get(url)
             amazonpage.random_sleep(3000, 5000)
@@ -204,9 +204,9 @@ def jp_node_gather(driver):
                     print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
                 count = 3
-                status = get_inventory_jp(driver, asin_info_data['asin'])
+                status = get_inventory_jp(False, asin_info_data['asin'])
                 while status == False and count > 0:
-                    status = get_inventory_jp(driver, asin_info_data['asin'])
+                    status = get_inventory_jp(False, asin_info_data['asin'])
                     count -= 1
                     print("get_inventory_jp retry + " + str(count), flush=False)
 
@@ -293,10 +293,10 @@ def jp_node_gather(driver):
                     print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
-                count = 3
-                status = get_inventory_jp(driver, asin_info_data['asin'])
+                count = 1
+                status = get_inventory_jp(False, asin_info_data['asin'])
                 while status == False and count > 0:
-                    status = get_inventory_jp(driver, asin_info_data['asin'])
+                    status = get_inventory_jp(False, asin_info_data['asin'])
                     count -= 1
                     print("get_inventory_jp retry... + " + str(count), flush=False)
 
@@ -417,7 +417,23 @@ def test_get_inventory_us():
         input("xxx")
         driver.quit()
 
-def get_inventory_jp(driver, asin):
+def get_inventory_jp(driver_upper, asin):
+    driver = None
+
+    if driver_upper == False:
+        chrome_options = webdriver.ChromeOptions()
+        prefs = {
+            'profile.default_content_setting_values': {
+                'images': 2,
+                'javascript': 2
+            }
+        }
+        chrome_options.add_experimental_option("prefs", prefs)
+        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver.set_page_load_timeout(60)
+        driver.set_script_timeout(60)
+    else:
+        driver = driver_upper
     status = True
     data = {
         'seller'    : None,
@@ -497,6 +513,7 @@ def get_inventory_jp(driver, asin):
         status = False
         print(e, flush=True)
     finally:
+        driver.quit()
         return status
 
 if __name__ == "__main__":
