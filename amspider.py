@@ -217,8 +217,9 @@ def jp_node_gather(driver):
                     print("总耗时：" + format(t2 - t1), flush=True)
                 else:
                     print(asin_info_data['asin'], flush=True)
-                    driver.get(url)
-                    amazonpage.random_sleep(3000, 5000)
+                    
+                driver.get(url)
+                amazonpage.random_sleep(3000, 5000)
                 print("** ------------------- **", flush=True)
 
             for i in range(0, 17):
@@ -305,8 +306,9 @@ def jp_node_gather(driver):
                     print("总耗时：" + format(t2 - t1), flush=True)
                 else:
                     print(asin_info_data['asin'], flush=True)
-                    driver.get(url)
-                    amazonpage.random_sleep(3000, 5000)
+
+                driver.get(url)
+                amazonpage.random_sleep(3000, 5000)
 
                 print("** ------------------- **", flush=True)
         amazonpage.random_sleep(2000, 5000)
