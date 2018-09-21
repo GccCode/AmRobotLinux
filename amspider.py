@@ -408,13 +408,13 @@ def test_get_inventory_jp(): # driver, asin):
         elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(8000, 10000)
-        if amazonasinpage.is_element_exsist(*ITEM_SELECT_JP_XX):
+        if amazonasinpage.is_element_exsist(*ITEM_SELECT_JP):
             print("1111")
         else:
             print("2222")
-        status = amazonasinpage.select(9, *ITEM_SELECT_JP)
-        if status == False:
-            print("Can't find the quality select")
+        # status = amazonasinpage.select(9, *ITEM_SELECT_JP)
+        # if status == False:
+        #     print("Can't find the quality select")
         # else:
         #     amazonasinpage.input("999", *ITEM_INPUT_JP)
         #     amazonasinpage.random_sleep(8000, 10000)
