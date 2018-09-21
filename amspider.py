@@ -201,24 +201,25 @@ def jp_node_gather(driver):
                     element = driver.find_element_by_xpath(tmp_symbol)
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
                     # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
-                count = 0
+                count = 3
                 status = get_inventory_jp(driver, asin_info_data['asin'])
                 while status == False and count > 0:
                     status = get_inventory_jp(driver, asin_info_data['asin'])
                     count -= 1
+                    print("get_inventory_jp retry...", flush=False)
 
                 if status != False:
                     asin_info_data['seller'] = status['seller']
                     asin_info_data['limited'] = status['limited']
                     asin_info_data['qa'] = status['qa']
+                    print(asin_info_data, flush=True)
+                    t2 = time.time()
+                    print("总耗时：" + format(t2 - t1), flush=True)
+                    driver.get(url)
+                    amazonpage.random_sleep(3000, 5000)
                 else:
                     print(asin_info_data['asin'], flush=True)
-                    sys.exit(-1)
-                print(asin_info_data, flush=True)
-                t2 = time.time()
-                print("总耗时：" + format(t2 - t1), flush=True)
-                driver.get(url)
-                amazonpage.random_sleep(3000, 5000)
+
                 print("** ------------------- **", flush=True)
 
             for i in range(0, 17):
@@ -289,25 +290,26 @@ def jp_node_gather(driver):
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
                     # print("Top Rank is: " + element.text.strip(), flush=True)
 
-                count = 0
+                count = 3
                 status = get_inventory_jp(driver, asin_info_data['asin'])
                 while status == False and count > 0:
                     status = get_inventory_jp(driver, asin_info_data['asin'])
                     count -= 1
+                    print("get_inventory_jp retry...", flush=False)
 
                 if status != False:
                     asin_info_data['seller'] = status['seller']
                     asin_info_data['limited'] = status['limited']
                     asin_info_data['qa'] = status['qa']
+                    print(asin_info_data, flush=True)
+                    t2 = time.time()
+                    print("总耗时：" + format(t2 - t1), flush=True)
+                    driver.get(url)
+                    amazonpage.random_sleep(3000, 5000)
                 else:
                     print(asin_info_data['asin'], flush=True)
-                    sys.exit(-1)
 
-                print(asin_info_data, flush=True)
-                t2 = time.time()
-                print("总耗时：" + format(t2 - t1), flush=True)
-                driver.get(url)
-                amazonpage.random_sleep(3000, 5000)
+
                 print("** ------------------- **", flush=True)
         amazonpage.random_sleep(2000, 5000)
     except NoSuchElementException as msg:
@@ -507,7 +509,7 @@ if __name__ == "__main__":
     driver = webdriver.Chrome(chrome_options=chrome_options)
     driver.set_page_load_timeout(60)
     driver.set_script_timeout(60)
-    # jp_node_gather(driver)
+    jp_node_gather(driver)
     # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
     # for i in range(0, 100):
     #     t1 = time.time()
@@ -517,5 +519,5 @@ if __name__ == "__main__":
     #     t2 = time.time()
     #     print("总耗时：" + format(t2 - t1))
     #     print("Test End\n", flush=True)
-    get_inventory_jp(driver, "B07G56GT24")
+    # get_inventory_jp(driver, "B07G56GT24")
     driver.quit()
