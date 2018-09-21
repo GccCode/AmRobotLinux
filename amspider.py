@@ -126,7 +126,7 @@ def jp_node_gather():
         'status'    : 'ok'
     }
 
-    for page in range(1, 5):
+    for page in range(1, 2):
         asin_info_array = []
         chrome_options = webdriver.ChromeOptions()
         prefs = {
@@ -303,37 +303,38 @@ def jp_node_gather():
 
         # print(asin_info_array)
 
-        chrome_options = webdriver.ChromeOptions()
-        prefs = {
-            'profile.default_content_setting_values': {
-                'images': 2,
-                'javascript': 2
-            }
-        }
-        chrome_options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Chrome(chrome_options=chrome_options)
-        driver.set_page_load_timeout(60)
-        driver.set_script_timeout(60)
-        try:
-            for i in range(0, (len(asin_info_array) - 1)):
-                print(i)
-                tmp_info = asin_info_array[i]
-                print(asin_info_array[i])
-                status = get_inventory_jp(driver, tmp_info['asin'])
-                if status == False:
-                    tmp_info['status'] = 'err'
-                else:
-                    tmp_info['seller'] = status['seller']
-                    tmp_info['qa'] = status['qa']
-                    tmp_info['limited'] = status['limited']
-                    tmp_info['inventory'] = status['inventory']
+        # chrome_options = webdriver.ChromeOptions()
+        # prefs = {
+        #     'profile.default_content_setting_values': {
+        #         'images': 2,
+        #         'javascript': 2
+        #     }
+        # }
+        # chrome_options.add_experimental_option("prefs", prefs)
+        # driver = webdriver.Chrome(chrome_options=chrome_options)
+        # driver.set_page_load_timeout(60)
+        # driver.set_script_timeout(60)
+        # try:
+        #     for i in range(0, (len(asin_info_array) - 1)):
+        #         print(i)
+        #         tmp_info = asin_info_array[i]
+        #         print(asin_info_array[i])
+        #         status = get_inventory_jp(driver, tmp_info['asin'])
+        #         if status == False:
+        #             tmp_info['status'] = 'err'
+        #         else:
+        #             tmp_info['seller'] = status['seller']
+        #             tmp_info['qa'] = status['qa']
+        #             tmp_info['limited'] = status['limited']
+        #             tmp_info['inventory'] = status['inventory']
+        #
+        # except Exception as e:
+        #     print(str(e), flush=True)
+        # finally:
+        #     driver.quit()
 
-            for i in range(0, (len(asin_info_array) - 1)):
-                print(asin_info_array[i])
-        except Exception as e:
-            print(str(e), flush=True)
-        finally:
-            driver.quit()
+        for i in range(0, (len(asin_info_array) - 1)):
+            print(asin_info_array[i])
 
 def us_node_gather(url):
     item_prefix = "//*[@id=\'zg-ordered-list\']/li[position()="
