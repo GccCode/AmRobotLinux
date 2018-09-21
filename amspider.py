@@ -416,19 +416,11 @@ def test_get_inventory_jp(): # driver, asin):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(8000, 10000)
 
-        status = amazonasinpage.is_element_exsist(*ITEM_SELECT_JP_XX)
-        if status == False:
-            print("Can't find the quality select")
-
-        element = driver.find_element_by_css_selector('select[name=quantity]')
-        print(element.size)
-
         status = amazonasinpage.select(9, *ITEM_SELECT_JP_XX)
         if status == False:
             print("Can't find the quality select")
         else:
             amazonasinpage.input("999", *ITEM_INPUT_JP)
-            print("kfefefe", flush=True)
             amazonasinpage.random_sleep(8000, 10000)
 
             amazonasinpage.click(*ITEM_SUBMIT_JP)
@@ -438,7 +430,7 @@ def test_get_inventory_jp(): # driver, asin):
             # この出品者のお取り扱い数は275点です。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
             # この出品者からは、ご注文数はお一人様10点までに制限されています。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
             if '一人様1' in element.text:
-                print("eoroor")
+                print("Check limited")
             else:
                 print(element.text)
 
