@@ -428,6 +428,12 @@ def test_get_inventory_jp(): # driver, asin):
         if amazonasinpage.is_element_exsist(*TMP_ITME):
             print("sdfsd")
             amazonasinpage.input("999", *TMP_ITME)
+            TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'submit.update-quantity\.\']')
+            amazonasinpage.random_sleep(3000, 5000)
+            amazonasinpage.click(*TMP_ITME)
+            amazonasinpage.random_sleep(3000, 5000)
+            TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'submit.delete\.\']')
+            amazonasinpage.click(*ITEM_DELETE_JP)
         else:
             print(";jk;j")
         # amazonasinpage.input("999", *ITEM_INPUT_JP)
