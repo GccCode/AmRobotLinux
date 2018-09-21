@@ -408,7 +408,7 @@ def test_get_inventory_jp(driver, asin):
             data['seller'] = 0
 
 
-        amazonasinpage.add_cart(8000, 10000)
+        amazonasinpage.add_cart(5000, 8000)
 
         if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
             amazonasinpage.click(*NO_THANKS)
@@ -416,10 +416,10 @@ def test_get_inventory_jp(driver, asin):
         amazonasinpage.random_sleep(1000, 2000)
         if amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON):
             amazonasinpage.click(*VIEW_CART_BUTTON)
-            amazonasinpage.random_sleep(8000, 10000)
+            amazonasinpage.random_sleep(3000, 5000)
         elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
-            amazonasinpage.random_sleep(8000, 10000)
+            amazonasinpage.random_sleep(3000, 5000)
 
         amazonasinpage.input("999", *ITEM_INPUT_JP)
         amazonasinpage.random_sleep(3000, 5000)
