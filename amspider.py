@@ -416,10 +416,7 @@ def test_get_inventory_jp(): # driver, asin):
         elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(8000, 10000)
-        if amazonasinpage.is_element_exsist(*ITEM_SELECT_JP):
-            print("1111", flush=True)
-        else:
-            print("2222", flush=True)
+
         driver.execute_script(
             """
             (function () {
@@ -441,6 +438,11 @@ def test_get_inventory_jp(): # driver, asin):
             })();
             """
         )
+        if amazonasinpage.wait_element_match(30, True, *ITEM_SELECT_JP):
+            print("1111", flush=True)
+        else:
+            print("2222", flush=True)
+
         status = amazonasinpage.select(9, *ITEM_SELECT_JP)
         if status == False:
             print("Can't find the quality select")
