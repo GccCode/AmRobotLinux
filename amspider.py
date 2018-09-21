@@ -110,23 +110,23 @@ def getqa(template):
 def jp_node_gather():
     node = '2285178051'
     type = None
-    asin_info_data = {
-        'rank'      : None,
-        'asin'      : None,
-        'node'      : node,
-        'price'     : None,
-        'review'    : None,
-        'rate'      : None,
-        'qa'        : 0,
-        'shipping'  : None,
-        'seller'    : 0,
-        'avg_sale'  : 0,
-        'limited'   : 'no',
-        'img_url'   : None,
-        'status'    : 'ok'
-    }
 
     for page in range(1, 2):
+        asin_info_data = {
+            'rank': None,
+            'asin': None,
+            'node': node,
+            'price': None,
+            'review': None,
+            'rate': None,
+            'qa': 0,
+            'shipping': None,
+            'seller': 0,
+            'avg_sale': 0,
+            'limited': 'no',
+            'img_url': None,
+            'status': 'ok'
+        }
         asin_info_array = []
         chrome_options = webdriver.ChromeOptions()
         prefs = {
