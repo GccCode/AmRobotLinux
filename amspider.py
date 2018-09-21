@@ -11,6 +11,7 @@ from selenium.webdriver.common.by import By
 from amazonasinpage import AmazonAsinPage
 from selenium.common.exceptions import NoSuchElementException
 from amazonpage import AmazonPage
+import copy
 
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
@@ -217,7 +218,7 @@ def jp_node_gather():
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
 
-                asin_info_array.append(asin_info_data)
+                asin_info_array.append(copy.deepcopy(asin_info_data))
                 # print(asin_info_data['asin'], flush=True)
                 # print("** ------------------- **", flush=True)
 
@@ -289,7 +290,7 @@ def jp_node_gather():
                     # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
-                asin_info_array.append(asin_info_data)
+                    asin_info_array.append(copy.deepcopy(asin_info_data))
                 # print(asin_info_data['asin'], flush=True)
                 # print("** ------------------- **", flush=True)
 
