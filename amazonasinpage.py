@@ -6,6 +6,7 @@ import random
 from amazonpage import AmazonPage
 from locator import AmazonAsinPageLocator
 import configparser
+from selenium.common.exceptions import NoSuchElementException
 
 class AmazonAsinPage(AmazonPage):
     def __init__(self, driver):
@@ -15,9 +16,13 @@ class AmazonAsinPage(AmazonPage):
         self.cf.read("info.txt")
 
     def add_cart(self, begin, end):
-        self.click(*self.locator.ADDCARTBUTTON)
-        self.random_sleep(begin, end)
-        print(("**** 加入购物车。。。"), flush=True)
+        try:
+            self.click(*self.locator.ADDCARTBUTTON)
+            self.random_sleep(begin, end)
+        except NoSuchElementException as msg:
+            print("Addcart element can't find..", flush=True)
+        else:
+            print(("**** Add Cart。。。"), flush=True)
 
     def ask_qa(self, content, begin, end):
         country = self.cf.get("account", "country")
