@@ -112,7 +112,7 @@ def jp_node_gather():
     node = '2285178051'
     type = None
 
-    for page in range(1, 2):
+    for page in range(0, 5):
         asin_info_data = {
             'rank': None,
             'asin': None,
