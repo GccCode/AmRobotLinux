@@ -192,6 +192,8 @@ def jp_node_gather():
                     element = driver.find_element_by_xpath(tmp_symbol)
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
                     print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
+
+                print(asin_info_data)
                 print("** ------------------- **", flush=True)
 
             for i in range(0, 17):
@@ -260,6 +262,7 @@ def jp_node_gather():
                     element = driver.find_element_by_xpath(tmp_symbol)
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
                     print("Top Rank is: " + element.text.strip(), flush=True)
+                print(asin_info_data)
                 print("** ------------------- **", flush=True)
         amazonpage.random_sleep(2000, 5000)
     except NoSuchElementException as msg:
