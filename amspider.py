@@ -199,6 +199,7 @@ def jp_node_gather(driver):
                     tmp_symbol = CRITICAL_RANK_PREFIX + str(i + 1) + CRITICAL_RANK_POSTFIX + '1]'
                 if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                     element = driver.find_element_by_xpath(tmp_symbol)
+                    print("Top Rank is: " + element.text.strip(), flush=True)
                     print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
                 count = 3
@@ -287,8 +288,9 @@ def jp_node_gather(driver):
                 tmp_symbol = NON_CRITICAL_RANK_PREFIX + str(i + 1) + NON_CRITICAL_RANK_POSTFIX + '1]'
                 if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                     element = driver.find_element_by_xpath(tmp_symbol)
+                    print("Top Rank is: " + element.text.strip(), flush=True)
+                    print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                     asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
-                    # print("Top Rank is: " + element.text.strip(), flush=True)
 
                 count = 3
                 status = get_inventory_jp(driver, asin_info_data['asin'])
