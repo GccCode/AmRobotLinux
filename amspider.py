@@ -370,6 +370,9 @@ def test_get_inventory_us():
         driver.quit()
 
 def test_get_inventory_jp(): # driver, asin):
+    chrome_options = webdriver.ChromeOptions()
+    prefs = {"profile.managed_default_content_settings.images": 2}
+    chrome_options.add_experimental_option("prefs", prefs)
     driver = webdriver.Chrome()
     driver.set_page_load_timeout(60)
     driver.set_script_timeout(60)
