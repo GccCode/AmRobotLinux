@@ -57,10 +57,15 @@ class BaseAction(object):
         self.driver.find_element(*locator).click()
 
     def select(self, index, *locator):
-        self.wait_element_match(30, True, *locator)
-        element = self.driver.find_element(*locator)
-        self.random_sleep(1000, 2000)
-        element.find_elements_by_tag_name("option")[index].click()
+        status = True
+        try:
+            element = self.driver.find_element(*locator)
+            element.find_elements_by_tag_name("option")[index].click()
+        except NoSuchElementException as msg:
+            status = False
+        finally:
+            return status
+
 
     def input(self, content, *locator):
         try:
