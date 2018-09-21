@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 
 
-from win32api import GetSystemMetrics
 import random
 from amazonpage import AmazonPage
 from locator import AmazonAsinPageLocator
