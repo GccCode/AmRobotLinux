@@ -30,7 +30,7 @@ ITEM_DELETE_US = (By.XPATH,
 PRODUCT_ITEM_JP = (By.XPATH,
                         '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]')
 ITEM_SELECT_JP_XX = (By.XPATH,
-                           '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/span[position()=1]')
+                           '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]/div[position()=4]/div/div[position()=3]')
 ITEM_SELECT_JP = (By.XPATH,
                            '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/span[position()=1]/select')
 ITEM_INPUT_JP = (By.XPATH,
