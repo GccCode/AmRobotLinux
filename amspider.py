@@ -427,23 +427,24 @@ def test_get_inventory_jp(): # driver, asin):
         TMP_ITME = (By.CSS_SELECTOR, 'input[name ^=\'quantity\.\']')
         if amazonasinpage.is_element_exsist(*TMP_ITME):
             print("sdfsd")
+            amazonasinpage.input("999", *TMP_ITME)
         else:
             print(";jk;j")
-        amazonasinpage.input("999", *ITEM_INPUT_JP)
-        amazonasinpage.random_sleep(3000, 5000)
-
-        amazonasinpage.click(*ITEM_SUBMIT_JP)
-        amazonasinpage.random_sleep(8000, 10000)
-
-        element = driver.find_element(*INVENTORY_TIPS_JP)
-        # この出品者のお取り扱い数は275点です。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
-        # この出品者からは、ご注文数はお一人様10点までに制限されています。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
-        if '一人様1' in element.text:
-            print("Check limited")
-        else:
-            print(element.text)
-
-        amazonasinpage.click(*ITEM_DELETE_JP)
+        # amazonasinpage.input("999", *ITEM_INPUT_JP)
+        # amazonasinpage.random_sleep(3000, 5000)
+        #
+        # amazonasinpage.click(*ITEM_SUBMIT_JP)
+        # amazonasinpage.random_sleep(8000, 10000)
+        #
+        # element = driver.find_element(*INVENTORY_TIPS_JP)
+        # # この出品者のお取り扱い数は275点です。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
+        # # この出品者からは、ご注文数はお一人様10点までに制限されています。この商品の他の出品者のお取り扱いについては商品詳細ページでご確認ください。
+        # if '一人様1' in element.text:
+        #     print("Check limited")
+        # else:
+        #     print(element.text)
+        #
+        # amazonasinpage.click(*ITEM_DELETE_JP)
     except NoSuchElementException as msg:
         print("Except: NoSuchElementException", flush=True)
     except Exception as e:
