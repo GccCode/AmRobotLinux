@@ -100,7 +100,7 @@ def getsale(template):
     return slotList[0]
 
 def getseller(template):
-    rule = r'新品の出品：(.*?)'
+    rule = r'：(.*?)'
     slotList = re.findall(rule, template)
     return slotList[0]
 
@@ -393,7 +393,7 @@ def test_get_inventory_jp(driver, asin):
         amazonasinpage.random_sleep(1000, 2000)
         if amazonasinpage.is_element_exsist(*QA_COUNT):
             element = driver.find_element(*QA_COUNT)
-            # data['qa'] = int(getqa(element.text)[0])
+            data['qa'] = int(getqa(element.text))
             print("qa is:")
             print(getqa(element.text), flush=True)
         else:
