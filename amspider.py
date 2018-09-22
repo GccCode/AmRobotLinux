@@ -322,7 +322,13 @@ def jp_node_gather():
                 status = get_inventory_jp(driver, tmp_info['asin'])
                 if status == False:
                     tmp_info['status'] = 'err'
-                    inventory_array.append('err')
+                    data = {
+                        'seller': 0,
+                        'qa': 0,
+                        'inventory': 0,
+                        'limited': 'no'
+                    }
+                    inventory_array.append(data)
                     driver.quit()
                     time.sleep(2)
                     chrome_options = webdriver.ChromeOptions()
@@ -509,20 +515,20 @@ def get_inventory_jp(driver_upper, asin):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
             amazonasinpage.random_sleep(3000, 5000)
         else:
-            print("View Cart can't be found...", flush=True)
+            print("View Cart can't be found... + " + asin, flush=True)
         if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP) == False:
-            print("Inventory Input can't be found...", flush=True)
+            print("Inventory Input can't be found... + " + asin, flush=True)
             status = False
         else:
             amazonasinpage.input("999", *ITEM_INPUT_JP)
             if amazonasinpage.is_element_exsist(*ITEM_SUBMIT_JP) == False:
-                print("Inventory Update can't be found...", flush=True)
+                print("Inventory Update can't be found... + " + asin, flush=True)
                 status = False
             else:
                 amazonasinpage.click(*ITEM_SUBMIT_JP)
                 amazonasinpage.random_sleep(3000, 5000)
                 if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_JP) == False:
-                    print("Inventory Tips can't be found...", flush=True)
+                    print("Inventory Tips can't be found... + " + asin, flush=True)
                     status = False
                 else:
                     element = driver.find_element(*INVENTORY_TIPS_JP)
@@ -537,7 +543,7 @@ def get_inventory_jp(driver_upper, asin):
                         data['inventory'] = int(getsale(element.text))
                         # print("inventory is: " + str(data['inventory']), flush=True)
         if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
-            print("Inventory Delete can't be found...", flush=True)
+            print("Inventory Delete can't be found... + " + asin, flush=True)
             status = False
         else:
             amazonasinpage.click(*ITEM_DELETE_JP)
