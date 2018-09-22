@@ -586,7 +586,7 @@ if __name__ == "__main__":
     # driver = webdriver.Chrome(chrome_options=chrome_options)
     # driver.set_page_load_timeout(60)
     # driver.set_script_timeout(60)
-    # jp_node_gather()
+    jp_node_gather()
     # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
     # for i in range(0, 100):
     #     t1 = time.time()
@@ -596,5 +596,5 @@ if __name__ == "__main__":
     #     t2 = time.time()
     #     print("总耗时：" + format(t2 - t1))
     #     print("Test End\n", flush=True)
-    get_inventory_jp(False, "B06ZXXQ54K")
+    # get_inventory_jp(False, "B06ZXXQ54K")
     # driver.quit()
