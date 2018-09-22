@@ -20,6 +20,7 @@ NO_THANKS = (By.ID, 'attachSiNoCoverage')
 VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
 VIEW_CART_BUTTON1 = (By.ID, 'hlb-view-cart')
 VIEW_CART_BUTTON2 = (By.CSS_SELECTOR, 'input[name=editCart]')
+VIEW_CART_BUTTON3 = (By.CLASS_NAME, 'hlb-cart-button')
 ITEM_SELECT_US = (By.XPATH,
                            '//*[@id=\'activeCartViewForm\']/div[position()=2]/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/span[position()=1]/select')
 ITEM_INPUT_US = (By.XPATH,
@@ -516,6 +517,9 @@ def get_inventory_jp(driver_upper, asin):
                 amazonasinpage.random_sleep(3000, 5000)
             elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON2):
                 amazonasinpage.click(*VIEW_CART_BUTTON2)
+                amazonasinpage.random_sleep(3000, 5000)
+            elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON3):
+                amazonasinpage.click(*VIEW_CART_BUTTON3)
                 amazonasinpage.random_sleep(3000, 5000)
             else:
                 print("View Cart can't be found... + " + asin, flush=True)
