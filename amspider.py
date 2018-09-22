@@ -536,9 +536,9 @@ def get_inventory_jp(driver_upper, asin):
                     amazonasinpage.random_sleep(3000, 5000)
                     if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_JP) == False:
                         if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP):
-                            print("Inventory Over 999... + " + asin, flush=True)
                             element = driver.find_element(*ITEM_INPUT_JP)
-                            data['inventory'] = element.get_attribute('value')
+                            print("Inventory Over  " + element.get_attribute('value') + ' ' + asin, flush=True)
+                            data['inventory'] = int(element.get_attribute('value'))
                         else:
                             print("Inventory Tips can't be found... + " + asin, flush=True)
                             status = False
