@@ -533,9 +533,9 @@ def get_inventory_jp(driver_upper, asin):
                         data['limited'] = 'yes'
                         data['inventory'] = 0
                     else:
-                        print("inventory is " + element.text)
+                        print("inventory is " + element.text, flush=True)
                         data['inventory'] = int(getsale(element.text))
-                        # print("inventory is: " + str(data['inventory']))
+                        # print("inventory is: " + str(data['inventory']), flush=True)
         if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
             print("Inventory Delete can't be found...", flush=True)
             status = False
