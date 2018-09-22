@@ -521,13 +521,13 @@ def get_inventory_jp(driver_upper, asin):
                     else:
                         data['inventory'] = int(getsale(element.text))
                         # print("inventory is: " + str(data['inventory']))
-                    if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
-                        print("Inventory Delete can't be found...", flush=True)
-                        status = False
-                    else:
-                        amazonasinpage.click(*ITEM_DELETE_JP)
-                        # print(data, flush=True)
-                        status = data
+        if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
+            print("Inventory Delete can't be found...", flush=True)
+            status = False
+        else:
+            amazonasinpage.click(*ITEM_DELETE_JP)
+            # print(data, flush=True)
+            status = data
     except NoSuchElementException as msg:
         status = False
         print("Except: NoSuchElementException", flush=True)
