@@ -537,6 +537,9 @@ def get_inventory_jp(driver_upper, asin):
                     if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_JP) == False:
                         print("Inventory Tips can't be found... + " + asin, flush=True)
                         status = False
+                        if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP):
+                            element = driver.find_element(*ITEM_INPUT_JP)
+                            print(element.text)
                     else:
                         element = driver.find_element(*INVENTORY_TIPS_JP)
                         # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
@@ -591,5 +594,5 @@ if __name__ == "__main__":
     #     t2 = time.time()
     #     print("总耗时：" + format(t2 - t1))
     #     print("Test End\n", flush=True)
-    get_inventory_jp(False, "B07D67V8JY")
+    get_inventory_jp(False, "B06ZXXQ54K")
     # driver.quit()
