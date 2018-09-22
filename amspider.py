@@ -19,6 +19,7 @@ FBA_FLAG = (By.ID, "SSOFpopoverLink")
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
 VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
 VIEW_CART_BUTTON1 = (By.ID, 'hlb-view-cart')
+VIEW_CART_BUTTON2 = (By.CSS_SELECTOR, 'input[name=editCart]')
 ITEM_SELECT_US = (By.XPATH,
                            '//*[@id=\'activeCartViewForm\']/div[position()=2]/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/span[position()=1]/select')
 ITEM_INPUT_US = (By.XPATH,
@@ -328,7 +329,7 @@ def jp_node_gather():
                         'inventory': 0,
                         'limited': 'no'
                     }
-                    inventory_array.append(data)
+                    inventory_array.append(copy.deepcopy(data))
                     driver.quit()
                     time.sleep(2)
                     chrome_options = webdriver.ChromeOptions()
@@ -342,7 +343,6 @@ def jp_node_gather():
                     driver = webdriver.Chrome(chrome_options=chrome_options)
                     driver.set_page_load_timeout(60)
                     driver.set_script_timeout(60)
-                    inventory_array = []
                 else:
                     tmp_info['seller'] = status['seller']
                     tmp_info['qa'] = status['qa']
@@ -513,6 +513,9 @@ def get_inventory_jp(driver_upper, asin):
             amazonasinpage.random_sleep(3000, 5000)
         elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
             amazonasinpage.click(*VIEW_CART_BUTTON1)
+            amazonasinpage.random_sleep(3000, 5000)
+        elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON2):
+            amazonasinpage.click(*VIEW_CART_BUTTON2)
             amazonasinpage.random_sleep(3000, 5000)
         else:
             print("View Cart can't be found... + " + asin, flush=True)
