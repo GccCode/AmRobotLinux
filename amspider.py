@@ -540,7 +540,7 @@ def get_inventory_jp(driver_upper, asin):
                     if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_JP) == False:
                         if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP):
                             element = driver.find_element(*ITEM_INPUT_JP)
-                            print("Inventory Over " + element.get_attribute('value') + ' + ' + asin, flush=True)
+                            # print("Inventory Over " + element.get_attribute('value') + ' + ' + asin, flush=True)
                             data['inventory'] = int(element.get_attribute('value'))
                         else:
                             print("Inventory Tips can't be found... + " + asin, flush=True)
@@ -554,7 +554,7 @@ def get_inventory_jp(driver_upper, asin):
                             data['limited'] = 'yes'
                             data['inventory'] = 0
                         else:
-                            print("inventory is " + element.text, flush=True)
+                            # ss
                             data['inventory'] = int(getsale(element.text))
                             # print("inventory is: " + str(data['inventory']), flush=True)
             if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
