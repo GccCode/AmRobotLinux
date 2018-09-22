@@ -323,6 +323,20 @@ def jp_node_gather():
                 if status == False:
                     tmp_info['status'] = 'err'
                     inventory_array.append('err')
+                    driver.quit()
+                    time.sleep(2)
+                    chrome_options = webdriver.ChromeOptions()
+                    prefs = {
+                        'profile.default_content_setting_values': {
+                            'images': 2,
+                            'javascript': 2
+                        }
+                    }
+                    chrome_options.add_experimental_option("prefs", prefs)
+                    driver = webdriver.Chrome(chrome_options=chrome_options)
+                    driver.set_page_load_timeout(60)
+                    driver.set_script_timeout(60)
+                    inventory_array = []
                 else:
                     tmp_info['seller'] = status['seller']
                     tmp_info['qa'] = status['qa']
@@ -526,6 +540,7 @@ def get_inventory_jp(driver_upper, asin):
             status = False
         else:
             amazonasinpage.click(*ITEM_DELETE_JP)
+            amazonasinpage.random_walk(2000, 3000)
             # print(data, flush=True)
             status = data
     except NoSuchElementException as msg:
