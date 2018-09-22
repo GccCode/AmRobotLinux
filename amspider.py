@@ -5,6 +5,7 @@ from selenium import webdriver
 import re
 import time
 import random
+import json
 import sys
 import io
 from selenium.webdriver.common.by import By
@@ -357,10 +358,11 @@ def jp_node_gather():
 
         for i in range(0, len(asin_info_array)):
             with open('test.txt', 'a') as f:
-                f.write(inventory_array[i])
+                f.writelines(json.dumps(inventory_array[i]) + "\n")
             print(inventory_array[i])
             with open('test.txt', 'a') as f:
-                f.write(asin_info_array[i])
+                f.writelines(json.dumps(asin_info_array[i]) + "\n")
+            f.close()
             print(asin_info_array[i])
 
 def us_node_gather(url):
@@ -550,7 +552,7 @@ def get_inventory_jp(driver_upper, asin):
                         # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
                         # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
                         if '客様お一人' in element.text:
-                            print("check limited", flush= True)
+                            # print("check limited", flush= True)
                             data['limited'] = 'yes'
                             data['inventory'] = 0
                         else:
