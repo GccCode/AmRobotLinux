@@ -16,15 +16,20 @@ class AmazonAsinPage(AmazonPage):
         self.cf.read("info.txt")
 
     def add_cart(self, begin, end):
+        status = True
         try:
             if self.is_element_exsist(*self.locator.ADDCARTBUTTON):
                 self.click(*self.locator.ADDCARTBUTTON)
                 self.random_sleep(begin, end)
                 print(("**** Add Cart..."), flush=True)
             else:
+                status = False
                 print("Addcart element can't find..", flush=True)
         except:
             print("Addcart element error..", flush=True)
+            status = False
+        finally:
+            return status
 
     def ask_qa(self, content, begin, end):
         country = self.cf.get("account", "country")
