@@ -591,5 +591,5 @@ if __name__ == "__main__":
     #     t2 = time.time()
     #     print("总耗时：" + format(t2 - t1))
     #     print("Test End\n", flush=True)
-    get_inventory_jp(False, "B07GBQ7SLJ")
+    get_inventory_jp(False, "B07C32SS8P")
     # driver.quit()
