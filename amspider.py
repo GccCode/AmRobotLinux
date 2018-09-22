@@ -538,8 +538,9 @@ def get_inventory_jp(driver_upper, asin):
                         print("Inventory Tips can't be found... + " + asin, flush=True)
                         status = False
                         if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP):
+                            print("Inventory Over 999... + " + asin, flush=True)
                             element = driver.find_element(*ITEM_INPUT_JP)
-                            print(element.text)
+                            print(element.get_attribute('value'))
                     else:
                         element = driver.find_element(*INVENTORY_TIPS_JP)
                         # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
