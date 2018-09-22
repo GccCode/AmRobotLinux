@@ -348,7 +348,6 @@ def jp_node_gather():
                     tmp_info['seller'] = status['seller']
                     tmp_info['qa'] = status['qa']
                     tmp_info['limited'] = status['limited']
-                    tmp_info['inventory'] = status['inventory']
                     inventory_array.append(copy.deepcopy(status))
 
         except Exception as e:
@@ -357,7 +356,11 @@ def jp_node_gather():
             driver.quit()
 
         for i in range(0, len(asin_info_array)):
+            with open('test.txt', 'a') as f:
+                f.write(inventory_array[i])
             print(inventory_array[i])
+            with open('test.txt', 'a') as f:
+                f.write(asin_info_array[i])
             print(asin_info_array[i])
 
 def us_node_gather(url):
