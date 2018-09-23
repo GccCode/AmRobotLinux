@@ -427,8 +427,6 @@ def jp_node_gather(node, type):
                                                     'date' : yesterday,
                                                     'sale' : copy.deepcopy(status)
                                                 }
-                                                print('sale data is :', flush=True)
-                                                print(data, flush=True)
                                                 sale_table = 'sale_' +asin
                                                 status = amazondata.create_sale_table(sale_table)
                                                 if status == True:
