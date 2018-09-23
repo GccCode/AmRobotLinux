@@ -374,14 +374,14 @@ def jp_node_gather(node, type):
             if status == False:
                 return False
 
-        # for i in range(0, len(asin_info_array)):
-        #     with open('test.txt', 'a') as f:
-        #         f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
-        #     print(inventory_array[i])
-        #     with open('test.txt', 'a') as f:
-        #         f.writelines(json.dumps(asin_info_array[i], cls=DateEncoder) + "\n")
-        #     f.close()
-        #     print(asin_info_array[i])
+        for i in range(0, len(asin_info_array)):
+            with open('test.txt', 'a') as f:
+                f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
+            print(inventory_array[i])
+            with open('test.txt', 'a') as f:
+                f.writelines(json.dumps(asin_info_array[i], cls=DateEncoder) + "\n")
+            f.close()
+            print(asin_info_array[i])
 
         amazondata = AmazonData()
         status = amazondata.create_database('amazondata')
@@ -691,7 +691,7 @@ if __name__ == "__main__":
     # driver.set_page_load_timeout(60)
     # driver.set_script_timeout(60)
     node = '2285178051'
-    type = 'bs'
+    type = 'BS'
     jp_node_gather(node, type)
     # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
     # for i in range(0, 100):
