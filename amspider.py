@@ -128,7 +128,7 @@ def jp_node_gather(node, type):
             'shipping': None,
             'seller': 0,
             'avg_sale': 0,
-            'inventory_date' : None,
+            'inventory_date' : '1990-01-28',
             'limited': 'no',
             'img_url': None,
             'status': 'ok'
