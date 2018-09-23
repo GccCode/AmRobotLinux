@@ -140,7 +140,7 @@ def jp_node_gather(node, type):
             'shipping': None,
             'seller': 0,
             'avg_sale': 0,
-            'inventory_date' : date,
+            'inventory_date' : date1,
             'limited': 'no',
             'img_url': None,
             'status': 'ok'
