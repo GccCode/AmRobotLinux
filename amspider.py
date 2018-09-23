@@ -394,12 +394,11 @@ def jp_node_gather(node, type):
                     status = amazondata.create_asin_info_table(asin_info_table)
                     if status == True:
                         print("asin_info_table create sucessfully + " + asin_info_table, flush=True)
-                        print(asin_info_array[i])
                         status = amazondata.insert_asin_info_data(asin_info_table, asin_info_array[i])
                         if status == True:
                             print("asin_info_data inserted sucessfully.. + " + asin_info_table, flush=True)
                             if asin_info_array[i]['limited'] == 'no':
-                                inventory_table = 'inventory_' + asin
+                                inventory_table = 'INVENTORY_' + asin
                                 status = amazondata.create_inventory_table(inventory_table)
                                 if status == True:
                                     print("inventory_table create sucessfully + " + inventory_table, flush=True)
@@ -408,7 +407,6 @@ def jp_node_gather(node, type):
                                         'date' : cur_date,
                                         'inventory' : inventory_array[i]['inventory']
                                     }
-                                    print('inventory data is :', flush=True)
                                     status = amazondata.insert_inventory_data(inventory_table, data)
                                     if status == True:
                                         print("inventory data insert sucessfully.. + " + inventory_table, flush=True)
@@ -425,7 +423,7 @@ def jp_node_gather(node, type):
                                                     'date' : yesterday,
                                                     'sale' : copy.deepcopy(status)
                                                 }
-                                                sale_table = 'sale_' + asin
+                                                sale_table = 'SALE_' + asin
                                                 status = amazondata.create_sale_table(sale_table)
                                                 if status == True:
                                                     print("sale_table create sucessfully.. + " + sale_table, flush=True)
@@ -443,7 +441,6 @@ def jp_node_gather(node, type):
                                                                     flush=True)
                                                         else:
                                                             print(" get avg_sale fail.. + " + asin_info_table, flush=True)
-                                                            status = False
                                                     else:
                                                         print("sale_data insert fail... + " + sale_table, flush=True)
                                                 else:
@@ -465,7 +462,7 @@ def jp_node_gather(node, type):
 
                 amazondata.disconnect_database()
 
-        return status
+    return status
 
 def us_node_gather(url):
     item_prefix = "//*[@id=\'zg-ordered-list\']/li[position()="
