@@ -373,14 +373,14 @@ def jp_node_gather(node, type):
             if status == False:
                 return False
 
-        for i in range(0, len(asin_info_array)):
-            with open('test.txt', 'a') as f:
-                f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
-            print(inventory_array[i])
-            with open('test.txt', 'a') as f:
-                f.writelines(json.dumps(asin_info_array[i], cls=DateEncoder) + "\n")
-            f.close()
-            print(asin_info_array[i])
+        # for i in range(0, len(asin_info_array)):
+        #     with open('test.txt', 'a') as f:
+        #         f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
+        #     print(inventory_array[i])
+        #     with open('test.txt', 'a') as f:
+        #         f.writelines(json.dumps(asin_info_array[i], cls=DateEncoder) + "\n")
+        #     f.close()
+        #     print(asin_info_array[i])
 
         amazondata = AmazonData()
         status = amazondata.create_database('amazondata')
@@ -441,8 +441,8 @@ def jp_node_gather(node, type):
                                                                 print("avg_sale update fail.. + " + node_table, flush=True)
                                                             # else:
                                                             #     print("avg_sale update successfully.. + " + node_table, flush=True)
-                                                        else:
-                                                            print(" get avg_sale fail.. + " + node_table, flush=True)
+                                                        # else:
+                                                        #     print(" get avg_sale fail.. + " + node_table, flush=True)
                                                     else:
                                                         print("sale_data insert fail... + " + sale_table, flush=True)
                                                 else:
