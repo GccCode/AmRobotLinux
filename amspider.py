@@ -398,7 +398,7 @@ def jp_node_gather(node, type):
                     status = amazondata.create_node_table(node_table)
                     if status == True:
                         # print("node_table create sucessfully + " + node_table, flush=True)
-                        #     status = amazondata.insert_asin_info_data(asin_info_table, asin_info_array[i])
+                        status = amazondata.insert_node_data(node_table, asin_info_array[i])
                         if status == True:
                             # print("node_data inserted sucessfully.. + " + node_table, flush=True)
                             if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err':
