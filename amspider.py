@@ -126,7 +126,8 @@ def jp_node_gather(node, type):
     status = True
     for page in range(0, 1):
         detester = '1990-01-28'
-        date1 = datetime.strptime(detester,'%Y-%m-%d')
+        datetime1 = datetime.strptime(detester,'%Y-%m-%d')
+        date1 = datetime1.date()
         print(date1)
         asin_info_data = {
             'rank': None,
