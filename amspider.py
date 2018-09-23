@@ -118,7 +118,7 @@ def getqa(template):
 def jp_node_gather(node, type):
     status = True
     for page in range(0, 1):
-        detester = '1990-01 -28'
+        detester = '1990-01-28'
         date = datetime.strptime(detester,'%Y-%m-%d')
         asin_info_data = {
             'rank': None,
