@@ -107,7 +107,7 @@ def getasinfromhref(template):
 def getimgidfromhref(template):
     rule = r'I/(.*?)\.'
     slotList = re.findall(rule, template)
-    if len(slotList[0]) != 12:
+    if len(slotList[0]) > 20:
         print(template, flush=True)
     return slotList[0]
 
