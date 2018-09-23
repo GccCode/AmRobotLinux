@@ -14,6 +14,7 @@ from selenium.common.exceptions import NoSuchElementException
 from amazonpage import AmazonPage
 import copy
 from datetime import date
+import datetime
 from datetime import datetime
 from datetime import timedelta
 from amazondata import AmazonData
@@ -91,6 +92,15 @@ NON_CRITICAL_IMGSRC_PREFIX = '//*[@id=\'zg_nonCritical\']/div[position()='
 NON_CRITICAL_IMGSRC_POSTFIX = ']/div[position()=1]/div/div[position()=1]/a/img'
 NON_CRITICAL_RANK_PREFIX = '//*[@id=\'zg_nonCritical\']/div[position()='
 NON_CRITICAL_RANK_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[position()=1]/span[position()='
+
+class DateEncoder(json.JSONEncoder):
+    def default(self,obj):
+        if isinstance(obj, datetime.datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, date):
+            return obj.strftime("%Y-%m-%d")
+        else:
+            return json.JSONEncoder.default(self, obj)
 
 def getasinfromhref(template):
     rule = r'dp/(.*?)/ref'
@@ -367,14 +377,14 @@ def jp_node_gather(node, type):
             if status == False:
                 return False
 
-        for i in range(0, len(asin_info_array)):
-            with open('test.txt', 'a') as f:
-                f.writelines(json.dumps(inventory_array[i]) + "\n")
-            print(inventory_array[i])
-            with open('test.txt', 'a') as f:
-                f.writelines(json.dumps(asin_info_array[i]) + "\n")
-            f.close()
-            print(asin_info_array[i])
+        # for i in range(0, len(asin_info_array)):
+        #     with open('test.txt', 'a') as f:
+        #         f.writelines(json.dumps(inventory_array[i]) + "\n")
+        #     print(inventory_array[i])
+        #     with open('test.txt', 'a') as f:
+        #         f.writelines(json.dumps(asin_info_array[i]) + "\n")
+        #     f.close()
+        #     print(asin_info_array[i])
 
         amazondata = AmazonData()
         status = amazondata.create_database('amazondata')
