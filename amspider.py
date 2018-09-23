@@ -403,7 +403,7 @@ def jp_node_gather(node, type):
                                     if status == True:
                                         print("inventory data insert sucessfully..", flush=True)
                                         condition = 'asin=\'' + asin + '\''
-                                        status = amazondata.update_data(asin_info_table, 'inventory_date', cur_date, condition)
+                                        status = amazondata.update_data(asin_info_table, 'inventory_date', '\'cur_date\'', condition)
                                         if status == True:
                                             print("invetory_date update sucessfully..", flush=True)
                                             status = amazondata.get_yesterday_sale(inventory_table, inventory_array[i]['inventory'])
