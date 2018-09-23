@@ -107,6 +107,8 @@ def getasinfromhref(template):
 def getimgidfromhref(template):
     rule = r'I/(.*?)\.'
     slotList = re.findall(rule, template)
+    if len(slotList[0]) != 12:
+        print(template, flush=True)
     return slotList[0]
 
 def getsale(template):
@@ -125,7 +127,7 @@ def getqa(template):
 def jp_node_gather(node, type):
     status = True
     t1 = time.time()
-    for page in range(0, 5):
+    for page in range(0, 2):
         datetime1 = datetime.strptime('1990-01-28','%Y-%m-%d')
         date1 = datetime1.date()
         asin_info_data = {
@@ -360,6 +362,7 @@ def jp_node_gather(node, type):
                     driver.set_page_load_timeout(60)
                     driver.set_script_timeout(60)
                 else:
+                    tmp_info['shipping'] = result['shipping']
                     tmp_info['seller'] = result['seller']
                     tmp_info['qa'] = result['qa']
                     tmp_info['limited'] = result['limited']
@@ -584,6 +587,7 @@ def get_inventory_jp(driver_upper, asin):
         driver = driver_upper
     status = True
     data = {
+        'shipping'  : None,
         'seller'    : None,
         'qa'        : None,
         'inventory' : None,
@@ -595,6 +599,11 @@ def get_inventory_jp(driver_upper, asin):
         amazonasinpage = AmazonAsinPage(driver)
 
         amazonasinpage.random_sleep(1000, 2000)
+        if amazonasinpage.is_element_exsist(*FBA_FLAG):
+            data['shipping'] = 'FBA'
+        else:
+            data['shipping'] = 'FBM'
+
         if amazonasinpage.is_element_exsist(*QA_COUNT):
             element = driver.find_element(*QA_COUNT)
             data['qa'] = int(getqa(element.text))
