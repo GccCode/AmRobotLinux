@@ -86,9 +86,9 @@ class AmazonData():
 
     def create_sale_table(self, table): # table_name format: asin + '-sale'
         status = True
-        columns = 'date DATE NOT NULL, sale INT NOT NULL,  PRIMARY KEY (date)'
+        columns = 'date DATE NOT NULL, sale INT NOT NULL, PRIMARY KEY (date)'
 
-        if self.amsql.is_mysql_table_exsist(self.db, table):
+        if self.amsql.is_mysql_table_exsist(self.db, table) == False:
             status = self.amsql.create_table(self.db, table, columns)
 
         return status

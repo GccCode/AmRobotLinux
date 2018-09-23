@@ -427,7 +427,7 @@ def jp_node_gather(node, type):
                                                     'date' : yesterday,
                                                     'sale' : copy.deepcopy(status)
                                                 }
-                                                sale_table = 'sale_' +asin
+                                                sale_table = 'sale_' + asin
                                                 status = amazondata.create_sale_table(sale_table)
                                                 if status == True:
                                                     status = amazondata.insert_sale_data(sale_table, data)
