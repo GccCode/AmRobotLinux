@@ -27,6 +27,51 @@ class AmazonSql():
         finally:
             return db
 
+    def is_mysql_table_exsist(self, db, table):
+        result = False
+        sql = 'show tables like \'' + table + '\''
+        try:
+            cursor = db.cursor()
+            cursor.execute(sql)
+            if cursor.rowcount > 0:
+                result = cursor
+                # print("AmazonSql Table is exsist + " + table, flush=True)
+        except Exception as e:
+            print(str(e), flush=True)
+            db.rollback()
+        finally:
+            return result
+
+    def is_mysql_database_exsist(self, db, db_name):
+        result = False
+        sql = 'show databases like \'' + db_name + '\''
+        try:
+            cursor = db.cursor()
+            cursor.execute(sql)
+            if cursor.rowcount > 0:
+                result = cursor
+                # print("AmazonSql Database is exsist + " + db_name, flush=True)
+        except Exception as e:
+            print(str(e), flush=True)
+            db.rollback()
+        finally:
+            return result
+
+    def is_mysql_column_exsit(self, db, db_name, table, column):
+        result = False
+        sql = 'SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=\'' + db_name + '\' AND table_name=\'' + table + '\'' + ' AND column_name=\'' + column + '\''
+        try:
+            cursor = db.cursor()
+            cursor.execute(sql)
+            if cursor.rowcount > 0:
+                result = cursor
+                # print("AmazonSql Column is exsist + " + column, flush=True)
+        except Exception as e:
+            print(str(e), flush=True)
+            db.rollback()
+        finally:
+            return result
+
 
     def create_db(self, db, db_name):
         status = True
@@ -40,11 +85,11 @@ class AmazonSql():
         finally:
             return status
 
-    def create_table(self, db, table, rows):
+    def create_table(self, db, table, columns):
         status = True
         try:
             cursor = db.cursor()
-            sql = 'CREATE TABLE IF NOT EXISTS ' + table + ' (' + rows + ')'
+            sql = 'CREATE TABLE IF NOT EXISTS ' + table + ' (' + columns + ')'
             cursor.execute(sql)
         except Exception as e:
             print(str(e), flush=True)
@@ -57,6 +102,10 @@ class AmazonSql():
         try:
             cursor = db.cursor()
             cursor.execute(sql)
+            if cursor.rowcount > 0:
+                status = cursor
+            else:
+                status = False
         except Exception as e:
             print(str(e), flush=True)
             status = False
@@ -72,11 +121,14 @@ class AmazonSql():
         status = True
         keys = ', '.join(data.keys())
         values = ', '.join(['%s'] * len(data))
-        sql = 'INSERT INTO {table}({keys}) VALUES ({values})'.format(table=table, keys=keys, values=values)
+        sql = 'INSERT INTO {table}({keys}) VALUES ({values}) ON DUPLICATE KEY UPDATE'.format(table=table, keys=keys, values=values)
+        update = ','.join([" {key} = %s".format(key=key) for key in data])
+        sql += update
         try:
             cursor = db.cursor()
-            if cursor.execute(sql, tuple(data.values())):
-                print('AmazonSql Insert Sucessfully: ' + str(data))
+            # if cursor.execute(sql, tuple(data.values())):
+            if cursor.execute(sql, tuple(data.values())*2):
+                # print('AmazonSql Insert Sucessfully: ' + str(data))
                 db.commit()
         except Exception as e:
             print(str(e), flush=True)
@@ -85,32 +137,31 @@ class AmazonSql():
         finally:
             return status
 
-    def add_column(self, db, table, column):
-        # 'ALTER TABLE TABLE_NAME ADD COLUMN NEW_COLUMN_NAME varchar(45) not null'
-        status = True
-        sql = 'ALTER TABLE ' + table + ' ADD COLUMN ' + column
-        try:
-            cursor = db.cursor()
-            cursor.execute(sql)
-            db.commit()
-            print("AmazonSql Add Column Sucessfully + " + column, flush=True)
-        except Exception as e:
-            print(str(e), flush=True)
-            status = False
-            db.rollback()
-        finally:
-            return status
+    # def add_column(self, db, table, column):
+    #     # 'ALTER TABLE TABLE_NAME ADD COLUMN NEW_COLUMN_NAME varchar(45) not null'
+    #     status = True
+    #     sql = 'ALTER TABLE ' + table + ' ADD COLUMN ' + column
+    #     try:
+    #         cursor = db.cursor()
+    #         cursor.execute(sql)
+    #         db.commit()
+    #         print("AmazonSql Add Column Sucessfully + " + column, flush=True)
+    #     except Exception as e:
+    #         print(str(e), flush=True)
+    #         status = False
+    #         db.rollback()
+    #     finally:
+    #         return status
 
     def update_data(self, db, table, key, value, condition):
         # 'UPDATE students SET age = %s WHERE name = %s'
         status = True
         sql = 'UPDATE {table} SET {key} = {value} WHERE {condition}'.format(table=table, key=key, value=value, condition=condition)
-        print(sql)
         try:
             cursor = db.cursor()
             cursor.execute(sql)
             db.commit()
-            print("AmazonSql Update Data Sucessfully + " + key + ' ' + value + ' WHERE ' + condition, flush=True)
+            # print("AmazonSql Update Data Sucessfully + " + key + ' ' + value + ' WHERE ' + condition, flush=True)
         except Exception as e:
             print(str(e), flush=True)
             status = False
@@ -126,7 +177,7 @@ class AmazonSql():
             cursor.execute(sql)
             if cursor.rowcount > 0:
                 result = cursor
-                print("AmazonSql Select Data Sucessfully ", flush=True)
+                # print("AmazonSql Select Data Sucessfully ", flush=True)
         except Exception as e:
             print(str(e), flush=True)
             db.rollback()
@@ -145,10 +196,15 @@ if __name__ == "__main__":
         print("Connect in failure..")
     else:
         print("Connect sucessfully..")
+        status = amsql.is_mysql_table_exsist(db, 'amazon')
+        if status != False:
+            print((status.rowcount))
+            result = status.fetchall()
+            print(result[0][0])
 
-    status = amsql.update_data(db, 'amazon', 'age', '20', 'sex = \'male\'')
-    if status == False:
-        print("failed")
-    else:
-        print("cccccc")
+    # status = amsql.update_data(db, 'amazon', 'age', '20', 'sex = \'male\'')
+    # if status == False:
+    #     print("failed")
+    # else:
+    #     print("cccccc")
     amsql.disconnect(db)

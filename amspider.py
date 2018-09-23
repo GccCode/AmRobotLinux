@@ -13,6 +13,8 @@ from amazonasinpage import AmazonAsinPage
 from selenium.common.exceptions import NoSuchElementException
 from amazonpage import AmazonPage
 import copy
+from datetime import *
+from amazondata import AmazonData
 
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
@@ -111,10 +113,8 @@ def getqa(template):
     slotList = re.findall(rule, template)
     return slotList[0]
 
-def jp_node_gather():
-    node = '2285178051'
-    type = None
-
+def jp_node_gather(node, type):
+    status = True
     for page in range(0, 5):
         asin_info_data = {
             'rank': None,
@@ -127,6 +127,7 @@ def jp_node_gather():
             'shipping': None,
             'seller': 0,
             'avg_sale': 0,
+            'inventory_date' : None,
             'limited': 'no',
             'img_url': None,
             'status': 'ok'
@@ -299,14 +300,17 @@ def jp_node_gather():
 
             amazonpage.random_sleep(2000, 5000)
         except NoSuchElementException as msg:
+            status = False
             print("Except: NoSuchElementException", flush=True)
         except Exception as e:
+            status = False
             print(e, flush=True)
         finally:
             driver.quit()
+            if status == False:
+                return False
 
-        # print(asin_info_array)
-
+        status = True
         chrome_options = webdriver.ChromeOptions()
         prefs = {
             'profile.default_content_setting_values': {
@@ -322,8 +326,8 @@ def jp_node_gather():
         try:
             for i in range(0, len(asin_info_array)):
                 tmp_info = asin_info_array[i]
-                status = get_inventory_jp(driver, tmp_info['asin'])
-                if status == False:
+                result = get_inventory_jp(driver, tmp_info['asin'])
+                if result == False:
                     tmp_info['status'] = 'err'
                     data = {
                         'seller': 0,
@@ -346,15 +350,18 @@ def jp_node_gather():
                     driver.set_page_load_timeout(60)
                     driver.set_script_timeout(60)
                 else:
-                    tmp_info['seller'] = status['seller']
-                    tmp_info['qa'] = status['qa']
-                    tmp_info['limited'] = status['limited']
-                    inventory_array.append(copy.deepcopy(status))
+                    tmp_info['seller'] = result['seller']
+                    tmp_info['qa'] = result['qa']
+                    tmp_info['limited'] = result['limited']
+                    inventory_array.append(copy.deepcopy(result))
 
         except Exception as e:
+            status = False
             print(str(e), flush=True)
         finally:
             driver.quit()
+            if status == False:
+                return False
 
         for i in range(0, len(asin_info_array)):
             with open('test.txt', 'a') as f:
@@ -364,6 +371,67 @@ def jp_node_gather():
                 f.writelines(json.dumps(asin_info_array[i]) + "\n")
             f.close()
             print(asin_info_array[i])
+
+        amazondata = AmazonData()
+        status = amazondata.create_database('amazondata')
+        if status == True:
+            status = amazondata.connect_database('amazondata')
+            if status == True:
+                for i in range(0, len(asin_info_array)):
+                    asin = asin_info_array[i]['asin']
+                    asin_info_table = node + '_' + type + '_' + asin
+                    status = amazondata.create_asin_info_table(asin_info_table)
+                    if status == True:
+                        print("asin_info_table create sucessfully + " + asin_info_table, flush=True)
+                        status = amazondata.insert_asin_info_data(asin_info_table, asin_info_array[i])
+                        if status == True:
+                            print("asin_info_data inserted sucessfully", flush=True)
+                            if asin_info_array[i]['limited'] == 'no':
+                                inventory_table = 'inventory_' + asin
+                                status = amazondata.create_inventory_table(inventory_table)
+                                if status == True:
+                                    print("inventory_table create sucessfully + " + inventory_table, flush=True)
+                                    cur_date = date.today()
+                                    data = {
+                                        'date' : cur_date,
+                                        'inventory' : inventory_array[i]['inventory']
+                                    }
+                                    print('inventory data is :', flush=True)
+                                    print(data, flush=True)
+                                    status = amazondata.insert_inventory_data(inventory_table, data)
+                                    if status == True:
+                                        print("inventory data insert sucessfully..", flush=True)
+                                        condition = 'asin=\'' + asin + '\''
+                                        status = amazondata.update_data(asin_info_table, 'inventory_date', cur_date, condition)
+                                        if status == True:
+                                            print("invetory_date update sucessfully..", flush=True)
+                                            status = amazondata.get_yesterday_sale(inventory_table, inventory_array[i]['inventory'])
+                                            if status != False:
+                                                print("get_yesterday_sale sucessfully..", flush=True)
+                                                yesterday = date.today() + timedelta(days=-1)
+                                                data = {
+                                                    'date' : yesterday,
+                                                    'sale' : copy.deepcopy(status)
+                                                }
+                                                print('sale data is :', flush=True)
+                                                print(data, flush=True)
+                                                sale_table = 'sale_' +asin
+                                                status = amazondata.insert_sale_data(sale_table, data)
+                                                if status == True:
+                                                    print("sale_data insert sucessfully...", flush=True)
+                                                    avg_sale = amazondata.get_column_avg(sale_table, 'sale')
+                                                    if avg_sale != False:
+                                                        status = amazondata.update_data(asin_info_table, 'avg_sale', avg_sale, condition)
+                                                        if status == True:
+                                                            print("avg_sale update successfully..", flush=True)
+                                                    else:
+                                                        status = False
+                            else:
+                                print('Inventory Limited, no need to record...', flush=True)
+
+                amazondata.disconnect_database()
+
+        return status
 
 def us_node_gather(url):
     item_prefix = "//*[@id=\'zg-ordered-list\']/li[position()="
@@ -591,7 +659,9 @@ if __name__ == "__main__":
     # driver = webdriver.Chrome(chrome_options=chrome_options)
     # driver.set_page_load_timeout(60)
     # driver.set_script_timeout(60)
-    jp_node_gather()
+    node = '2285178051'
+    type = 'bs'
+    jp_node_gather(node, type)
     # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
     # for i in range(0, 100):
     #     t1 = time.time()
