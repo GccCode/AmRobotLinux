@@ -397,6 +397,7 @@ def jp_node_gather(node, type):
                     status = amazondata.create_asin_info_table(asin_info_table)
                     if status == True:
                         print("asin_info_table create sucessfully + " + asin_info_table, flush=True)
+                        print(asin_info_array[i])
                         status = amazondata.insert_asin_info_data(asin_info_table, asin_info_array[i])
                         if status == True:
                             print("asin_info_data inserted sucessfully", flush=True)
@@ -405,7 +406,7 @@ def jp_node_gather(node, type):
                                 status = amazondata.create_inventory_table(inventory_table)
                                 if status == True:
                                     print("inventory_table create sucessfully + " + inventory_table, flush=True)
-                                    cur_date = date.today()
+                                    cur_date = date.today().strftime("%Y-%m-%d")
                                     print(cur_date)
                                     data = {
                                         'date' : cur_date,
