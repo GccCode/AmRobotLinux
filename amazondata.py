@@ -104,25 +104,24 @@ class AmazonData():
         today = date.today()
         yesterday = date.today() + timedelta(days = -1)
         sql = 'select * from ' + table + ' where date=\'' + yesterday.strftime("%Y-%m-%d") + '\''
-        print(sql)
         status = self.amsql.select_data(self.db, sql)
         if status == False:
             print("Get yesterday sale fail...", flush=True)
             return -1
 
         inventory = status.fetchall()
-        today_inventory = inventory[0][1]
+        yesterday_inventory = inventory[0][1]
+
         sql = 'select * from ' + table + ' where date=\'' + today.strftime("%Y-%m-%d") + '\''
-        print(sql)
         status = self.amsql.select_data(self.db, sql)
         if status == False:
             print("Get today sale fail...", flush=True)
             return -1
 
         inventory = status.fetchall()
-        yesterday_inventory = inventory[0][1]
+        today_inventory = inventory[0][1]
 
-        yesterday_sale = yesterday_inventory - today_inventory
+        yesterday_sale =  yesterday_inventory - today_inventory
 
         return yesterday_sale
 

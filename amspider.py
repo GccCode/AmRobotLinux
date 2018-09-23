@@ -434,7 +434,7 @@ def jp_node_gather(node, type):
                                                 if status == True:
                                                     print("sale_data insert sucessfully...", flush=True)
                                                     avg_sale = amazondata.get_column_avg(sale_table, 'sale')
-                                                    if avg_sale != False:
+                                                    if avg_sale != -1:
                                                         status = amazondata.update_data(asin_info_table, 'avg_sale', avg_sale, condition)
                                                         if status == True:
                                                             print("avg_sale update successfully..", flush=True)
