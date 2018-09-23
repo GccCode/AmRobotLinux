@@ -100,7 +100,8 @@ class AmazonData():
         # }
         return self.amsql.insert_data(self.db, table, data)
 
-    def get_yesterday_sale(self, table, today_sale):
+    def get_yesterday_sale(self, table):
+        today = date.today()
         yesterday = date.today() + timedelta(days = -1)
         sql = 'select * from ' + table + ' where date=\'' + yesterday.strftime("%Y-%m-%d") + '\''
         status = self.amsql.select_data(self.db, sql)
@@ -108,9 +109,17 @@ class AmazonData():
             return False
 
         inventory = status.fetchall()
+        today_inventory = inventory[0][1]
+        sql = 'select * from ' + table + ' where date=\'' + yesterday.strftime("%Y-%m-%d") + '\''
+        status = self.amsql.select_data(self.db, sql)
+        if status == False:
+            return False
 
-        sale = inventory[0][1] - today_sale
-        return sale
+        inventory = status.fetchall()
+        yesterday_inventory = inventory[0][1]
+
+        yesterday_sale = yesterday_inventory - today_inventory
+        return yesterday_sale
 
     def get_column_avg(self, table, column):
         status = False
@@ -147,43 +156,43 @@ if __name__ == "__main__":
     # else:
     #     print("create amazondata database ok..", flush=True)
 
-    status = amazondata.create_asin_info_table('2285178051_bs_B07GP8QY8H')
-    if status == False:
-        print("Create table fail", flush=True)
-    else:
-        data = {"rank": 7, "asin": "B07D8LJ9F2", "node": "2285178051", "price": 740, "review": 2, "rate": 1.0, "qa": 1, "shipping": "FBM", "seller": 1, "avg_sale": 0, "limited": "no", "img_url": "4124d4tNQbL", "status": "ok"}
-        status = amazondata.insert_asin_info_data('2285178051_bs_B07GP8QY8H', data)
-        if status == False:
-            print("Data Insert fail", flush=True)
-        else:
-            print("Data Insert ok")
-    status = amazondata.create_inventory_table('inventory_B07D8LJ9F2')
-    if status == False:
-        print("fail")
-    else:
-        print("ok")
+    # status = amazondata.create_asin_info_table('2285178051_bs_B07GP8QY8H')
+    # if status == False:
+    #     print("Create table fail", flush=True)
+    # else:
+    #     data = {"rank": 7, "asin": "B07D8LJ9F2", "node": "2285178051", "price": 740, "review": 2, "rate": 1.0, "qa": 1, "shipping": "FBM", "seller": 1, "avg_sale": 0, "limited": "no", "img_url": "4124d4tNQbL", "status": "ok"}
+    #     status = amazondata.insert_asin_info_data('2285178051_bs_B07GP8QY8H', data)
+    #     if status == False:
+    #         print("Data Insert fail", flush=True)
+    #     else:
+    #         print("Data Insert ok")
+    # status = amazondata.create_inventory_table('inventory_B07D8LJ9F2')
+    # if status == False:
+    #     print("fail")
+    # else:
+    #     print("ok")
     today = date.today()
     yesterday = today + timedelta(days=-1)
-    today_data = {
-        'date': today,
-        'inventory': 9
-    }
-    status = amazondata.insert_inventory_data('inventory_B07D8LJ9F2', today_data)
-    if status == False:
-        print("fail1")
-    else:
-        print("ok1")
+    # today_data = {
+    #     'date': today,
+    #     'inventory': 9
+    # }
+    # status = amazondata.insert_inventory_data('inventory_B07D8LJ9F2', today_data)
+    # if status == False:
+    #     print("fail1")
+    # else:
+    #     print("ok1")
     yesterday_data = {
         'date' : yesterday,
-        'inventory': 15
+        'inventory': 30
     }
-    status = amazondata.insert_inventory_data('inventory_B07D8LJ9F2', yesterday_data)
+    status = amazondata.insert_inventory_data('inventory_B07DPP7V2M', yesterday_data)
     if status == False:
         print("fail2")
     else:
         print("ok2")
 
-    status = amazondata.get_today_sale('inventory_B07D8LJ9F2', 9)
+    status = amazondata.get_yesterday_sale('inventory_B07DPP7V2M')
     if status == False:
         print("fail3")
     else:

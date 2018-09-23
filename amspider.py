@@ -411,7 +411,6 @@ def jp_node_gather(node, type):
                                         'inventory' : inventory_array[i]['inventory']
                                     }
                                     print('inventory data is :', flush=True)
-                                    print(data, flush=True)
                                     status = amazondata.insert_inventory_data(inventory_table, data)
                                     if status == True:
                                         print("inventory data insert sucessfully..", flush=True)
@@ -420,7 +419,7 @@ def jp_node_gather(node, type):
                                         status = amazondata.update_data(asin_info_table, 'inventory_date', value, condition)
                                         if status == True:
                                             print("invetory_date update sucessfully..", flush=True)
-                                            status = amazondata.get_yesterday_sale(inventory_table, inventory_array[i]['inventory'])
+                                            status = amazondata.get_yesterday_sale(inventory_table)
                                             if status != False:
                                                 print("get_yesterday_sale sucessfully..", flush=True)
                                                 yesterday = date.today() + timedelta(days=-1)
