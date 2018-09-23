@@ -14,6 +14,7 @@ from selenium.common.exceptions import NoSuchElementException
 from amazonpage import AmazonPage
 import copy
 from datetime import date
+from datetime import timedelta
 from amazondata import AmazonData
 
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
