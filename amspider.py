@@ -406,7 +406,7 @@ def jp_node_gather(node, type):
                                 status = amazondata.create_inventory_table(inventory_table)
                                 if status == True:
                                     print("inventory_table create sucessfully + " + inventory_table, flush=True)
-                                    cur_date = date.today().strftime("%Y-%m-%d")
+                                    cur_date = date.today()
                                     print(cur_date)
                                     data = {
                                         'date' : cur_date,
