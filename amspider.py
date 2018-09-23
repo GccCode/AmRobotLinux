@@ -430,16 +430,18 @@ def jp_node_gather(node, type):
                                                 print('sale data is :', flush=True)
                                                 print(data, flush=True)
                                                 sale_table = 'sale_' +asin
-                                                status = amazondata.insert_sale_data(sale_table, data)
+                                                status = amazondata.create_sale_table(sale_table)
                                                 if status == True:
-                                                    print("sale_data insert sucessfully...", flush=True)
-                                                    avg_sale = amazondata.get_column_avg(sale_table, 'sale')
-                                                    if avg_sale != -1:
-                                                        status = amazondata.update_data(asin_info_table, 'avg_sale', avg_sale, condition)
-                                                        if status == True:
-                                                            print("avg_sale update successfully..", flush=True)
-                                                    else:
-                                                        status = False
+                                                    status = amazondata.insert_sale_data(sale_table, data)
+                                                    if status == True:
+                                                        print("sale_data insert sucessfully...", flush=True)
+                                                        avg_sale = amazondata.get_column_avg(sale_table, 'sale')
+                                                        if avg_sale != -1:
+                                                            status = amazondata.update_data(asin_info_table, 'avg_sale', avg_sale, condition)
+                                                            if status == True:
+                                                                print("avg_sale update successfully..", flush=True)
+                                                        else:
+                                                            status = False
                             else:
                                 print('Inventory Limited, no need to record...', flush=True)
 
