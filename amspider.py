@@ -390,13 +390,18 @@ def jp_node_gather(node, type):
             if status == True:
                 for i in range(0, len(asin_info_array)):
                     asin = asin_info_array[i]['asin']
-                    asin_info_table = node + '_' + type + '_' + asin
-                    status = amazondata.create_asin_info_table(asin_info_table)
+                    # asin_info_table = node + '_' + type + '_' + asin
+                    # status = amazondata.create_asin_info_table(asin_info_table)
+                    # if status == True:
+                    #     print("asin_info_table create sucessfully + " + asin_info_table, flush=True)
+                    #     status = amazondata.insert_asin_info_data(asin_info_table, asin_info_array[i])
+                    node_table = node + '_' + type
+                    status = amazondata.create_node_table(node_table)
                     if status == True:
-                        print("asin_info_table create sucessfully + " + asin_info_table, flush=True)
-                        status = amazondata.insert_asin_info_data(asin_info_table, asin_info_array[i])
+                        print("node_table create sucessfully + " + node_table, flush=True)
+                        #     status = amazondata.insert_asin_info_data(asin_info_table, asin_info_array[i])
                         if status == True:
-                            print("asin_info_data inserted sucessfully.. + " + asin_info_table, flush=True)
+                            print("node_data inserted sucessfully.. + " + node_table, flush=True)
                             if asin_info_array[i]['limited'] == 'no':
                                 inventory_table = 'INVENTORY_' + asin
                                 status = amazondata.create_inventory_table(inventory_table)
@@ -412,9 +417,9 @@ def jp_node_gather(node, type):
                                         print("inventory data insert sucessfully.. + " + inventory_table, flush=True)
                                         condition = 'asin=\'' + asin + '\''
                                         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-                                        status = amazondata.update_data(asin_info_table, 'inventory_date', value, condition)
+                                        status = amazondata.update_data(node_table, 'inventory_date', value, condition)
                                         if status == True:
-                                            print("invetory_date update sucessfully.. + " + asin_info_table, flush=True)
+                                            print("invetory_date update sucessfully.. + " + node_table, flush=True)
                                             status = amazondata.get_yesterday_sale(inventory_table)
                                             if status != False:
                                                 print("get_yesterday_sale sucessfully.. + " + inventory_table, flush=True)
@@ -432,15 +437,15 @@ def jp_node_gather(node, type):
                                                         print("sale_data insert sucessfully... + " + sale_table, flush=True)
                                                         avg_sale = amazondata.get_column_avg(sale_table, 'sale')
                                                         if avg_sale != -1:
-                                                            status = amazondata.update_data(asin_info_table, 'avg_sale', avg_sale, condition)
+                                                            status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
                                                             if status == True:
-                                                                print("avg_sale update successfully.. + " + asin_info_table, flush=True)
+                                                                print("avg_sale update successfully.. + " + node_table, flush=True)
                                                             else:
                                                                 print(
-                                                                    "avg_sale update fail.. + " + asin_info_table,
+                                                                    "avg_sale update fail.. + " + node_table,
                                                                     flush=True)
                                                         else:
-                                                            print(" get avg_sale fail.. + " + asin_info_table, flush=True)
+                                                            print(" get avg_sale fail.. + " + node_table, flush=True)
                                                     else:
                                                         print("sale_data insert fail... + " + sale_table, flush=True)
                                                 else:
@@ -448,7 +453,7 @@ def jp_node_gather(node, type):
                                             else:
                                                 print("get_yesterday_sale fail.. + " + inventory_table, flush=True)
                                         else:
-                                            print("invetory_date update fail.. + " + asin_info_table, flush=True)
+                                            print("invetory_date update fail.. + " + node_table, flush=True)
                                     else:
                                         print("inventory data insert fail.. + " + inventory_table, flush=True)
                                 else:
@@ -456,9 +461,9 @@ def jp_node_gather(node, type):
                             else:
                                 print('Inventory Limited, no need to record...', flush=True)
                         else:
-                            print("asin_info_data inserted fail.. + " + asin_info_table, flush=True)
+                            print("asin_info_data inserted fail.. + " + node_table, flush=True)
                     else:
-                        print("asin_info_table create fail + " + asin_info_table, flush=True)
+                        print("node_table create fail + " + node_table, flush=True)
 
                 amazondata.disconnect_database()
 
