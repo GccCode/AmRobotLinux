@@ -128,7 +128,6 @@ def jp_node_gather(node, type):
         detester = '1990-01-28'
         datetime1 = datetime.strptime(detester,'%Y-%m-%d')
         date1 = datetime1.date()
-        print(date1)
         asin_info_data = {
             'rank': None,
             'asin': None,
