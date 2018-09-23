@@ -14,6 +14,7 @@ from selenium.common.exceptions import NoSuchElementException
 from amazonpage import AmazonPage
 import copy
 from datetime import date
+from datetime import datetime
 from datetime import timedelta
 from amazondata import AmazonData
 
@@ -117,6 +118,8 @@ def getqa(template):
 def jp_node_gather(node, type):
     status = True
     for page in range(0, 1):
+        detester = '1990-01 -28'
+        date = datetime.strptime(detester,'%Y-%m-%d')
         asin_info_data = {
             'rank': None,
             'asin': None,
@@ -128,7 +131,7 @@ def jp_node_gather(node, type):
             'shipping': None,
             'seller': 0,
             'avg_sale': 0,
-            'inventory_date' : '1990-01-28',
+            'inventory_date' : date,
             'limited': 'no',
             'img_url': None,
             'status': 'ok'
