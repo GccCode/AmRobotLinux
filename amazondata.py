@@ -107,22 +107,23 @@ class AmazonData():
         print(sql)
         status = self.amsql.select_data(self.db, sql)
         if status == False:
-            print("Get today sale fail...", flush=True)
-            return False
+            print("Get yesterday sale fail...", flush=True)
+            return -1
 
         inventory = status.fetchall()
         today_inventory = inventory[0][1]
-        sql = 'select * from ' + table + ' where date=\'' + yesterday.strftime("%Y-%m-%d") + '\''
+        sql = 'select * from ' + table + ' where date=\'' + today.strftime("%Y-%m-%d") + '\''
         print(sql)
         status = self.amsql.select_data(self.db, sql)
         if status == False:
-            print("Get yesterday sale fail...", flush=True)
-            return False
+            print("Get today sale fail...", flush=True)
+            return -1
 
         inventory = status.fetchall()
         yesterday_inventory = inventory[0][1]
 
         yesterday_sale = yesterday_inventory - today_inventory
+
         return yesterday_sale
 
     def get_column_avg(self, table, column):
@@ -197,7 +198,7 @@ if __name__ == "__main__":
         print("ok2")
 
     status = amazondata.get_yesterday_sale('inventory_B07DPP7V2M')
-    if status == False:
+    if status == -1:
         print("fail3")
     else:
         print("today sale is " + str(status))
