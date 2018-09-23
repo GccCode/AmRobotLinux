@@ -307,7 +307,7 @@ def jp_node_gather(node, type):
 
                     asin_info_array.append(copy.deepcopy(asin_info_data))
                 # print(asin_info_data['asin'], flush=True)
-                print("** ------------------- **", flush=True)
+                # print("** ------------------- **", flush=True)
 
             amazonpage.random_sleep(2000, 5000)
         except NoSuchElementException as msg:
