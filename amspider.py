@@ -14,7 +14,6 @@ from selenium.common.exceptions import NoSuchElementException
 from amazonpage import AmazonPage
 import copy
 from datetime import date
-import datetime
 from datetime import datetime
 from datetime import timedelta
 from amazondata import AmazonData
@@ -95,10 +94,8 @@ NON_CRITICAL_RANK_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[posit
 
 class DateEncoder(json.JSONEncoder):
     def default(self,obj):
-        if isinstance(obj, datetime.datetime):
-            return obj.strftime('%Y-%m-%d %H:%M:%S')
-        elif isinstance(obj, date):
-            return obj.strftime("%Y-%m-%d")
+        if isinstance(obj, date):
+            return obj.strftime('%Y-%m-%d')
         else:
             return json.JSONEncoder.default(self, obj)
 
@@ -129,7 +126,8 @@ def jp_node_gather(node, type):
     status = True
     for page in range(0, 1):
         detester = '1990-01-28'
-        date = datetime.strptime(detester,'%Y-%m-%d')
+        date1 = datetime.strptime(detester,'%Y-%m-%d')
+        print(date1)
         asin_info_data = {
             'rank': None,
             'asin': None,
