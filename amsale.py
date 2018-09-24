@@ -181,7 +181,7 @@ if __name__ == "__main__":
                 finally:
                     driver.quit()
         else:
-            pass
+            print("get task node fail + " + task_id, flush=True)
 
         amazondata.disconnect_database()
     else:
