@@ -113,7 +113,7 @@ if __name__ == "__main__":
                     driver.set_page_load_timeout(60)
                     driver.set_script_timeout(60)
                     task_info = task_info_array[node_index]
-                    node = task_info['node']
+                    node = task_info[0]
                     node_table = node + '_BS'
                     asin_cursor = get_asin_rows_from_node(amazondata, node_table)
                     if asin_cursor == True:
@@ -121,7 +121,7 @@ if __name__ == "__main__":
                         asin_info_array = asin_cursor.fetchall()
                         for asin_index in range(0, asin_info_array_len):
                             asin_info = asin_info_array[asin_index]
-                            asin = asin_info['asin']
+                            asin = asin_info[1]
                             result = amazonspider.get_inventory_jp(driver, asin)
                             if result != False:
                                 cur_date = date.today()
