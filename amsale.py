@@ -117,7 +117,7 @@ if __name__ == "__main__":
                     print(node)
                     node_table = node + '_BS'
                     asin_cursor = get_asin_rows_from_node(amazondata, node_table)
-                    if asin_cursor == True:
+                    if asin_cursor != False:
                         asin_info_array_len = asin_cursor.rowcount
                         asin_info_array = asin_cursor.fetchall()
                         for asin_index in range(0, asin_info_array_len):
