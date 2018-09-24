@@ -4,7 +4,6 @@
 from selenium import webdriver
 import re
 import time
-import random
 import json
 import sys
 import io
@@ -124,193 +123,568 @@ def getqa(template):
     slotList = re.findall(rule, template)
     return slotList[0]
 
-def jp_node_gather(node, type):
-    status = True
-    t1 = time.time()
-    for page in range(0, 5):
-        datetime1 = datetime.strptime('1990-01-28','%Y-%m-%d')
-        date1 = datetime1.date()
-        asin_info_data = {
-            'rank': None,
-            'asin': None,
-            'node': node,
-            'price': None,
-            'review': None,
-            'rate': None,
-            'qa': 0,
-            'shipping': None,
-            'seller': 0,
-            'avg_sale': 0,
-            'inventory_date' : date1,
-            'limited': 'no',
-            'img_url': None,
-            'status': 'ok'
-        }
-        asin_info_array = []
-        chrome_options = webdriver.ChromeOptions()
-        prefs = {
-            'profile.default_content_setting_values': {
-                'images': 2,
-                # 'javascript': 2
+class AmazonSpider():
+    def __init__(self):
+        pass
+
+    def jp_node_gather(self, node, type):
+        status = True
+        t1 = time.time()
+        for page in range(0, 5):
+            datetime1 = datetime.strptime('1990-01-28','%Y-%m-%d')
+            date1 = datetime1.date()
+            asin_info_data = {
+                'rank': None,
+                'asin': None,
+                'node': node,
+                'price': None,
+                'review': None,
+                'rate': None,
+                'qa': 0,
+                'shipping': None,
+                'seller': 0,
+                'avg_sale': 0,
+                'inventory_date' : date1,
+                'limited': 'no',
+                'img_url': None,
+                'status': 'ok'
             }
-        }
-        chrome_options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Chrome(chrome_options=chrome_options)
+            asin_info_array = []
+            chrome_options = webdriver.ChromeOptions()
+            prefs = {
+                'profile.default_content_setting_values': {
+                    'images': 2,
+                    # 'javascript': 2
+                }
+            }
+            chrome_options.add_experimental_option("prefs", prefs)
+            driver = webdriver.Chrome(chrome_options=chrome_options)
+            driver.set_page_load_timeout(60)
+            driver.set_script_timeout(60)
+            try:
+                amazonpage = AmazonPage(driver)
+                url = "https://www.amazon.co.jp/gp/bestsellers/electronics/" + node + "#" + str(page + 1)
+                driver.get(url)
+                amazonpage.random_sleep(3000, 5000)
+                print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
+
+                for i in range(0, 3):
+                    tmp_symbol = CRITICAL_TITLE_PREFIX + str(i + 1) + CRITICAL_TITLE_POSTFIX
+                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                        element = driver.find_element_by_xpath(tmp_symbol)
+                        asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
+                        # print("Asin is: " + asin_info_data['asin'], flush=True)
+
+                    tmp_symbol = CRITICAL_REVIEWS_PREFIX + str(i + 1) + CRITICAL_REVIEWS_POSTFIX
+                    has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
+                    if has_review:
+                        element = driver.find_element_by_xpath(tmp_symbol)
+                        # print("Review Count is: " + element.text, flush=True)
+                        asin_info_data['review'] = int(element.text)
+                        tmp_symbol = CRITICAL_RATE_PREFIX + str(i + 1) + CRITICAL_RATE_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            element = driver.find_element_by_xpath(tmp_symbol)
+                            asin_info_data['rate'] = float(element.get_attribute('title').split(' ')[1])
+                            # print("Rate is: " + element.get_attribute('title').split(' ')[1], flush=True)
+                    else:
+                        asin_info_data['review'] = 0
+                        # print("Review Count is: 0", flush=True)
+                        asin_info_data['rate'] = 0
+                        # print("Rate is: 0", flush=True)
+                    if has_review:
+                        tmp_symbol = CRITICAL_FBA_PREFIX + str(i + 1) + CRITICAL_FBA_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            asin_info_data['shipping'] = 'FBA'
+                            # print("FBA", flush=True)
+                            tmp_symbol = CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX + str(i + 1) + CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX
+                        else:
+                            asin_info_data['shipping'] = 'FBM'
+                            # print("FBM", flush=True)
+                            tmp_symbol = CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            element = driver.find_element_by_xpath(tmp_symbol)
+                            # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                            asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
+                    else:
+                        tmp_symbol = CRITICAL_FBA_PREFIX + str(i + 1) + CRITICAL_FBA_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            asin_info_data['shipping'] = 'FBA'
+                            # print("FBA", flush=True)
+                            tmp_symbol = CRITICAL_NO_REVIEW_FBA_PRICE_PREFIX + str(
+                                i + 1) + CRITICAL_NO_REVIEW_FBA_PRICE_POSTFIX
+                        else:
+                            asin_info_data['shipping'] = 'FBM'
+                            # print("FBM", flush=True)
+                            tmp_symbol = CRITICAL_NO_REVIEW_FBM_PRICE_PREFIX + str(
+                                i + 1) + CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            element = driver.find_element_by_xpath(tmp_symbol)
+                            # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                            asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
+
+                    tmp_symbol = CRITICAL_IMGSRC_PREFIX + str(i + 1) + CRITICAL_IMGSRC_POSTFIX
+                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                        element = driver.find_element_by_xpath(tmp_symbol)
+                        #  https://images-na.ssl-images-amazon.com/images/I/61EHMhJe1YL._SL500_SR160,160_.jpg
+                        asin_info_data['img_url'] = getimgidfromhref(element.get_attribute('src'))
+                        # print("ImgSrc is: " + element.get_attribute('src'), flush=True)
+
+                    tmp_symbol = CRITICAL_RANK_PREFIX + str(i + 1) + CRITICAL_RANK_POSTFIX + '2]'
+                    if page != 0:
+                        tmp_symbol = CRITICAL_RANK_PREFIX + str(i + 1) + CRITICAL_RANK_POSTFIX + '1]'
+                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                        element = driver.find_element_by_xpath(tmp_symbol)
+                        # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
+                        asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
+
+
+                    asin_info_array.append(copy.deepcopy(asin_info_data))
+                    # print(asin_info_data['asin'], flush=True)
+                    # print("** ------------------- **", flush=True)
+
+                for i in range(0, 17):
+                    tmp_symbol = NON_CRITICAL_TITLE_PREFIX + str(i + 1) + NON_CRITICAL_TITLE_POSTFIX
+                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                        element = driver.find_element_by_xpath(tmp_symbol)
+                        asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
+                        # print("Asin is: " + getasinfromhref(element.get_attribute('href')), flush=True)
+
+                    tmp_symbol = NON_CRITICAL_REVIEWS_PREFIX + str(i + 1) + NON_CRITICAL_REVIEWS_POSTFIX
+                    has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
+                    if has_review:
+                        element = driver.find_element_by_xpath(tmp_symbol)
+                        asin_info_data['review'] = int(element.text)
+                        # print("Review Count is: " + element.text, flush=True)
+                        tmp_symbol = NON_CRITICAL_RATE_PREFIX + str(i + 1) + NON_CRITICAL_RATE_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            element = driver.find_element_by_xpath(tmp_symbol)
+                            asin_info_data['rate'] = float(element.get_attribute('title').split(' ')[1])
+                            # print("Rate is: " + element.get_attribute('title').split(' ')[1], flush=True)
+                    else:
+                        asin_info_data['review'] = 0
+                        # print("Review Count is: 0", flush=True)
+                        asin_info_data['rate'] = 0
+                        # print("Rate is: 0", flush=True)
+                    if has_review:
+                        tmp_symbol = NON_CRITICAL_FBA_PREFIX + str(i + 1) + NON_CRITICAL_FBA_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            asin_info_data['shipping'] = "FBA"
+                            # print("FBA", flush=True)
+                            tmp_symbol = NON_CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX + str(i + 1) + NON_CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX
+                        else:
+                            asin_info_data['shipping'] = "FBM"
+                            # print("FBM", flush=True)
+                            tmp_symbol = NON_CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + NON_CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            element = driver.find_element_by_xpath(tmp_symbol)
+                            asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
+                            # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                    else:
+                        tmp_symbol = NON_CRITICAL_FBA_PREFIX + str(i + 1) + NON_CRITICAL_FBA_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            asin_info_data['shipping'] = "FBA"
+                            # print("FBA", flush=True)
+                            tmp_symbol = NON_CRITICAL_NO_REVIEW_FBA_PRICE_PREFIX + str(
+                                i + 1) + NON_CRITICAL_NO_REVIEW_FBA_PRICE_POSTFIX
+                        else:
+                            asin_info_data['shipping'] = "FBM"
+                            # print("FBM", flush=True)
+                            tmp_symbol = NON_CRITICAL_NO_REVIEW_FBM_PRICE_PREFIX + str(
+                                i + 1) + NON_CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            element = driver.find_element_by_xpath(tmp_symbol)
+                            asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
+                            # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+
+                    tmp_symbol = NON_CRITICAL_IMGSRC_PREFIX + str(i + 1) + NON_CRITICAL_IMGSRC_POSTFIX
+                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                        element = driver.find_element_by_xpath(tmp_symbol)
+                        asin_info_data['img_url'] = getimgidfromhref(element.get_attribute('src'))
+                        # print("ImgSrc is: " + element.get_attribute('src'), flush=True)
+
+
+                    tmp_symbol = NON_CRITICAL_RANK_PREFIX + str(i + 1) + NON_CRITICAL_RANK_POSTFIX + '1]'
+                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                        element = driver.find_element_by_xpath(tmp_symbol)
+                        # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
+                        asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
+
+                        asin_info_array.append(copy.deepcopy(asin_info_data))
+                    # print(asin_info_data['asin'], flush=True)
+                    # print("** ------------------- **", flush=True)
+
+                amazonpage.random_sleep(2000, 5000)
+            except NoSuchElementException as msg:
+                status = False
+                print("Except: NoSuchElementException", flush=True)
+            except Exception as e:
+                status = False
+                print(e, flush=True)
+            finally:
+                driver.quit()
+                if status == False:
+                    return False
+
+            status = True
+            chrome_options = webdriver.ChromeOptions()
+            prefs = {
+                'profile.default_content_setting_values': {
+                    'images': 2,
+                    'javascript': 2
+                }
+            }
+            chrome_options.add_experimental_option("prefs", prefs)
+            driver = webdriver.Chrome(chrome_options=chrome_options)
+            driver.set_page_load_timeout(60)
+            driver.set_script_timeout(60)
+            inventory_array = []
+            try:
+                for i in range(0, len(asin_info_array)):
+                    tmp_info = asin_info_array[i]
+                    result = self.get_inventory_jp(driver, tmp_info['asin'])
+                    if result == False:
+                        tmp_info['status'] = 'err'
+                        data = {
+                            'seller': 0,
+                            'qa': 0,
+                            'inventory': 0,
+                            'limited': 'no'
+                        }
+                        inventory_array.append(copy.deepcopy(data))
+                        driver.quit()
+                        time.sleep(2)
+                        chrome_options = webdriver.ChromeOptions()
+                        prefs = {
+                            'profile.default_content_setting_values': {
+                                'images': 2,
+                                'javascript': 2
+                            }
+                        }
+                        chrome_options.add_experimental_option("prefs", prefs)
+                        driver = webdriver.Chrome(chrome_options=chrome_options)
+                        driver.set_page_load_timeout(60)
+                        driver.set_script_timeout(60)
+                    else:
+                        tmp_info['shipping'] = result['shipping']
+                        tmp_info['seller'] = result['seller']
+                        tmp_info['qa'] = result['qa']
+                        tmp_info['limited'] = result['limited']
+                        inventory_array.append(copy.deepcopy(result))
+
+            except Exception as e:
+                status = False
+                print(str(e), flush=True)
+            finally:
+                driver.quit()
+                if status == False:
+                    return False
+
+            # for i in range(0, len(asin_info_array)):
+            #     with open('test.txt', 'a') as f:
+            #         f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
+            #     print(inventory_array[i])
+            #     with open('test.txt', 'a') as f:
+            #         f.writelines(json.dumps(asin_info_array[i], cls=DateEncoder) + "\n")
+            #     f.close()
+            #     print(asin_info_array[i])
+
+            amazondata = AmazonData()
+            status = amazondata.create_database('amazondata')
+            if status == True:
+                status = amazondata.connect_database('amazondata')
+                if status == True:
+                    for i in range(0, len(asin_info_array)):
+                        asin = asin_info_array[i]['asin']
+                        # asin_info_table = node + '_' + type + '_' + asin
+                        # status = amazondata.create_asin_info_table(asin_info_table)
+                        # if status == True:
+                        #     print("asin_info_table create sucessfully + " + asin_info_table, flush=True)
+                        #     status = amazondata.insert_asin_info_data(asin_info_table, asin_info_array[i])
+                        node_table = node + '_' + type
+                        status = amazondata.create_node_table(node_table)
+                        if status == True:
+                            # print("node_table create sucessfully + " + node_table, flush=True)
+                            status = amazondata.insert_node_data(node_table, asin_info_array[i])
+                            if status == True:
+                                # print("node_data inserted sucessfully.. + " + node_table, flush=True)
+                                if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err':
+                                    inventory_table = 'INVENTORY_' + asin
+                                    status = amazondata.create_inventory_table(inventory_table)
+                                    if status == True:
+                                        # print("inventory_table create sucessfully + " + inventory_table, flush=True)
+                                        cur_date = date.today()
+                                        data = {
+                                            'date' : cur_date,
+                                            'inventory' : inventory_array[i]['inventory']
+                                        }
+                                        status = amazondata.insert_inventory_data(inventory_table, data)
+                                        if status == True:
+                                            # print("inventory data insert sucessfully.. + " + inventory_table, flush=True)
+                                            condition = 'asin=\'' + asin + '\''
+                                            value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+                                            status = amazondata.update_data(node_table, 'inventory_date', value, condition)
+                                            if status == True:
+                                                # print("invetory_date update sucessfully.. + " + node_table, flush=True)
+                                                status = amazondata.get_yesterday_sale(inventory_table)
+                                                if status != False:
+                                                    # print("get_yesterday_sale sucessfully.. + " + inventory_table, flush=True)
+                                                    yesterday = date.today() + timedelta(days=-1)
+                                                    data = {
+                                                        'date' : yesterday,
+                                                        'sale' : copy.deepcopy(status)
+                                                    }
+                                                    sale_table = 'SALE_' + asin
+                                                    status = amazondata.create_sale_table(sale_table)
+                                                    if status == True:
+                                                        # print("sale_table create sucessfully.. + " + sale_table, flush=True)
+                                                        status = amazondata.insert_sale_data(sale_table, data)
+                                                        if status == True:
+                                                            # print("sale_data insert sucessfully... + " + sale_table, flush=True)
+                                                            avg_sale = amazondata.get_column_avg(sale_table, 'sale')
+                                                            if avg_sale != -1:
+                                                                status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
+                                                                if status == False:
+                                                                    print("avg_sale update fail.. + " + node_table, flush=True)
+                                                                # else:
+                                                                #     print("avg_sale update successfully.. + " + node_table, flush=True)
+                                                            # else:
+                                                            #     print(" get avg_sale fail.. + " + node_table, flush=True)
+                                                        else:
+                                                            print("sale_data insert fail... + " + sale_table, flush=True)
+                                                    else:
+                                                        print("sale_table create fail.. + " + sale_table, flush=True)
+                                                else:
+                                                    print("get_yesterday_sale fail.. + " + inventory_table, flush=True)
+                                            else:
+                                                print("invetory_date update fail.. + " + node_table, flush=True)
+                                        else:
+                                            print("inventory data insert fail.. + " + inventory_table, flush=True)
+                                    else:
+                                        print("inventory_table create fail + " + inventory_table, flush=True)
+                                else:
+                                    print('Inventory Limited, no need to record...', flush=True)
+                            else:
+                                print("asin_info_data inserted fail.. + " + node_table, flush=True)
+                        else:
+                            print("node_table create fail + " + node_table, flush=True)
+
+                    amazondata.disconnect_database()
+                else:
+                    print("connect_database fail..", flush=True)
+
+        t2 = time.time()
+        print("总耗时：" + format(t2 - t1))
+
+        return status
+
+    def us_node_gather(self, url):
+        item_prefix = "//*[@id=\'zg-ordered-list\']/li[position()="
+        item_postfix = "]/span"
+        price_symbol = ".//div/span/div[position()=2]/a[position()=1]/span/span"
+        review_symbol = ".//div/span/div[position()=1]/a[position()=2]"
+        href_symbol = ".//div/span/div[position()=2]/a[position()=1]"
+        rate_symbol = ".//div/span/div[position()=1]/a"
+        driver = webdriver.Chrome()
         driver.set_page_load_timeout(60)
         driver.set_script_timeout(60)
         try:
-            amazonpage = AmazonPage(driver)
-            url = "https://www.amazon.co.jp/gp/bestsellers/electronics/" + node + "#" + str(page + 1)
+            #driver.get("https://www.amazon.com/gp/bestsellers/electronics/297859")
             driver.get(url)
-            amazonpage.random_sleep(3000, 5000)
-            print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
+            for i in range(1, 50):
+                item_symbol = item_prefix + str(i) + item_postfix
+                element = driver.find_element_by_xpath(item_symbol)
+                price = element.find_element_by_xpath(price_symbol)
+                price_text = price.text
+                href = element.find_element_by_xpath(href_symbol)
+                asin_text = getasinfromhref(href.get_attribute("href"))
+                review = element.find_element_by_xpath(review_symbol)
+                review_text = review.text
+                rate = element.find_element_by_xpath(rate_symbol)
+                rate_text = rate.get_attribute("title").split(" ")[0]
+                tmp = asin_text + " " + price_text.strip('$') + " " + review_text.replace(',', '') + " " + rate_text
+                print(tmp, flush=True)
+        except NoSuchElementException as msg:
+            print("Except: NoSuchElementException", flush=True)
+        except Exception as e:
+            print(e, flush=True)
+        finally:
+            driver.quit()
 
-            for i in range(0, 3):
-                tmp_symbol = CRITICAL_TITLE_PREFIX + str(i + 1) + CRITICAL_TITLE_POSTFIX
-                if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                    element = driver.find_element_by_xpath(tmp_symbol)
-                    asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
-                    # print("Asin is: " + asin_info_data['asin'], flush=True)
+    def test_get_inventory_us(self):
+        driver = webdriver.Chrome()
+        driver.set_page_load_timeout(60)
+        driver.set_script_timeout(60)
+        try:
+            # driver.get("https://www.amazon.com/dp/B078H7VY19")
+            driver.get("https://www.amazon.com/dp/B079NNC8N8")
+            amazonasinpage = AmazonAsinPage(driver)
+            if amazonasinpage.is_element_exsist(*FBA_FLAG):
+                print("product is fba...", flush=True)
+            else:
+                print("product is fbm or not exsist...", flush=True)
 
-                tmp_symbol = CRITICAL_REVIEWS_PREFIX + str(i + 1) + CRITICAL_REVIEWS_POSTFIX
-                has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
-                if has_review:
-                    element = driver.find_element_by_xpath(tmp_symbol)
-                    # print("Review Count is: " + element.text, flush=True)
-                    asin_info_data['review'] = int(element.text)
-                    tmp_symbol = CRITICAL_RATE_PREFIX + str(i + 1) + CRITICAL_RATE_POSTFIX
-                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                        element = driver.find_element_by_xpath(tmp_symbol)
-                        asin_info_data['rate'] = float(element.get_attribute('title').split(' ')[1])
-                        # print("Rate is: " + element.get_attribute('title').split(' ')[1], flush=True)
+            amazonasinpage.random_sleep(1000, 2000)
+            if amazonasinpage.is_element_exsist(*QA_COUNT):
+                element = driver.find_element(*QA_COUNT)
+                print(element.text)
+            else:
+                print("qa_count not exsist...", flush=True)
+
+            if amazonasinpage.is_element_exsist(*BUYER_COUNT):
+                element = driver.find_element(*BUYER_COUNT)
+                print(element.text)
+            else:
+                print("buy count no no", flush=True)
+
+            amazonasinpage.add_cart(8000, 10000)
+
+            if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
+                amazonasinpage.click(*NO_THANKS)
+
+            amazonasinpage.random_sleep(1000, 2000)
+            if amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON):
+                amazonasinpage.click(*VIEW_CART_BUTTON)
+                amazonasinpage.random_sleep(8000, 10000)
+            elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
+                amazonasinpage.click(*VIEW_CART_BUTTON1)
+                amazonasinpage.random_sleep(8000, 10000)
+
+            amazonasinpage.select(9, *ITEM_SELECT_US)
+            amazonasinpage.random_sleep(8000, 10000)
+
+            amazonasinpage.input("999", *ITEM_INPUT_US)
+            amazonasinpage.random_sleep(8000, 10000)
+
+            amazonasinpage.click(*ITEM_SUBMIT_US)
+            amazonasinpage.random_sleep(8000, 10000)
+
+            element = driver.find_element(*INVENTORY_TIPS_US)
+
+            print(element.text)
+
+            amazonasinpage.click(*ITEM_DELETE_US)
+        except NoSuchElementException as msg:
+            print("Except: NoSuchElementException", flush=True)
+        except Exception as e:
+            print(e, flush=True)
+        finally:
+            input("xxx")
+            driver.quit()
+
+    def get_inventory_jp(self, driver_upper, asin):
+        driver = None
+
+        if driver_upper == False:
+            chrome_options = webdriver.ChromeOptions()
+            prefs = {
+                'profile.default_content_setting_values': {
+                    'images': 2,
+                    'javascript': 2
+                }
+            }
+            chrome_options.add_experimental_option("prefs", prefs)
+            driver = webdriver.Chrome(chrome_options=chrome_options)
+            driver.set_page_load_timeout(60)
+            driver.set_script_timeout(60)
+        else:
+            driver = driver_upper
+        status = True
+        data = {
+            'shipping'  : None,
+            'seller'    : None,
+            'qa'        : None,
+            'inventory' : None,
+            'limited'   : 'no'
+        }
+        try:
+            url = 'https://www.amazon.co.jp/dp/' + asin
+            driver.get(url)
+            amazonasinpage = AmazonAsinPage(driver)
+
+            amazonasinpage.random_sleep(1000, 2000)
+            if amazonasinpage.is_element_exsist(*FBA_FLAG):
+                data['shipping'] = 'FBA'
+            else:
+                data['shipping'] = 'FBM'
+
+            if amazonasinpage.is_element_exsist(*QA_COUNT):
+                element = driver.find_element(*QA_COUNT)
+                data['qa'] = int(getqa(element.text))
+                # print("qa is:")
+                # print(getqa(element.text), flush=True)
+            else:
+                data['qa'] = 0
+
+
+            if amazonasinpage.is_element_exsist(*BUYER_COUNT):
+                element = driver.find_element(*BUYER_COUNT)
+                data['seller'] = int(getseller(element.text))
+
+                # print("seller is: " + str(data['seller']))
+                # print(element.text, flush=True)
+            else:
+                data['seller'] = 0
+
+
+            status = amazonasinpage.add_cart(5000, 8000)
+            if status == True:
+                if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
+                    amazonasinpage.click(*NO_THANKS)
+
+                amazonasinpage.random_sleep(1000, 2000)
+                if amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON):
+                    amazonasinpage.click(*VIEW_CART_BUTTON)
+                    amazonasinpage.random_sleep(3000, 5000)
+                elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
+                    amazonasinpage.click(*VIEW_CART_BUTTON1)
+                    amazonasinpage.random_sleep(3000, 5000)
+                elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON2):
+                    amazonasinpage.click(*VIEW_CART_BUTTON2)
+                    amazonasinpage.random_sleep(3000, 5000)
+                elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON3):
+                    amazonasinpage.click(*VIEW_CART_BUTTON3)
+                    amazonasinpage.random_sleep(3000, 5000)
                 else:
-                    asin_info_data['review'] = 0
-                    # print("Review Count is: 0", flush=True)
-                    asin_info_data['rate'] = 0
-                    # print("Rate is: 0", flush=True)
-                if has_review:
-                    tmp_symbol = CRITICAL_FBA_PREFIX + str(i + 1) + CRITICAL_FBA_POSTFIX
-                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                        asin_info_data['shipping'] = 'FBA'
-                        # print("FBA", flush=True)
-                        tmp_symbol = CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX + str(i + 1) + CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX
-                    else:
-                        asin_info_data['shipping'] = 'FBM'
-                        # print("FBM", flush=True)
-                        tmp_symbol = CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX
-                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                        element = driver.find_element_by_xpath(tmp_symbol)
-                        # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
-                        asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
+                    print("View Cart can't be found... + " + asin, flush=True)
+                if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP) == False:
+                    print("Inventory Input can't be found... + " + asin, flush=True)
+                    status = False
                 else:
-                    tmp_symbol = CRITICAL_FBA_PREFIX + str(i + 1) + CRITICAL_FBA_POSTFIX
-                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                        asin_info_data['shipping'] = 'FBA'
-                        # print("FBA", flush=True)
-                        tmp_symbol = CRITICAL_NO_REVIEW_FBA_PRICE_PREFIX + str(
-                            i + 1) + CRITICAL_NO_REVIEW_FBA_PRICE_POSTFIX
+                    amazonasinpage.input("999", *ITEM_INPUT_JP)
+                    if amazonasinpage.is_element_exsist(*ITEM_SUBMIT_JP) == False:
+                        print("Inventory Update can't be found... + " + asin, flush=True)
+                        status = False
                     else:
-                        asin_info_data['shipping'] = 'FBM'
-                        # print("FBM", flush=True)
-                        tmp_symbol = CRITICAL_NO_REVIEW_FBM_PRICE_PREFIX + str(
-                            i + 1) + CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
-                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                        element = driver.find_element_by_xpath(tmp_symbol)
-                        # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
-                        asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
-
-                tmp_symbol = CRITICAL_IMGSRC_PREFIX + str(i + 1) + CRITICAL_IMGSRC_POSTFIX
-                if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                    element = driver.find_element_by_xpath(tmp_symbol)
-                    #  https://images-na.ssl-images-amazon.com/images/I/61EHMhJe1YL._SL500_SR160,160_.jpg
-                    asin_info_data['img_url'] = getimgidfromhref(element.get_attribute('src'))
-                    # print("ImgSrc is: " + element.get_attribute('src'), flush=True)
-
-                tmp_symbol = CRITICAL_RANK_PREFIX + str(i + 1) + CRITICAL_RANK_POSTFIX + '2]'
-                if page != 0:
-                    tmp_symbol = CRITICAL_RANK_PREFIX + str(i + 1) + CRITICAL_RANK_POSTFIX + '1]'
-                if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                    element = driver.find_element_by_xpath(tmp_symbol)
-                    # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
-                    asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
-
-
-                asin_info_array.append(copy.deepcopy(asin_info_data))
-                # print(asin_info_data['asin'], flush=True)
-                # print("** ------------------- **", flush=True)
-
-            for i in range(0, 17):
-                tmp_symbol = NON_CRITICAL_TITLE_PREFIX + str(i + 1) + NON_CRITICAL_TITLE_POSTFIX
-                if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                    element = driver.find_element_by_xpath(tmp_symbol)
-                    asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
-                    # print("Asin is: " + getasinfromhref(element.get_attribute('href')), flush=True)
-
-                tmp_symbol = NON_CRITICAL_REVIEWS_PREFIX + str(i + 1) + NON_CRITICAL_REVIEWS_POSTFIX
-                has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
-                if has_review:
-                    element = driver.find_element_by_xpath(tmp_symbol)
-                    asin_info_data['review'] = int(element.text)
-                    # print("Review Count is: " + element.text, flush=True)
-                    tmp_symbol = NON_CRITICAL_RATE_PREFIX + str(i + 1) + NON_CRITICAL_RATE_POSTFIX
-                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                        element = driver.find_element_by_xpath(tmp_symbol)
-                        asin_info_data['rate'] = float(element.get_attribute('title').split(' ')[1])
-                        # print("Rate is: " + element.get_attribute('title').split(' ')[1], flush=True)
+                        amazonasinpage.click(*ITEM_SUBMIT_JP)
+                        amazonasinpage.random_sleep(3000, 5000)
+                        if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_JP) == False:
+                            if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP):
+                                element = driver.find_element(*ITEM_INPUT_JP)
+                                # print("Inventory Over " + element.get_attribute('value') + ' + ' + asin, flush=True)
+                                data['inventory'] = int(element.get_attribute('value'))
+                            else:
+                                print("Inventory Tips can't be found... + " + asin, flush=True)
+                                status = False
+                        else:
+                            element = driver.find_element(*INVENTORY_TIPS_JP)
+                            # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
+                            # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
+                            if '客様お一人' in element.text:
+                                # print("check limited", flush= True)
+                                data['limited'] = 'yes'
+                                data['inventory'] = 0
+                            else:
+                                # ss
+                                data['inventory'] = int(getsale(element.text))
+                                # print("inventory is: " + str(data['inventory']), flush=True)
+                if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
+                    print("Inventory Delete can't be found... + " + asin, flush=True)
+                    status = False
                 else:
-                    asin_info_data['review'] = 0
-                    # print("Review Count is: 0", flush=True)
-                    asin_info_data['rate'] = 0
-                    # print("Rate is: 0", flush=True)
-                if has_review:
-                    tmp_symbol = NON_CRITICAL_FBA_PREFIX + str(i + 1) + NON_CRITICAL_FBA_POSTFIX
-                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                        asin_info_data['shipping'] = "FBA"
-                        # print("FBA", flush=True)
-                        tmp_symbol = NON_CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX + str(i + 1) + NON_CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX
-                    else:
-                        asin_info_data['shipping'] = "FBM"
-                        # print("FBM", flush=True)
-                        tmp_symbol = NON_CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + NON_CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX
-                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                        element = driver.find_element_by_xpath(tmp_symbol)
-                        asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
-                        # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
-                else:
-                    tmp_symbol = NON_CRITICAL_FBA_PREFIX + str(i + 1) + NON_CRITICAL_FBA_POSTFIX
-                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                        asin_info_data['shipping'] = "FBA"
-                        # print("FBA", flush=True)
-                        tmp_symbol = NON_CRITICAL_NO_REVIEW_FBA_PRICE_PREFIX + str(
-                            i + 1) + NON_CRITICAL_NO_REVIEW_FBA_PRICE_POSTFIX
-                    else:
-                        asin_info_data['shipping'] = "FBM"
-                        # print("FBM", flush=True)
-                        tmp_symbol = NON_CRITICAL_NO_REVIEW_FBM_PRICE_PREFIX + str(
-                            i + 1) + NON_CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
-                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                        element = driver.find_element_by_xpath(tmp_symbol)
-                        asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
-                        # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
-
-                tmp_symbol = NON_CRITICAL_IMGSRC_PREFIX + str(i + 1) + NON_CRITICAL_IMGSRC_POSTFIX
-                if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                    element = driver.find_element_by_xpath(tmp_symbol)
-                    asin_info_data['img_url'] = getimgidfromhref(element.get_attribute('src'))
-                    # print("ImgSrc is: " + element.get_attribute('src'), flush=True)
-
-
-                tmp_symbol = NON_CRITICAL_RANK_PREFIX + str(i + 1) + NON_CRITICAL_RANK_POSTFIX + '1]'
-                if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                    element = driver.find_element_by_xpath(tmp_symbol)
-                    # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
-                    asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
-
-                    asin_info_array.append(copy.deepcopy(asin_info_data))
-                # print(asin_info_data['asin'], flush=True)
-                # print("** ------------------- **", flush=True)
-
-            amazonpage.random_sleep(2000, 5000)
+                    amazonasinpage.click(*ITEM_DELETE_JP)
+                    amazonasinpage.random_sleep(2000, 3000)
+                # print(data, flush=True)
+                status = data
         except NoSuchElementException as msg:
             status = False
             print("Except: NoSuchElementException", flush=True)
@@ -318,380 +692,9 @@ def jp_node_gather(node, type):
             status = False
             print(e, flush=True)
         finally:
-            driver.quit()
-            if status == False:
-                return False
-
-        status = True
-        chrome_options = webdriver.ChromeOptions()
-        prefs = {
-            'profile.default_content_setting_values': {
-                'images': 2,
-                'javascript': 2
-            }
-        }
-        chrome_options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Chrome(chrome_options=chrome_options)
-        driver.set_page_load_timeout(60)
-        driver.set_script_timeout(60)
-        inventory_array = []
-        try:
-            for i in range(0, len(asin_info_array)):
-                tmp_info = asin_info_array[i]
-                result = get_inventory_jp(driver, tmp_info['asin'])
-                if result == False:
-                    tmp_info['status'] = 'err'
-                    data = {
-                        'seller': 0,
-                        'qa': 0,
-                        'inventory': 0,
-                        'limited': 'no'
-                    }
-                    inventory_array.append(copy.deepcopy(data))
-                    driver.quit()
-                    time.sleep(2)
-                    chrome_options = webdriver.ChromeOptions()
-                    prefs = {
-                        'profile.default_content_setting_values': {
-                            'images': 2,
-                            'javascript': 2
-                        }
-                    }
-                    chrome_options.add_experimental_option("prefs", prefs)
-                    driver = webdriver.Chrome(chrome_options=chrome_options)
-                    driver.set_page_load_timeout(60)
-                    driver.set_script_timeout(60)
-                else:
-                    tmp_info['shipping'] = result['shipping']
-                    tmp_info['seller'] = result['seller']
-                    tmp_info['qa'] = result['qa']
-                    tmp_info['limited'] = result['limited']
-                    inventory_array.append(copy.deepcopy(result))
-
-        except Exception as e:
-            status = False
-            print(str(e), flush=True)
-        finally:
-            driver.quit()
-            if status == False:
-                return False
-
-        # for i in range(0, len(asin_info_array)):
-        #     with open('test.txt', 'a') as f:
-        #         f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
-        #     print(inventory_array[i])
-        #     with open('test.txt', 'a') as f:
-        #         f.writelines(json.dumps(asin_info_array[i], cls=DateEncoder) + "\n")
-        #     f.close()
-        #     print(asin_info_array[i])
-
-        amazondata = AmazonData()
-        status = amazondata.create_database('amazondata')
-        if status == True:
-            status = amazondata.connect_database('amazondata')
-            if status == True:
-                for i in range(0, len(asin_info_array)):
-                    asin = asin_info_array[i]['asin']
-                    # asin_info_table = node + '_' + type + '_' + asin
-                    # status = amazondata.create_asin_info_table(asin_info_table)
-                    # if status == True:
-                    #     print("asin_info_table create sucessfully + " + asin_info_table, flush=True)
-                    #     status = amazondata.insert_asin_info_data(asin_info_table, asin_info_array[i])
-                    node_table = node + '_' + type
-                    status = amazondata.create_node_table(node_table)
-                    if status == True:
-                        # print("node_table create sucessfully + " + node_table, flush=True)
-                        status = amazondata.insert_node_data(node_table, asin_info_array[i])
-                        if status == True:
-                            # print("node_data inserted sucessfully.. + " + node_table, flush=True)
-                            if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err':
-                                inventory_table = 'INVENTORY_' + asin
-                                status = amazondata.create_inventory_table(inventory_table)
-                                if status == True:
-                                    # print("inventory_table create sucessfully + " + inventory_table, flush=True)
-                                    cur_date = date.today()
-                                    data = {
-                                        'date' : cur_date,
-                                        'inventory' : inventory_array[i]['inventory']
-                                    }
-                                    status = amazondata.insert_inventory_data(inventory_table, data)
-                                    if status == True:
-                                        # print("inventory data insert sucessfully.. + " + inventory_table, flush=True)
-                                        condition = 'asin=\'' + asin + '\''
-                                        value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-                                        status = amazondata.update_data(node_table, 'inventory_date', value, condition)
-                                        if status == True:
-                                            # print("invetory_date update sucessfully.. + " + node_table, flush=True)
-                                            status = amazondata.get_yesterday_sale(inventory_table)
-                                            if status != False:
-                                                # print("get_yesterday_sale sucessfully.. + " + inventory_table, flush=True)
-                                                yesterday = date.today() + timedelta(days=-1)
-                                                data = {
-                                                    'date' : yesterday,
-                                                    'sale' : copy.deepcopy(status)
-                                                }
-                                                sale_table = 'SALE_' + asin
-                                                status = amazondata.create_sale_table(sale_table)
-                                                if status == True:
-                                                    # print("sale_table create sucessfully.. + " + sale_table, flush=True)
-                                                    status = amazondata.insert_sale_data(sale_table, data)
-                                                    if status == True:
-                                                        # print("sale_data insert sucessfully... + " + sale_table, flush=True)
-                                                        avg_sale = amazondata.get_column_avg(sale_table, 'sale')
-                                                        if avg_sale != -1:
-                                                            status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
-                                                            if status == False:
-                                                                print("avg_sale update fail.. + " + node_table, flush=True)
-                                                            # else:
-                                                            #     print("avg_sale update successfully.. + " + node_table, flush=True)
-                                                        # else:
-                                                        #     print(" get avg_sale fail.. + " + node_table, flush=True)
-                                                    else:
-                                                        print("sale_data insert fail... + " + sale_table, flush=True)
-                                                else:
-                                                    print("sale_table create fail.. + " + sale_table, flush=True)
-                                            else:
-                                                print("get_yesterday_sale fail.. + " + inventory_table, flush=True)
-                                        else:
-                                            print("invetory_date update fail.. + " + node_table, flush=True)
-                                    else:
-                                        print("inventory data insert fail.. + " + inventory_table, flush=True)
-                                else:
-                                    print("inventory_table create fail + " + inventory_table, flush=True)
-                            else:
-                                print('Inventory Limited, no need to record...', flush=True)
-                        else:
-                            print("asin_info_data inserted fail.. + " + node_table, flush=True)
-                    else:
-                        print("node_table create fail + " + node_table, flush=True)
-
-                amazondata.disconnect_database()
-            else:
-                print("connect_database fail..", flush=True)
-
-    t2 = time.time()
-    print("总耗时：" + format(t2 - t1))
-
-    return status
-
-def us_node_gather(url):
-    item_prefix = "//*[@id=\'zg-ordered-list\']/li[position()="
-    item_postfix = "]/span"
-    price_symbol = ".//div/span/div[position()=2]/a[position()=1]/span/span"
-    review_symbol = ".//div/span/div[position()=1]/a[position()=2]"
-    href_symbol = ".//div/span/div[position()=2]/a[position()=1]"
-    rate_symbol = ".//div/span/div[position()=1]/a"
-    driver = webdriver.Chrome()
-    driver.set_page_load_timeout(60)
-    driver.set_script_timeout(60)
-    try:
-        #driver.get("https://www.amazon.com/gp/bestsellers/electronics/297859")
-        driver.get(url)
-        for i in range(1, 50):
-            item_symbol = item_prefix + str(i) + item_postfix
-            element = driver.find_element_by_xpath(item_symbol)
-            price = element.find_element_by_xpath(price_symbol)
-            price_text = price.text
-            href = element.find_element_by_xpath(href_symbol)
-            asin_text = getasinfromhref(href.get_attribute("href"))
-            review = element.find_element_by_xpath(review_symbol)
-            review_text = review.text
-            rate = element.find_element_by_xpath(rate_symbol)
-            rate_text = rate.get_attribute("title").split(" ")[0]
-            tmp = asin_text + " " + price_text.strip('$') + " " + review_text.replace(',', '') + " " + rate_text
-            print(tmp, flush=True)
-    except NoSuchElementException as msg:
-        print("Except: NoSuchElementException", flush=True)
-    except Exception as e:
-        print(e, flush=True)
-    finally:
-        driver.quit()
-
-def test_get_inventory_us():
-    driver = webdriver.Chrome()
-    driver.set_page_load_timeout(60)
-    driver.set_script_timeout(60)
-    try:
-        # driver.get("https://www.amazon.com/dp/B078H7VY19")
-        driver.get("https://www.amazon.com/dp/B079NNC8N8")
-        amazonasinpage = AmazonAsinPage(driver)
-        if amazonasinpage.is_element_exsist(*FBA_FLAG):
-            print("product is fba...", flush=True)
-        else:
-            print("product is fbm or not exsist...", flush=True)
-
-        amazonasinpage.random_sleep(1000, 2000)
-        if amazonasinpage.is_element_exsist(*QA_COUNT):
-            element = driver.find_element(*QA_COUNT)
-            print(element.text)
-        else:
-            print("qa_count not exsist...", flush=True)
-
-        if amazonasinpage.is_element_exsist(*BUYER_COUNT):
-            element = driver.find_element(*BUYER_COUNT)
-            print(element.text)
-        else:
-            print("buy count no no", flush=True)
-
-        amazonasinpage.add_cart(8000, 10000)
-
-        if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
-            amazonasinpage.click(*NO_THANKS)
-
-        amazonasinpage.random_sleep(1000, 2000)
-        if amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON):
-            amazonasinpage.click(*VIEW_CART_BUTTON)
-            amazonasinpage.random_sleep(8000, 10000)
-        elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
-            amazonasinpage.click(*VIEW_CART_BUTTON1)
-            amazonasinpage.random_sleep(8000, 10000)
-
-        amazonasinpage.select(9, *ITEM_SELECT_US)
-        amazonasinpage.random_sleep(8000, 10000)
-
-        amazonasinpage.input("999", *ITEM_INPUT_US)
-        amazonasinpage.random_sleep(8000, 10000)
-
-        amazonasinpage.click(*ITEM_SUBMIT_US)
-        amazonasinpage.random_sleep(8000, 10000)
-
-        element = driver.find_element(*INVENTORY_TIPS_US)
-
-        print(element.text)
-
-        amazonasinpage.click(*ITEM_DELETE_US)
-    except NoSuchElementException as msg:
-        print("Except: NoSuchElementException", flush=True)
-    except Exception as e:
-        print(e, flush=True)
-    finally:
-        input("xxx")
-        driver.quit()
-
-def get_inventory_jp(driver_upper, asin):
-    driver = None
-
-    if driver_upper == False:
-        chrome_options = webdriver.ChromeOptions()
-        prefs = {
-            'profile.default_content_setting_values': {
-                'images': 2,
-                'javascript': 2
-            }
-        }
-        chrome_options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Chrome(chrome_options=chrome_options)
-        driver.set_page_load_timeout(60)
-        driver.set_script_timeout(60)
-    else:
-        driver = driver_upper
-    status = True
-    data = {
-        'shipping'  : None,
-        'seller'    : None,
-        'qa'        : None,
-        'inventory' : None,
-        'limited'   : 'no'
-    }
-    try:
-        url = 'https://www.amazon.co.jp/dp/' + asin
-        driver.get(url)
-        amazonasinpage = AmazonAsinPage(driver)
-
-        amazonasinpage.random_sleep(1000, 2000)
-        if amazonasinpage.is_element_exsist(*FBA_FLAG):
-            data['shipping'] = 'FBA'
-        else:
-            data['shipping'] = 'FBM'
-
-        if amazonasinpage.is_element_exsist(*QA_COUNT):
-            element = driver.find_element(*QA_COUNT)
-            data['qa'] = int(getqa(element.text))
-            # print("qa is:")
-            # print(getqa(element.text), flush=True)
-        else:
-            data['qa'] = 0
-
-
-        if amazonasinpage.is_element_exsist(*BUYER_COUNT):
-            element = driver.find_element(*BUYER_COUNT)
-            data['seller'] = int(getseller(element.text))
-
-            # print("seller is: " + str(data['seller']))
-            # print(element.text, flush=True)
-        else:
-            data['seller'] = 0
-
-
-        status = amazonasinpage.add_cart(5000, 8000)
-        if status == True:
-            if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
-                amazonasinpage.click(*NO_THANKS)
-
-            amazonasinpage.random_sleep(1000, 2000)
-            if amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON):
-                amazonasinpage.click(*VIEW_CART_BUTTON)
-                amazonasinpage.random_sleep(3000, 5000)
-            elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
-                amazonasinpage.click(*VIEW_CART_BUTTON1)
-                amazonasinpage.random_sleep(3000, 5000)
-            elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON2):
-                amazonasinpage.click(*VIEW_CART_BUTTON2)
-                amazonasinpage.random_sleep(3000, 5000)
-            elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON3):
-                amazonasinpage.click(*VIEW_CART_BUTTON3)
-                amazonasinpage.random_sleep(3000, 5000)
-            else:
-                print("View Cart can't be found... + " + asin, flush=True)
-            if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP) == False:
-                print("Inventory Input can't be found... + " + asin, flush=True)
-                status = False
-            else:
-                amazonasinpage.input("999", *ITEM_INPUT_JP)
-                if amazonasinpage.is_element_exsist(*ITEM_SUBMIT_JP) == False:
-                    print("Inventory Update can't be found... + " + asin, flush=True)
-                    status = False
-                else:
-                    amazonasinpage.click(*ITEM_SUBMIT_JP)
-                    amazonasinpage.random_sleep(3000, 5000)
-                    if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_JP) == False:
-                        if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP):
-                            element = driver.find_element(*ITEM_INPUT_JP)
-                            # print("Inventory Over " + element.get_attribute('value') + ' + ' + asin, flush=True)
-                            data['inventory'] = int(element.get_attribute('value'))
-                        else:
-                            print("Inventory Tips can't be found... + " + asin, flush=True)
-                            status = False
-                    else:
-                        element = driver.find_element(*INVENTORY_TIPS_JP)
-                        # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
-                        # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
-                        if '客様お一人' in element.text:
-                            # print("check limited", flush= True)
-                            data['limited'] = 'yes'
-                            data['inventory'] = 0
-                        else:
-                            # ss
-                            data['inventory'] = int(getsale(element.text))
-                            # print("inventory is: " + str(data['inventory']), flush=True)
-            if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
-                print("Inventory Delete can't be found... + " + asin, flush=True)
-                status = False
-            else:
-                amazonasinpage.click(*ITEM_DELETE_JP)
-                amazonasinpage.random_sleep(2000, 3000)
-            # print(data, flush=True)
-            status = data
-    except NoSuchElementException as msg:
-        status = False
-        print("Except: NoSuchElementException", flush=True)
-    except Exception as e:
-        status = False
-        print(e, flush=True)
-    finally:
-        if driver_upper == False:
-            driver.quit()
-        return status
+            if driver_upper == False:
+                driver.quit()
+            return status
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -708,7 +711,8 @@ if __name__ == "__main__":
     # driver.set_script_timeout(60)
     node = '2285178051'
     type = 'BS'
-    jp_node_gather(node, type)
+    amazonspider = AmazonSpider()
+    amazonspider.jp_node_gather(node, type)
     # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
     # for i in range(0, 100):
     #     t1 = time.time()
