@@ -155,13 +155,13 @@ if __name__ == "__main__":
                                                         status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
                                                         if status == False:
                                                             print("avg_sale update fail.. + " + node_table, flush=True)
-                                                        else:
-                                                            print("avg_sale update successfully.. + " + node_table, flush=True)
+                                                        # else:
+                                                        #     print("avg_sale update successfully.. + " + node_table, flush=True)
                                                         status = update_task_node(node)
                                                         if status == False:
                                                             print("update task node faild.. + " + node, flush=True)
-                                                        else:
-                                                            print("update task node sucessfully.. + " + node, flush=True)
+                                                        # else:
+                                                        #     print("update task node sucessfully.. + " + node, flush=True)
                                                     else:
                                                         print(" get avg_sale fail.. + " + node_table, flush=True)
                                                 else:

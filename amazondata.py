@@ -138,6 +138,7 @@ class AmazonData():
         if cursor != False:
             avg_rows = cursor.fetchall()
             status = avg_rows[0][0]
+            print(status)
 
         return status
 
