@@ -127,10 +127,10 @@ class AmazonSpider():
     def __init__(self):
         pass
 
-    def jp_node_gather(self, node, type):
+    def jp_node_gather(self, node, type, pages):
         status = True
         t1 = time.time()
-        for page in range(0, 5):
+        for page in range(0, pages):
             datetime1 = datetime.strptime('1990-01-28','%Y-%m-%d')
             date1 = datetime1.date()
             asin_info_data = {
@@ -426,7 +426,7 @@ class AmazonSpider():
                                             if status == True:
                                                 # print("invetory_date update sucessfully.. + " + node_table, flush=True)
                                                 status = amazondata.get_yesterday_sale(inventory_table)
-                                                if status != False:
+                                                if status != -999:
                                                     # print("get_yesterday_sale sucessfully.. + " + inventory_table, flush=True)
                                                     yesterday = date.today() + timedelta(days=-1)
                                                     data = {
@@ -441,7 +441,7 @@ class AmazonSpider():
                                                         if status == True:
                                                             # print("sale_data insert sucessfully... + " + sale_table, flush=True)
                                                             avg_sale = amazondata.get_column_avg(sale_table, 'sale')
-                                                            if avg_sale != -1:
+                                                            if avg_sale != -999:
                                                                 status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
                                                                 if status == False:
                                                                     print("avg_sale update fail.. + " + node_table, flush=True)
@@ -712,7 +712,7 @@ if __name__ == "__main__":
     node = '2285178051'
     type = 'BS'
     amazonspider = AmazonSpider()
-    amazonspider.jp_node_gather(node, type)
+    amazonspider.jp_node_gather(node, type, 3)
     # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
     # for i in range(0, 100):
     #     t1 = time.time()

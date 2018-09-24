@@ -35,13 +35,17 @@ def get_task_nodes(task_id):
             print("Connect Database In Failure + " + amazontask_db_name, flush=True)
             status = False
         else:
-            sql = 'select * from SALE_TASK where task_id=' + task_id
-            cursor = amazondata.select_data(sql)
-            if cursor == False:
-                print("Get Task Asin In Failure", flush=True)
-                status = False
+            status = amazondata.create_task_table('SALE_TASK')
+            if status == False:
+                print("Create Table In Failure + SALE_TASK", flush=True)
             else:
-                status = cursor # node, task_id, last_date
+                sql = 'select * from SALE_TASK where task_id=' + task_id
+                cursor = amazondata.select_data(sql)
+                if cursor == False:
+                    print("Get Task Asin In Failure", flush=True)
+                    status = False
+                else:
+                    status = cursor # node, task_id, last_date
 
             amazondata.disconnect_database()
     return status
@@ -151,7 +155,7 @@ if __name__ == "__main__":
                                                 status = amazondata.insert_sale_data(sale_table, data)
                                                 if status == True:
                                                     avg_sale = amazondata.get_column_avg(sale_table, 'sale')
-                                                    if avg_sale != False:
+                                                    if avg_sale != -999:
                                                         status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
                                                         if status == False:
                                                             print("avg_sale update fail.. + " + node_table, flush=True)

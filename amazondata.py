@@ -42,6 +42,14 @@ class AmazonData():
     def is_asin_inventory_exsist(self, table, column):
         return self.amsql.is_mysql_column_exsit(self.db, 'amazondata', table, column)
 
+    def create_task_table(self, table):
+        columns = 'node VARCHAR(50) NOT NULL, task_id CHAR(3) NOT NULL, last_date DATE NOT NULL, PRIMARY KEY (rank)'
+        status = True
+        if self.amsql.is_mysql_table_exsist(self.db, table) == False:
+            status = self.amsql.create_table(self.db, table, columns)
+
+        return status
+
     def create_node_table(self, table): # table_name format: node+'node'
         # columns = 'node VARCHAR(11) NOT NULL, name VARCHAR(160) NOT NULL, date DATE NOT NULL, PRIMARY KEY (node)'
         columns = 'rank INT NOT NULL, asin CHAR(10) NOT NULL, node VARCHAR(50) NOT NULL, price INT NOT NULL, review INT NOT NULL, rate FLOAT(2,1) NOT NULL, qa INT NOT NULL, shipping CHAR(3) NOT NULL, seller INT NOT NULL, avg_sale INT NOT NULL, inventory_date DATE NOT NULL, limited VARCHAR(3) NOT NULL, img_url VARCHAR(12) NOT NULL, status VARCHAR(3) NOT NULL, PRIMARY KEY (rank)'
@@ -132,13 +140,14 @@ class AmazonData():
         return yesterday_sale
 
     def get_column_avg(self, table, column):
-        status = False
+        status = -999
         sql = 'select avg(' + column + ') from ' + table
         cursor = self.amsql.query(self.db, sql)
         if cursor != False:
             avg_rows = cursor.fetchall()
             status = avg_rows[0][0]
-            print(status)
+            if status < 0:
+                status = 0
 
         return status
 
