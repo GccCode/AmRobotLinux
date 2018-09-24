@@ -95,7 +95,7 @@ if __name__ == "__main__":
     status = amazondata.connect_database('amazondata')
     if status == True:
         node_cursor = get_task_nodes(task_id)
-        if node_cursor == True:
+        if node_cursor != False:
             task_info_array_len = node_cursor.rowcount
             task_info_array = node_cursor.fetchall()
             for node_index in range(0, task_info_array_len):
