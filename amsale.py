@@ -150,7 +150,7 @@ if __name__ == "__main__":
                                                 status = amazondata.insert_sale_data(sale_table, data)
                                                 if status == True:
                                                     avg_sale = amazondata.get_column_avg(sale_table, 'sale')
-                                                    if avg_sale != -1:
+                                                    if avg_sale != False:
                                                         status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
                                                         if status == False:
                                                             print("avg_sale update fail.. + " + node_table, flush=True)
