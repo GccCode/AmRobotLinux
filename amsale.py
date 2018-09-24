@@ -139,7 +139,7 @@ if __name__ == "__main__":
                                     if status == True:
                                         status = amazondata.get_yesterday_sale(inventory_table)
                                         print(status)
-                                        if status != -1:
+                                        if status != -999:
                                             yesterday = date.today() + timedelta(days=-1)
                                             data = {
                                                 'date': yesterday,

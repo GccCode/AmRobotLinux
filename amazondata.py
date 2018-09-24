@@ -111,7 +111,7 @@ class AmazonData():
         status = self.amsql.select_data(self.db, sql)
         if status == False:
             print("Get yesterday sale fail...", flush=True)
-            return -1
+            return -999
 
         inventory = status.fetchall()
         yesterday_inventory = inventory[0][1]
@@ -120,12 +120,14 @@ class AmazonData():
         status = self.amsql.select_data(self.db, sql)
         if status == False:
             print("Get today sale fail...", flush=True)
-            return -1
+            return -999
 
         inventory = status.fetchall()
         today_inventory = inventory[0][1]
 
         yesterday_sale =  yesterday_inventory - today_inventory
+        if yesterday_sale < 0:
+            yesterday_sale = 0
 
         return yesterday_sale
 
