@@ -462,7 +462,8 @@ class AmazonSpider():
                                     else:
                                         print("inventory_table create fail + " + inventory_table, flush=True)
                                 else:
-                                    print('Inventory Limited, no need to record...', flush=True)
+                                    pass
+                                    # print('Inventory Limited, no need to record...', flush=True)
                             else:
                                 print("asin_info_data inserted fail.. + " + node_table, flush=True)
                         else:
