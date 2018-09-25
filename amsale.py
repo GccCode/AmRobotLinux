@@ -51,7 +51,6 @@ def get_task_nodes(task_id):
     return status
 
 def update_task_node(node):
-    status = True
     amazontask_db_name = 'amazontask'
     amazondata = AmazonData()
     status = amazondata.connect_database(amazontask_db_name)
@@ -69,7 +68,6 @@ def update_task_node(node):
     return status
 
 def is_all_task_finish(task_id):
-    status = False
     amazontask_db_name = 'amazontask'
     amazondata = AmazonData()
     status = amazondata.connect_database(amazontask_db_name)
@@ -80,16 +78,18 @@ def is_all_task_finish(task_id):
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         sql = 'select * from SALE_TASK where task_id=\'' + task_id +'\' and last_date <> ' + value
+        print(sql)
         status = amazondata.select_data(sql)
         if status == False:
             status = True
+        else:
+            print("is all finished", flush=True)
 
         amazondata.disconnect_database()
 
     return status
 
 def is_task_finish(node):
-    status = False
     amazontask_db_name = 'amazontask'
     amazondata = AmazonData()
     status = amazondata.connect_database(amazontask_db_name)
@@ -100,9 +100,12 @@ def is_task_finish(node):
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         sql = 'select * from SALE_TASK where node=' + node + ' and last_date <> ' + value
+        print(sql)
         status = amazondata.select_data(sql)
         if status == False:
             status = True
+        else:
+            print("is finished", flush=True)
 
         amazondata.disconnect_database()
 
