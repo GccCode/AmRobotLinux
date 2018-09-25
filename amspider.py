@@ -26,6 +26,7 @@ VIEW_CART_BUTTON1 = (By.ID, 'hlb-view-cart')
 VIEW_CART_BUTTON2 = (By.CSS_SELECTOR, 'input[name=editCart]')
 VIEW_CART_BUTTON3 = (By.CLASS_NAME, 'hlb-cart-button')
 VIEW_CART_BUTTON4 = (By.CSS_SELECTOR, 'a[title=カートに入れる]')
+VIEW_CART_BUTTON5 = (By.ID, 'add-to-cart-button')
 ITEM_SELECT_US = (By.XPATH,
                            '//*[@id=\'activeCartViewForm\']/div[position()=2]/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/span[position()=1]/select')
 ITEM_INPUT_US = (By.XPATH,
@@ -686,8 +687,10 @@ class AmazonSpider():
                 else:
                     amazonasinpage.click(*ITEM_DELETE_JP)
                     amazonasinpage.random_sleep(2000, 3000)
-                # print(data, flush=True)
-                status = data
+
+                if status != False:
+                    # print(data, flush=True)
+                    status = data
         except NoSuchElementException as msg:
             status = False
             print("Except: NoSuchElementException", flush=True)
