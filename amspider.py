@@ -713,8 +713,10 @@ if __name__ == "__main__":
     # driver = webdriver.Chrome(chrome_options=chrome_options)
     # driver.set_page_load_timeout(60)
     # driver.set_script_timeout(60)
-    node = '2285178051'
-    type = 'BS'
+    # node = '2285178051'
+    # type = 'BS'
+    node = sys.argv[1]
+    type = sys.argv[2]
     amazonspider = AmazonSpider()
     amazonspider.jp_node_gather(node, type, 3)
     # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
