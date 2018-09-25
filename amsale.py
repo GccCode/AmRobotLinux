@@ -120,6 +120,7 @@ def is_all_inventory_finish(node_table):
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\'' + ' and inventory_date <> ' + value
+        print(sql, flush=True)
         status = amazondata.select_data(sql)
         if status == False:
             status = True
@@ -176,8 +177,7 @@ if __name__ == "__main__":
                             driver.set_page_load_timeout(60)
                             driver.set_script_timeout(60)
 
-                            # while is_all_inventory_finish(node_table) == False:
-                            if True:
+                            while is_all_inventory_finish(node_table) == False:
                                 asin_cursor = get_asin_rows_from_node(amazondata, node_table)
                                 if asin_cursor != False:
                                     asin_info_array_len = asin_cursor.rowcount
