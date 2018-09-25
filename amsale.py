@@ -185,6 +185,8 @@ if __name__ == "__main__":
                                     for asin_index in range(0, asin_info_array_len):
                                         asin_info = asin_info_array[asin_index]
                                         asin = asin_info[1]
+                                        print(asin_info[11], flush=True)
+                                        print(asin_info[13], flush=True)
                                         print(asin_info[10], flush=True)
                                         print(date.today().strftime("%Y-%m-%d"), flush=True)
                                         while asin_info[11] == 'no' and asin_info[13] == 'ok' and asin_info[10] != date.today().strftime("%Y-%m-%d"):
