@@ -120,6 +120,7 @@ def is_inventory_finish(node_table):
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\'' + ' and inventory_date <> ' + value
+        print(sql, flush=True)
         status = amazondata.select_data(sql)
         if status == False:
             status = True
