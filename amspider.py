@@ -25,8 +25,6 @@ VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
 VIEW_CART_BUTTON1 = (By.ID, 'hlb-view-cart')
 VIEW_CART_BUTTON2 = (By.CSS_SELECTOR, 'input[name=editCart]')
 VIEW_CART_BUTTON3 = (By.CLASS_NAME, 'hlb-cart-button')
-VIEW_CART_BUTTON4 = (By.CSS_SELECTOR, 'a[title=カートに入れる]')
-VIEW_CART_BUTTON5 = (By.ID, 'add-to-cart-button')
 ITEM_SELECT_US = (By.XPATH,
                            '//*[@id=\'activeCartViewForm\']/div[position()=2]/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/span[position()=1]/select')
 ITEM_INPUT_US = (By.XPATH,
@@ -645,48 +643,48 @@ class AmazonSpider():
                 elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON3):
                     amazonasinpage.click(*VIEW_CART_BUTTON3)
                     amazonasinpage.random_sleep(3000, 5000)
-                elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON4):
-                    amazonasinpage.click(*VIEW_CART_BUTTON4)
-                    amazonasinpage.random_sleep(3000, 5000)
                 else:
-                    print("View Cart can't be found... + " + asin, flush=True)
-                if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP) == False:
-                    print("Inventory Input can't be found... + " + asin, flush=True)
                     status = False
-                else:
-                    amazonasinpage.input("999", *ITEM_INPUT_JP)
-                    if amazonasinpage.is_element_exsist(*ITEM_SUBMIT_JP) == False:
-                        print("Inventory Update can't be found... + " + asin, flush=True)
+                    print("View Cart can't be found... + " + asin, flush=True)
+
+                if status == True:
+                    if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP) == False:
+                        print("Inventory Input can't be found... + " + asin, flush=True)
                         status = False
                     else:
-                        amazonasinpage.click(*ITEM_SUBMIT_JP)
-                        amazonasinpage.random_sleep(3000, 5000)
-                        if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_JP) == False:
-                            if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP):
-                                element = driver.find_element(*ITEM_INPUT_JP)
-                                # print("Inventory Over " + element.get_attribute('value') + ' + ' + asin, flush=True)
-                                data['inventory'] = int(element.get_attribute('value'))
-                            else:
-                                print("Inventory Tips can't be found... + " + asin, flush=True)
-                                status = False
+                        amazonasinpage.input("999", *ITEM_INPUT_JP)
+                        if amazonasinpage.is_element_exsist(*ITEM_SUBMIT_JP) == False:
+                            print("Inventory Update can't be found... + " + asin, flush=True)
+                            status = False
                         else:
-                            element = driver.find_element(*INVENTORY_TIPS_JP)
-                            # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
-                            # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
-                            if '客様お一人' in element.text:
-                                # print("check limited", flush= True)
-                                data['limited'] = 'yes'
-                                data['inventory'] = 0
+                            amazonasinpage.click(*ITEM_SUBMIT_JP)
+                            amazonasinpage.random_sleep(3000, 5000)
+                            if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_JP) == False:
+                                if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP):
+                                    element = driver.find_element(*ITEM_INPUT_JP)
+                                    # print("Inventory Over " + element.get_attribute('value') + ' + ' + asin, flush=True)
+                                    data['inventory'] = int(element.get_attribute('value'))
+                                else:
+                                    print("Inventory Tips can't be found... + " + asin, flush=True)
+                                    status = False
                             else:
-                                # ss
-                                data['inventory'] = int(getsale(element.text))
-                                # print("inventory is: " + str(data['inventory']), flush=True)
-                if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
-                    print("Inventory Delete can't be found... + " + asin, flush=True)
-                    status = False
-                else:
-                    amazonasinpage.click(*ITEM_DELETE_JP)
-                    amazonasinpage.random_sleep(2000, 3000)
+                                element = driver.find_element(*INVENTORY_TIPS_JP)
+                                # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
+                                # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
+                                if '客様お一人' in element.text:
+                                    # print("check limited", flush= True)
+                                    data['limited'] = 'yes'
+                                    data['inventory'] = 0
+                                else:
+                                    # ss
+                                    data['inventory'] = int(getsale(element.text))
+                                    # print("inventory is: " + str(data['inventory']), flush=True)
+                    if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
+                        print("Inventory Delete can't be found... + " + asin, flush=True)
+                        status = False
+                    else:
+                        amazonasinpage.click(*ITEM_DELETE_JP)
+                        amazonasinpage.random_sleep(2000, 3000)
 
                 if status != False:
                     # print(data, flush=True)
