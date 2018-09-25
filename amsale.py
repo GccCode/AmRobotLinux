@@ -83,10 +83,10 @@ def is_all_task_finish(task_id):
         if status == False:
             status = True
         else:
-            print("is all finished", flush=True)
+            print("is not all finished", flush=True)
 
         amazondata.disconnect_database()
-
+    print(status, flush=True)
     return status
 
 def is_task_finish(node):
@@ -105,10 +105,10 @@ def is_task_finish(node):
         if status == False:
             status = True
         else:
-            print("is finished", flush=True)
+            print("is not finished", flush=True)
 
         amazondata.disconnect_database()
-
+    print(status, flush=True)
     return status
 
 
