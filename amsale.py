@@ -120,7 +120,6 @@ def is_all_inventory_finish(node_table):
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\'' + ' and inventory_date <> ' + value
-        print(sql, flush=True)
         status = amazondata.select_data(sql)
         if status == False:
             status = True
@@ -223,11 +222,6 @@ if __name__ == "__main__":
                                                                             print("avg_sale update fail.. + " + node_table, flush=True)
                                                                         # else:
                                                                         #     print("avg_sale update successfully.. + " + node_table, flush=True)
-                                                                        status = update_task_node(node)
-                                                                        if status == False:
-                                                                            print("update task node faild.. + " + node, flush=True)
-                                                                        # else:
-                                                                        #     print("update task node sucessfully.. + " + node, flush=True)
                                                                     else:
                                                                         print(" get avg_sale fail.. + " + node_table, flush=True)
                                                                 else:
@@ -242,8 +236,12 @@ if __name__ == "__main__":
                                                     print("inventory data insert fail.. + " + inventory_table, flush=True)
                                             else:
                                                 print("Get Inventory Jp In Failure.", flush=True)
-                                else:
-                                    pass
+
+                            status = update_task_node(node)
+                            if status == False:
+                                print("update task node faild.. + " + node, flush=True)
+                            # else:
+                            #     print("update task node sucessfully.. + " + node, flush=True)
                     except Exception as e:
                         print(str(e))
                     finally:
