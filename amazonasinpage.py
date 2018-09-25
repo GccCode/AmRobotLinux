@@ -31,6 +31,11 @@ class AmazonAsinPage(AmazonPage):
         finally:
             return status
 
+    def select_size(self, index, begin, end):
+        if self.is_element_exsist(*self.locator.SELECT_SIZE_JP):
+            self.select(index, *self.locator.SELECT_SIZE_JP)
+            self.random_sleep(begin, end)
+
     def ask_qa(self, content, begin, end):
         country = self.cf.get("account", "country")
         self.click(*self.locator.QATEXT)
