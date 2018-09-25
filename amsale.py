@@ -69,7 +69,7 @@ def update_task_node(node):
     return status
 
 def is_all_task_finish(task_id):
-    status = True
+    status = False
     amazontask_db_name = 'amazontask'
     amazondata = AmazonData()
     status = amazondata.connect_database(amazontask_db_name)
