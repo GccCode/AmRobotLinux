@@ -234,7 +234,7 @@ class AmazonSpider():
                         tmp_symbol = CRITICAL_RANK_PREFIX + str(i + 1) + CRITICAL_RANK_POSTFIX + '1]'
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
-                        # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
+                        print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                         asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
 
@@ -306,7 +306,7 @@ class AmazonSpider():
                     tmp_symbol = NON_CRITICAL_RANK_PREFIX + str(i + 1) + NON_CRITICAL_RANK_POSTFIX + '1]'
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
-                        # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
+                        print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                         asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
                         asin_info_array.append(copy.deepcopy(asin_info_data))
