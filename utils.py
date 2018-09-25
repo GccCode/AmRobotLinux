@@ -311,6 +311,22 @@ def generate_info_file():
     print(("* Generate Info Sucessfully..."), flush=True)
     return True
 
+def generate_info_file_jp():
+    cf_info = configparser.ConfigParser()
+    cf_info.add_section("account")
+    cf_info.set("account", "country", "us")
+    username = generate_username()
+    cf_info.set("account", "username", username)
+    email = generate_email()
+    cf_info.set("account", "email", email)
+    password = generate_password()
+    cf_info.set("account", "password", password)
+    cf_info.set("account", "pronunciation", username)
+
+    cf_info.write(open('info.txt', 'w'))
+    print(("* Generate Info Sucessfully..."), flush=True)
+    return True
+
 def customized_broswer():
     option = webdriver.ChromeOptions()
     # index = random.randint(0, (len(useragentlist) - 1))
