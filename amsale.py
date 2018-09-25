@@ -2,22 +2,12 @@
 # -*- coding:utf-8 -*-
 
 from selenium import webdriver
-import re
-import time
-import json
 import sys
-import io
-from selenium.webdriver.common.by import By
-from amazonasinpage import AmazonAsinPage
-from selenium.common.exceptions import NoSuchElementException
-from amazonpage import AmazonPage
 import copy
 from datetime import date
-from datetime import datetime
 from datetime import timedelta
 from amazondata import AmazonData
 from amspider import AmazonSpider
-from amazonsql import AmazonSql
 
 
 
