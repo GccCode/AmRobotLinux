@@ -33,6 +33,8 @@ class AmazonAsinPage(AmazonPage):
 
     def select_size(self, index, begin, end):
         if self.is_element_exsist(*self.locator.SELECT_SIZE_JP):
+            element = self.driver.find_element(*self.locator.SELECT_SIZE_JP)
+
             self.select(index, *self.locator.SELECT_SIZE_JP)
             self.random_sleep(begin, end)
         else:
@@ -55,7 +57,7 @@ class AmazonAsinPage(AmazonPage):
         self.random_sleep(begin, end)
         print(("**** 提交QA： " + content), flush=True)
 
-    def add_wishlist(self, begin, end, asin = False):
+    def add_wishlist(self, begin, end, asin):
         country = self.cf.get("account", "country")
         self.click(*self.locator.ADDWISHLISTSUBMITBUTTON)
         self.random_sleep(5000, 8000)
