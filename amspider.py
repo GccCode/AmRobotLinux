@@ -179,8 +179,8 @@ class AmazonSpider():
                     has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
                     if has_review:
                         element = driver.find_element_by_xpath(tmp_symbol)
-                        print("Review Count is: " + element.text, flush=True)
-                        asin_info_data['review'] = int(element.text)
+                        # print("Review Count is: " + element.text, flush=True)
+                        asin_info_data['review'] = int(element.text.strip().replace(',', ''))
                         tmp_symbol = CRITICAL_RATE_PREFIX + str(i + 1) + CRITICAL_RATE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
@@ -203,7 +203,7 @@ class AmazonSpider():
                             tmp_symbol = CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
-                            print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                            # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
                             asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
                     else:
                         tmp_symbol = CRITICAL_FBA_PREFIX + str(i + 1) + CRITICAL_FBA_POSTFIX
@@ -219,7 +219,7 @@ class AmazonSpider():
                                 i + 1) + CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
-                            print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                            # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
                             asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
 
                     tmp_symbol = CRITICAL_IMGSRC_PREFIX + str(i + 1) + CRITICAL_IMGSRC_POSTFIX
@@ -234,7 +234,7 @@ class AmazonSpider():
                         tmp_symbol = CRITICAL_RANK_PREFIX + str(i + 1) + CRITICAL_RANK_POSTFIX + '1]'
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
-                        print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
+                        # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                         asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
 
@@ -253,8 +253,8 @@ class AmazonSpider():
                     has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
                     if has_review:
                         element = driver.find_element_by_xpath(tmp_symbol)
-                        print("Review Count is: " + element.text, flush=True)
-                        asin_info_data['review'] = int(element.text)
+                        # print("Review Count is: " + element.text, flush=True)
+                        asin_info_data['review'] = int(element.text.strip().replace(',', ''))
                         tmp_symbol = NON_CRITICAL_RATE_PREFIX + str(i + 1) + NON_CRITICAL_RATE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
@@ -277,7 +277,7 @@ class AmazonSpider():
                             tmp_symbol = NON_CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + NON_CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
-                            print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                            # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
                             asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
                     else:
                         tmp_symbol = NON_CRITICAL_FBA_PREFIX + str(i + 1) + NON_CRITICAL_FBA_POSTFIX
@@ -293,7 +293,7 @@ class AmazonSpider():
                                 i + 1) + NON_CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
-                            print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                            # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
                             asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
 
                     tmp_symbol = NON_CRITICAL_IMGSRC_PREFIX + str(i + 1) + NON_CRITICAL_IMGSRC_POSTFIX
@@ -306,7 +306,7 @@ class AmazonSpider():
                     tmp_symbol = NON_CRITICAL_RANK_PREFIX + str(i + 1) + NON_CRITICAL_RANK_POSTFIX + '1]'
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
-                        print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
+                        # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                         asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
                         asin_info_array.append(copy.deepcopy(asin_info_data))
