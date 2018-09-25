@@ -153,6 +153,7 @@ if __name__ == "__main__":
         node_cursor = get_task_nodes(task_id)
         if node_cursor != False:
             while is_all_task_finish(task_id) == False:
+                print("is task not finished + " + task_id, flush=True)
                 task_info_array_len = node_cursor.rowcount
                 task_info_array = node_cursor.fetchall()
                 for node_index in range(0, task_info_array_len):
@@ -162,6 +163,7 @@ if __name__ == "__main__":
                         node = task_info[0]
                         node_table = node + '_' + node_type
                         while is_task_finish(node) == False:
+                            print("is node not finished + " + node, flush=True)
                             chrome_options = webdriver.ChromeOptions()
                             prefs = {
                                 'profile.default_content_setting_values': {
