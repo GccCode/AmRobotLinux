@@ -78,16 +78,14 @@ def is_all_task_finish(task_id):
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         sql = 'select * from SALE_TASK where task_id=\'' + task_id +'\' and last_date <> ' + value
-        print(sql)
         status = amazondata.select_data(sql)
         if status == False:
             status = True
         else:
             status = False
-            print("is not all finished", flush=True)
 
         amazondata.disconnect_database()
-    print(status, flush=True)
+
     return status
 
 def is_task_finish(node):
@@ -101,7 +99,6 @@ def is_task_finish(node):
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         sql = 'select * from SALE_TASK where node=' + node + ' and last_date <> ' + value
-        print(sql)
         status = amazondata.select_data(sql)
         if status == False:
             status = True
@@ -109,7 +106,7 @@ def is_task_finish(node):
             status = False
 
         amazondata.disconnect_database()
-    print(status, flush=True)
+
     return status
 
 
@@ -162,59 +159,59 @@ if __name__ == "__main__":
                                 for asin_index in range(0, asin_info_array_len):
                                     asin_info = asin_info_array[asin_index]
                                     asin = asin_info[1]
-                                    print(asin)
-                                    result = amazonspider.get_inventory_jp(driver, asin)
-                                    if result != False:
-                                        cur_date = date.today()
-                                        data = {
-                                            'date': cur_date,
-                                            'inventory': result['inventory']
-                                        }
-                                        inventory_table = 'INVENTORY_' + asin
-                                        status = amazondata.insert_inventory_data(inventory_table, data)
-                                        if status == True:
-                                            condition = 'asin=\'' + asin + '\''
-                                            value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-                                            status = amazondata.update_data(node_table, 'inventory_date', value, condition)
+                                    if asin_info[11] != 'yes' and asin_info[13] != 'err':
+                                        result = amazonspider.get_inventory_jp(driver, asin)
+                                        if result != False:
+                                            cur_date = date.today()
+                                            data = {
+                                                'date': cur_date,
+                                                'inventory': result['inventory']
+                                            }
+                                            inventory_table = 'INVENTORY_' + asin
+                                            status = amazondata.insert_inventory_data(inventory_table, data)
                                             if status == True:
-                                                status = amazondata.get_yesterday_sale(inventory_table)
-                                                if status != -999:
-                                                    yesterday = date.today() + timedelta(days=-1)
-                                                    data = {
-                                                        'date': yesterday,
-                                                        'sale': copy.deepcopy(status)
-                                                    }
-                                                    sale_table = 'SALE_' + asin
-                                                    status = amazondata.create_sale_table(sale_table)
-                                                    if status == True:
-                                                        status = amazondata.insert_sale_data(sale_table, data)
+                                                condition = 'asin=\'' + asin + '\''
+                                                value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+                                                status = amazondata.update_data(node_table, 'inventory_date', value, condition)
+                                                if status == True:
+                                                    status = amazondata.get_yesterday_sale(inventory_table)
+                                                    if status != -999:
+                                                        yesterday = date.today() + timedelta(days=-1)
+                                                        data = {
+                                                            'date': yesterday,
+                                                            'sale': copy.deepcopy(status)
+                                                        }
+                                                        sale_table = 'SALE_' + asin
+                                                        status = amazondata.create_sale_table(sale_table)
                                                         if status == True:
-                                                            avg_sale = amazondata.get_column_avg(sale_table, 'sale')
-                                                            if avg_sale != -999:
-                                                                status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
-                                                                if status == False:
-                                                                    print("avg_sale update fail.. + " + node_table, flush=True)
-                                                                # else:
-                                                                #     print("avg_sale update successfully.. + " + node_table, flush=True)
-                                                                status = update_task_node(node)
-                                                                if status == False:
-                                                                    print("update task node faild.. + " + node, flush=True)
-                                                                # else:
-                                                                #     print("update task node sucessfully.. + " + node, flush=True)
+                                                            status = amazondata.insert_sale_data(sale_table, data)
+                                                            if status == True:
+                                                                avg_sale = amazondata.get_column_avg(sale_table, 'sale')
+                                                                if avg_sale != -999:
+                                                                    status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
+                                                                    if status == False:
+                                                                        print("avg_sale update fail.. + " + node_table, flush=True)
+                                                                    # else:
+                                                                    #     print("avg_sale update successfully.. + " + node_table, flush=True)
+                                                                    status = update_task_node(node)
+                                                                    if status == False:
+                                                                        print("update task node faild.. + " + node, flush=True)
+                                                                    # else:
+                                                                    #     print("update task node sucessfully.. + " + node, flush=True)
+                                                                else:
+                                                                    print(" get avg_sale fail.. + " + node_table, flush=True)
                                                             else:
-                                                                print(" get avg_sale fail.. + " + node_table, flush=True)
+                                                                print("sale_data insert fail... + " + sale_table, flush=True)
                                                         else:
-                                                            print("sale_data insert fail... + " + sale_table, flush=True)
+                                                            print("sale_table create fail.. + " + sale_table, flush=True)
                                                     else:
-                                                        print("sale_table create fail.. + " + sale_table, flush=True)
+                                                        print("get_yesterday_sale fail.. + " + inventory_table, flush=True)
                                                 else:
-                                                    print("get_yesterday_sale fail.. + " + inventory_table, flush=True)
+                                                    print("invetory_date update fail.. + " + node_table, flush=True)
                                             else:
-                                                print("invetory_date update fail.. + " + node_table, flush=True)
+                                                print("inventory data insert fail.. + " + inventory_table, flush=True)
                                         else:
-                                            print("inventory data insert fail.. + " + inventory_table, flush=True)
-                                    else:
-                                        print("Get Inventory Jp In Failure.", flush=True)
+                                            print("Get Inventory Jp In Failure.", flush=True)
                             else:
                                 pass
                     except Exception as e:
