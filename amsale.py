@@ -189,6 +189,8 @@ if __name__ == "__main__":
                                         print(asin_info[13], flush=True)
                                         print(asin_info[10], flush=True)
                                         print(date.today().strftime("%Y-%m-%d"), flush=True)
+                                        if asin_info[10] != date.today().strftime("%Y-%m-%d"):
+                                            print("not equal...", flush=True)
                                         while asin_info[11] == 'no' and asin_info[13] == 'ok' and asin_info[10] != date.today().strftime("%Y-%m-%d"):
                                             result = amazonspider.get_inventory_jp(driver, asin)
                                             if result != False:
