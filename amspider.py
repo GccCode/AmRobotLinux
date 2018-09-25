@@ -179,7 +179,7 @@ class AmazonSpider():
                     has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
                     if has_review:
                         element = driver.find_element_by_xpath(tmp_symbol)
-                        # print("Review Count is: " + element.text, flush=True)
+                        print("Review Count is: " + element.text, flush=True)
                         asin_info_data['review'] = int(element.text)
                         tmp_symbol = CRITICAL_RATE_PREFIX + str(i + 1) + CRITICAL_RATE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
@@ -253,8 +253,8 @@ class AmazonSpider():
                     has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
                     if has_review:
                         element = driver.find_element_by_xpath(tmp_symbol)
+                        print("Review Count is: " + element.text, flush=True)
                         asin_info_data['review'] = int(element.text)
-                        # print("Review Count is: " + element.text, flush=True)
                         tmp_symbol = NON_CRITICAL_RATE_PREFIX + str(i + 1) + NON_CRITICAL_RATE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
