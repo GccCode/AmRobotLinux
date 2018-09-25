@@ -453,8 +453,6 @@ class AmazonSpider():
                                                             print("sale_data insert fail... + " + sale_table, flush=True)
                                                     else:
                                                         print("sale_table create fail.. + " + sale_table, flush=True)
-                                                else:
-                                                    print("get_yesterday_sale fail.. + " + inventory_table, flush=True)
                                             else:
                                                 print("invetory_date update fail.. + " + node_table, flush=True)
                                         else:
