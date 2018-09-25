@@ -89,7 +89,7 @@ def is_all_task_finish(task_id):
     return status
 
 def is_task_finish(node):
-    status = True
+    status = False
     amazontask_db_name = 'amazontask'
     amazondata = AmazonData()
     status = amazondata.connect_database(amazontask_db_name)
@@ -110,7 +110,7 @@ def is_task_finish(node):
 
 
 def get_asin_rows_from_node(ad, table):
-    status = True
+    status = False
     sql = 'select * from ' + table + ' where status=\'ok\' and limited=\'no\'' + ' and node=' + node
     cursor = amazondata.select_data(sql)
     if cursor == False:
