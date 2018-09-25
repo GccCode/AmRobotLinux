@@ -123,6 +123,12 @@ def getqa(template):
     slotList = re.findall(rule, template)
     return slotList[0]
 
+def getprice(price):
+    if '-' in price:
+        return int(price.split('-')[0].strip('￥ ').replace(',', ''))
+    else:
+        return int(price.strip('￥ ').replace(',', ''))
+
 class AmazonSpider():
     def __init__(self):
         pass
@@ -204,7 +210,7 @@ class AmazonSpider():
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
                             # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
-                            asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
+                            asin_info_data['price'] = getprice(element.text)
                     else:
                         tmp_symbol = CRITICAL_FBA_PREFIX + str(i + 1) + CRITICAL_FBA_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
@@ -220,7 +226,7 @@ class AmazonSpider():
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
                             # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
-                            asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
+                            asin_info_data['price'] = getprice(element.text)
 
                     tmp_symbol = CRITICAL_IMGSRC_PREFIX + str(i + 1) + CRITICAL_IMGSRC_POSTFIX
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
@@ -278,7 +284,7 @@ class AmazonSpider():
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
                             # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
-                            asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
+                            asin_info_data['price'] = getprice(element.text)
                     else:
                         tmp_symbol = NON_CRITICAL_FBA_PREFIX + str(i + 1) + NON_CRITICAL_FBA_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
@@ -294,7 +300,7 @@ class AmazonSpider():
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
                             # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
-                            asin_info_data['price'] = int(element.text.strip('￥ ').replace(',', ''))
+                            asin_info_data['price'] = getprice(element.text)
 
                     tmp_symbol = NON_CRITICAL_IMGSRC_PREFIX + str(i + 1) + NON_CRITICAL_IMGSRC_POSTFIX
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
