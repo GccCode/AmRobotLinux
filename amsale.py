@@ -79,7 +79,7 @@ def is_all_task_finish(task_id):
     else:
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-        sql = 'select * from SALE_TASK where task_id=' + task_id +' and last_date <> ' + value
+        sql = 'select * from SALE_TASK where task_id=\'' + task_id +'\' and last_date <> ' + value
         status = amazondata.select_data(sql)
         if status == False:
             status = True
