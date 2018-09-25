@@ -631,7 +631,6 @@ class AmazonSpider():
                 data['seller'] = 0
 
             amazonasinpage.select_size(1, 1000, 2000)
-            input("xxxx")
 
             status = amazonasinpage.add_cart(5000, 8000)
             if status == True:
