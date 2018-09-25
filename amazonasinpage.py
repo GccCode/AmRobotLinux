@@ -35,6 +35,8 @@ class AmazonAsinPage(AmazonPage):
         if self.is_element_exsist(*self.locator.SELECT_SIZE_JP):
             self.select(index, *self.locator.SELECT_SIZE_JP)
             self.random_sleep(begin, end)
+        else:
+            print("Size Selection is not here", flush=True)
 
     def ask_qa(self, content, begin, end):
         country = self.cf.get("account", "country")
