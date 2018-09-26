@@ -50,6 +50,7 @@ class AmazonAsinPage(AmazonPage):
                     if option_array[index].get_attribute('class') == 'dropdownAvailable':
                         print("return the original aisn", flush=True)
                         url = 'https://www.amazon.co.jp/dp/' + asin + '?th=1&psc=1'
+                        break
 
             if url == '':
                 for index in range(0, total):
@@ -57,6 +58,7 @@ class AmazonAsinPage(AmazonPage):
                     if option_array[index].get_attribute('class') == 'dropdownAvailable':
                         print("find another asin to replace..", flush=True)
                         url = 'https://www.amazon.co.jp/dp/' + value[1] + '?th=1&psc=1'
+                        break
             if url != '':
                 self.driver.get(url)
                 self.random_sleep(begin, end)
