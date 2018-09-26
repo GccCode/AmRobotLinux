@@ -354,6 +354,7 @@ class AmazonSpider():
                         data = {
                             'seller': 0,
                             'qa': 0,
+                            'shipping' : 'FBM',
                             'inventory': 0,
                             'limited': 'no'
                         }
@@ -618,6 +619,8 @@ class AmazonSpider():
                 if element.text == 'Amazon.co.jp':
                     print("sold by Amazon Basic..", flush=True)
                     data['shipping'] = 'AB'
+                else:
+                    data['shipping'] = 'FBM'
             else:
                 data['shipping'] = 'FBM'
 
