@@ -35,7 +35,7 @@ class AmazonAsinPage(AmazonPage):
         if self.is_element_exsist(*self.locator.SELECT_SIZE_JP):
             element = self.driver.find_element(*self.locator.SELECT_SIZE_JP)
             OPTIONS_JP_PREFIX = 'native_size_name_'
-
+            total = 0
             for total in range(0, 20):
                 try:
                     self.driver.find_element_by_xpath(OPTIONS_JP_PREFIX + str(total))
