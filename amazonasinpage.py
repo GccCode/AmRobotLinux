@@ -52,7 +52,7 @@ class AmazonAsinPage(AmazonPage):
                 value = option_array[index].get_attribute('value')
                 print(asin)
                 print(value)
-                if asin in value:
+                if asin == value[1]:
                     print(option_array[index].get_attribute('class'))
                     if option_array[index].get_attribute('class') == 'dropdownAvailable':
                         print("sjdflsdjlk")
