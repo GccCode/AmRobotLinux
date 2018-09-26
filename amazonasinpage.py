@@ -40,6 +40,7 @@ class AmazonAsinPage(AmazonPage):
                 try:
                     self.driver.find_element_by_xpath(OPTIONS_JP_PREFIX + str(total))
                 except NoSuchElementException as msg:
+                    print("yyyy", flush=True)
                     break
             print(total)
             input("xxxx")
