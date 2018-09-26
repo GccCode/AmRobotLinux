@@ -596,7 +596,7 @@ class AmazonSpider():
             driver = driver_upper
         status = True
         data = {
-            'shipping'  : None,
+            'shipping'  : 'FBM',
             'seller'    : None,
             'qa'        : None,
             'inventory' : None,
