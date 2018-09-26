@@ -38,7 +38,7 @@ class AmazonAsinPage(AmazonPage):
 
             for total in range(1, 20):
                 try:
-                    self.driver.find_element_by_xpath(OPTIONS_JP_PREFIX + str(index))
+                    self.driver.find_element_by_xpath(OPTIONS_JP_PREFIX + str(total))
                 except NoSuchElementException as msg:
                     break
             print(total)
