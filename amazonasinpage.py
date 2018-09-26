@@ -32,6 +32,8 @@ class AmazonAsinPage(AmazonPage):
             return status
 
     def select_size(self, index, begin, end):
+        js = 'document.querySelectorAll("select")[0].style.display="block";'
+        self.driver.execute_script(js)
         if self.is_element_exsist(*self.locator.SELECT_SIZE_JP):
             element = self.driver.find_element(*self.locator.SELECT_SIZE_JP)
 
