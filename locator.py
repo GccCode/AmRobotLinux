@@ -44,7 +44,6 @@ class AmazonAsinPageLocator(AmazonPageLocator):
     REVIEWALL = (By.ID, 'dp-summary-see-all-reviews')
     REVIEWPAGE_SYMBOL = (By.ID, 'cm_cr-buy_box')
     SELECT_SIZE_JP = (By.ID, 'native_dropdown_selected_size_name')
-    SELECT_OPTIONS_JP = (By.XPATH, '//*[@id=\'native_size_name_1\']')
 
 
 class AmazonCartPageLocator(AmazonPageLocator):

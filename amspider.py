@@ -607,6 +607,9 @@ class AmazonSpider():
             amazonasinpage = AmazonAsinPage(driver)
 
             amazonasinpage.random_sleep(1000, 2000)
+
+            amazonasinpage.select_size(asin, 1000, 2000)
+            
             if amazonasinpage.is_element_exsist(*FBA_FLAG):
                 data['shipping'] = 'FBA'
             else:
@@ -629,8 +632,6 @@ class AmazonSpider():
                 # print(element.text, flush=True)
             else:
                 data['seller'] = 0
-
-            amazonasinpage.select_size(asin, 1000, 2000)
 
             status = amazonasinpage.add_cart(5000, 8000)
             if status == True:

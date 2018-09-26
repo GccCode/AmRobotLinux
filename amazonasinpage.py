@@ -48,7 +48,7 @@ class AmazonAsinPage(AmazonPage):
                 value = option_array[index].get_attribute('value').split(',')
                 if asin == value[1]:
                     if option_array[index].get_attribute('class') == 'dropdownAvailable':
-                        print("return the original aisn", flush=True)
+                        # print("return the original aisn", flush=True)
                         url = 'https://www.amazon.co.jp/dp/' + asin + '?th=1&psc=1'
                         break
 
@@ -56,7 +56,7 @@ class AmazonAsinPage(AmazonPage):
                 for index in range(0, total):
                     value = option_array[index].get_attribute('value').split(',')
                     if option_array[index].get_attribute('class') == 'dropdownAvailable':
-                        print("find another asin to replace..", flush=True)
+                        # print("find another asin to replace..", flush=True)
                         url = 'https://www.amazon.co.jp/dp/' + value[1] + '?th=1&psc=1'
                         break
             if url != '':
