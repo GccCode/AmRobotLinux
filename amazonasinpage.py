@@ -33,7 +33,6 @@ class AmazonAsinPage(AmazonPage):
 
     def select_size(self, asin, begin, end):
         if self.is_element_exsist(*self.locator.SELECT_SIZE_JP):
-            # element = self.driver.find_element(*self.locator.SELECT_SIZE_JP)
             OPTIONS_JP_PREFIX = 'native_size_name_'
             option_array = []
             total = 0
@@ -48,7 +47,6 @@ class AmazonAsinPage(AmazonPage):
             for index in range(0, total):
                 value = option_array[index].get_attribute('value').split(',')
                 if asin == value[1]:
-                    # print(option_array[index].get_attribute('class'))
                     if option_array[index].get_attribute('class') == 'dropdownAvailable':
                         print("return the original aisn", flush=True)
                         url = 'https://www.amazon.co.jp/dp/' + asin + '?th=1&psc=1'
@@ -56,19 +54,14 @@ class AmazonAsinPage(AmazonPage):
             if url == '':
                 for index in range(0, total):
                     value = option_array[index].get_attribute('value').split(',')
-                    # print(asin)
-                    # print(value[1])
                     if option_array[index].get_attribute('class') == 'dropdownAvailable':
                         print("find another asin to replace..", flush=True)
                         url = 'https://www.amazon.co.jp/dp/' + value[1] + '?th=1&psc=1'
             if url != '':
                 self.driver.get(url)
-                # self.select(index, *self.locator.SELECT_SIZE_JP)
                 self.random_sleep(begin, end)
         else:
             print("Size Selection is not here", flush=True)
-
-        return False
 
 
     def ask_qa(self, content, begin, end):
