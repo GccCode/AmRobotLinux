@@ -38,6 +38,8 @@ class AmazonAsinPage(AmazonPage):
             element = self.driver.find_element(*self.locator.SELECT_SIZE_JP)
 
             self.select(index, *self.locator.SELECT_SIZE_JP)
+            js = "document.getElementById('submit.add-to-cart-announce').aria-hidden='true';"
+            self.driver.execute_script(js)
             self.random_sleep(begin, end)
         else:
             print("Size Selection is not here", flush=True)
