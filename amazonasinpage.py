@@ -63,8 +63,8 @@ class AmazonAsinPage(AmazonPage):
                         url = 'https://www.amazon.co.jp/dp/' + value[1] + '?th=1&psc=1'
             if url != '':
                 self.driver.get(url)
-            # self.select(index, *self.locator.SELECT_SIZE_JP)
-            self.random_sleep(begin, end)
+                # self.select(index, *self.locator.SELECT_SIZE_JP)
+                self.random_sleep(begin, end)
         else:
             print("Size Selection is not here", flush=True)
 
