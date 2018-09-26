@@ -40,6 +40,7 @@ class AmazonAsinPage(AmazonPage):
                 try:
                     element = self.driver.find_element_by_id(OPTIONS_JP_PREFIX + str(total))
                     print(element.get_attribute('class'))
+                    print(element.get_attribute('value'))
                 except NoSuchElementException as msg:
                     print("yyyy", flush=True)
                     break
