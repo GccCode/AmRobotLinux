@@ -20,6 +20,7 @@ from amazondata import AmazonData
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
 FBA_FLAG = (By.ID, "SSOFpopoverLink")
+AB_FLAG = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
 VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
 VIEW_CART_BUTTON1 = (By.ID, 'hlb-view-cart')
@@ -609,9 +610,14 @@ class AmazonSpider():
             amazonasinpage.random_sleep(1000, 2000)
 
             amazonasinpage.select_size(asin, 1000, 2000)
-            
+
             if amazonasinpage.is_element_exsist(*FBA_FLAG):
                 data['shipping'] = 'FBA'
+            elif amazonasinpage.is_element_exsist(*AB_FLAG):
+                element = driver.find_element(*AB_FLAG)
+                if element.text == 'Amazon.co.jp':
+                    print("sold by Amazon Basic..", flush=True)
+                    data['shipping'] = 'AB'
             else:
                 data['shipping'] = 'FBM'
 
