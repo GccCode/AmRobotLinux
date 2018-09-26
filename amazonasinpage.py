@@ -62,8 +62,6 @@ class AmazonAsinPage(AmazonPage):
             if url != '':
                 self.driver.get(url)
                 self.random_sleep(begin, end)
-        else:
-            print("Size Selection is not here", flush=True)
 
 
     def ask_qa(self, content, begin, end):
