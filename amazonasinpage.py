@@ -31,22 +31,30 @@ class AmazonAsinPage(AmazonPage):
         finally:
             return status
 
-    def select_size(self, index, begin, end):
+    def select_size(self, asin, begin, end):
         if self.is_element_exsist(*self.locator.SELECT_SIZE_JP):
-            element = self.driver.find_element(*self.locator.SELECT_SIZE_JP)
+            # element = self.driver.find_element(*self.locator.SELECT_SIZE_JP)
             OPTIONS_JP_PREFIX = 'native_size_name_'
+            option_array = []
             total = 0
             for total in range(0, 20):
                 try:
                     element = self.driver.find_element_by_id(OPTIONS_JP_PREFIX + str(total))
+                    option_array.append(element)
                     print(element.get_attribute('class'))
                     print(element.get_attribute('value'))
                 except NoSuchElementException as msg:
                     print("yyyy", flush=True)
                     break
             print(total)
+
+            for index in range(0, total):
+                value = option_array[index].get_attribute('value')
+                if asin in value:
+                    if option_array[index].get_attribute('class') == 'dropdownAvailable':
+                        print("sjdflsdjlk")
             input("xxxx")
-            self.select(index, *self.locator.SELECT_SIZE_JP)
+            # self.select(index, *self.locator.SELECT_SIZE_JP)
             self.random_sleep(begin, end)
         else:
             print("Size Selection is not here", flush=True)
