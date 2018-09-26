@@ -32,17 +32,18 @@ class AmazonAsinPage(AmazonPage):
             return status
 
     def select_size(self, index, begin, end):
-        js = 'document.querySelectorAll("select")[0].style.display="block";'
-        self.driver.execute_script(js)
         if self.is_element_exsist(*self.locator.SELECT_SIZE_JP):
             element = self.driver.find_element(*self.locator.SELECT_SIZE_JP)
+            OPTIONS_JP_PREFIX = 'native_size_name_'
 
+            for total in range(1, 20):
+                try:
+                    self.driver.find_element_by_xpath(OPTIONS_JP_PREFIX + str(index))
+                except NoSuchElementException as msg:
+                    break
+            print(total)
+            input("xxxx")
             self.select(index, *self.locator.SELECT_SIZE_JP)
-            try:
-                js = "document.getElementById(\'submit.add-to-cart-announce\').aria-hidden=\'False\';"
-                self.driver.execute_script(js)
-            except:
-                print("xxxxxxxxxxxxxxxxx..", flush=True)
             self.random_sleep(begin, end)
         else:
             print("Size Selection is not here", flush=True)
