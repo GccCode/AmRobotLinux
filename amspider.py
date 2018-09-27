@@ -244,10 +244,9 @@ class AmazonSpider():
                         # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                         asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
-                        if asin_info_data['seller'] == 1:
-                            asin_info_array.append(copy.deepcopy(asin_info_data))
-                            # print(asin_info_data['asin'], flush=True)
-                            # print("** ------------------- **", flush=True)
+                        asin_info_array.append(copy.deepcopy(asin_info_data))
+                        # print(asin_info_data['asin'], flush=True)
+                        # print("** ------------------- **", flush=True)
 
                 for i in range(0, 17):
                     tmp_symbol = NON_CRITICAL_TITLE_PREFIX + str(i + 1) + NON_CRITICAL_TITLE_POSTFIX
@@ -316,10 +315,9 @@ class AmazonSpider():
                         # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                         asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
-                        if asin_info_data['seller'] == 1:
-                            asin_info_array.append(copy.deepcopy(asin_info_data))
-                            # print(asin_info_data['asin'], flush=True)
-                            # print("** ------------------- **", flush=True)
+                        asin_info_array.append(copy.deepcopy(asin_info_data))
+                        # print(asin_info_data['asin'], flush=True)
+                        # print("** ------------------- **", flush=True)
 
                 amazonpage.random_sleep(2000, 5000)
             except NoSuchElementException as msg:
@@ -378,7 +376,12 @@ class AmazonSpider():
                         tmp_info['seller'] = result['seller']
                         tmp_info['qa'] = result['qa']
                         tmp_info['limited'] = result['limited']
-                        inventory_array.append(copy.deepcopy(result))
+                        if result['seller'] == 1:
+                            print("yyyyyy")
+                            inventory_array.append(copy.deepcopy(result))
+                        else:
+                            print("xxxxxx")
+                            asin_info_array.remove(asin_info_array[i])
 
             except Exception as e:
                 status = False
