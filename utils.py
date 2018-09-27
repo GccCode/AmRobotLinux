@@ -242,21 +242,29 @@ def generate_address():
         format_addr = [address_line, city, state, zip]
         return format_addr
     else:
+        print("generate_address null", flush=True)
         return ''
 
 
-def generate_card():
+def generate_card(proxy_type):
     url = r'http://www.fakeaddressgenerator.com/World/us_address_generator'
     referer = r'http://www.fakeaddressgenerator.com/World'
     header = {'user-agent': generate_user_agent(), 'referer': referer}
-    proxy_line = getrandomline("proxy.txt")
-    ip, port, username, passwd = proxy_line.split(":")
-    proxy_dict = {
-        "http": "http://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower(),
-        "https": "https://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower()
-    }
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    text = requests.get(url, headers=header, proxies=proxy_dict).text
+    if proxy_type == 'luminati':
+        proxy_line = getrandomline("proxy.txt")
+        ip, port, username, passwd = proxy_line.split(":")
+        proxy_dict = {
+            "http": "http://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower(),
+            "https": "https://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower()
+        }
+        text = requests.get(url, headers=header, proxies=proxy_dict).text
+    elif proxy_type == 'proxyrack':
+        proxy_dict = {
+            "http": "http://usa.rotating.proxyrack.net:333",
+            "https": "https://usa.rotating.proxyrack.net:333"
+        }
+        text = requests.get(url, headers=header, proxies=proxy_dict).text
     soup = BeautifulSoup(text, 'lxml')
     info = soup.find_all('input')
     lens = len(info)
