@@ -501,7 +501,7 @@ if __name__ == "__main__":
                         mainview = cf.get("search", "mainview")
                         if mainview == "1":
                             print(("* 开始随意浏览产品页。。。"), flush=True)
-                            amazonpage.random_walk(random.randint(35, 50))
+                            amazonpage.random_walk(random.randint(100, 150))
                             asinpage = AmazonAsinPage(driver)
                             searchpage.switch_to_new_page(searchpage_handle) #切换到产品页handle
 

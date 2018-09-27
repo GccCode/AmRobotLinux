@@ -146,9 +146,9 @@ class BaseAction(object):
         tmp = random.randint(1, 100)
         if tmp < 70:
             direction = -1
-            count = random.randint(15, 30)
+            count = random.randint(10, 15)
         else:
-            count = random.randint(5, 15)
+            count = random.randint(5, 8)
             direction = 1
         while scroll_count < count:
             self.mouse_scoll(direction)
