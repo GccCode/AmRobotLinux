@@ -172,7 +172,7 @@ if __name__ == "__main__":
                                     for asin_index in range(0, asin_info_array_len):
                                         asin_info = asin_info_array[asin_index]
                                         asin = asin_info[1]
-                                        if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")):
+                                        if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] == 1:
                                             result = amazonspider.get_inventory_jp(driver, asin)
                                             if result != False:
                                                 cur_date = date.today()
