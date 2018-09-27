@@ -393,9 +393,9 @@ class AmazonSpider():
 
             # print(len(asin_info_array), flush=True)
             # print(len(inventory_array), flush=True)
-            # for i in range(0, len(asin_info_remove_array)):
-            #     asin_info_array.remove(asin_info_remove_array[i])
-            #
+            for i in range(0, len(asin_info_remove_array)):
+                asin_info_array.remove(asin_info_remove_array[i])
+
             # print(len(asin_info_array), flush=True)
             # print(len(inventory_array), flush=True)
             # input("xxxx")
