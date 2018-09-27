@@ -146,7 +146,7 @@ class BaseAction(object):
         tmp = random.randint(1, 100)
         if tmp < 70:
             direction = -1
-            count = random.randint(50, 100)
+            count = random.randint(50, 80)
         else:
             count = random.randint(25, 35)
             direction = 1
