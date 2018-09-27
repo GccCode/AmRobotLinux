@@ -292,6 +292,7 @@ class AmazonSearchPage(AmazonPage):
         option = random.randint(1, 2)
         if option == 1:
             print(("**** Enter " + asin + " By Image Link.."), flush=True)
+            print(asinresult.size)
             if country == 'us':
                 if int(asinresult.size['width']) > 500:
                     self.click_asin_by_img_us(asinresult, asin)
@@ -301,6 +302,7 @@ class AmazonSearchPage(AmazonPage):
                 self.click_asin_by_img_jp_small(asinresult, asin)
         else:
             print(("**** Enter " + asin + " By Title Link.."), flush=True)
+            print(asinresult.size)
             if country == 'us':
                 if int(asinresult.size['width']) > 500:
                     self.click_asin_by_title_us(asinresult, asin)
