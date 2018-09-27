@@ -57,6 +57,10 @@ def update_task_node(node):
 
     return status
 
+def update_asin_status_err(am, node, asin):
+    condition = 'asin=\'' + asin + '\''
+    am.update_data(node + '_BS', 'status', 'err', condition)
+
 def is_all_task_finish(task_id):
     amazontask_db_name = 'amazontask'
     amazondata = AmazonData()
