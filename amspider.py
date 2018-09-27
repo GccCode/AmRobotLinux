@@ -391,14 +391,14 @@ class AmazonSpider():
                 if status == False:
                     return False
 
-            print(len(asin_info_array), flush=True)
-            print(len(inventory_array), flush=True)
-            for i in range(0, len(asin_info_remove_array)):
-                asin_info_array.remove(asin_info_remove_array[i])
-
-            print(len(asin_info_array), flush=True)
-            print(len(inventory_array), flush=True)
-            input("xxxx")
+            # print(len(asin_info_array), flush=True)
+            # print(len(inventory_array), flush=True)
+            # for i in range(0, len(asin_info_remove_array)):
+            #     asin_info_array.remove(asin_info_remove_array[i])
+            #
+            # print(len(asin_info_array), flush=True)
+            # print(len(inventory_array), flush=True)
+            # input("xxxx")
             # for i in range(0, len(asin_info_array)):
             #     with open('test.txt', 'a') as f:
             #         f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
