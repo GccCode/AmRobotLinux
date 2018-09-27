@@ -240,10 +240,8 @@ def generate_address():
         city, state_zip = result[0][1].split(',')
         state, zip = state_zip.split()
         format_addr = [address_line, city, state, zip]
-        print(format_addr)
         return format_addr
     else:
-        print("generate_address null", flush=True)
         return ''
 
 
@@ -356,6 +354,7 @@ def customized_broswer(proxy_type):
         )
         option.add_extension(proxyauth_plugin_path)
     elif proxy_type == "proxyrack":
+        print("xxxxx")
         proxy_socks_argument = '--proxy-server=http://' + 'usa.rotating.proxyrack.net:333'
         option.add_argument(proxy_socks_argument)
     # option.add_argument('--no-sandbox')
