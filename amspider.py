@@ -604,6 +604,7 @@ class AmazonSpider():
             'limited'   : 'no'
         }
         try:
+            print("get_inventory_jp + " + asin, flush=True)
             url = 'https://www.amazon.co.jp/dp/' + asin
             driver.get(url)
             amazonasinpage = AmazonAsinPage(driver)
@@ -617,10 +618,8 @@ class AmazonSpider():
             elif amazonasinpage.is_element_exsist(*AB_FLAG):
                 element = driver.find_element(*AB_FLAG)
                 if element.text == 'Amazon.co.jp':
-                    print("sold by Amazon Basic..", flush=True)
+                    # print("sold by Amazon Basic..", flush=True)
                     data['shipping'] = 'AB'
-                else:
-                    data['shipping'] = 'FBM'
             else:
                 data['shipping'] = 'FBM'
 

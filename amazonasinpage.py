@@ -21,7 +21,7 @@ class AmazonAsinPage(AmazonPage):
             if self.is_element_exsist(*self.locator.ADDCARTBUTTON):
                 self.click(*self.locator.ADDCARTBUTTON)
                 self.random_sleep(begin, end)
-                print(("**** Add Cart..."), flush=True)
+                # print(("**** Add Cart..."), flush=True)
             else:
                 status = False
                 print("Addcart element can't find..", flush=True)

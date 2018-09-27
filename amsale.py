@@ -32,7 +32,7 @@ def get_task_nodes(task_id):
                 sql = 'select * from SALE_TASK where task_id=' + task_id
                 cursor = amazondata.select_data(sql)
                 if cursor == False:
-                    print("Get Task Asin In Failure", flush=True)
+                    # print("Get Task Asin In Failure", flush=True)
                     status = False
                 else:
                     status = cursor # node, task_id, last_date
@@ -230,8 +230,6 @@ if __name__ == "__main__":
                         print(str(e))
                     finally:
                         driver.quit()
-        else:
-            print("get task node fail + " + task_id, flush=True)
 
         amazondata.disconnect_database()
     else:

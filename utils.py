@@ -327,24 +327,28 @@ def generate_info_file_jp():
     print(("* Generate Info Sucessfully..."), flush=True)
     return True
 
-def customized_broswer():
+def customized_broswer(proxy_type):
     option = webdriver.ChromeOptions()
     # index = random.randint(0, (len(useragentlist) - 1))
     # useragent = "--user-agent=" + useragentlist[index]
     # option.add_argument(useragent)
-    proxy_line = getrandomline("proxy.txt")
-    ip, port, username, passwd = proxy_line.split(":")
-    # print("ip : " + ip.lower(), flush=True)
-    # print("port : " + port, flush=True)
-    # print("username : " + username.lower(), flush=True)
-    # print("passwd : " + passwd.lower(), flush=True)
-    proxyauth_plugin_path = create_proxyauth_extension(
-        proxy_host=ip.lower(),
-        proxy_port=int(port),
-        proxy_username=username.lower(),
-        proxy_password=passwd.lower()
-    )
-    option.add_extension(proxyauth_plugin_path)
+    if proxy_type == "luminati":
+        proxy_line = getrandomline("proxy.txt")
+        ip, port, username, passwd = proxy_line.split(":")
+        # print("ip : " + ip.lower(), flush=True)
+        # print("port : " + port, flush=True)
+        # print("username : " + username.lower(), flush=True)
+        # print("passwd : " + passwd.lower(), flush=True)
+        proxyauth_plugin_path = create_proxyauth_extension(
+            proxy_host=ip.lower(),
+            proxy_port=int(port),
+            proxy_username=username.lower(),
+            proxy_password=passwd.lower()
+        )
+        option.add_extension(proxyauth_plugin_path)
+    elif proxy_type == "proxyrack":
+        proxy_socks_argument = '--proxy-server=http://' + 'usa.rotating.proxyrack.net:333'
+        option.add_argument(proxy_socks_argument)
     # option.add_argument('--no-sandbox')
     # option.add_argument('--disable-gpu')
     # option.add_argument('--disable-dev-shm-usage')
