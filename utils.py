@@ -240,6 +240,7 @@ def generate_address():
         city, state_zip = result[0][1].split(',')
         state, zip = state_zip.split()
         format_addr = [address_line, city, state, zip]
+        print(format_addr)
         return format_addr
     else:
         print("generate_address null", flush=True)
