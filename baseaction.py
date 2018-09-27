@@ -156,7 +156,7 @@ class BaseAction(object):
             scroll_count += 1
 
         t2 = tm.time()
-        # print("random_mouse_scroll-总耗时：" + format(t2 - t1))
+        print("random_mouse_scroll-总耗时：" + format(t2 - t1), flush=True)
 
     def mouse_scoll(self, direction):
         scroll_count = random.randint(30, 50)
