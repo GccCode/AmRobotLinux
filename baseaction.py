@@ -142,9 +142,9 @@ class BaseAction(object):
     def random_mouse_scoll(self):
         t1 = tm.time()
         scroll_count = 0
-        count = random.randint(1, 3)
-        tmp = random.randint(1, 2)
-        if tmp == 1:
+        count = random.randint(1, 10)
+        tmp = random.randint(1, 100)
+        if tmp < 70:
             direction = -1
         else:
             direction = 1

@@ -81,12 +81,11 @@ def customized_broswer():
         index = int(ua) - 1
         useragent = "--user-agent=" + useragentlist[index]
         option.add_argument(useragent)
-    # if ua == "2":
-    #     option.add_argument(
-    #         '--user-agent=Mozilla/5.0 (Windows NT 6.1; rv:61.0) Gecko/20100101 Firefox/61.0')
+
     userdataid = cf.get("broswer", "userdataid")
-    userdatadir = 'user-data-dir=C:\\Users\\Administrator\\AppData\\Local\\Google\\Chrome\\User Data\\Profile ' + userdataid
-    option.add_argument(userdatadir)
+    if userdataid != '0':
+        userdatadir = 'user-data-dir=C:\\Users\\Administrator\\AppData\\Local\\Google\\Chrome\\User Data\\Profile ' + userdataid
+        option.add_argument(userdatadir)
     # option.add_argument(
     #     r"user-data-dir=C:\Users\Administrator\AppData\Local\Google\Chrome\User Data\Profile 6")
     driver =  webdriver.Chrome(chrome_options=option)
@@ -119,8 +118,7 @@ if __name__ == "__main__":
                 print("7 - 自动注册会员")
                 print("8 - 添加心愿卡")
                 print("9 - 添加购物车")
-                print("10 - 添加QA内容")
-                print("11 - 代理测试\n")
+                print("10 - 添加QA内容\n")
 
                 options = input("请输入你的选择： ")
                 if options == "0":
@@ -219,10 +217,10 @@ if __name__ == "__main__":
                             # asin = "B07CGMVGNG"
                             #asin = "B004UUK2ZY"
                             #asin = "B079YY714G"
-                            page = AmazonPage(driver)
-                            page.enter_amazon_page(3000, 5000)
-                            page.search_asin(keyword, 5000, 8000)
-                            currenthandle = page.get_currenthandle()
+                            amazonpage = AmazonPage(driver)
+                            amazonpage.enter_amazon_page(3000, 5000)
+                            amazonpage.search_asin(keyword, 5000, 8000)
+                            currenthandle = amazonpage.get_currenthandle()
                             searchpage = AmazonSearchPage(driver)
                             asinresult = searchpage.find_target_product(asin, type, 5)
                             if asinresult != False:
@@ -242,7 +240,7 @@ if __name__ == "__main__":
                                 if asinresult != False:
                                     searchpage.enter_asin_page(asinresult, asin, 3000, 5000)
                                     t1 = tm.time()
-                                    page.random_walk(random.randint(30, 60))
+                                    amazonpage.random_walk(random.randint(30, 60))
                                     t2 = tm.time()
                                     print("浏览产品耗时：" + format(t2 - t1))
                                     searchpage.back_prev_page_by_country(currenthandle, 3000, 5000)
@@ -258,9 +256,9 @@ if __name__ == "__main__":
                 elif options == "7":
                     driver = customized_broswer()
                     try:
-                        page = AmazonPage(driver)
-                        page.enter_amazon_page(3000, 5000)
-                        page.register_prime(3000, 5000)
+                        amazonpage = AmazonPage(driver)
+                        amazonpage.enter_amazon_page(3000, 5000)
+                        amazonpage.register_prime(3000, 5000)
                     except Exception as err:
                         print(str(err))
                     finally:
@@ -290,7 +288,7 @@ if __name__ == "__main__":
                                 searchpage.enter_asin_page(asinresult, asin, 5000, 10000)
                                 asinpage = AmazonAsinPage(driver)
                                 searchpage.switch_to_new_page(currenthandle)
-                                asinpage.add_wishlist(5000, 8000)
+                                asinpage.add_wishlist(5000, 8000, asin)
                                 searchpage.back_prev_page_by_type(currenthandle, "current", 3000, 5000)
 
                         except Exception as err:
@@ -366,38 +364,39 @@ if __name__ == "__main__":
                             input("请按回车键继续推出！！！")
                             driver.close()
                             driver.quit()
-                elif options == "11":
-                    host_port = input("请输入ip-port：")
-                    ua = input("请选择UserAgent：")
-                    proxy_socks_argument = '--proxy-server=socks5://' + host_port
-                    print(proxy_socks_argument)
-                    option = webdriver.ChromeOptions()
-                    option.add_argument(proxy_socks_argument)
-                    if ua == "1":
-                        option.add_argument('--user-agent=Mozilla/5.0 (iPad; CPU OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3')
-                    elif ua == "2":
-                        option.add_argument('--user-agent=Mozilla/5.0 (Windows NT 6.1; rv:61.0) Gecko/20100101 Firefox/61.0')
-                    elif ua == "3":
-                        option.add_argument('--user-agent=Mozilla/5.0 (Linux; U; Android 2.3.6; en-us; Nexus S Build/GRK39F) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1')
-                    elif ua == "4":
-                        option.add_argument('--user-agent=Mozilla/5.0 (Linux; U; Android 4.0.2; en-us; Galaxy Nexus Build/ICL53F) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30')
-                    else:
-                        option.add_argument(
-                            r"user-data-dir=C:\Users\Administrator\AppData\Local\Google\Chrome\User Data\Profile 6")
-                    driver = webdriver.Chrome(chrome_options=option)
-                    driver.get("http://www.whatsmyuseragent.com/")
-                    input("按下回车键关闭浏览器....")
-                    driver.close()
-                    driver.quit()
+                # elif options == "11":
+                #     host_port = input("请输入ip-port：")
+                #     ua = input("请选择UserAgent：")
+                #     proxy_socks_argument = '--proxy-server=socks5://' + host_port
+                #     print(proxy_socks_argument)
+                #     option = webdriver.ChromeOptions()
+                #     option.add_argument(proxy_socks_argument)
+                #     if ua == "1":
+                #         option.add_argument('--user-agent=Mozilla/5.0 (iPad; CPU OS 5_0 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A334 Safari/7534.48.3')
+                #     elif ua == "2":
+                #         option.add_argument('--user-agent=Mozilla/5.0 (Windows NT 6.1; rv:61.0) Gecko/20100101 Firefox/61.0')
+                #     elif ua == "3":
+                #         option.add_argument('--user-agent=Mozilla/5.0 (Linux; U; Android 2.3.6; en-us; Nexus S Build/GRK39F) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1')
+                #     elif ua == "4":
+                #         option.add_argument('--user-agent=Mozilla/5.0 (Linux; U; Android 4.0.2; en-us; Galaxy Nexus Build/ICL53F) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30')
+                #     else:
+                #         option.add_argument(
+                #             r"user-data-dir=C:\Users\Administrator\AppData\Local\Google\Chrome\User Data\Profile 6")
+                #     driver = webdriver.Chrome(chrome_options=option)
+                #     driver.get("http://www.whatsmyuseragent.com/")
+                #     input("按下回车键关闭浏览器....")
+                #     driver.close()
+                #     driver.quit()
                 else:
                     print("你的输入有误，请重新输入对应测试项的数字号码！！！！")
         elif action == "2":
+            t1 = tm.time()
+            driver = None
             try:
-                #deci("info-encry.txt", "info.txt")
-                t1 = tm.time()
                 driver = customized_broswer()
                 cf = configparser.ConfigParser()
                 cf.read("task.txt")
+                asin = None
                 amazonpage = AmazonPage(driver)
                 register = cf.get("register", "status")
                 if register == "1":
@@ -521,7 +520,7 @@ if __name__ == "__main__":
                             wishlist = cf.get("wishlist", "status")
                             if wishlist == "1":
                                 print(("* 开始添加wishlist。。。。"), flush=True)
-                                asinpage.add_wishlist(5000, 8000)
+                                asinpage.add_wishlist(5000, 8000, asin)
 
                             addcart = cf.get("addcart", "status")
                             if addcart == "1":
