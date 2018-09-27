@@ -18,6 +18,7 @@ import utils
 import pyautogui
 
 if __name__ == "__main__":
+    proxy_type = sys.argv[1]
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     cf = configparser.ConfigParser()
     cf.read("task.txt")
@@ -35,7 +36,7 @@ if __name__ == "__main__":
         keyword = admin.get_random_task()
         whiteasin = admin.get_whiteasin(keyword)
         blackasin = admin.get_blackasin(keyword)
-        driver = utils.customized_broswer()
+        driver = utils.customized_broswer(proxy_type)
         t1 = time.time()
         amazonpage = AmazonPage(driver)
         try:
