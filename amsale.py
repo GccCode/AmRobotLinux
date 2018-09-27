@@ -59,7 +59,7 @@ def update_task_node(node):
 
 def update_asin_status_err(am, node, asin):
     condition = 'asin=\'' + asin + '\''
-    am.update_data(node + '_BS', 'status', 'err', condition)
+    return am.update_data(node + '_BS', 'status', 'err', condition)
 
 def is_all_task_finish(task_id):
     amazontask_db_name = 'amazontask'
@@ -224,6 +224,9 @@ if __name__ == "__main__":
                                                     print("inventory data insert fail.. + " + inventory_table, flush=True)
                                             else:
                                                 print("Get Inventory Jp In Failure.", flush=True)
+                                                status = update_asin_status_err(amazondata, node, asin)
+                                                if status == False:
+                                                    print("update asin status faild.. + " + node + ' ' + asin, flush=True)
 
                             status = update_task_node(node)
                             if status == False:

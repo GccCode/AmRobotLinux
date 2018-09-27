@@ -244,10 +244,10 @@ class AmazonSpider():
                         # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                         asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
-
-                    asin_info_array.append(copy.deepcopy(asin_info_data))
-                    # print(asin_info_data['asin'], flush=True)
-                    # print("** ------------------- **", flush=True)
+                        if asin_info_data['seller'] == 1:
+                            asin_info_array.append(copy.deepcopy(asin_info_data))
+                            # print(asin_info_data['asin'], flush=True)
+                            # print("** ------------------- **", flush=True)
 
                 for i in range(0, 17):
                     tmp_symbol = NON_CRITICAL_TITLE_PREFIX + str(i + 1) + NON_CRITICAL_TITLE_POSTFIX
@@ -316,9 +316,10 @@ class AmazonSpider():
                         # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
                         asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
 
-                        asin_info_array.append(copy.deepcopy(asin_info_data))
-                    # print(asin_info_data['asin'], flush=True)
-                    # print("** ------------------- **", flush=True)
+                        if asin_info_data['seller'] == 1:
+                            asin_info_array.append(copy.deepcopy(asin_info_data))
+                            # print(asin_info_data['asin'], flush=True)
+                            # print("** ------------------- **", flush=True)
 
                 amazonpage.random_sleep(2000, 5000)
             except NoSuchElementException as msg:
@@ -415,7 +416,7 @@ class AmazonSpider():
                             status = amazondata.insert_node_data(node_table, asin_info_array[i])
                             if status == True:
                                 # print("node_data inserted sucessfully.. + " + node_table, flush=True)
-                                if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err':
+                                if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] == 1:
                                     inventory_table = 'INVENTORY_' + asin
                                     status = amazondata.create_inventory_table(inventory_table)
                                     if status == True:
