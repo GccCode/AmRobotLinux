@@ -297,7 +297,7 @@ def generate_info_file():
     cf_info.set("bill_address", "state", state)
     zipcode = address[3]
     cf_info.set("bill_address", "postalcode", zipcode)
-    cardinfo = generate_card()
+    cardinfo = generate_card('proxyrack')
     if cardinfo == False:
         print(("* Generate Info In Failure..."), flush=True)
         return False
