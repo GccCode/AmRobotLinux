@@ -36,7 +36,7 @@ if __name__ == "__main__":
         keyword = admin.get_random_task()
         whiteasin = admin.get_whiteasin(keyword)
         blackasin = admin.get_blackasin(keyword)
-        driver = utils.customized_broswer(proxy_type)
+        driver = utils.customized_broswer()
         t1 = time.time()
         amazonpage = AmazonPage(driver)
         try:
@@ -68,7 +68,6 @@ if __name__ == "__main__":
                         paymentpage.add_new_payment(5000, 10000)
 
             amazonpage.enter_amazon_page(3000, 5000)
-            input("xxxx")
             amazonpage.wait_searchbox_exsist()
             searchpage = AmazonSearchPage(driver)
             print(("* Start Search Keyword.... + " + keyword), flush=True)

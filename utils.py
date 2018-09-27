@@ -245,25 +245,18 @@ def generate_address():
         return ''
 
 
-def generate_card(proxy_type):
+def generate_card():
     url = r'http://www.fakeaddressgenerator.com/World/us_address_generator'
     referer = r'http://www.fakeaddressgenerator.com/World'
     header = {'user-agent': generate_user_agent(), 'referer': referer}
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    if proxy_type == 'luminati':
-        proxy_line = getrandomline("proxy.txt")
-        ip, port, username, passwd = proxy_line.split(":")
-        proxy_dict = {
-            "http": "http://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower(),
-            "https": "https://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower()
-        }
-        text = requests.get(url, headers=header, proxies=proxy_dict).text
-    elif proxy_type == 'proxyrack':
-        proxy_dict = {
-            "http": "http://usa.rotating.proxyrack.net:333",
-            "https": "https://usa.rotating.proxyrack.net:333"
-        }
-        text = requests.get(url, headers=header, proxies=proxy_dict).text
+    proxy_line = getrandomline("proxy.txt")
+    ip, port, username, passwd = proxy_line.split(":")
+    proxy_dict = {
+        "http": "http://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower(),
+        "https": "https://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower()
+    }
+    text = requests.get(url, headers=header, proxies=proxy_dict).text
     soup = BeautifulSoup(text, 'lxml')
     info = soup.find_all('input')
     lens = len(info)
@@ -296,7 +289,7 @@ def generate_info_file():
     cf_info.set("bill_address", "state", state)
     zipcode = address[3]
     cf_info.set("bill_address", "postalcode", zipcode)
-    cardinfo = generate_card('proxyrack')
+    cardinfo = generate_card()
     if cardinfo == False:
         print(("* Generate Info In Failure..."), flush=True)
         return False
@@ -334,28 +327,24 @@ def generate_info_file_jp():
     print(("* Generate Info Sucessfully..."), flush=True)
     return True
 
-def customized_broswer(proxy_type):
+def customized_broswer():
     option = webdriver.ChromeOptions()
     # index = random.randint(0, (len(useragentlist) - 1))
     # useragent = "--user-agent=" + useragentlist[index]
     # option.add_argument(useragent)
-    if proxy_type == "luminati":
-        proxy_line = getrandomline("proxy.txt")
-        ip, port, username, passwd = proxy_line.split(":")
-        # print("ip : " + ip.lower(), flush=True)
-        # print("port : " + port, flush=True)
-        # print("username : " + username.lower(), flush=True)
-        # print("passwd : " + passwd.lower(), flush=True)
-        proxyauth_plugin_path = create_proxyauth_extension(
-            proxy_host=ip.lower(),
-            proxy_port=int(port),
-            proxy_username=username.lower(),
-            proxy_password=passwd.lower()
-        )
-        option.add_extension(proxyauth_plugin_path)
-    elif proxy_type == "proxyrack":
-        proxy_socks_argument = '--proxy-server=http://' + 'usa.rotating.proxyrack.net:333'
-        option.add_argument(proxy_socks_argument)
+    proxy_line = getrandomline("proxy.txt")
+    ip, port, username, passwd = proxy_line.split(":")
+    # print("ip : " + ip.lower(), flush=True)
+    # print("port : " + port, flush=True)
+    # print("username : " + username.lower(), flush=True)
+    # print("passwd : " + passwd.lower(), flush=True)
+    proxyauth_plugin_path = create_proxyauth_extension(
+        proxy_host=ip.lower(),
+        proxy_port=int(port),
+        proxy_username=username.lower(),
+        proxy_password=passwd.lower()
+    )
+    option.add_extension(proxyauth_plugin_path)
     # option.add_argument('--no-sandbox')
     # option.add_argument('--disable-gpu')
     # option.add_argument('--disable-dev-shm-usage')
