@@ -349,7 +349,8 @@ class AmazonSpider():
                     tmp_info = asin_info_array[i]
                     result = self.get_inventory_jp(driver, tmp_info['asin'])
                     if result == False:
-                        tmp_info['status'] = 'err'
+                        asin_info_array.remove(asin_info_array[i])
+                        # tmp_info['status'] = 'err'
                         # data = {
                         #     'seller': 0,
                         #     'qa': 0,
@@ -357,17 +358,6 @@ class AmazonSpider():
                         #     'inventory': 0,
                         #     'limited': 'no'
                         # }
-                        data = {
-                            'seller': result['seller'],
-                            'qa': result['qa'],
-                            'shipping': result['shipping'],
-                            'inventory': -1,
-                            'limited': result['limited']
-                        }
-                        if result['seller'] == 1:
-                            inventory_array.append(copy.deepcopy(data))
-                        else:
-                            asin_info_array.remove(asin_info_array[i])
                         # inventory_array.append(copy.deepcopy(data))
                         driver.quit()
                         time.sleep(2)
