@@ -146,9 +146,9 @@ class BaseAction(object):
         tmp = random.randint(1, 100)
         if tmp < 70:
             direction = -1
-            count = random.randint(100, 200)
+            count = random.randint(50, 100)
         else:
-            count = random.randint(35, 55)
+            count = random.randint(25, 35)
             direction = 1
         while scroll_count < count:
             self.mouse_scoll(direction)
@@ -159,7 +159,7 @@ class BaseAction(object):
         # print("random_mouse_scroll-总耗时：" + format(t2 - t1))
 
     def mouse_scoll(self, direction):
-        scroll_count = random.randint(1, 10)
+        scroll_count = random.randint(30, 50)
         pyautogui.scroll(scroll_count * direction)
 
     def enter_back(self):
