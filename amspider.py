@@ -344,12 +344,13 @@ class AmazonSpider():
             driver.set_page_load_timeout(60)
             driver.set_script_timeout(60)
             inventory_array = []
+            asin_info_remove_array = []
             try:
                 for i in range(0, len(asin_info_array)):
                     tmp_info = asin_info_array[i]
                     result = self.get_inventory_jp(driver, tmp_info['asin'])
                     if result == False:
-                        asin_info_array.remove(asin_info_array[i])
+                        asin_info_remove_array.append(asin_info_array[i])
                         # tmp_info['status'] = 'err'
                         # data = {
                         #     'seller': 0,
@@ -380,7 +381,7 @@ class AmazonSpider():
                         if result['seller'] == 1:
                             inventory_array.append(copy.deepcopy(result))
                         else:
-                            asin_info_array.remove(asin_info_array[i])
+                            asin_info_remove_array.append(asin_info_array[i])
 
             except Exception as e:
                 status = False
@@ -389,6 +390,11 @@ class AmazonSpider():
                 driver.quit()
                 if status == False:
                     return False
+
+            print(len(asin_info_array), flush=True)
+            print(len(inventory_array), flush=True)
+            for i in range(0, len(asin_info_remove_array)):
+                asin_info_array.remove(asin_info_remove_array[i])
 
             print(len(asin_info_array), flush=True)
             print(len(inventory_array), flush=True)
