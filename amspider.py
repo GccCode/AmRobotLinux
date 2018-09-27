@@ -350,14 +350,25 @@ class AmazonSpider():
                     result = self.get_inventory_jp(driver, tmp_info['asin'])
                     if result == False:
                         tmp_info['status'] = 'err'
+                        # data = {
+                        #     'seller': 0,
+                        #     'qa': 0,
+                        #     'shipping' : 'FBM',
+                        #     'inventory': 0,
+                        #     'limited': 'no'
+                        # }
                         data = {
-                            'seller': 0,
-                            'qa': 0,
-                            'shipping' : 'FBM',
-                            'inventory': 0,
-                            'limited': 'no'
+                            'seller': result['seller'],
+                            'qa': result['qa'],
+                            'shipping': result['shipping'],
+                            'inventory': -1,
+                            'limited': result['limited']
                         }
-                        inventory_array.append(copy.deepcopy(data))
+                        if result['seller'] == 1:
+                            inventory_array.append(copy.deepcopy(data))
+                        else:
+                            asin_info_array.remove(asin_info_array[i])
+                        # inventory_array.append(copy.deepcopy(data))
                         driver.quit()
                         time.sleep(2)
                         chrome_options = webdriver.ChromeOptions()
@@ -377,10 +388,8 @@ class AmazonSpider():
                         tmp_info['qa'] = result['qa']
                         tmp_info['limited'] = result['limited']
                         if result['seller'] == 1:
-                            print("yyyyyy")
                             inventory_array.append(copy.deepcopy(result))
                         else:
-                            print("xxxxxx")
                             asin_info_array.remove(asin_info_array[i])
 
             except Exception as e:
@@ -391,6 +400,9 @@ class AmazonSpider():
                 if status == False:
                     return False
 
+            print(len(asin_info_array), flush=True)
+            print(len(inventory_array), flush=True)
+            input("xxxx")
             # for i in range(0, len(asin_info_array)):
             #     with open('test.txt', 'a') as f:
             #         f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
