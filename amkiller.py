@@ -68,6 +68,7 @@ if __name__ == "__main__":
                         paymentpage.add_new_payment(5000, 10000)
 
             amazonpage.enter_amazon_page(3000, 5000)
+            input("xxxx")
             amazonpage.wait_searchbox_exsist()
             searchpage = AmazonSearchPage(driver)
             print(("* Start Search Keyword.... + " + keyword), flush=True)

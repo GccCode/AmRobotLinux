@@ -354,7 +354,6 @@ def customized_broswer(proxy_type):
         )
         option.add_extension(proxyauth_plugin_path)
     elif proxy_type == "proxyrack":
-        print("xxxxx")
         proxy_socks_argument = '--proxy-server=http://' + 'usa.rotating.proxyrack.net:333'
         option.add_argument(proxy_socks_argument)
     # option.add_argument('--no-sandbox')
