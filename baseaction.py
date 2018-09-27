@@ -142,15 +142,17 @@ class BaseAction(object):
     def random_mouse_scoll(self):
         t1 = tm.time()
         scroll_count = 0
-        count = random.randint(1, 10)
+        count = 0
         tmp = random.randint(1, 100)
         if tmp < 70:
             direction = -1
+            count = random.randint(10, 20)
         else:
+            count = random.randint(2, 8)
             direction = 1
         while scroll_count < count:
             self.mouse_scoll(direction)
-            self.random_sleep(500, 1500)
+            self.random_sleep(300, 800)
             scroll_count += 1
 
         t2 = tm.time()
