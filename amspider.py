@@ -130,6 +130,20 @@ def getprice(price):
     else:
         return int(price.strip('￥ ').replace(',', ''))
 
+def insert_task_node(table, data):
+    amazontask_db_name = 'amazontask'
+    amazondata = AmazonData()
+    status = amazondata.connect_database(amazontask_db_name)
+    if status == False:
+        print("Connect Database In Failure + " + amazontask_db_name, flush=True)
+        status = False
+    else:
+        status = amazondata.insert_task_data(table, data)
+
+        amazondata.disconnect_database()
+
+    return status
+
 class AmazonSpider():
     def __init__(self):
         pass
@@ -450,6 +464,14 @@ class AmazonSpider():
                                             status = amazondata.update_data(node_table, 'inventory_date', value, condition)
                                             if status == True:
                                                 # print("invetory_date update sucessfully.. + " + node_table, flush=True)
+                                                task_data = {
+                                                    'node': node,
+                                                    'task_id': '1',
+                                                    'last_date': cur_date
+                                                }
+                                                status = insert_task_node('SALE_TASK', task_data)
+                                                if status == False:
+                                                    print("insert task node in failure... + " +  node, flush=True)
                                                 status = amazondata.get_yesterday_sale(inventory_table)
                                                 if status != -999:
                                                     # print("get_yesterday_sale sucessfully.. + " + inventory_table, flush=True)
