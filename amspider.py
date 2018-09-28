@@ -344,6 +344,7 @@ class AmazonSpider():
             driver.set_page_load_timeout(60)
             driver.set_script_timeout(60)
             inventory_array = []
+            inventory_remove_array = []
             asin_info_remove_array = []
             try:
                 for i in range(0, len(asin_info_array)):
@@ -395,6 +396,10 @@ class AmazonSpider():
             # print(len(inventory_array), flush=True)
             for i in range(0, len(asin_info_remove_array)):
                 asin_info_array.remove(asin_info_remove_array[i])
+
+            if len(asin_info_array) != len(inventory_array):
+                print(len(asin_info_array), flush=True)
+                print(len(inventory_array), flush=True)
 
             # print(len(asin_info_array), flush=True)
             # print(len(inventory_array), flush=True)
