@@ -160,6 +160,7 @@ if __name__ == "__main__":
                         }
                         chrome_options.add_experimental_option("prefs", prefs)
                         host_port = getrandomline("myproxy.txt")
+                        print(host_port)
                         proxy_socks_argument = '--proxy-server=socks5://' + host_port
                         chrome_options.add_argument(proxy_socks_argument)
                         driver = webdriver.Chrome(chrome_options=chrome_options)
