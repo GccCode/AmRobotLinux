@@ -14,7 +14,6 @@ import io
 
 def get_task_nodes(task_id):
     amazontask_db_name = 'amazontask'
-    print("sdfds", flush=True)
     amazondata = AmazonData()
     status = amazondata.create_database(amazontask_db_name)
     if status == False:
