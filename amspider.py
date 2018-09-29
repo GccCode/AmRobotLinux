@@ -43,6 +43,7 @@ ITEM_INPUT_JP = (By.CSS_SELECTOR, 'input[name ^=\'quantity\.\']')
 ITEM_SUBMIT_JP = (By.CSS_SELECTOR, 'input[name ^=\'submit.update-quantity\.\']')
 INVENTORY_TIPS_JP = (By.XPATH, '//*[@id=\'cart-important-message-box\']/div/div/div/p')
 ITEM_DELETE_JP = (By.CSS_SELECTOR, 'input[name ^=\'submit.delete\.\']')
+ITEM_PRICE_JP = (By.ID, 'price_inside_buybox')
 
 CRITICAL_TITLE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_TITLE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/a[position()=1]'
@@ -743,6 +744,11 @@ class AmazonSpider():
 
                 if status != False:
                     # print(data, flush=True)
+                    status = data
+            else:
+                if amazonasinpage.is_element_exsist(*ITEM_PRICE_JP):
+                    print("no inventroy.. + " + asin, flush=True)
+                    data['inventory'] = 0
                     status = data
         except NoSuchElementException as msg:
             status = False
