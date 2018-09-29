@@ -43,7 +43,7 @@ ITEM_INPUT_JP = (By.CSS_SELECTOR, 'input[name ^=\'quantity\.\']')
 ITEM_SUBMIT_JP = (By.CSS_SELECTOR, 'input[name ^=\'submit.update-quantity\.\']')
 INVENTORY_TIPS_JP = (By.XPATH, '//*[@id=\'cart-important-message-box\']/div/div/div/p')
 ITEM_DELETE_JP = (By.CSS_SELECTOR, 'input[name ^=\'submit.delete\.\']')
-ITEM_PRICE_JP = (By.ID, 'price_inside_buybox')
+ITEM_PRICE_JP = (By.ID, 'priceblock_ourprice')
 
 CRITICAL_TITLE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_TITLE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/a[position()=1]'
@@ -649,7 +649,7 @@ class AmazonSpider():
             driver.get(url)
             amazonasinpage = AmazonAsinPage(driver)
 
-            amazonasinpage.random_sleep(1000, 2000)
+            amazonasinpage.random_sleep(3000, 5000)
 
             amazonasinpage.select_size(asin, 1000, 2000)
 
@@ -746,7 +746,7 @@ class AmazonSpider():
                     # print(data, flush=True)
                     status = data
             else:
-                if amazonasinpage.is_element_exsist(*ITEM_PRICE_JP):
+                if amazonasinpage.is_element_exsist(*ITEM_PRICE_JP) == False:
                     print("no inventroy.. + " + asin, flush=True)
                     data['inventory'] = 0
                     status = data
