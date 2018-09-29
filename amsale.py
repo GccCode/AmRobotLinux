@@ -153,6 +153,8 @@ if __name__ == "__main__":
                 broswer_created = False
                 for node_index in range(0, task_info_array_len):
                     try:
+                        if node_index >= len(task_info_array):
+                            print("asin_index out of limit..", flush=True)
                         task_info = task_info_array[node_index]
                         node = task_info[0]
                         node_table = node + '_' + node_type
@@ -163,6 +165,8 @@ if __name__ == "__main__":
                                     asin_info_array_len = asin_cursor.rowcount
                                     asin_info_array = asin_cursor.fetchall()
                                     for asin_index in range(0, asin_info_array_len):
+                                        if asin_index >= len(asin_info_array):
+                                            print("asin_index out of limit..", flush=True)
                                         asin_info = asin_info_array[asin_index]
                                         asin = asin_info[1]
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] == 1:

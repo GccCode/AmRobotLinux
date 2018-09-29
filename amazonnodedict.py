@@ -117,7 +117,7 @@ def update_asin_status_ok(db_name, node):
         asin_array = get_all_data(db_name, (node + '_BS'), 'asin')
         for index in range(len(asin_array)):
             # print(asin_array[index])
-            condition = 'asin=\'' + asin_array[index][0] + '\'' + ' status=\'err\''
+            condition = 'asin=\'' + asin_array[index][0] + '\'' + ' and status=\'err\''
             amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
         amazondata.disconnect_database()
 
