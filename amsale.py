@@ -150,24 +150,22 @@ if __name__ == "__main__":
                 task_info_array_len = node_cursor.rowcount
                 task_info_array = node_cursor.fetchall()
                 for node_index in range(0, task_info_array_len):
-                    driver = None
+                    chrome_options = webdriver.ChromeOptions()
+                    prefs = {
+                        'profile.default_content_setting_values': {
+                            'images': 2,
+                            'javascript': 2
+                        }
+                    }
+                    chrome_options.add_experimental_option("prefs", prefs)
+                    driver = webdriver.Chrome(chrome_options=chrome_options)
+                    driver.set_page_load_timeout(60)
+                    driver.set_script_timeout(60)
                     try:
                         task_info = task_info_array[node_index]
                         node = task_info[0]
                         node_table = node + '_' + node_type
                         while is_task_finish(node) == False:
-                            chrome_options = webdriver.ChromeOptions()
-                            prefs = {
-                                'profile.default_content_setting_values': {
-                                    'images': 2,
-                                    'javascript': 2
-                                }
-                            }
-                            chrome_options.add_experimental_option("prefs", prefs)
-                            driver = webdriver.Chrome(chrome_options=chrome_options)
-                            driver.set_page_load_timeout(60)
-                            driver.set_script_timeout(60)
-
                             while is_all_inventory_finish(node_table) == False:
                                 asin_cursor = get_asin_rows_from_node(amazondata, node_table)
                                 if asin_cursor != False:
