@@ -82,7 +82,7 @@ def getrandomline(filename):
     """读取文件的任意一行"""
     line = random.randint(0, getfilelines(filename))
     print("getrandomline + " + str(line) + '-' + str(getfilelines(filename)), flush=True)
-    for index in range(getfilelines(filename)):
+    for index in [0,1,2]:
         print(readtline(
             filename,
             index,
