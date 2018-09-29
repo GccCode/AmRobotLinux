@@ -84,19 +84,22 @@ def get_all_table(db_name, condition):
 
     return False
 
-def get_all_data(db_name, table_name):
+def get_all_data(db_name, table_name, column):
     table_array = []
     amazondata = AmazonData()
     status = amazondata.connect_database(db_name)
     if status == False:
         print("connect in failure..", flush=True)
     else:
-        sql = 'select * from ' + table_name
+        if column == False:
+            sql = 'select * from ' + table_name
+        else:
+            sql = 'select ' + column + ' from ' +table_name
         cursor = amazondata.query(sql)
         if cursor != False:
             if cursor.rowcount > 0:
                 result = cursor.fetchall()
-                print(result)
+                # print(result)
                 return result
         else:
             print("get all table in failure.. + " + db_name, flush=True)
@@ -104,6 +107,19 @@ def get_all_data(db_name, table_name):
         amazondata.disconnect_database()
 
     return False
+
+def update_asin_status_ok(db_name, node):
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        asin_array = get_all_data(db_name, (node + '_BS'), 'asin')
+        for index in range(len(asin_array)):
+            # print(asin_array[index])
+            condition = 'asin=\'' + asin_array[index][0] + '\''
+            amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
+        amazondata.disconnect_database()
 
 # SELECT CREATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='amazondata' AND TABLE_NAME='INVENTORY_B07GYTTF8B';
 if __name__ == "__main__":
@@ -114,4 +130,5 @@ if __name__ == "__main__":
     # else:
     #     pass
     # get_all_table('amazondata', '_BS')
-    get_all_data('amazondata', '2201158051_BS')
+    # get_all_data('amazondata', '2201158051_BS', False)
+    update_asin_status_ok('amazondata', '3050400051')
