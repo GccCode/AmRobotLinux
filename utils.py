@@ -81,7 +81,6 @@ def is_proxy_file_exist():
 def getrandomline(filename):
     """读取文件的任意一行"""
     line = random.randint(1, (getfilelines(filename) - 1))
-    print("getrandomline + " + str(line) + '-' + str(getfilelines(filename)), flush=True)
     return readtline(
         filename,
         line,
