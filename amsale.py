@@ -8,7 +8,7 @@ from datetime import date
 from datetime import timedelta
 from amazondata import AmazonData
 from amspider import AmazonSpider
-from utils import getrandomline
+import utils
 import io
 
 
@@ -160,7 +160,7 @@ if __name__ == "__main__":
                             }
                         }
                         chrome_options.add_experimental_option("prefs", prefs)
-                        host_port = getrandomline("myproxy.txt")
+                        host_port = utils.getrandomline("myproxy.txt")
                         print(host_port)
                         proxy_socks_argument = '--proxy-server=socks5://' + host_port
                         chrome_options.add_argument(proxy_socks_argument)
