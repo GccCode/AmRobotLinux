@@ -8,7 +8,7 @@ from datetime import date
 from datetime import timedelta
 from amazondata import AmazonData
 from amspider import AmazonSpider
-
+from utils import getrandomline
 
 
 def get_task_nodes(task_id):
@@ -159,7 +159,7 @@ if __name__ == "__main__":
                             }
                         }
                         chrome_options.add_experimental_option("prefs", prefs)
-                        host_port = '186.179.51.128:8000'
+                        host_port = getrandomline("myproxy.txt")
                         proxy_socks_argument = '--proxy-server=socks5://' + host_port
                         chrome_options.add_argument(proxy_socks_argument)
                         driver = webdriver.Chrome(chrome_options=chrome_options)
