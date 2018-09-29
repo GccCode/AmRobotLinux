@@ -9,15 +9,15 @@ from datetime import timedelta
 from amazondata import AmazonData
 from amspider import AmazonSpider
 from utils import getrandomline
+import io
 
 
 def get_task_nodes(task_id):
-    status = True
     amazontask_db_name = 'amazontask'
     amazondata = AmazonData()
     status = amazondata.create_database(amazontask_db_name)
     if status == False:
-        print(("Create Database In Failure + " + amazontask_db_name), flush=True)
+        print("Create Database In Failure + " + amazontask_db_name, flush=True)
         status = False
     else:
         status = amazondata.connect_database(amazontask_db_name)
@@ -138,6 +138,7 @@ def get_asin_rows_from_node(ad, table):
     return status
 
 if __name__ == "__main__":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     task_id = sys.argv[1]   # 1
     node_type = sys.argv[2] # BS - NR
     amazonspider = AmazonSpider()
