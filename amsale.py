@@ -17,7 +17,7 @@ def get_task_nodes(task_id):
     amazondata = AmazonData()
     status = amazondata.create_database(amazontask_db_name)
     if status == False:
-        print("Create Database In Failure + " + amazontask_db_name, flush=True)
+        # print("Create Database In Failure + " + amazontask_db_name, flush=True)
         status = False
     else:
         status = amazondata.connect_database(amazontask_db_name)
