@@ -14,6 +14,7 @@ import io
 
 def get_task_nodes(task_id):
     amazontask_db_name = 'amazontask'
+    print("sdfds", flush=True)
     amazondata = AmazonData()
     status = amazondata.create_database(amazontask_db_name)
     if status == False:
@@ -160,10 +161,10 @@ if __name__ == "__main__":
                             }
                         }
                         chrome_options.add_experimental_option("prefs", prefs)
-                        # host_port = utils.getrandomline("myproxy.txt")
-                        # # print(host_port)
-                        # proxy_socks_argument = '--proxy-server=socks5://' + host_port
-                        # chrome_options.add_argument(proxy_socks_argument)
+                        host_port = utils.getrandomline("myproxy.txt")
+                        # print(host_port)
+                        proxy_socks_argument = '--proxy-server=socks5://' + host_port
+                        chrome_options.add_argument(proxy_socks_argument)
                         driver = webdriver.Chrome(chrome_options=chrome_options)
                         driver.set_page_load_timeout(60)
                         driver.set_script_timeout(60)
