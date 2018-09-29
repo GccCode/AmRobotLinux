@@ -50,6 +50,17 @@ class AmazonData():
 
         return status
 
+    def create_node_info_table(self, table):
+        columns = 'node VARCHAR(50) NOT NULL, name CHAR(100) NOT NULL, PRIMARY KEY (node)'
+        status = True
+        if self.amsql.is_mysql_table_exsist(self.db, table) == False:
+            status = self.amsql.create_table(self.db, table, columns)
+
+        return status
+
+    def insert_node_info_data(self, table, data):
+        return self.amsql.insert_data(self.db, table, data)
+
     def insert_task_data(self, table, data):
         return self.amsql.insert_data(self.db, table, data)
 
@@ -114,6 +125,9 @@ class AmazonData():
         #     'sale' : 10
         # }
         return self.amsql.insert_data(self.db, table, data)
+
+    def query(self, sql):
+        return self.amsql.query(self.db, sql)
 
     def get_yesterday_sale(self, table):
         today = date.today()
