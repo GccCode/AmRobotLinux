@@ -166,7 +166,7 @@ if __name__ == "__main__":
                                     asin_info_array = asin_cursor.fetchall()
                                     for asin_index in range(0, asin_info_array_len):
                                         if asin_index >= len(asin_info_array):
-                                            print("asin_index out of limit..", flush=True)
+                                            print("asin_index out of limit.. + " + str(asin_index) + ' ' + str(asin_info_array_len), flush=True)
                                         asin_info = asin_info_array[asin_index]
                                         asin = asin_info[1]
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] == 1:
