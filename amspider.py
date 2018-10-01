@@ -26,6 +26,7 @@ VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
 VIEW_CART_BUTTON1 = (By.ID, 'hlb-view-cart')
 VIEW_CART_BUTTON2 = (By.CSS_SELECTOR, 'input[name=editCart]')
 VIEW_CART_BUTTON3 = (By.CLASS_NAME, 'hlb-cart-button')
+DEAL_SYMBOL = (By.XPATH, '//li[contains(@id, \'deal_status_progress_\')]')
 ITEM_SELECT_US = (By.XPATH,
                            '//*[@id=\'activeCartViewForm\']/div[position()=2]/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/span[position()=1]/select')
 ITEM_INPUT_US = (By.XPATH,
@@ -644,7 +645,7 @@ class AmazonSpider():
             'limited'   : 'no'
         }
         try:
-            print("get_inventory_jp + " + asin, flush=True)
+            # print("get_inventory_jp + " + asin, flush=True)
             url = 'https://www.amazon.co.jp/dp/' + asin
             driver.get(url)
             amazonasinpage = AmazonAsinPage(driver)
@@ -699,9 +700,14 @@ class AmazonSpider():
                     amazonasinpage.click(*VIEW_CART_BUTTON3)
                     amazonasinpage.random_sleep(3000, 5000)
                 else:
-                    status = False
-                    amazonasinpage.window_capture(asin + 'noviewcart')
-                    print("View Cart can't be found... + " + asin, flush=True)
+                    if amazonasinpage.is_element_exsist(*DEAL_SYMBOL):
+                        print("Listing running deal... + " + asin, flush=True)
+                        # status = -2 # deal
+                        data['inventory'] = 0
+                        status = data
+                    else:
+                        print("View Cart can't be found... + " + asin, flush=True)
+                    amazonasinpage.window_capture(asin + '-noviewcart-')
 
                 if status == True:
                     if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP) == False:
@@ -750,7 +756,7 @@ class AmazonSpider():
                     print("no inventroy.. + " + asin, flush=True)
                     data['inventory'] = 0
                     status = data
-                    amazonasinpage.window_capture(asin + 'noinv')
+                    amazonasinpage.window_capture(asin + '-noinv-')
         except NoSuchElementException as msg:
             status = False
             print("Except: NoSuchElementException", flush=True)
