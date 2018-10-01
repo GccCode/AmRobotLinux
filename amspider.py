@@ -700,6 +700,7 @@ class AmazonSpider():
                     amazonasinpage.random_sleep(3000, 5000)
                 else:
                     status = False
+                    amazonasinpage.window_capture(asin + 'noviewcart')
                     print("View Cart can't be found... + " + asin, flush=True)
 
                 if status == True:
@@ -749,7 +750,7 @@ class AmazonSpider():
                     print("no inventroy.. + " + asin, flush=True)
                     data['inventory'] = 0
                     status = data
-                    input("no inventory?")
+                    amazonasinpage.window_capture(asin + 'noinv')
         except NoSuchElementException as msg:
             status = False
             print("Except: NoSuchElementException", flush=True)
