@@ -146,4 +146,4 @@ if __name__ == "__main__":
     # get_all_table('amazondata', '_BS')
     # get_all_data('amazondata', '2201158051_BS', False)
     # update_asin_status_ok('amazondata', '2189296051')
-    update_all_task_date('amazontask', '2018-09-28')
+    update_all_task_date('amazontask', '2018-09-30')

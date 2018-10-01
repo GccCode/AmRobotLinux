@@ -158,6 +158,22 @@ if __name__ == "__main__":
                         task_info = task_info_array[node_index]
                         node = task_info[0]
                         node_table = node + '_' + node_type
+                        chrome_options = webdriver.ChromeOptions()
+                        prefs = {
+                            'profile.default_content_setting_values': {
+                                'images': 2,
+                                'javascript': 2
+                            }
+                        }
+                        chrome_options.add_experimental_option("prefs", prefs)
+                        host_port = utils.getrandomline("myproxy.txt")
+                        print("proxy ip is: " + host_port, flush=True)
+                        proxy_socks_argument = '--proxy-server=socks5://' + host_port
+                        chrome_options.add_argument(proxy_socks_argument)
+                        driver = webdriver.Chrome(chrome_options=chrome_options)
+                        driver.set_page_load_timeout(60)
+                        driver.set_script_timeout(60)
+                        broswer_created = True
                         while is_task_finish(node) == False:
                             while is_all_inventory_finish(node_table) == False:
                                 asin_cursor = get_asin_rows_from_node(amazondata, node_table)
@@ -172,22 +188,6 @@ if __name__ == "__main__":
                                         asin_info = asin_info_array[asin_index]
                                         asin = asin_info[1]
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] == 1:
-                                            chrome_options = webdriver.ChromeOptions()
-                                            prefs = {
-                                                'profile.default_content_setting_values': {
-                                                    'images': 2,
-                                                    'javascript': 2
-                                                }
-                                            }
-                                            chrome_options.add_experimental_option("prefs", prefs)
-                                            host_port = utils.getrandomline("myproxy.txt")
-                                            print("proxy ip is: " + host_port, flush=True)
-                                            proxy_socks_argument = '--proxy-server=socks5://' + host_port
-                                            chrome_options.add_argument(proxy_socks_argument)
-                                            driver = webdriver.Chrome(chrome_options=chrome_options)
-                                            driver.set_page_load_timeout(60)
-                                            driver.set_script_timeout(60)
-                                            broswer_created = True
                                             result = amazonspider.get_inventory_jp(driver, asin)
                                             if result != False:
                                                 cur_date = date.today()
