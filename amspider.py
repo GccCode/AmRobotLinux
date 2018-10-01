@@ -27,6 +27,7 @@ VIEW_CART_BUTTON1 = (By.ID, 'hlb-view-cart')
 VIEW_CART_BUTTON2 = (By.CSS_SELECTOR, 'input[name=editCart]')
 VIEW_CART_BUTTON3 = (By.CLASS_NAME, 'hlb-cart-button')
 DEAL_SYMBOL = (By.XPATH, '//div[contains(@id, \'deal_status_progress_\')]')
+DEAL_STATUS = (By.ID, 'goldboxDealStatus')
 ITEM_SELECT_US = (By.XPATH,
                            '//*[@id=\'activeCartViewForm\']/div[position()=2]/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/span[position()=1]/select')
 ITEM_INPUT_US = (By.XPATH,
@@ -700,15 +701,16 @@ class AmazonSpider():
                     amazonasinpage.click(*VIEW_CART_BUTTON3)
                     amazonasinpage.random_sleep(3000, 5000)
                 else:
-                    if amazonasinpage.is_element_exsist(*DEAL_SYMBOL):
+                    if amazonasinpage.is_element_exsist(*DEAL_SYMBOL) or amazonasinpage.is_element_exsist(*DEAL_STATUS):
                         print("Listing running deal... + " + asin, flush=True)
                         # status = -2 # deal
                         data['inventory'] = 0
                         status = data
+                        amazonasinpage.window_capture(asin + '-dealing-')
                     else:
                         status = False
                         print("View Cart can't be found... + " + asin, flush=True)
-                    amazonasinpage.window_capture(asin + '-noviewcart-')
+                        amazonasinpage.window_capture(asin + '-noviewcart-')
 
                 if status == True:
                     if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP) == False:
