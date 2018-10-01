@@ -162,9 +162,9 @@ if __name__ == "__main__":
                             while is_all_inventory_finish(node_table) == False:
                                 asin_cursor = get_asin_rows_from_node(amazondata, node_table)
                                 if asin_cursor != False:
-                                    asin_info_array_len = asin_cursor.rowcount
+                                    # asin_info_array_len = asin_cursor.rowcount
                                     asin_info_array = asin_cursor.fetchall()
-                                    print("asin_info_array_len is " + str(len(asin_info_array)), flush=True)
+                                    asin_info_array_len = len(asin_info_array)
                                     for asin_index in range(0, asin_info_array_len):
                                         if asin_index >= len(asin_info_array):
                                             print("asin_index out of limit.. + " + str(asin_index) + ' ' + str(asin_info_array_len), flush=True)
