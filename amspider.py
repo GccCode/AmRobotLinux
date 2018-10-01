@@ -746,7 +746,7 @@ class AmazonSpider():
                     # print(data, flush=True)
                     status = data
             else:
-                if amazonasinpage.is_element_exsist(*ITEM_PRICE_JP) == False:
+                if amazonasinpage.is_element_exsist(*ITEM_PRICE_JP) == False and data['seller'] != None and data['qa'] != None:
                     print("no inventroy.. + " + asin, flush=True)
                     data['inventory'] = 0
                     status = data

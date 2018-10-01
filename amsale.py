@@ -182,6 +182,24 @@ if __name__ == "__main__":
                                     asin_info_array = asin_cursor.fetchall()
                                     asin_info_array_len = len(asin_info_array)
                                     for asin_index in range(0, asin_info_array_len):
+                                        if broswer_created == False:
+                                            chrome_options = webdriver.ChromeOptions()
+                                            prefs = {
+                                                'profile.default_content_setting_values': {
+                                                    'images': 2,
+                                                    'javascript': 2
+                                                }
+                                            }
+                                            chrome_options.add_experimental_option("prefs", prefs)
+                                            host_port = utils.getrandomline("myproxy.txt")
+                                            print("proxy ip is: " + host_port, flush=True)
+                                            proxy_socks_argument = '--proxy-server=socks5://' + host_port
+                                            chrome_options.add_argument(proxy_socks_argument)
+                                            driver = webdriver.Chrome(chrome_options=chrome_options)
+                                            driver.set_page_load_timeout(60)
+                                            driver.set_script_timeout(60)
+                                            broswer_created = True
+
                                         if asin_index >= len(asin_info_array):
                                             print("asin_index out of limit.. + " + str(asin_index) + ' ' + str(asin_info_array_len), flush=True)
                                             exit(-1)
