@@ -749,6 +749,7 @@ class AmazonSpider():
                     print("no inventroy.. + " + asin, flush=True)
                     data['inventory'] = 0
                     status = data
+                    input("no inventory?")
         except NoSuchElementException as msg:
             status = False
             print("Except: NoSuchElementException", flush=True)

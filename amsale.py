@@ -234,6 +234,7 @@ if __name__ == "__main__":
                                                 else:
                                                     print("inventory data insert fail.. + " + inventory_table, flush=True)
                                             else:
+                                                input("inventory error?")
                                                 print("Get Inventory Jp In Failure.", flush=True)
                                                 status = update_asin_status_err(amazondata, node, asin)
                                                 if status == False:
