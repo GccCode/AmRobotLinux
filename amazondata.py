@@ -136,7 +136,7 @@ class AmazonData():
         status = self.amsql.select_data(self.db, sql)
         if status == False:
             print("Get yesterday sale fail...", flush=True)
-            return -999
+            return 0
 
         inventory = status.fetchall()
         yesterday_inventory = inventory[0][1]
@@ -145,7 +145,7 @@ class AmazonData():
         status = self.amsql.select_data(self.db, sql)
         if status == False:
             print("Get today sale fail...", flush=True)
-            return -999
+            return 0
 
         inventory = status.fetchall()
         today_inventory = inventory[0][1]
@@ -155,6 +155,19 @@ class AmazonData():
             yesterday_sale = 0
 
         return yesterday_sale
+
+    def get_yesterday_inventory(self, table):
+        today = date.today()
+        yesterday = date.today() + timedelta(days = -1)
+        sql = 'select * from ' + table + ' where date=\'' + yesterday.strftime("%Y-%m-%d") + '\''
+        status = self.amsql.select_data(self.db, sql)
+        if status == False:
+            return 0
+
+        inventory = status.fetchall()
+        yesterday_inventory = inventory[0][1]
+
+        return yesterday_inventory
 
     def get_column_avg(self, table, column):
         status = -999
@@ -208,8 +221,8 @@ if __name__ == "__main__":
     #     print("fail")
     # else:
     #     print("ok")
-    today = date.today()
-    yesterday = today + timedelta(days=-1)
+    # today = date.today()
+    # yesterday = today + timedelta(days=-1)
     # today_data = {
     #     'date': today,
     #     'inventory': 9
@@ -219,20 +232,20 @@ if __name__ == "__main__":
     #     print("fail1")
     # else:
     #     print("ok1")
-    yesterday_data = {
-        'date' : yesterday,
-        'inventory': 30
-    }
-    status = amazondata.insert_inventory_data('inventory_B07DPP7V2M', yesterday_data)
-    if status == False:
-        print("fail2")
-    else:
-        print("ok2")
-
-    status = amazondata.get_yesterday_sale('inventory_B07DPP7V2M')
-    if status == -1:
-        print("fail3")
-    else:
-        print("today sale is " + str(status))
+    # yesterday_data = {
+    #     'date' : yesterday,
+    #     'inventory': 30
+    # }
+    # status = amazondata.insert_inventory_data('inventory_B07DPP7V2M', yesterday_data)
+    # if status == False:
+    #     print("fail2")
+    # else:
+    #     print("ok2")
+    #
+    # status = amazondata.get_yesterday_sale('inventory_B07DPP7V2M')
+    # if status == -1:
+    #     print("fail3")
+    # else:
+    #     print("today sale is " + str(status))
 
     amazondata.disconnect_database()

@@ -115,10 +115,11 @@ def update_asin_status_ok(db_name, node):
         print("connect in failure..", flush=True)
     else:
         asin_array = get_all_data(db_name, (node + '_BS'), 'asin')
-        for index in range(len(asin_array)):
-            # print(asin_array[index])
-            condition = 'asin=\'' + asin_array[index][0] + '\'' + ' and status=\'err\''
-            amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
+        if asin_array != False:
+            for index in range(len(asin_array)):
+                # print(asin_array[index])
+                condition = 'asin=\'' + asin_array[index][0] + '\'' + ' and status=\'err\''
+                amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
         amazondata.disconnect_database()
 
 def update_all_task_date(db_name, date):
@@ -146,4 +147,4 @@ if __name__ == "__main__":
     # get_all_table('amazondata', '_BS')
     # get_all_data('amazondata', '2201158051_BS', False)
     # update_asin_status_ok('amazondata', '2189296051')
-    update_all_task_date('amazontask', '2018-09-30')
+    update_all_task_date('amazontask', '2018-9-30')

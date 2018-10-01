@@ -635,7 +635,7 @@ class AmazonSpider():
             driver.set_script_timeout(60)
         else:
             driver = driver_upper
-        status = True
+        status = False
         data = {
             'shipping'  : 'FBM',
             'seller'    : None,
@@ -670,7 +670,6 @@ class AmazonSpider():
                 # print(getqa(element.text), flush=True)
             else:
                 data['qa'] = 0
-
 
             if amazonasinpage.is_element_exsist(*BUYER_COUNT):
                 element = driver.find_element(*BUYER_COUNT)
