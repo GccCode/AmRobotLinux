@@ -362,7 +362,6 @@ class AmazonSpider():
             driver.set_page_load_timeout(60)
             driver.set_script_timeout(60)
             inventory_array = []
-            inventory_remove_array = []
             asin_info_remove_array = []
             try:
                 for i in range(0, len(asin_info_array)):
@@ -371,14 +370,6 @@ class AmazonSpider():
                     if result == False:
                         asin_info_remove_array.append(asin_info_array[i])
                         tmp_info['status'] = 'err'
-                        # data = {
-                        #     'seller': 0,
-                        #     'qa': 0,
-                        #     'shipping' : 'FBM',
-                        #     'inventory': 0,
-                        #     'limited': 'no'
-                        # }
-                        # inventory_array.append(copy.deepcopy(data))
                         driver.quit()
                         time.sleep(2)
                         chrome_options = webdriver.ChromeOptions()
@@ -410,8 +401,6 @@ class AmazonSpider():
                 if status == False:
                     return False
 
-            # print(len(asin_info_array), flush=True)
-            # print(len(inventory_array), flush=True)
             for i in range(0, len(asin_info_remove_array)):
                 asin_info_array.remove(asin_info_remove_array[i])
 
@@ -767,6 +756,9 @@ class AmazonSpider():
                         data['inventory'] = 0
                         status = data
                         amazonasinpage.window_capture(asin + '-dealing-')
+                else:
+                    print("no buycart.. + " + asin, flush=True)
+                    amazonasinpage.window_capture(asin + '-nocart-')
         except NoSuchElementException as msg:
             status = False
             print("Except: NoSuchElementException", flush=True)

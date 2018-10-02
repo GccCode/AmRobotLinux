@@ -135,7 +135,7 @@ class AmazonData():
         sql = 'select * from ' + table + ' where date=\'' + yesterday.strftime("%Y-%m-%d") + '\''
         status = self.amsql.select_data(self.db, sql)
         if status == False:
-            print("Get yesterday sale fail...", flush=True)
+            # print("Get yesterday sale fail...", flush=True)
             return 0
 
         inventory = status.fetchall()
@@ -144,7 +144,7 @@ class AmazonData():
         sql = 'select * from ' + table + ' where date=\'' + today.strftime("%Y-%m-%d") + '\''
         status = self.amsql.select_data(self.db, sql)
         if status == False:
-            print("Get today sale fail...", flush=True)
+            # print("Get today sale fail...", flush=True)
             return 0
 
         inventory = status.fetchall()
