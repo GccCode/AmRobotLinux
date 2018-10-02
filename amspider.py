@@ -46,6 +46,7 @@ ITEM_SUBMIT_JP = (By.CSS_SELECTOR, 'input[name ^=\'submit.update-quantity\.\']')
 INVENTORY_TIPS_JP = (By.XPATH, '//*[@id=\'cart-important-message-box\']/div/div/div/p')
 ITEM_DELETE_JP = (By.CSS_SELECTOR, 'input[name ^=\'submit.delete\.\']')
 ITEM_PRICE_JP = (By.ID, 'priceblock_ourprice')
+ITEM_OUT_OF_STOCK = (By.ID, 'outOfStock')
 
 CRITICAL_TITLE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_TITLE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/a[position()=1]'
@@ -755,11 +756,17 @@ class AmazonSpider():
                     # print(data, flush=True)
                     status = data
             else:
-                if amazonasinpage.is_element_exsist(*ITEM_PRICE_JP) == False and data['seller'] != None and data['qa'] != None:
+                if amazonasinpage.is_element_exsist(*ITEM_OUT_OF_STOCK) and data['seller'] != None and data['qa'] != None:
                     print("no inventroy.. + " + asin, flush=True)
                     data['inventory'] = 0
                     status = data
                     amazonasinpage.window_capture(asin + '-noinv-')
+                elif amazonasinpage.is_element_exsist(*DEAL_SYMBOL) or amazonasinpage.is_element_exsist(*DEAL_STATUS):
+                        print("Listing running deal... + " + asin, flush=True)
+                        # status = -2 # deal
+                        data['inventory'] = 0
+                        status = data
+                        amazonasinpage.window_capture(asin + '-dealing-')
         except NoSuchElementException as msg:
             status = False
             print("Except: NoSuchElementException", flush=True)

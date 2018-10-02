@@ -162,12 +162,14 @@ class AmazonData():
         sql = 'select * from ' + table + ' where date=\'' + yesterday.strftime("%Y-%m-%d") + '\''
         status = self.amsql.select_data(self.db, sql)
         if status == False:
-            return 0
+            return False
 
         inventory = status.fetchall()
         yesterday_inventory = inventory[0][1]
-
-        return yesterday_inventory
+        if yesterday_inventory >= 0:
+            return yesterday_inventory
+        else:
+            return False
 
     def get_column_avg(self, table, column):
         status = -999
