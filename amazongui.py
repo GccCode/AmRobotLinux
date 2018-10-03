@@ -21,7 +21,7 @@ class AmazonGUI():
     def __init__(self):
         pass
 
-    def create_page(self, node, node_name, type, css_file, data):
+    def create_page(self, node, node_name, type, css_file, data, output):
         page_name =  node_name.split('/')[len(node_name.split('/')) - 1]
         mainpage = PyH(page_name)
         mainpage.addCSS(css_file)
@@ -79,7 +79,7 @@ class AmazonGUI():
                 tmp_tr << tmp_td
 
             tbody_row << tmp_tr
-        filename = page_name + '-'  +node + '.html'
+        filename = output + page_name + '-'  +node + '.html'
         mainpage.printOut(filename)
 
 
@@ -89,6 +89,6 @@ if __name__ == "__main__":
     if data != False:
         node_name = get_node_name('node_info', 'health', '5662827051')
         if node_name != False:
-            amazongui.create_page('5662827051', node_name[0][1], 'BS', 'amazongui.css', data)
+            amazongui.create_page('5662827051', node_name[0][1], 'BS', 'amazongui.css', data, '../')
             amazondata = AmazonData()
 
