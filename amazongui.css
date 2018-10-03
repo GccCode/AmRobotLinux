@@ -6,8 +6,8 @@ body,td,th {
 }
 
 table thead {
-    display: inline-block;
-	width: calc(90% - 1em)
+    display: block;
+	width: 100%
 }
 
 table tbody {
@@ -26,10 +26,15 @@ table thead, tbody tr{
 
 table{
 	margin:auto;
-	width:80%;
+	width:90%;
 	border:none;
 	border-collapse:collapse;
 	display:block
+}
+
+img{
+	max-height: 100px;
+	max-width: 100px
 }
 
 td,th{
@@ -46,7 +51,6 @@ tbody tr:nth-child(even){
 table td:nth-child(3){
 	background:#ffffff;
 	color:#cccaaa;
-	width:160px
 }
 
 thead tr:nth-child(1){
@@ -56,6 +60,6 @@ thead tr:nth-child(1){
 }
 
 tbody tr:hover{
-	background:#FFFAF4;
+	background:#9d9AF4;
 	colre:#666;
 }
