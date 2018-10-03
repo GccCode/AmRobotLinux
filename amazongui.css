@@ -7,7 +7,7 @@ body,td,th {
 
 table thead {
     display: inline-block;
-	width: calc( 100% - 1em )
+	width: calc(90% - 1em)
 }
 
 table tbody {
