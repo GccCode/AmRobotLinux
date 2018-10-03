@@ -192,7 +192,7 @@ if __name__ == "__main__":
                                         asin = asin_info[1]
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] == 1:
                                             result = amazonspider.get_inventory_jp(driver, asin)
-                                            if result != False:
+                                            if result != False and result != -111:
                                                 cur_date = date.today()
                                                 data = {
                                                     'date': cur_date,
@@ -234,6 +234,9 @@ if __name__ == "__main__":
                                                         print("invetory_date update fail.. + " + node_table, flush=True)
                                                 else:
                                                     print("inventory data insert fail.. + " + inventory_table, flush=True)
+                                            elif result == -111:
+                                                print("IP CHECK + " + host_port, flush=True)
+                                                exit(-1)
                                             else:
                                                 input("inventory error?")
                                                 print("Get Inventory Jp In Failure.", flush=True)

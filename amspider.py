@@ -643,6 +643,9 @@ class AmazonSpider():
 
             amazonasinpage.random_sleep(3000, 5000)
 
+            if  driver.title == 'Amazon CAPTCHA':
+                return -111
+
             amazonasinpage.select_size(asin, 1000, 2000)
 
             if amazonasinpage.is_element_exsist(*FBA_FLAG):
