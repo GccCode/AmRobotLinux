@@ -642,7 +642,7 @@ class AmazonSpider():
             amazonasinpage = AmazonAsinPage(driver)
 
             amazonasinpage.random_sleep(3000, 5000)
-
+            print(driver.title, flush=True)
             if  driver.title == 'Amazon CAPTCHA':
                 return -111
 
