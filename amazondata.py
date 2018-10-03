@@ -42,6 +42,14 @@ class AmazonData():
     def is_asin_inventory_exsist(self, table, column):
         return self.amsql.is_mysql_column_exsit(self.db, 'amazondata', table, column)
 
+    def create_ip_table(self, table):
+        columns = 'node VARCHAR(50) NOT NULL, task_id CHAR(3) NOT NULL, last_date DATE NOT NULL, PRIMARY KEY (node)'
+        status = True
+        if self.amsql.is_mysql_table_exsist(self.db, table) == False:
+            status = self.amsql.create_table(self.db, table, columns)
+
+        return status
+
     def create_task_table(self, table):
         columns = 'node VARCHAR(50) NOT NULL, task_id CHAR(3) NOT NULL, last_date DATE NOT NULL, PRIMARY KEY (node)'
         status = True
