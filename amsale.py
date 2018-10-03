@@ -183,7 +183,6 @@ if __name__ == "__main__":
                                             driver = webdriver.Chrome(chrome_options=chrome_options)
                                             driver.set_page_load_timeout(60)
                                             driver.set_script_timeout(60)
-                                            driver.maximize_window()
                                             broswer_created = True
 
                                         if asin_index >= len(asin_info_array):
