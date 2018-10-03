@@ -3,20 +3,23 @@
 
 from amazondata import AmazonData
 import xlrd
-xls_file_array = ['apparel',
-                  'automotive',
-                  'baby',
-                  'beauty',
-                  'ce',
-                  'computers',
-                  'hobby',
-                  'kitchen',
-                  'office_products',
-                  'pet_supplies',
-                  'shoes',
-                  'sports',
-                  'tools',
-                  'toys']
+# xls_file_array = ['apparel',
+#                   'automotive',
+#                   'baby',
+#                   'beauty',
+#                   'ce',
+#                   'computers',
+#                   'hobby',
+#                   'kitchen',
+#                   'office_products',
+#                   'pet_supplies',
+#                   'shoes',
+#                   'sports',
+#                   'tools',
+#                   'toys',
+#                   'health']
+
+xls_file_array = [ 'health']
 
 def insert_all_node_info():
     amazondata = AmazonData()
@@ -84,6 +87,26 @@ def get_all_table(db_name, condition):
 
     return False
 
+def get_node_name(db_name, table_name, node):
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        sql = 'select * from ' + table_name + ' where node=\'' + node + '\''
+        cursor = amazondata.query(sql)
+        if cursor != False:
+            if cursor.rowcount > 0:
+                result = cursor.fetchall()
+                # print(result)
+                return result
+        else:
+            print("get node name in failure.. + " + db_name, flush=True)
+
+        amazondata.disconnect_database()
+
+    return False
+
 def get_all_data(db_name, table_name, column):
     table_array = []
     amazondata = AmazonData()
@@ -147,4 +170,5 @@ if __name__ == "__main__":
     # get_all_table('amazondata', '_BS')
     # get_all_data('amazondata', '2201158051_BS', False)
     # update_asin_status_ok('amazondata', '2189296051')
-    update_all_task_date('amazontask', '2018-9-30')
+    # update_all_task_date('amazontask', '2018-9-30')
+    insert_all_node_info()

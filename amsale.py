@@ -148,8 +148,9 @@ if __name__ == "__main__":
         node_cursor = get_task_nodes(task_id)
         if node_cursor != False:
             while is_all_task_finish(task_id) == False:
-                task_info_array_len = node_cursor.rowcount
+                # task_info_array_len = node_cursor.rowcount
                 task_info_array = node_cursor.fetchall()
+                task_info_array_len =  len(task_info_array)
                 broswer_created = False
                 for node_index in range(0, task_info_array_len):
                     try:
