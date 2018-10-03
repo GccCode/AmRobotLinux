@@ -645,6 +645,7 @@ class AmazonSpider():
             print("222", flush=True)
             if driver.title == "Amazon CAPTCHA":
                 print("1111", flush=True)
+                status = -111
                 return -111
             else:
                 print(driver.title, flush=True)

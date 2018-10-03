@@ -235,9 +235,10 @@ if __name__ == "__main__":
                                                 else:
                                                     print("inventory data insert fail.. + " + inventory_table, flush=True)
                                             else:
+                                                print(result)
                                                 if result == -111:
                                                     print("IP CHECK + " + host_port, flush=True)
-                                                    exit(-1)
+                                                    exit()
                                                 input("inventory error?")
                                                 print("Get Inventory Jp In Failure.", flush=True)
                                                 status = update_asin_status_err(amazondata, node, asin)
