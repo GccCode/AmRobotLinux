@@ -161,7 +161,9 @@ if __name__ == "__main__":
                         node = task_info[0]
                         node_table = node + '_' + node_type
                         while is_task_finish(node) == False:
+                            print("test is all task finish...", flush=True)
                             while  is_all_inventory_finish(node_table) == False:
+                                print("test is all inventory finish...", flush=True)
                                 asin_cursor = get_asin_rows_from_node(amazondata, node_table)
                                 if asin_cursor != False:
                                     # asin_info_array_len = asin_cursor.rowcount
@@ -189,6 +191,9 @@ if __name__ == "__main__":
                                         if asin_index >= len(asin_info_array):
                                             print("asin_index out of limit.. + " + str(asin_index) + ' ' + str(asin_info_array_len), flush=True)
                                             exit(-1)
+                                        else:
+                                            print(asin_index, flush=True)
+                                            print(len(asin_info_array), flush=True)
                                         asin_info = asin_info_array[asin_index]
                                         asin = asin_info[1]
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] == 1:

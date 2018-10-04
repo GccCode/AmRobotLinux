@@ -615,7 +615,6 @@ class AmazonSpider():
             driver.quit()
 
     def get_inventory_jp(self, driver_upper, asin):
-        print("get inventory jp + " + asin, flush=True)
         if driver_upper == False:
             chrome_options = webdriver.ChromeOptions()
             prefs = {
@@ -643,7 +642,7 @@ class AmazonSpider():
             'limited'   : 'no'
         }
         try:
-            # print("get_inventory_jp + " + asin, flush=True)
+            print("get_inventory_jp + " + asin, flush=True)
             url = 'https://www.amazon.co.jp/dp/' + asin
             driver.get(url)
             amazonasinpage = AmazonAsinPage(driver)
