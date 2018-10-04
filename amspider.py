@@ -372,19 +372,20 @@ class AmazonSpider():
                     if result == False:
                         asin_info_remove_array.append(asin_info_array[i])
                         tmp_info['status'] = 'err'
-                        driver.quit()
-                        time.sleep(2)
-                        chrome_options = webdriver.ChromeOptions()
-                        prefs = {
-                            'profile.default_content_setting_values': {
-                                'images': 2,
-                                'javascript': 2
+                        if driver != False:
+                            driver.quit()
+                            time.sleep(2)
+                            chrome_options = webdriver.ChromeOptions()
+                            prefs = {
+                                'profile.default_content_setting_values': {
+                                    'images': 2,
+                                    'javascript': 2
+                                }
                             }
-                        }
-                        chrome_options.add_experimental_option("prefs", prefs)
-                        driver = webdriver.Chrome(chrome_options=chrome_options)
-                        driver.set_page_load_timeout(60)
-                        driver.set_script_timeout(60)
+                            chrome_options.add_experimental_option("prefs", prefs)
+                            driver = webdriver.Chrome(chrome_options=chrome_options)
+                            driver.set_page_load_timeout(60)
+                            driver.set_script_timeout(60)
                     else:
                         tmp_info['shipping'] = result['shipping']
                         tmp_info['seller'] = result['seller']
