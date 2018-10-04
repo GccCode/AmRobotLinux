@@ -615,7 +615,9 @@ class AmazonSpider():
             driver.quit()
 
     def get_inventory_jp(self, driver_upper, asin):
+        print("get inventory jp + " + asin, flush=True)
         if driver_upper == False:
+            print("0000 + " + asin, flush=True)
             chrome_options = webdriver.ChromeOptions()
             prefs = {
                 'profile.default_content_setting_values': {
@@ -632,6 +634,8 @@ class AmazonSpider():
             driver.set_page_load_timeout(60)
             driver.set_script_timeout(60)
         else:
+
+            print("1111 + " + asin, flush=True)
             driver = driver_upper
         status = False
         data = {
