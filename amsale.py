@@ -161,7 +161,7 @@ if __name__ == "__main__":
                         node = task_info[0]
                         node_table = node + '_' + node_type
                         while is_task_finish(node) == False:
-                            print("test is all task finish...", flush=True)
+                            print("test is all task finish...+ " + node_table, flush=True)
                             while  is_all_inventory_finish(node_table) == False:
                                 print("test is all inventory finish...", flush=True)
                                 asin_cursor = get_asin_rows_from_node(amazondata, node_table)
@@ -249,7 +249,7 @@ if __name__ == "__main__":
                                                 if status == False:
                                                     print("update asin status faild.. + " + node + ' ' + asin, flush=True)
 
-                            if is_all_inventory_finish(node_table) == False:
+                            if is_all_inventory_finish(node_table) == True:
                                 status = update_task_node(node)
                                 if status == False:
                                     print("update task node faild.. + " + node, flush=True)
