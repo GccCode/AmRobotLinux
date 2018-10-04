@@ -201,7 +201,7 @@ if __name__ == "__main__":
                                                 }
                                                 if result['limited'] == 'yes':
                                                     condition = 'asin=\'' + asin + '\''
-                                                    status = amazondata.update_data(node_table, 'limited', 'yes', condition)
+                                                    status = amazondata.update_data(node_table, 'limited', '\'yes\'', condition)
                                                 else:
                                                     inventory_table = 'INVENTORY_' + asin
                                                     status = amazondata.insert_inventory_data(inventory_table, data)
