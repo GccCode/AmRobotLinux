@@ -3,23 +3,99 @@
 
 from amazondata import AmazonData
 import xlrd
-# xls_file_array = ['apparel',
-#                   'automotive',
-#                   'baby',
-#                   'beauty',
-#                   'ce',
-#                   'computers',
-#                   'hobby',
-#                   'kitchen',
-#                   'office_products',
-#                   'pet_supplies',
-#                   'shoes',
-#                   'sports',
-#                   'tools',
-#                   'toys',
-#                   'health']
+import random
+xls_file_array = ['apparel',
+                  'automotive',
+                  'baby',
+                  'beauty',
+                  'ce',
+                  'computers',
+                  'hobby',
+                  'kitchen',
+                  'office_products',
+                  'pet_supplies',
+                  'shoes',
+                  'sports',
+                  'tools',
+                  'toys',
+                  'health']
 
-xls_file_array = [ 'health']
+# xls_file_array = [ 'health']
+
+def insert_all_ip_info(ipfile):
+    amazondata = AmazonData()
+    status = amazondata.create_database('ip_info')
+    if status == False:
+        print("node_info create in failure..", flush=True)
+    else:
+        status = amazondata.connect_database('ip_info')
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            status = amazondata.create_ip_table('ip_pool')
+            if status != False:
+                try:
+                    f = open(ipfile)  # 返回一个文件对象
+                    line = f.readline()  # 调用文件的 readline()方法
+                    while line:
+                        if ':' in line:
+                            data = {
+                                'ip': line.strip('\n'),
+                                'status': 'ok'
+                            }
+                            print(line.strip('\n'))
+                            status = amazondata.insert_ip_info_data('ip_pool', data)
+                            if status == False:
+                                break
+                        line = f.readline()
+
+                    f.close()
+                except Exception as e:
+                    print(str(e), flush=True)
+                    status = False
+                finally:
+                    amazondata.disconnect_database()
+
+    return status
+
+def get_ramdon_accessible_ip():
+    amazondata = AmazonData()
+    status = amazondata.create_database('ip_info')
+    if status == False:
+        print("node_info create in failure..", flush=True)
+    else:
+        status = amazondata.connect_database('ip_info')
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            sql = 'select ip from ip_pool where status=\'ok\''
+            cursor = amazondata.query(sql)
+            if cursor != False:
+                if cursor.rowcount > 0:
+                    ips_array = cursor.fetchall()
+                    randomip = ips_array[random.randint(0, (len(ips_array) - 1))][0]
+                    status = randomip
+                else:
+                    status = False
+            else:
+                status = False
+
+    return status
+
+def mark_unaccessible_ip(ip):
+    amazondata = AmazonData()
+    status = amazondata.create_database('ip_info')
+    if status == False:
+        print("node_info create in failure..", flush=True)
+    else:
+        status = amazondata.connect_database('ip_info')
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            condition = 'ip=\'' + ip + '\''
+            status = amazondata.update_data('ip_pool', 'status', '\'no\'', condition)
+
+    return status
 
 def insert_all_node_info():
     amazondata = AmazonData()
@@ -171,4 +247,7 @@ if __name__ == "__main__":
     # get_all_data('amazondata', '2201158051_BS', False)
     # update_asin_status_ok('amazondata', '2189296051')
     # update_all_task_date('amazontask', '2018-9-30')
-    insert_all_node_info()
+    # insert_all_node_info()
+    insert_all_ip_info('../myproxy.txt')
+    # print(get_ramdon_accessible_ip()) 196.16.109.149:8000
+    # mark_unaccessible_ip('196.16.109.149:8000')

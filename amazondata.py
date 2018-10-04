@@ -43,12 +43,15 @@ class AmazonData():
         return self.amsql.is_mysql_column_exsit(self.db, 'amazondata', table, column)
 
     def create_ip_table(self, table):
-        columns = 'node VARCHAR(50) NOT NULL, task_id CHAR(3) NOT NULL, last_date DATE NOT NULL, PRIMARY KEY (node)'
+        columns = 'ip VARCHAR(30) NOT NULL, status VARCHAR(2) NOT NULL, PRIMARY KEY (ip)'
         status = True
         if self.amsql.is_mysql_table_exsist(self.db, table) == False:
             status = self.amsql.create_table(self.db, table, columns)
 
         return status
+
+    def insert_ip_info_data(self, table, data):
+        return self.amsql.insert_data(self.db, table, data)
 
     def create_task_table(self, table):
         columns = 'node VARCHAR(50) NOT NULL, task_id CHAR(3) NOT NULL, last_date DATE NOT NULL, PRIMARY KEY (node)'

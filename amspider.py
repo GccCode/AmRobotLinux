@@ -16,6 +16,7 @@ from datetime import date
 from datetime import datetime
 from datetime import timedelta
 from amazondata import AmazonData
+import amazonwrapper
 
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
@@ -350,17 +351,18 @@ class AmazonSpider():
                     return False
 
             status = True
-            chrome_options = webdriver.ChromeOptions()
-            prefs = {
-                'profile.default_content_setting_values': {
-                    'images': 2,
-                    'javascript': 2
-                }
-            }
-            chrome_options.add_experimental_option("prefs", prefs)
-            driver = webdriver.Chrome(chrome_options=chrome_options)
-            driver.set_page_load_timeout(60)
-            driver.set_script_timeout(60)
+            # chrome_options = webdriver.ChromeOptions()
+            # prefs = {
+            #     'profile.default_content_setting_values': {
+            #         'images': 2,
+            #         'javascript': 2
+            #     }
+            # }
+            # chrome_options.add_experimental_option("prefs", prefs)
+            # driver = webdriver.Chrome(chrome_options=chrome_options)
+            # driver.set_page_load_timeout(60)
+            # driver.set_script_timeout(60)
+            driver = False
             inventory_array = []
             asin_info_remove_array = []
             try:
@@ -397,7 +399,8 @@ class AmazonSpider():
                 status = False
                 print(str(e), flush=True)
             finally:
-                driver.quit()
+                if driver != False:
+                    driver.quit()
                 if status == False:
                     return False
 
@@ -611,8 +614,6 @@ class AmazonSpider():
             driver.quit()
 
     def get_inventory_jp(self, driver_upper, asin):
-        driver = None
-
         if driver_upper == False:
             chrome_options = webdriver.ChromeOptions()
             prefs = {
@@ -622,6 +623,10 @@ class AmazonSpider():
                 }
             }
             chrome_options.add_experimental_option("prefs", prefs)
+            host_port = amazonwrapper.get_ramdon_accessible_ip()
+            print("proxy ip is: " + host_port, flush=True)
+            proxy_socks_argument = '--proxy-server=socks5://' + host_port
+            chrome_options.add_argument(proxy_socks_argument)
             driver = webdriver.Chrome(chrome_options=chrome_options)
             driver.set_page_load_timeout(60)
             driver.set_script_timeout(60)
@@ -644,6 +649,7 @@ class AmazonSpider():
             amazonasinpage.random_sleep(3000, 5000)
 
             if driver.title == "Amazon CAPTCHA":
+                amazonwrapper.mark_unaccessible_ip(host_port)
                 status = -111
                 return -111
 

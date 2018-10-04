@@ -152,6 +152,7 @@ if __name__ == "__main__":
                 task_info_array = node_cursor.fetchall()
                 task_info_array_len =  len(task_info_array)
                 broswer_created = False
+                driver = False
                 for node_index in range(0, task_info_array_len):
                     try:
                         if node_index >= len(task_info_array):
@@ -160,30 +161,30 @@ if __name__ == "__main__":
                         node = task_info[0]
                         node_table = node + '_' + node_type
                         while is_task_finish(node) == False:
-                            while is_all_inventory_finish(node_table) == False:
+                            while  is_all_inventory_finish(node_table) == False:
                                 asin_cursor = get_asin_rows_from_node(amazondata, node_table)
                                 if asin_cursor != False:
                                     # asin_info_array_len = asin_cursor.rowcount
                                     asin_info_array = asin_cursor.fetchall()
                                     asin_info_array_len = len(asin_info_array)
                                     for asin_index in range(0, asin_info_array_len):
-                                        if broswer_created == False:
-                                            chrome_options = webdriver.ChromeOptions()
-                                            prefs = {
-                                                'profile.default_content_setting_values': {
-                                                    'images': 2,
-                                                    'javascript': 2
-                                                }
-                                            }
-                                            chrome_options.add_experimental_option("prefs", prefs)
-                                            host_port = utils.getrandomline("myproxy.txt")
-                                            print("proxy ip is: " + host_port, flush=True)
-                                            proxy_socks_argument = '--proxy-server=socks5://' + host_port
-                                            chrome_options.add_argument(proxy_socks_argument)
-                                            driver = webdriver.Chrome(chrome_options=chrome_options)
-                                            driver.set_page_load_timeout(60)
-                                            driver.set_script_timeout(60)
-                                            broswer_created = True
+                                        # if broswer_created == False:
+                                        #     chrome_options = webdriver.ChromeOptions()
+                                        #     prefs = {
+                                        #         'profile.default_content_setting_values': {
+                                        #             'images': 2,
+                                        #             'javascript': 2
+                                        #         }
+                                        #     }
+                                        #     chrome_options.add_experimental_option("prefs", prefs)
+                                        #     host_port = utils.getrandomline("myproxy.txt")
+                                        #     print("proxy ip is: " + host_port, flush=True)
+                                        #     proxy_socks_argument = '--proxy-server=socks5://' + host_port
+                                        #     chrome_options.add_argument(proxy_socks_argument)
+                                        #     driver = webdriver.Chrome(chrome_options=chrome_options)
+                                        #     driver.set_page_load_timeout(60)
+                                        #     driver.set_script_timeout(60)
+                                        #     broswer_created = True
 
                                         if asin_index >= len(asin_info_array):
                                             print("asin_index out of limit.. + " + str(asin_index) + ' ' + str(asin_info_array_len), flush=True)
@@ -235,18 +236,18 @@ if __name__ == "__main__":
                                                 else:
                                                     print("inventory data insert fail.. + " + inventory_table, flush=True)
                                             else:
-                                                print(result)
                                                 if result == -111:
-                                                    print("IP CHECK + " + host_port, flush=True)
-                                                    exit()
+                                                    status = False
+                                                    continue
                                                 print("Get Inventory Jp In Failure.", flush=True)
                                                 status = update_asin_status_err(amazondata, node, asin)
                                                 if status == False:
                                                     print("update asin status faild.. + " + node + ' ' + asin, flush=True)
 
-                            status = update_task_node(node)
-                            if status == False:
-                                print("update task node faild.. + " + node, flush=True)
+                            if is_all_inventory_finish(node_table) == False:
+                                status = update_task_node(node)
+                                if status == False:
+                                    print("update task node faild.. + " + node, flush=True)
                             # else:
                             #     print("update task node sucessfully.. + " + node, flush=True)
                     except Exception as e:

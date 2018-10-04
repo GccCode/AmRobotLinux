@@ -3,7 +3,7 @@
 
 from pyh import *
 from amazondata import AmazonData
-from amazonnodedict import *
+from amazonwrapper import *
 
 class AmazonGUI():
     def __init__(self):
