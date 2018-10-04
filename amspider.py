@@ -615,6 +615,7 @@ class AmazonSpider():
             driver.quit()
 
     def get_inventory_jp(self, driver_upper, asin):
+        print("get inventory jp + " + asin, flush=True)
         if driver_upper == False:
             chrome_options = webdriver.ChromeOptions()
             prefs = {
