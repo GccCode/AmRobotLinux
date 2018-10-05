@@ -31,6 +31,8 @@ class AmazonSignInPage(AmazonPage):
         except NoSuchElementException as msg:
             if self.is_element_exsist(*self.locator.EMAILNAME):
                 print("xxxxxxxxxx", flush=True)
+            else:
+                print("yyy",flush=True)
             self.click(*self.locator.EMAILNAME)
             self.random_sleep(1000, 2000)
             self.input(emailname, *self.locator.EMAILNAME)
