@@ -29,7 +29,7 @@ class AmazonPaymentPage(AmazonPage):
             else:
                 print("找不到持卡人输入栏", flush=True)
                 exit(0)
-            if self.is_element_exsist(*self.locator.CARDNUMBER_US)
+            if self.is_element_exsist(*self.locator.CARDNUMBER_US):
                 self.click(*self.locator.CARDNUMBER_US)
                 self.random_sleep(1000, 2000)
                 self.input(cardnum, *self.locator.CARDNUMBER_US)
