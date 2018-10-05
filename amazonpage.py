@@ -126,13 +126,15 @@ class AmazonPage(BaseAction):
 
     def enter_signin_page(self, begin, end):
         self.hover(*self.locator.ACCOUNT)
-        self.random_sleep(1000, 2000)
+        self.random_sleep(3000, 5000)
 
         try:
+            print('1111', flush=True)
             self.click(*self.locator.SIGNOUT)
         except NoSuchElementException as msg:
             print("Can't find sign out element", flush=True)
             try:
+                print('2222', flush=True)
                 self.click(*self.locator.SIGNIN)
             except NoSuchElementException as msg:
                 print("Can't find sign in element", flush=True)
