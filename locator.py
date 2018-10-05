@@ -23,6 +23,7 @@ class AmazonPageLocator(object):
 
 class AmazonAccountPageLocator(AmazonPageLocator):
     YOURADDRESS_US = (By.XPATH, '//*[@id=\'a-page\']/div[position()=3]/div/div[position()=2]/div[position()=1]/a/div/div/div')
+    YOURADDRESS_US_1 = (By.XPATH, '//*[@id=\'a-page\']/div[position()=2]/div/div[position()=2]/div[position()=1]/a/div/div/div')
     YOURADDRESS_JP = (By.XPATH, '//*[@id=\'a-page\']/div[position()=2]/div/div[position()=3]/div[position()=1]/a/div/div/div')
     PAYMENTOPTIONS_US = (By.XPATH, '//*[@id=\'a-page\']/div[position()=3]/div/div[position()=2]/div[position()=2]/a/div/div/div')
     PAYMENTOPTIONS_JP = (By.XPATH, '//*[@id=\'a-page\']/div[position()=2]/div/div[position()=3]/div[position()=2]/a/div/div/div')

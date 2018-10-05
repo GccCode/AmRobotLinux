@@ -32,6 +32,10 @@ class AmazonAddressPage(AmazonPage):
             self.click(*self.locator.ADDADDRESS)
             self.random_sleep(1000, 2000)
             self.fill_in_form(addresstype, begin, end)
+        elif self.is_element_exsist(*self.locator.ADDADDRESS):
+            self.click(*self.locator.ADDADDRESS1)
+            self.random_sleep(1000, 2000)
+            self.fill_in_form(addresstype, begin, end)
         else:
             print("找不到添加新地址入口", flush=True)
             exit(-1)
