@@ -410,7 +410,7 @@ if __name__ == "__main__":
                 login = cf.get("login", "status")
                 if login == "1":
                     print(("* 开始登陆账号"), flush=True)
-                    amazonpage.enter_signin_page(3000, 5000)
+                    amazonpage.enter_signin_page(5000, 8000)
                     signinpage = AmazonSignInPage(driver)
                     signinpage.sign_in(5000, 10000)
                 bill_address = cf.get("bill_address", "status")
