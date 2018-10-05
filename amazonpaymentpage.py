@@ -58,6 +58,7 @@ class AmazonPaymentPage(AmazonPage):
                 exit(0)
             if self.is_element_exsist(*self.locator.USETHISADDRESS_US):
                 self.click(*self.locator.USETHISADDRESS_US)
+                self.random_sleep(2000, 4000)
             else:
                 print("找不到使用当前地址的按钮", flush=True)
                 exit(0)
