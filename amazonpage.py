@@ -129,15 +129,12 @@ class AmazonPage(BaseAction):
         self.random_sleep(3000, 5000)
 
         try:
-            print('1111', flush=True)
-            self.click(*self.locator.SIGNOUT)
-        except NoSuchElementException as msg:
-            print("Can't find sign out element", flush=True)
-            try:
-                print('2222', flush=True)
+            if self.is_element_exsist(*self.locator.SIGNOUT):
+                self.click(*self.locator.SIGNOUT)
+            elif self.is_element_exsist(*self.locator.SIGNIN):
                 self.click(*self.locator.SIGNIN)
-            except NoSuchElementException as msg:
-                print("Can't find sign in element", flush=True)
+        except NoSuchElementException as msg:
+            print("Can't find sign out or sign in element", flush=True)
 
         self.random_sleep(begin, end)
 
