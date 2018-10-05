@@ -54,7 +54,7 @@ class AmazonCartPageLocator(AmazonPageLocator):
 
 class AmazonPaymentPageLocator(AmazonPageLocator):
     # CARDHOLDER_US = (By.XPATH, '//input[contains(@id, \'-24\')]')
-    CARDHOLDER_US = (By.XPATH, '//input[name=\'ppw-accountHolderName\']')
+    CARDHOLDER_US = (By.CSS_SELECTORH, 'input[name=\'ppw-accountHolderName\']')
     CARDHOLDER_JP = (By.XPATH, '//input[contains(@id, \'-22\')]')
     CARDNUMBER_US = (By.XPATH, '//input[contains(@id, \'-25\')]')
     CARDNUMBER_JP = (By.XPATH, '//input[contains(@id, \'-23\')]')
