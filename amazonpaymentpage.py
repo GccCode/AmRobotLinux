@@ -24,25 +24,43 @@ class AmazonPaymentPage(AmazonPage):
             if self.is_element_exsist(*self.locator.CARDHOLDER_US):
                 self.click(*self.locator.CARDHOLDER_US)
                 self.random_sleep(1000, 2000)
+                self.input(fullname, *self.locator.CARDHOLDER_US)
+                self.random_sleep(1000, 2000)
             else:
                 print("找不到持卡人输入栏", flush=True)
                 exit(0)
-            self.input(fullname, *self.locator.CARDHOLDER_US)
-            self.random_sleep(1000, 2000)
+            if self.is_element_exsist(*self.locator.CARDNUMBER_US)
+                self.click(*self.locator.CARDNUMBER_US)
+                self.random_sleep(1000, 2000)
+                self.input(cardnum, *self.locator.CARDNUMBER_US)
+                self.random_sleep(1000, 2000)
+            else:
+                print("找不到卡号输入栏", flush=True)
+                exit(0)
+            if self.is_element_exsist(*self.locator.VALIDMON_US):
+                self.select((int(validmonth) - 1), *self.locator.VALIDMON_US)
+                self.random_sleep(1000, 2000)
+            else:
+                print("找不到有效月份下拉框", flush=True)
+                exit(0)
+            if self.is_element_exsist(*self.locator.VALIDYEAR_US):
+                self.select((int(validyear) - 2018), *self.locator.VALIDYEAR_US)
+                self.random_sleep(1000, 2000)
+            else:
+                print("找不到有效年份下拉框", flush=True)
+                exit(0)
 
-            self.click(*self.locator.CARDNUMBER_US)
-            self.random_sleep(1000, 2000)
-            self.input(cardnum, *self.locator.CARDNUMBER_US)
-            self.random_sleep(1000, 2000)
-
-            self.select((int(validmonth) - 1), *self.locator.VALIDMON_US)
-            self.random_sleep(1000, 2000)
-            self.select((int(validyear) - 2018), *self.locator.VALIDYEAR_US)
-            self.random_sleep(1000, 2000)
-
-            self.click(*self.locator.ADDCARD_US)
-            self.random_sleep(2000, 4000)
-            self.click(*self.locator.USETHISADDRESS_US)
+            if self.is_element_exsist(*self.locator.ADDCARD_US):
+                self.click(*self.locator.ADDCARD_US)
+                self.random_sleep(2000, 4000)
+            else:
+                print("找不到添加卡按钮", flush=True)
+                exit(0)
+            if self.is_element_exsist(*self.locator.USETHISADDRESS_US):
+                self.click(*self.locator.USETHISADDRESS_US)
+            else:
+                print("找不到使用当前地址的按钮", flush=True)
+                exit(0)
         elif country == "jp":
             self.click(*self.locator.CARDHOLDER_JP)
             self.random_sleep(1000, 2000)
