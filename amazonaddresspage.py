@@ -28,9 +28,13 @@ class AmazonAddressPage(AmazonPage):
         return 0
 
     def add_address(self, addresstype, begin, end):
-        self.click(*self.locator.ADDADDRESS)
-        self.random_sleep(1000, 2000)
-        self.fill_in_form(addresstype, begin, end)
+        if self.is_element_exsist(*self.locator.ADDADDRESS):
+            self.click(*self.locator.ADDADDRESS)
+            self.random_sleep(1000, 2000)
+            self.fill_in_form(addresstype, begin, end)
+        else:
+            print("找不到添加新地址入口", flush=True)
+            exit(-1)
 
     def fill_in_form(self, addresstype, begin, end):
         country = self.cf.get("account", "country")

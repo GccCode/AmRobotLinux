@@ -16,7 +16,11 @@ class AmazonAccountPage(AmazonPage):
     def enter_address_page(self, begin, end):
         country = self.cf.get("account", "country")
         if country == "us":
-            self.click(*self.locator.YOURADDRESS_US)
+            if self.is_element_exsist(*self.locator.YOURADDRESS_US):
+                self.click(*self.locator.YOURADDRESS_US)
+            else:
+                print("找不到进入地址的入口", flush=True)
+                exit(-1)
         elif country == "jp":
             self.click(*self.locator.YOURADDRESS_JP)
         self.random_sleep(begin, end)
