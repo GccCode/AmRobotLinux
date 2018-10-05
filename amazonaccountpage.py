@@ -31,7 +31,12 @@ class AmazonAccountPage(AmazonPage):
     def enter_payment_page(self, begin, end):
         country = self.cf.get("account", "country")
         if country == "us":
-            self.click(*self.locator.PAYMENTOPTIONS_US)
+            if self.is_element_exsist(*self.locator.PAYMENTOPTIONS_US):
+                self.click(*self.locator.PAYMENTOPTIONS_US)
+            elif self.is_element_exsist(*self.locator.PAYMENTOPTIONS_US_1):
+                self.click(*self.locator.PAYMENTOPTIONS_US_1)
+            else:
+                print("找不到支付方式的入口", flush=True)
         elif country == "jp":
             self.click(*self.locator.PAYMENTOPTIONS_JP)
         self.random_sleep(begin, end)
