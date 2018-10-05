@@ -66,6 +66,17 @@ class AmazonSignInPage(AmazonPage):
             else:
                 print("找不到密码输入栏...", flush=True)
                 exit(-1)
+        elif self.is_element_exsist(*self.locator.ACCOUNTSWITCHER1):
+            if self.is_element_exsist(*self.locator.PASSWORD):
+                self.click(*self.locator.PASSWORD)
+                self.random_sleep(1000, 2000)
+                self.input(password, *self.locator.PASSWORD)
+                self.random_sleep(1000, 2000)
+                if self.is_element_exsist(*self.locator.SIGNINSUBMIT):
+                    self.click(*self.locator.SIGNINSUBMIT)
+                else:
+                    print("找不到登录提交按钮...", flush=True)
+                    exit(-1)
         elif self.is_element_exsist(*self.locator.EMAILNAME):
             self.click(*self.locator.EMAILNAME)
             self.random_sleep(1000, 2000)

@@ -143,3 +143,4 @@ class AmazonSignInPageLocator(AmazonPageLocator):
     PASSWORD = (By.ID, 'ap_password')
     SIGNINSUBMIT = (By.ID, 'signInSubmit')
     ACCOUNTSWITCHER = (By.XPATH, '//*[@id="ap-account-switcher-container"]/div[1]/div/div/div[2]/div[1]/div[2]/a/div')
+    ACCOUNTSWITCHER1 = (By.ID, 'ap_switch_account_link')
