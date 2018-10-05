@@ -61,6 +61,11 @@ class AmazonPaymentPage(AmazonPage):
             else:
                 print("找不到使用当前地址的按钮", flush=True)
                 exit(0)
+            if self.is_element_exsist(*self.locator.PAYMENTADDFINISHED):
+                self.click(*self.locator.PAYMENTADDFINISHED)
+            else:
+                print("找不到完成添加卡的按钮", flush=True)
+                exit(0)
         elif country == "jp":
             self.click(*self.locator.CARDHOLDER_JP)
             self.random_sleep(1000, 2000)
