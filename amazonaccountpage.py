@@ -18,6 +18,8 @@ class AmazonAccountPage(AmazonPage):
         if country == "us":
             if self.is_element_exsist(*self.locator.YOURADDRESS_US):
                 self.click(*self.locator.YOURADDRESS_US)
+            elif self.is_element_exsist(*self.locator.YOURADDRESS_US_1):
+                self.click(*self.locator.YOURADDRESS_US_1)
             else:
                 print("找不到进入地址的入口", flush=True)
                 exit(-1)
