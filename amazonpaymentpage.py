@@ -21,8 +21,12 @@ class AmazonPaymentPage(AmazonPage):
         country = self.cf.get("account", "country")
 
         if country == "us":
-            self.click(*self.locator.CARDHOLDER_US)
-            self.random_sleep(1000, 2000)
+            if self.is_element_exsist(*self.locator.CARDHOLDER_US):
+                self.click(*self.locator.CARDHOLDER_US)
+                self.random_sleep(1000, 2000)
+            else:
+                print("找不到持卡人输入栏", flush=True)
+                exit(0)
             self.input(fullname, *self.locator.CARDHOLDER_US)
             self.random_sleep(1000, 2000)
 
