@@ -131,7 +131,11 @@ class AmazonPage(BaseAction):
         try:
             self.click(*self.locator.SIGNOUT)
         except NoSuchElementException as msg:
-            self.click(*self.locator.SIGNIN)
+            print(str(msg), flush=True)
+            try:
+                self.click(*self.locator.SIGNIN)
+            except NoSuchElementException as msg:
+                print(str(msg), flush=True)
 
         self.random_sleep(begin, end)
 
