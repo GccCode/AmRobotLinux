@@ -66,10 +66,14 @@ class AmazonAsinPage(AmazonPage):
 
     def ask_qa(self, content, begin, end):
         country = self.cf.get("account", "country")
-        self.click(*self.locator.QATEXT)
-        self.random_sleep(1000, 2000)
-        self.input(content, *self.locator.QATEXT)
-        self.random_sleep(3000, 6000)
+        if self.is_element_exsist(*self.locator.QATEXT):
+            self.click(*self.locator.QATEXT)
+            self.random_sleep(1000, 2000)
+            self.input(content, *self.locator.QATEXT)
+            self.random_sleep(3000, 6000)
+        else:
+            print("无法找到QA内容输入栏", flush=True)
+            exit(-1)
         if country == "us":
             self.click(*self.locator.QAENTRYBUTTON_US)
         elif country == "jp":
