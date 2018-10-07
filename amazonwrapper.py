@@ -58,6 +58,40 @@ def insert_all_ip_info(ipfile):
 
     return status
 
+def fix_all_unaccessible_ip(ipfile):
+    amazondata = AmazonData()
+    status = amazondata.create_database('ip_info')
+    if status == False:
+        print("node_info create in failure..", flush=True)
+    else:
+        status = amazondata.connect_database('ip_info')
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            status = amazondata.create_ip_table('ip_pool')
+            if status != False:
+                try:
+                    f = open(ipfile)  # 返回一个文件对象
+                    line = f.readline()  # 调用文件的 readline()方法
+                    while line:
+                        if '.' in line:
+                            ip = line.strip('\n')
+                            print(line.strip('\n'))
+                            condition = 'ip=\'' + ip + '\''
+                            status = amazondata.update_data('ip_pool', 'status', '\'ok\'', condition)
+                            if status == False:
+                                break
+                        line = f.readline()
+
+                    f.close()
+                except Exception as e:
+                    print(str(e), flush=True)
+                    status = False
+                finally:
+                    amazondata.disconnect_database()
+
+    return status
+
 def get_all_accessible_ip():
     amazondata = AmazonData()
     status = amazondata.create_database('ip_info')
@@ -264,9 +298,10 @@ if __name__ == "__main__":
     # get_all_table('amazondata', '_BS')
     # get_all_data('amazondata', '2201158051_BS', False)
     # update_asin_status_ok('amazondata', '2189296051')
-    update_all_task_date('amazontask', '2018-10-06')
+    # update_all_task_date('amazontask', '2018-10-06')
     # insert_all_node_info()
     # insert_all_ip_info('../myproxy.txt')
     # update_all_task_status()
     # print(get_ramdon_accessible_ip()) 196.16.109.149:8000
     # mark_unaccessible_ip('196.16.109.149:8000')
+    fix_all_unaccessible_ip('../fix_ip.txt')

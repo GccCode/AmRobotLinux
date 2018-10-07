@@ -186,6 +186,8 @@ if __name__ == "__main__":
                         driver.quit()
                 elif options == "5":
                     driver = customized_broswer()
+                    page = AmazonPage(driver)
+                    page.enter_amazon_page(3000, 5000)
                     input("按下回车键关闭浏览器....\n")
                     driver.close()
                     driver.quit()
