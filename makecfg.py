@@ -56,7 +56,7 @@ if __name__ == "__main__":
                 cf = configparser.ConfigParser()
                 cf.add_section("broswer")
                 print("\n==== 配置浏览器 ====\n")
-                userdataid = input("*** 请输入浏览器数据序号：")
+                userdataid = input("*** 请输入浏览器数据序号（默认为6）：")
                 if userdataid.isdigit():
                     cf.set("broswer", "userdataid", userdataid)
                 else:
@@ -234,6 +234,10 @@ if __name__ == "__main__":
                     if mainview == "1":
                         variation = keep_input_bool("**** 是否手动选择变体（否-0，是-1）：")
                         cf.set("search", "variation_setup", variation)
+                        time_min = input("*****  请输入最小时间（90-150）：")
+                        cf.set("search", "mainview_time_min", time_min)
+                        time_max = input("*****  请输入最大时间（180-300）：")
+                        cf.set("search", "mainview_time_max", time_max)
                         cf.add_section("review_view")
                         review_view = keep_input_bool("**** 是否浏览评论（否-0，是-1）：")
                         cf.set("review_view", "status", review_view)

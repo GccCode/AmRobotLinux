@@ -19,6 +19,8 @@ from amazondata import AmazonData
 import amazonwrapper
 import utils
 
+LOGO = (By.ID, 'nav-logo')
+
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
 FBA_FLAG = (By.ID, "SSOFpopoverLink")
@@ -664,7 +666,7 @@ class AmazonSpider():
 
             amazonasinpage.random_sleep(3000, 5000)
 
-            if driver.title == "Amazon CAPTCHA":
+            if driver.title == "Amazon CAPTCHA" or amazonasinpage.is_element_exsist(LOGO) == False:
                 amazonwrapper.mark_unaccessible_ip(ip)
                 status = -111
                 return -111
