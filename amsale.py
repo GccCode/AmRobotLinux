@@ -249,6 +249,7 @@ if __name__ == "__main__":
                                                         print("inventory data insert fail.. + " + inventory_table, flush=True)
                                             else:
                                                 if result == -111:
+                                                    print("Ip blocking..", flush=True)
                                                     status = False
                                                     continue
                                                 print("Get Inventory Jp In Failure.", flush=True)
