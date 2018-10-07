@@ -17,6 +17,7 @@ from datetime import datetime
 from datetime import timedelta
 from amazondata import AmazonData
 import amazonwrapper
+import utils
 
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
@@ -624,10 +625,19 @@ class AmazonSpider():
                 }
             }
             chrome_options.add_experimental_option("prefs", prefs)
-            host_port = amazonwrapper.get_ramdon_accessible_ip()
-            print("proxy ip is: " + host_port, flush=True)
-            proxy_socks_argument = '--proxy-server=socks5://' + host_port
-            chrome_options.add_argument(proxy_socks_argument)
+            # host_port = amazonwrapper.get_ramdon_accessible_ip()
+            # print("proxy ip is: " + host_port, flush=True)
+            # proxy_socks_argument = '--proxy-server=socks5://' + host_port
+            # chrome_options.add_argument(proxy_socks_argument)
+            user_prefix = 'lum-customer-hl_ecee3b35-zone-shared_test_api-ip-'
+            ip = amazonwrapper.get_ramdon_accessible_ip()
+            proxyauth_plugin_path = utils.create_proxyauth_extension(
+                proxy_host='zproxy.lum-superproxy.io',
+                proxy_port=22225,
+                proxy_username=user_prefix+ip,
+                proxy_password='o9dagiaeighm'
+            )
+            chrome_options.add_extension(proxyauth_plugin_path)
             driver = webdriver.Chrome(chrome_options=chrome_options)
             driver.set_page_load_timeout(60)
             driver.set_script_timeout(60)
@@ -650,7 +660,7 @@ class AmazonSpider():
             amazonasinpage.random_sleep(3000, 5000)
 
             if driver.title == "Amazon CAPTCHA":
-                amazonwrapper.mark_unaccessible_ip(host_port)
+                amazonwrapper.mark_unaccessible_ip(ip)
                 status = -111
                 return -111
 

@@ -203,6 +203,23 @@ def chrome_proxy_setup(option):
     option.add_extension(proxyauth_plugin_path)
     return ip.lower(), port, username.lower(), passwd.lower()
 
+def chrome_proxy_setup_luminati(option):
+    proxy_line = getrandomline("proxy.txt")
+    print("proxy_line is : " + proxy_line, flush=True)
+    ip, port, username, passwd = proxy_line.split(":")
+    # print("ip : " + ip.lower(), flush=True)
+    # print("port : " + port, flush=True)
+    # print("username : " + username.lower(), flush=True)
+    # print("passwd : " + passwd.lower(), flush=True)
+    proxyauth_plugin_path = create_proxyauth_extension(
+        proxy_host=ip.lower(),
+        proxy_port=int(port),
+        proxy_username=username.lower(),
+        proxy_password=passwd.lower()
+    )
+    option.add_extension(proxyauth_plugin_path)
+    return ip.lower(), port, username.lower(), passwd.lower()
+
 def generate_username():
     return (getrandomline('usernames') + " " + getrandomline('usernames'))
 
@@ -348,7 +365,7 @@ def customized_broswer():
     # option.add_argument('--no-sandbox')
     # option.add_argument('--disable-gpu')
     # option.add_argument('--disable-dev-shm-usage')
-    driver =  webdriver.Chrome(chrome_options=option)
+    driver = webdriver.Chrome(chrome_options=option)
     driver.set_page_load_timeout(30)
     driver.set_script_timeout(30)
     return driver
