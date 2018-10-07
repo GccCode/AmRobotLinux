@@ -154,7 +154,7 @@ class AmazonSpider():
     def __init__(self):
         pass
 
-    def jp_node_gather(self, node, type, pages):
+    def jp_node_gather(self, node, type, pages, ips_array):
         status = True
         t1 = time.time()
         for page in range(0, pages):
@@ -171,7 +171,7 @@ class AmazonSpider():
                 'shipping': None,
                 'seller': 0,
                 'avg_sale': 0,
-                'inventory_date' : date1,
+                'inventory_date': date1,
                 'limited': 'no',
                 'img_url': None,
                 'status': 'ok'
@@ -369,7 +369,7 @@ class AmazonSpider():
             try:
                 for i in range(0, len(asin_info_array)):
                     tmp_info = asin_info_array[i]
-                    result = self.get_inventory_jp(driver, tmp_info['asin'])
+                    result = self.get_inventory_jp(driver, tmp_info['asin'], ips_array)
                     if result == False:
                         asin_info_remove_array.append(asin_info_array[i])
                         tmp_info['status'] = 'err'
@@ -615,7 +615,7 @@ class AmazonSpider():
             input("xxx")
             driver.quit()
 
-    def get_inventory_jp(self, driver_upper, asin):
+    def get_inventory_jp(self, driver_upper, asin, ips_array):
         if driver_upper == False:
             chrome_options = webdriver.ChromeOptions()
             prefs = {
@@ -630,7 +630,12 @@ class AmazonSpider():
             # proxy_socks_argument = '--proxy-server=socks5://' + host_port
             # chrome_options.add_argument(proxy_socks_argument)
             user_prefix = 'lum-customer-hl_ecee3b35-zone-shared_test_api-ip-'
-            ip = amazonwrapper.get_ramdon_accessible_ip()
+            ip = amazonwrapper.get_ramdon_accessible_ip(ips_array)
+            if ip == False:
+                print("can't get accessible ip", flush=True)
+                exit(-1)
+            else:
+                print("proxy ip is: " + ip, flush=True)
             proxyauth_plugin_path = utils.create_proxyauth_extension(
                 proxy_host='zproxy.lum-superproxy.io',
                 proxy_port=22225,
@@ -808,8 +813,12 @@ if __name__ == "__main__":
     # type = 'BS'
     node = sys.argv[1]
     type = sys.argv[2]
+    ips_array = amazonwrapper.get_all_accessible_ip()
+    if ips_array == False:
+        print("no accessible ip", flush=True)
+        exit(-1)
     amazonspider = AmazonSpider()
-    amazonspider.jp_node_gather(node, type, 3)
+    amazonspider.jp_node_gather(node, type, 3, ips_array)
     # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
     # for i in range(0, 100):
     #     t1 = time.time()

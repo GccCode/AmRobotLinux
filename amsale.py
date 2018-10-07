@@ -8,8 +8,9 @@ from datetime import date
 from datetime import timedelta
 from amazondata import AmazonData
 from amspider import AmazonSpider
-import utils
+import amazonwrapper
 import io
+import time
 
 
 def get_task_nodes(task_id):
@@ -141,6 +142,13 @@ if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     task_id = sys.argv[1]   # 1
     node_type = sys.argv[2] # BS - NR
+    t1 = time.time()
+    ips_array = amazonwrapper.get_all_accessible_ip()
+    if ips_array == False:
+        print("no accessible ip", flush=True)
+        exit(-1)
+    t2 = time.time()
+    print("总耗时：" + format(t2 - t1))
     amazonspider = AmazonSpider()
     amazondata = AmazonData()
     status = amazondata.connect_database('amazondata')
@@ -192,7 +200,7 @@ if __name__ == "__main__":
                                         asin_info = asin_info_array[asin_index]
                                         asin = asin_info[1]
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] == 1:
-                                            result = amazonspider.get_inventory_jp(driver, asin)
+                                            result = amazonspider.get_inventory_jp(driver, asin, ips_array)
                                             if result != False and result != -111:
                                                 cur_date = date.today()
                                                 data = {

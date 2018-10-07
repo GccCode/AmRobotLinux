@@ -38,7 +38,7 @@ def insert_all_ip_info(ipfile):
                     f = open(ipfile)  # 返回一个文件对象
                     line = f.readline()  # 调用文件的 readline()方法
                     while line:
-                        if ':' in line:
+                        if '.' in line:
                             data = {
                                 'ip': line.strip('\n'),
                                 'status': 'ok'
@@ -58,7 +58,7 @@ def insert_all_ip_info(ipfile):
 
     return status
 
-def get_ramdon_accessible_ip():
+def get_all_accessible_ip():
     amazondata = AmazonData()
     status = amazondata.create_database('ip_info')
     if status == False:
@@ -73,14 +73,20 @@ def get_ramdon_accessible_ip():
             if cursor != False:
                 if cursor.rowcount > 0:
                     ips_array = cursor.fetchall()
-                    randomip = ips_array[random.randint(0, (len(ips_array) - 1))][0]
-                    status = randomip
+                    status = ips_array
                 else:
                     status = False
             else:
                 status = False
 
     return status
+
+def get_ramdon_accessible_ip(ips_array):
+    if ips_array != False:
+        return ips_array[random.randint(0, (len(ips_array) - 1))][0]
+    else:
+        return False
+
 
 def mark_unaccessible_ip(ip):
     amazondata = AmazonData()
