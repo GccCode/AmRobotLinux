@@ -149,6 +149,7 @@ if __name__ == "__main__":
         exit(-1)
     t2 = time.time()
     print("总耗时：" + format(t2 - t1))
+    input("xxxx")
     amazonspider = AmazonSpider()
     amazondata = AmazonData()
     status = amazondata.connect_database('amazondata')
