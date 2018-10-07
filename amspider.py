@@ -21,6 +21,7 @@ import amazonwrapper
 import utils
 
 LOGO = (By.ID, 'nav-logo')
+INEXSISTED_FLAG = (By.CSS_SELECTOR, 'img[alt=\'Amazon\']')
 
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
@@ -666,6 +667,10 @@ class AmazonSpider():
             amazonasinpage = AmazonAsinPage(driver)
 
             amazonasinpage.random_sleep(3000, 5000)
+
+            if amazonasinpage.is_element_exsist(*INEXSISTED_FLAG):
+                print("ASIN is unaccessible...", flush=True)
+                return False
 
             if driver.title == "Amazon CAPTCHA" or amazonasinpage.is_element_exsist(*LOGO) == False:
                 amazonwrapper.mark_unaccessible_ip(ip)
