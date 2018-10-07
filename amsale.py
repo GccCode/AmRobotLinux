@@ -249,6 +249,10 @@ if __name__ == "__main__":
                                             else:
                                                 if result == -111:
                                                     print("Ip blocking..", flush=True)
+                                                    ips_array = amazonwrapper.get_all_accessible_ip()
+                                                    if ips_array == False:
+                                                        print("no accessible ip", flush=True)
+                                                        exit(-1)
                                                     status = False
                                                     continue
                                                 print("Get Inventory Jp In Failure.", flush=True)
