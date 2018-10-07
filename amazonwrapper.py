@@ -264,9 +264,9 @@ if __name__ == "__main__":
     # get_all_table('amazondata', '_BS')
     # get_all_data('amazondata', '2201158051_BS', False)
     # update_asin_status_ok('amazondata', '2189296051')
-    # update_all_task_date('amazontask', '2018-9-30')
+    update_all_task_date('amazontask', '2018-10-06')
     # insert_all_node_info()
     # insert_all_ip_info('../myproxy.txt')
-    update_all_task_status()
+    # update_all_task_status()
     # print(get_ramdon_accessible_ip()) 196.16.109.149:8000
     # mark_unaccessible_ip('196.16.109.149:8000')
