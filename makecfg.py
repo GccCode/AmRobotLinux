@@ -46,6 +46,8 @@ if __name__ == "__main__":
     status = True
     while status == True:
         print("\n========== 主菜单 ============")
+        print("版本号： 1810072053")
+        print("========= 程序功能选择 ========")
         action = input("* 退出-0, 配置-1：")
         if action == "0":
             status = False
