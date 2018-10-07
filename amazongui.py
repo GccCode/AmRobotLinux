@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 
 from pyh import *
-from amazondata import AmazonData
 from amazonwrapper import *
 
 class AmazonGUI():

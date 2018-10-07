@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-from selenium import webdriver
 import sys
 import copy
 from datetime import date

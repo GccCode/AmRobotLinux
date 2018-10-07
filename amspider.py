@@ -10,6 +10,7 @@ import io
 from selenium.webdriver.common.by import By
 from amazonasinpage import AmazonAsinPage
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 from amazonpage import AmazonPage
 import copy
 from datetime import date
@@ -790,6 +791,10 @@ class AmazonSpider():
         except NoSuchElementException as msg:
             status = False
             print("Except: NoSuchElementException", flush=True)
+        except TimeoutException as msg:
+            print("Except: TimeoutException", flush=True)
+            amazonwrapper.mark_unaccessible_ip(ip)
+            status = -111
         except Exception as e:
             status = False
             print(e, flush=True)

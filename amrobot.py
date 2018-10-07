@@ -29,6 +29,7 @@ from amazonasinpage import  AmazonAsinPage
 #8) WinXP+ie7：
 #9) WinXP+ie6：
 useragentlist = [
+    '',
     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.163 Safari/535.1',
     'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:6.0) Gecko/20100101 Firefox/6.0',
     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50',
@@ -70,14 +71,10 @@ def customized_broswer():
     status = cf.get("proxy", "status")
     if status == "1":
         host_port = cf.get("proxy", "proxy")
-        proxy_type = cf.get("proxy", "type")
-        if proxy_type == "0":
-            proxy_socks_argument = '--proxy-server=socks5://' + host_port
-        else:
-            proxy_socks_argument = '--proxy-server=https://' + host_port
+        proxy_socks_argument = '--proxy-server=socks5://' + host_port
         option.add_argument(proxy_socks_argument)
     ua = cf.get("broswer", "type")
-    if int(ua) > 0:
+    if int(ua) > 1:
         index = int(ua) - 1
         useragent = "--user-agent=" + useragentlist[index]
         option.add_argument(useragent)
@@ -98,7 +95,7 @@ if __name__ == "__main__":
     #sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='gbk')
     while True:
         print("========= 程序功能选择 ========")
-        print("版本号： 1809041456")
+        print("版本号： 1810072053")
         print("0. 退出")
         print("1. 单独操作")
         print("2. 批量操作")

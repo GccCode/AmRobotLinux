@@ -227,6 +227,18 @@ def update_asin_status_ok(db_name, node):
                 amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
         amazondata.disconnect_database()
 
+def update_all_task_status():
+    db_name = 'amazontask'
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        node_array = get_all_data(db_name, 'SALE_TASK', 'node')
+        for index in range(len(node_array)):
+            update_asin_status_ok('amazondata', node_array[index][0])
+        amazondata.disconnect_database()
+
 def update_all_task_date(db_name, date):
     amazondata = AmazonData()
     status = amazondata.connect_database(db_name)
@@ -254,6 +266,7 @@ if __name__ == "__main__":
     # update_asin_status_ok('amazondata', '2189296051')
     # update_all_task_date('amazontask', '2018-9-30')
     # insert_all_node_info()
-    insert_all_ip_info('../myproxy.txt')
+    # insert_all_ip_info('../myproxy.txt')
+    update_all_task_status()
     # print(get_ramdon_accessible_ip()) 196.16.109.149:8000
     # mark_unaccessible_ip('196.16.109.149:8000')
