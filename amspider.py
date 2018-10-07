@@ -646,6 +646,7 @@ class AmazonSpider():
             driver = webdriver.Chrome(chrome_options=chrome_options)
             driver.set_page_load_timeout(60)
             driver.set_script_timeout(60)
+            input("xxx")
         else:
             driver = driver_upper
         status = False
