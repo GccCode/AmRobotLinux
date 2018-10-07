@@ -666,7 +666,7 @@ class AmazonSpider():
 
             amazonasinpage.random_sleep(3000, 5000)
 
-            if driver.title == "Amazon CAPTCHA" or amazonasinpage.is_element_exsist(LOGO) == False:
+            if driver.title == "Amazon CAPTCHA" or amazonasinpage.is_element_exsist(*LOGO) == False:
                 amazonwrapper.mark_unaccessible_ip(ip)
                 status = -111
                 return -111
