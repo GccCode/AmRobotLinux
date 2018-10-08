@@ -133,8 +133,14 @@ def getsale(template):
 def getseller(template):
     return template.split('：')[1]
 
-def getqa(template):
+def getqa_jp(template):
     rule = r'(.*?)人'
+    slotList = re.findall(rule, template)
+    return slotList[0]
+
+def getqa_us(template):
+    rule = r'(.*?)人'
+    print(template, flush=True)
     slotList = re.findall(rule, template)
     return slotList[0]
 
@@ -635,9 +641,9 @@ class AmazonSpider():
 
             if amazonasinpage.is_element_exsist(*QA_COUNT):
                 element = driver.find_element(*QA_COUNT)
-                data['qa'] = int(getqa(element.text))
+                data['qa'] = int(getqa_us(element.text))
                 print("qa is:")
-                print(getqa(element.text), flush=True)
+                print(getqa_us(element.text), flush=True)
             else:
                 data['qa'] = 0
 
@@ -826,7 +832,7 @@ class AmazonSpider():
 
             if amazonasinpage.is_element_exsist(*QA_COUNT):
                 element = driver.find_element(*QA_COUNT)
-                data['qa'] = int(getqa(element.text))
+                data['qa'] = int(getqa_jp(element.text))
                 # print("qa is:")
                 # print(getqa(element.text), flush=True)
             else:
