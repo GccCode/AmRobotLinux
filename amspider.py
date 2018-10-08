@@ -121,7 +121,12 @@ def getimgidfromhref(template):
         print(template, flush=True)
     return slotList[0]
 
-def getsale(template):
+def getsale_jp(template):
+    rule = r'、(.*?)点'
+    slotList = re.findall(rule, template)
+    return slotList[0]
+
+def getsale_us(template):
     rule = r'、(.*?)点'
     slotList = re.findall(rule, template)
     return slotList[0]
@@ -712,10 +717,11 @@ class AmazonSpider():
                                     data['inventory'] = 0
                                 else:
                                     # ss
-                                    data['inventory'] = int(getsale(element.text))
+                                    print(element.text, flush=True)
+                                    input("yyyyy")
+                                    data['inventory'] = int(getsale_us(element.text))
                                     print("inventory is: " + str(data['inventory']), flush=True)
 
-                    input("yyyyy")
                     if amazonasinpage.is_element_exsist(*ITEM_DELETE_US) == False:
                         print("Inventory Delete can't be found... + " + asin, flush=True)
                         status = False
@@ -905,7 +911,7 @@ class AmazonSpider():
                                     data['inventory'] = 0
                                 else:
                                     # ss
-                                    data['inventory'] = int(getsale(element.text))
+                                    data['inventory'] = int(getsale_jp(element.text))
                                     # print("inventory is: " + str(data['inventory']), flush=True)
                     if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
                         print("Inventory Delete can't be found... + " + asin, flush=True)
