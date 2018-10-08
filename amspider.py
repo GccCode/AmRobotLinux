@@ -349,6 +349,7 @@ class AmazonSpider():
                 print("Except: NoSuchElementException", flush=True)
             except Exception as e:
                 status = False
+                amazonpage.window_capture('unknown-error')
                 print(e, flush=True)
             finally:
                 driver.quit()
