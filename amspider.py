@@ -558,7 +558,7 @@ class AmazonSpider():
         finally:
             driver.quit()
 
-    def test_get_inventory_us(self):
+    def get_inventory_us(self):
         driver = webdriver.Chrome()
         driver.set_page_load_timeout(60)
         driver.set_script_timeout(60)

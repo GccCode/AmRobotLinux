@@ -15,6 +15,7 @@ from selenium import webdriver
 import string
 import zipfile
 import datetime
+import amazonwrapper
 
 
 #0)
@@ -344,11 +345,35 @@ def generate_info_file_jp():
     print(("* Generate Info Sucessfully..."), flush=True)
     return True
 
+def customized_broswer_with_luminati(ips_array):
+    option = webdriver.ChromeOptions()
+    user_prefix = 'lum-customer-hl_ecee3b35-zone-shared_test_api-ip-'
+    ip = amazonwrapper.get_ramdon_accessible_ip(ips_array)
+    if ip == False:
+        print("can't get accessible ip", flush=True)
+        exit(-1)
+    else:
+        print("proxy ip is: " + ip, flush=True)
+    proxyauth_plugin_path = create_proxyauth_extension(
+        proxy_host='zproxy.lum-superproxy.io',
+        proxy_port=22225,
+        proxy_username=user_prefix + ip,
+        proxy_password='o9dagiaeighm'
+    )
+    option.add_extension(proxyauth_plugin_path)
+    # option.add_argument('--no-sandbox')
+    # option.add_argument('--disable-gpu')
+    # option.add_argument('--disable-dev-shm-usage')
+    driver = webdriver.Chrome(chrome_options=option)
+    driver.set_page_load_timeout(30)
+    driver.set_script_timeout(30)
+    return driver
+
 def customized_broswer():
     option = webdriver.ChromeOptions()
-    # index = random.randint(0, (len(useragentlist) - 1))
-    # useragent = "--user-agent=" + useragentlist[index]
-    # option.add_argument(useragent)
+    index = random.randint(0, (len(useragentlist) - 1))
+    useragent = "--user-agent=" + useragentlist[index]
+    option.add_argument(useragent)
     proxy_line = getrandomline("proxy.txt")
     ip, port, username, passwd = proxy_line.split(":")
     # print("ip : " + ip.lower(), flush=True)
@@ -366,8 +391,8 @@ def customized_broswer():
     # option.add_argument('--disable-gpu')
     # option.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(chrome_options=option)
-    driver.set_page_load_timeout(30)
-    driver.set_script_timeout(30)
+    driver.set_page_load_timeout(60)
+    driver.set_script_timeout(60)
     return driver
 
 def window_capture(filename):
