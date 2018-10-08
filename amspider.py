@@ -40,14 +40,10 @@ DEAL_SYMBOL = (By.XPATH, '//div[contains(@id, \'deal_status_progress_\')]')
 DEAL_STATUS = (By.ID, 'goldboxDealStatus')
 ITEM_SELECT_US = (By.XPATH,
                            '//*[@id=\'activeCartViewForm\']/div[position()=2]/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/span[position()=1]/select')
-ITEM_INPUT_US = (By.XPATH,
-                          '//*[@id=\'activeCartViewForm\']/div[position()=2]/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/input')
-ITEM_SUBMIT_US = (By.XPATH,
-                           '//*[@id=\'activeCartViewForm\']/div[position()=2]/div[position()=1]/div[position()=4]/div/div[position()=3]/div/div[position()=1]/div/span/span')
-INVENTORY_TIPS_US = (By.XPATH,
-                              '//*[@id=\'activeCartViewForm\']/div[position()=2]/div[position()=1]/div[position()=4]/div[position()=1]/div/div/div/span')
-ITEM_DELETE_US = (By.XPATH,
-                           '//*[@id=\'activeCartViewForm\']/div[position()=2]/div[position()=1]/div[position()=4]/div[position()=2]/div[position()=1]/div/div/div[position()=2]/div/span[position()=1]/span')
+ITEM_INPUT_US = (By.CSS_SELECTOR, 'input[name ^=\'quantity\.\']')
+ITEM_SUBMIT_US = (By.CSS_SELECTOR, 'input[name ^=\'submit.update-quantity\.\']')
+INVENTORY_TIPS_US = (By.XPATH, '//*[@id=\'cart-important-message-box\']/div/div/div/p')
+ITEM_DELETE_US = (By.CSS_SELECTOR, 'input[name ^=\'submit.delete\.\']')
 
 PRODUCT_ITEM_JP = (By.XPATH,
                         '//*[@id=\'activeCartViewForm\']/div[position()=1]/div[position()=1]/div[position()=2]/div/div/div[position()=1]')
@@ -136,7 +132,6 @@ def getseller_jp(template):
 def getseller_us(template):
     rule = r'\((.*?)\)'
     slotList = re.findall(rule, template)
-    print(slotList[0])
     return slotList[0]
 
 def getqa_jp(template):
@@ -645,8 +640,8 @@ class AmazonSpider():
             if amazonasinpage.is_element_exsist(*QA_COUNT):
                 element = driver.find_element(*QA_COUNT)
                 data['qa'] = int(getqa_us(element.text))
-                print("qa is:")
-                print(getqa_us(element.text), flush=True)
+                # print("qa is:")
+                # print(getqa_us(element.text), flush=True)
             else:
                 data['qa'] = 0
 
@@ -654,8 +649,8 @@ class AmazonSpider():
                 element = driver.find_element(*BUYER_COUNT)
                 data['seller'] = int(getseller_us(element.text))
 
-                print("seller is: " + str(data['seller']))
-                print(element.text, flush=True)
+                # print("seller is: " + str(data['seller']))
+                # print(element.text, flush=True)
             else:
                 data['seller'] = 0
 
@@ -688,44 +683,44 @@ class AmazonSpider():
                         status = False
                         print("View Cart can't be found... + " + asin, flush=True)
                         amazonasinpage.window_capture(asin + '-noviewcart-')
-                input("yyyyy")
+
                 if status == True:
-                    if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP) == False:
+                    if amazonasinpage.is_element_exsist(*ITEM_INPUT_US) == False:
                         print("Inventory Input can't be found... + " + asin, flush=True)
                         status = False
                     else:
-                        amazonasinpage.input("999", *ITEM_INPUT_JP)
-                        if amazonasinpage.is_element_exsist(*ITEM_SUBMIT_JP) == False:
+                        amazonasinpage.input("999", *ITEM_INPUT_US)
+                        if amazonasinpage.is_element_exsist(*ITEM_SUBMIT_US) == False:
                             print("Inventory Update can't be found... + " + asin, flush=True)
                             status = False
                         else:
-                            amazonasinpage.click(*ITEM_SUBMIT_JP)
+                            amazonasinpage.click(*ITEM_SUBMIT_US)
                             amazonasinpage.random_sleep(3000, 5000)
-                            if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_JP) == False:
-                                if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP):
-                                    element = driver.find_element(*ITEM_INPUT_JP)
+                            if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_US) == False:
+                                if amazonasinpage.is_element_exsist(*ITEM_INPUT_US):
+                                    element = driver.find_element(*ITEM_INPUT_US)
                                     # print("Inventory Over " + element.get_attribute('value') + ' + ' + asin, flush=True)
                                     data['inventory'] = int(element.get_attribute('value'))
                                 else:
                                     print("Inventory Tips can't be found... + " + asin, flush=True)
                                     status = False
                             else:
-                                element = driver.find_element(*INVENTORY_TIPS_JP)
-                                # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
-                                # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
-                                if '客様お一人' in element.text:
-                                    # print("check limited", flush= True)
+                                element = driver.find_element(*INVENTORY_TIPS_US)
+                                if 'a limit' in element.text:
+                                    print("check limited", flush= True)
                                     data['limited'] = 'yes'
                                     data['inventory'] = 0
                                 else:
                                     # ss
                                     data['inventory'] = int(getsale(element.text))
-                                    # print("inventory is: " + str(data['inventory']), flush=True)
-                    if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
+                                    print("inventory is: " + str(data['inventory']), flush=True)
+
+                    input("yyyyy")
+                    if amazonasinpage.is_element_exsist(*ITEM_DELETE_US) == False:
                         print("Inventory Delete can't be found... + " + asin, flush=True)
                         status = False
                     else:
-                        amazonasinpage.click(*ITEM_DELETE_JP)
+                        amazonasinpage.click(*ITEM_DELETE_US)
                         amazonasinpage.random_sleep(2000, 3000)
 
                 if status != False:
