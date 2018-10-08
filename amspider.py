@@ -57,6 +57,9 @@ ITEM_OUT_OF_STOCK = (By.ID, 'outOfStock')
 CRITICAL_TITLE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_TITLE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/a[position()=1]'
 
+CRITICAL_TITLE_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_TITLE_POSTFIX_US = ']/span/div/span/a[position()=1]'
+
 CRITICAL_FBA_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_FBA_POSTFIX = '2]/div[position()=1]/div/div[position()=2]/div[position()=3]/a[position()=1]/span/span'
 
@@ -212,8 +215,8 @@ class AmazonSpider():
                 amazonpage.random_sleep(3000, 5000)
                 print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
 
-                for i in range(0, 3):
-                    tmp_symbol = CRITICAL_TITLE_PREFIX + str(i + 1) + CRITICAL_TITLE_POSTFIX
+                for i in range(0, 50):
+                    tmp_symbol = CRITICAL_TITLE_PREFIX_US + str(i + 1) + CRITICAL_TITLE_POSTFIX_US
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
                         asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
