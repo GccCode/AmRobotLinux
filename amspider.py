@@ -134,7 +134,7 @@ def getseller_jp(template):
     return template.split('：')[1]
 
 def getseller_us(template):
-    rule = r'((.*?))'
+    rule = r'\((.*?)\)'
     slotList = re.findall(rule, template)
     print(slotList[0])
     return slotList[0]
