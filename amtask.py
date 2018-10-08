@@ -2,15 +2,9 @@
 # -*- coding:utf-8 -*-
 
 import random
-import string
 import time
-import requests
 import sys
-from bs4 import BeautifulSoup
-from user_agent import generate_user_agent
-import re
 import configparser
-from selenium import webdriver
 from amazonpage import AmazonPage
 from amazonregisterpage import AmazonRegisterPage
 from amazonaccountpage import AmazonAccountPage
@@ -18,11 +12,11 @@ from amazonaddresspage import AmazonAddressPage
 from amazonpaymentpage import AmazonPaymentPage
 from amazonsearchpage import  AmazonSearchPage
 from amazonasinpage import  AmazonAsinPage
-import os
 import io
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 import utils
+import amazonwrapper
 
 
 if __name__ == "__main__":
@@ -33,12 +27,16 @@ if __name__ == "__main__":
     min_time = cf.get("search", "view_time_min")
     max_time = cf.get("search", "view_time_max")
 
+    ips_array = amazonwrapper.get_all_accessible_ip()
+    if ips_array == False:
+        print("no accessible ip", flush=True)
+        exit(-1)
     admin = utils.Administrator(amtaskfile)
 
     while admin.is_all_over() == False:
-        utils.generate_info_file()
+        utils.generate_info_file(ips_array)
         task = admin.get_random_task()
-        driver = utils.customized_broswer()
+        driver = utils.customized_broswer_with_luminati(ips_array)
         t1 = time.time()
         try:
             amazonpage = AmazonPage(driver)
