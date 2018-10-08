@@ -297,7 +297,7 @@ def generate_card(ips_array):
     # name_visa = info[0]['value'] + '#' + info[11]['value'] + '#' + info[13]['value']
     return [info[5]['value'], info[22]['value'], info[24]['value']]
 
-def generate_info_file():
+def generate_info_file(ips_array):
     cf_info = configparser.ConfigParser()
     cf_info.add_section("account")
     cf_info.set("account", "country", "us")
@@ -318,7 +318,7 @@ def generate_info_file():
     cf_info.set("bill_address", "state", state)
     zipcode = address[3]
     cf_info.set("bill_address", "postalcode", zipcode)
-    cardinfo = generate_card()
+    cardinfo = generate_card(ips_array)
     if cardinfo == False:
         print(("* Generate Info In Failure..."), flush=True)
         return False

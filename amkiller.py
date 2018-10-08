@@ -34,7 +34,7 @@ if __name__ == "__main__":
         print("no accessible ip", flush=True)
         exit(-1)
     while count < 1:#admin.is_all_over() == False:
-        ret = utils.generate_info_file()
+        ret = utils.generate_info_file(ips_array)
         if ret == False:
             continue
         keyword = admin.get_random_task()
