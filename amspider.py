@@ -158,7 +158,7 @@ class AmazonSpider():
     def __init__(self):
         pass
 
-    def jp_node_gather(self, node, type, pages, ips_array):
+    def jp_node_gather(self, node, node_name, type, pages, ips_array):
         status = True
         t1 = time.time()
         for page in range(0, pages):
@@ -469,7 +469,8 @@ class AmazonSpider():
                                                 task_data = {
                                                     'node': node,
                                                     'task_id': '1',
-                                                    'last_date': cur_date
+                                                    'last_date': cur_date,
+                                                    'node_name': node_name
                                                 }
                                                 status = insert_task_node('SALE_TASK', task_data)
                                                 if status == False:
@@ -825,12 +826,13 @@ if __name__ == "__main__":
     # type = 'BS'
     node = sys.argv[1]
     type = sys.argv[2]
+    node_name = sys.argv[3]
     ips_array = amazonwrapper.get_all_accessible_ip()
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
     amazonspider = AmazonSpider()
-    amazonspider.jp_node_gather(node, type, 3, ips_array)
+    amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
     # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
     # for i in range(0, 100):
     #     t1 = time.time()

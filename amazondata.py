@@ -54,7 +54,7 @@ class AmazonData():
         return self.amsql.insert_data(self.db, table, data)
 
     def create_task_table(self, table):
-        columns = 'node VARCHAR(50) NOT NULL, task_id CHAR(3) NOT NULL, last_date DATE NOT NULL, PRIMARY KEY (node)'
+        columns = 'node VARCHAR(50) NOT NULL, task_id CHAR(3) NOT NULL, last_date DATE NOT NULL, node_name VARCHAR(100) NOT NULL, PRIMARY KEY (node)'
         status = True
         if self.amsql.is_mysql_table_exsist(self.db, table) == False:
             status = self.amsql.create_table(self.db, table, columns)

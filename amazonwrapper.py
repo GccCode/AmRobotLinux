@@ -203,6 +203,30 @@ def get_all_table(db_name, condition):
 
     return False
 
+def get_all_node_name():
+    amazondata = AmazonData()
+    status = amazondata.connect_database('amazontask')
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        node_array = get_all_data('amazontask', 'SALE_TASK', 'node')
+        if node_array != False:
+            for index in range(len(node_array)):
+                print(node_array[index][0], flush=True)
+                for node_table in xls_file_array:
+                    print(node_table, flush=True)
+                    node_name = get_node_name('node_info', node_table, node_array[index][0])
+                    if node_name != False:
+                        print(node_name[0][1], flush=True)
+                        condition = 'node=\'' + node_array[index][0] + '\''
+                        status = amazondata.update_data('SALE_TASK', 'node_name', '\'' + node_name[0][1] + '\'', condition)
+                        if status == False:
+                            return False
+                        break
+                        # return node_name[1]
+
+    return False
+
 def get_node_name(db_name, table_name, node):
     amazondata = AmazonData()
     status = amazondata.connect_database(db_name)
@@ -318,7 +342,7 @@ if __name__ == "__main__":
     # get_all_table('amazondata', '_BS')
     # get_all_data('amazondata', '2201158051_BS', False)
     # update_asin_status_ok('amazondata', '2189296051')
-    update_all_task_date('amazontask', '2018-10-06')
+    # update_all_task_date('amazontask', '2018-10-06')
     # insert_all_node_info()
     # insert_all_ip_info('../myproxy.txt')
     # update_all_task_status()
@@ -326,3 +350,4 @@ if __name__ == "__main__":
     # mark_unaccessible_ip('196.16.109.149:8000')
     # fix_all_unaccessible_ip('../fix_ip.txt')
     # average_all_task()
+    get_all_node_name()
