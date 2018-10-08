@@ -19,6 +19,8 @@ from datetime import timedelta
 from amazondata import AmazonData
 import amazonwrapper
 import utils
+import traceback
+
 
 LOGO = (By.ID, 'nav-logo')
 INEXSISTED_FLAG = (By.CSS_SELECTOR, 'img[alt=\'Amazon\']')
@@ -350,6 +352,7 @@ class AmazonSpider():
             except Exception as e:
                 status = False
                 amazonpage.window_capture('unknown-error')
+                print(traceback.format_exc(), flush=True)
                 print(e, flush=True)
             finally:
                 driver.quit()
@@ -404,6 +407,8 @@ class AmazonSpider():
 
             except Exception as e:
                 status = False
+                amazonpage.window_capture('unknown-error')
+                print(traceback.format_exc(), flush=True)
                 print(str(e), flush=True)
             finally:
                 if driver != False:
@@ -804,6 +809,8 @@ class AmazonSpider():
             status = -111
         except Exception as e:
             status = False
+            amazonasinpage.window_capture('unknown-error')
+            print(traceback.format_exc(), flush=True)
             print(e, flush=True)
         finally:
             if driver_upper == False:
