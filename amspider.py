@@ -215,8 +215,8 @@ class AmazonSpider():
                 amazonpage.random_sleep(3000, 5000)
                 print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
 
-                for i in range(0, 50):
-                    tmp_symbol = CRITICAL_TITLE_PREFIX_US + str(i + 1) + CRITICAL_TITLE_POSTFIX_US
+                for i in range(0, 3):
+                    tmp_symbol = CRITICAL_TITLE_PREFIX + str(i + 1) + CRITICAL_TITLE_POSTFIX
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
                         asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
@@ -587,8 +587,8 @@ class AmazonSpider():
                 amazonpage.random_sleep(3000, 5000)
                 print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
 
-                for i in range(0, 3):
-                    tmp_symbol = CRITICAL_TITLE_PREFIX + str(i + 1) + CRITICAL_TITLE_POSTFIX
+                for i in range(0, 50):
+                    tmp_symbol = CRITICAL_TITLE_PREFIX_US + str(i + 1) + CRITICAL_TITLE_POSTFIX_US
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
                         asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
