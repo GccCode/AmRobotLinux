@@ -19,7 +19,6 @@ import pyautogui
 import amazonwrapper
 
 if __name__ == "__main__":
-    proxy_type = sys.argv[1]
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     cf = configparser.ConfigParser()
     cf.read("task.txt")
