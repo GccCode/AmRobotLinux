@@ -63,8 +63,13 @@ CRITICAL_TITLE_POSTFIX_US = ']/span/div/span/a[position()=1]'
 CRITICAL_FBA_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_FBA_POSTFIX = '2]/div[position()=1]/div/div[position()=2]/div[position()=3]/a[position()=1]/span/span'
 
+CRITICAL_FBA_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_FBA_POSTFIX_US = ']/span/div/span/div[position()=2]/span'
+
 CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[position()=3]/a[position()=1]/span/span'
+CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX_US = ']/span/div/span/div[position()=2]/a[position()=1]/span/span'
 CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[position()=3]/a/span/span'
 CRITICAL_NO_REVIEW_FBA_PRICE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
@@ -74,12 +79,20 @@ CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX = ']/div[position()=1]/div/div[position()=2
 
 CRITICAL_REVIEWS_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_REVIEWS_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[position()=2]/a[position()=2]'
+CRITICAL_REVIEWS_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_REVIEWS_POSTFIX_US = ']/span/div/span/div[position()=1]/a[position()=2]'
 CRITICAL_RATE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_RATE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[position()=2]/a[position()=1]'
+CRITICAL_RATE_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_RATE_POSTFIX_US = ']/span/div/span/div[position()=1]/a[position()=1]/i/span'
 CRITICAL_IMGSRC_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_IMGSRC_POSTFIX = ']/div[position()=1]/div/div[position()=1]/a/img'
+CRITICAL_IMGSRC_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_IMGSRC_POSTFIX_US = ']/span/div/span/a[position()=1]/span[position()=1]/div/img'
 CRITICAL_RANK_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_RANK_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[position()=1]/span[position()='
+CRITICAL_RANK_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_RANK_POSTFIX_US = ']/span/div/div[position()=1]/span[position()=1]/span'
 
 NON_CRITICAL_TITLE_PREFIX = '//*[@id=\'zg_nonCritical\']/div[position()='
 NON_CRITICAL_TITLE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/a[position()=1]'
@@ -582,7 +595,7 @@ class AmazonSpider():
             driver.set_script_timeout(60)
             try:
                 amazonpage = AmazonPage(driver)
-                url = "https://www.amazon.com/gp/bestsellers/electronics/" + node + "#" + str(page + 1)
+                url = "https://www.amazon.com/gp/bestsellers/electronics/" + node + "/ref=zg_bs_pg_" + str(page + 1)
                 driver.get(url)
                 amazonpage.random_sleep(3000, 5000)
                 print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
@@ -594,13 +607,13 @@ class AmazonSpider():
                         asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
                         print("Asin is: " + asin_info_data['asin'], flush=True)
 
-                    tmp_symbol = CRITICAL_REVIEWS_PREFIX + str(i + 1) + CRITICAL_REVIEWS_POSTFIX
+                    tmp_symbol = CRITICAL_REVIEWS_PREFIX_US + str(i + 1) + CRITICAL_REVIEWS_POSTFIX_US
                     has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
                     if has_review:
                         element = driver.find_element_by_xpath(tmp_symbol)
                         print("Review Count is: " + element.text, flush=True)
                         asin_info_data['review'] = int(element.text.strip().replace(',', ''))
-                        tmp_symbol = CRITICAL_RATE_PREFIX + str(i + 1) + CRITICAL_RATE_POSTFIX
+                        tmp_symbol = CRITICAL_RATE_PREFIX_US + str(i + 1) + CRITICAL_RATE_POSTFIX_US
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
                             asin_info_data['rate'] = float(element.get_attribute('title').split(' ')[1])
@@ -611,21 +624,21 @@ class AmazonSpider():
                         asin_info_data['rate'] = 0
                         print("Rate is: 0", flush=True)
                     if has_review:
-                        tmp_symbol = CRITICAL_FBA_PREFIX + str(i + 1) + CRITICAL_FBA_POSTFIX
+                        tmp_symbol = CRITICAL_FBA_PREFIX_US + str(i + 1) + CRITICAL_FBA_POSTFIX_US
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             asin_info_data['shipping'] = 'FBA'
                             print("FBA", flush=True)
-                            tmp_symbol = CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX + str(i + 1) + CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX
+                            tmp_symbol = CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX_US + str(i + 1) + CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX_US
                         else:
                             asin_info_data['shipping'] = 'FBM'
                             print("FBM", flush=True)
                             tmp_symbol = CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
-                            print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                            print("Price is : " + element.text.strip('$').replace(',', ''), flush=True)
                             asin_info_data['price'] = getprice(element.text)
                     else:
-                        tmp_symbol = CRITICAL_FBA_PREFIX + str(i + 1) + CRITICAL_FBA_POSTFIX
+                        tmp_symbol = CRITICAL_FBA_PREFIX_US + str(i + 1) + CRITICAL_FBA_POSTFIX_US
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             asin_info_data['shipping'] = 'FBA'
                             print("FBA", flush=True)
@@ -638,23 +651,21 @@ class AmazonSpider():
                                 i + 1) + CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
-                            print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                            print("Price is : " + element.text.strip('$').replace(',', ''), flush=True)
                             asin_info_data['price'] = getprice(element.text)
 
-                    tmp_symbol = CRITICAL_IMGSRC_PREFIX + str(i + 1) + CRITICAL_IMGSRC_POSTFIX
+                    tmp_symbol = CRITICAL_IMGSRC_PREFIX_US + str(i + 1) + CRITICAL_IMGSRC_POSTFIX_US
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
                         #  https://images-na.ssl-images-amazon.com/images/I/61EHMhJe1YL._SL500_SR160,160_.jpg
                         asin_info_data['img_url'] = getimgidfromhref(element.get_attribute('src'))
                         print("ImgSrc is: " + element.get_attribute('src'), flush=True)
 
-                    tmp_symbol = CRITICAL_RANK_PREFIX + str(i + 1) + CRITICAL_RANK_POSTFIX + '2]'
-                    if page != 0:
-                        tmp_symbol = CRITICAL_RANK_PREFIX + str(i + 1) + CRITICAL_RANK_POSTFIX + '1]'
+                    tmp_symbol = CRITICAL_RANK_PREFIX_US + str(i + 1) + CRITICAL_RANK_POSTFIX_US
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
-                        print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
-                        asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
+                        print("Top Rank is: " + element.text.strip().replace('#', ''), flush=True)
+                        asin_info_data['rank'] = int(element.text.strip().replace('#', ''))
 
                         asin_info_array.append(copy.deepcopy(asin_info_data))
                         print(asin_info_data['asin'], flush=True)
