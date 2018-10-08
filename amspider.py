@@ -628,7 +628,7 @@ class AmazonSpider():
             elif amazonasinpage.is_element_exsist(*AB_FLAG_US):
                 element = driver.find_element(*AB_FLAG_US)
                 if 'Ships from and sold by Amazon.com' in element.text:
-                    # print("sold by Amazon Basic..", flush=True)
+                    print("sold by Amazon Basic..", flush=True)
                     data['shipping'] = 'AB'
             else:
                 data['shipping'] = 'FBM'
@@ -636,8 +636,8 @@ class AmazonSpider():
             if amazonasinpage.is_element_exsist(*QA_COUNT):
                 element = driver.find_element(*QA_COUNT)
                 data['qa'] = int(getqa(element.text))
-                # print("qa is:")
-                # print(getqa(element.text), flush=True)
+                print("qa is:")
+                print(getqa(element.text), flush=True)
             else:
                 data['qa'] = 0
 
@@ -645,8 +645,8 @@ class AmazonSpider():
                 element = driver.find_element(*BUYER_COUNT)
                 data['seller'] = int(getseller(element.text))
 
-                # print("seller is: " + str(data['seller']))
-                # print(element.text, flush=True)
+                print("seller is: " + str(data['seller']))
+                print(element.text, flush=True)
             else:
                 data['seller'] = 0
 
