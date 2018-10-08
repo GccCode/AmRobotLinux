@@ -33,8 +33,8 @@ if __name__ == "__main__":
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
-    while count < 1:
-    # while admin.is_all_over() == False:
+    # while count < 1:
+    while admin.is_all_over() == False:
         ret = utils.generate_info_file(ips_array)
         if ret == False:
             continue

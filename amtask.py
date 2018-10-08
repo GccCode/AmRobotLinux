@@ -112,11 +112,11 @@ if __name__ == "__main__":
                     if admin.is_add_wishlist_image(task) == "1":
                         asinpage.add_wishlist(5000, 8000, task)
                     else:
-                        asinpage.add_wishlist(5000, 8000)
+                        asinpage.add_wishlist(5000, 8000, task)
                 else:
                     possible = random.randint(1, 100)
                     if possible < 70:
-                        asinpage.add_wishlist(5000, 8000)
+                        asinpage.add_wishlist(5000, 8000, task)
 
                 #searchpage.back_prev_page_by_country(searchpage_handle, 3000, 5000)
 
