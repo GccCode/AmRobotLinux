@@ -263,16 +263,27 @@ def generate_address():
         return ''
 
 
-def generate_card():
+def generate_card(ips_array):
     url = r'http://www.fakeaddressgenerator.com/World/us_address_generator'
     referer = r'http://www.fakeaddressgenerator.com/World'
     header = {'user-agent': generate_user_agent(), 'referer': referer}
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    proxy_line = getrandomline("proxy.txt")
-    ip, port, username, passwd = proxy_line.split(":")
+    # proxy_line = getrandomline("proxy.txt")
+    # ip, port, username, passwd = proxy_line.split(":")
+    user_prefix = 'lum-customer-hl_ecee3b35-zone-shared_test_api-ip-'
+    user_postfix = amazonwrapper.get_ramdon_accessible_ip(ips_array)
+    if user_postfix == False:
+        print("can't get accessible ip", flush=True)
+        exit(-1)
+    else:
+        print("proxy ip for generate card is: " + user_postfix, flush=True)
+    ip = 'zproxy.lum-superproxy.io'
+    port = '22225'
+    username = user_prefix + user_postfix
+    passwd = 'o9dagiaeighm'
     proxy_dict = {
-        "http": "http://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower(),
-        "https": "https://" + username.lower() + ":" + passwd.lower() + "@" + ip.lower() + ":" + port.lower()
+        "http": "http://" + username + ":" + passwd + "@" + ip + ":" + port,
+        "https": "https://" + username + ":" + passwd + "@" + ip + ":" + port
     }
     text = requests.get(url, headers=header, proxies=proxy_dict).text
     soup = BeautifulSoup(text, 'lxml')
