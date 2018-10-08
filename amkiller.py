@@ -50,7 +50,6 @@ if __name__ == "__main__":
                 print(("* Registeration..."), flush=True)
                 amazonpage.enter_amazon_page(3000, 5000)
                 amazonpage.enter_register_page(3000, 5000)
-                input("wating...")
                 registerpage = AmazonRegisterPage(driver)
                 registerpage.register(5000, 10000)
                 tmp = random.randint(1, 100)
