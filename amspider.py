@@ -616,6 +616,7 @@ class AmazonSpider():
                         tmp_symbol = CRITICAL_RATE_PREFIX_US + str(i + 1) + CRITICAL_RATE_POSTFIX_US
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
+                            print(element.text.split(' ')[0], flush=True)
                             asin_info_data['rate'] = float(element.text.split(' ')[0])
                             print("Rate is: " + element.text.split(' ')[0], flush=True)
                     else:
