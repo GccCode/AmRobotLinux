@@ -387,6 +387,7 @@ def customized_broswer():
     option = webdriver.ChromeOptions()
     index = random.randint(0, (len(useragentlist) - 1))
     useragent = "--user-agent=" + useragentlist[index]
+    print(useragent, flush=True)
     option.add_argument(useragent)
     proxy_line = getrandomline("proxy.txt")
     ip, port, username, passwd = proxy_line.split(":")
