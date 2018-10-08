@@ -968,7 +968,7 @@ if __name__ == "__main__":
         print("no accessible ip", flush=True)
         exit(-1)
     amazonspider = AmazonSpider()
-    asin = ''
+    asin = 'B078H7VY19'
     # amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
     amazonspider.get_inventory_us(False, asin, ips_array)
     # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
