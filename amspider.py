@@ -127,7 +127,7 @@ def getsale_jp(template):
     return slotList[0]
 
 def getsale_us(template):
-    rule = r'、(.*?)点'
+    rule = r'the (.*?) available'
     slotList = re.findall(rule, template)
     return slotList[0]
 
@@ -717,7 +717,7 @@ class AmazonSpider():
                                     data['inventory'] = 0
                                 else:
                                     # ss
-                                    print(element.text, flush=True)
+                                    print(getsale_us(element.text), flush=True)
                                     input("yyyyy")
                                     data['inventory'] = int(getsale_us(element.text))
                                     print("inventory is: " + str(data['inventory']), flush=True)
