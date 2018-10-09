@@ -84,7 +84,7 @@ CRITICAL_REVIEWS_POSTFIX_US = ']/span/div/span/div[position()=1]/a[position()=2]
 CRITICAL_RATE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_RATE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[position()=2]/a[position()=1]'
 CRITICAL_RATE_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
-CRITICAL_RATE_POSTFIX_US = ']/span/div/span/div[position()=1]/a[position()=1]/i/span'
+CRITICAL_RATE_POSTFIX_US = ']/span/div/span/div[position()=1]/a[position()=1]'
 CRITICAL_IMGSRC_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_IMGSRC_POSTFIX = ']/div[position()=1]/div/div[position()=1]/a/img'
 CRITICAL_IMGSRC_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
@@ -616,8 +616,8 @@ class AmazonSpider():
                         tmp_symbol = CRITICAL_RATE_PREFIX_US + str(i + 1) + CRITICAL_RATE_POSTFIX_US
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
-                            print(element.text, flush=True)
-                            print(element.text.split(' '), flush=True)
+                            print(element.get_attribute('title'), flush=True)
+                            print(element.get_attribute('title').split(' ')[1], flush=True)
                             input("xxxx")
                             asin_info_data['rate'] = float(element.text.split(' ')[0])
                             print("Rate is: " + element.text.split(' ')[0], flush=True)
