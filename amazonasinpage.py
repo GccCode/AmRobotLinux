@@ -22,11 +22,10 @@ class AmazonAsinPage(AmazonPage):
                 self.click(*self.locator.ADDCARTBUTTON)
                 self.random_sleep(begin, end)
                 # print(("**** Add Cart..."), flush=True)
-                if self.is_element_exsist(*self.locator.NOTHANKSAFTERCART) == True:
-                    self.click(*self.locator.NOTHANKSAFTERCART)
-                    print("click?")
-                else:
-                    print("inexsisted...", flush=True)
+                country = self.cf.get("account", "country")
+                if country == 'us':
+                    if self.is_element_exsist(*self.locator.NOTHANKSAFTERCART) == True:
+                        self.click(*self.locator.NOTHANKSAFTERCART)
             else:
                 status = False
                 print("Addcart element can't find..", flush=True)
