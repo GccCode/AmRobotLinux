@@ -183,7 +183,9 @@ def insert_task_node(table, data):
         print("Connect Database In Failure + " + amazontask_db_name, flush=True)
         status = False
     else:
-        status = amazondata.insert_task_data(table, data)
+        status = amazondata.create_task_table(table)
+        if status != False:
+            status = amazondata.insert_task_data(table, data)
 
         amazondata.disconnect_database()
 
