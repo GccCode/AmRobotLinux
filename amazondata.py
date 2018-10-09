@@ -77,7 +77,7 @@ class AmazonData():
 
     def create_node_table(self, table): # table_name format: node+'node'
         # columns = 'node VARCHAR(11) NOT NULL, name VARCHAR(160) NOT NULL, date DATE NOT NULL, PRIMARY KEY (node)'
-        columns = 'rank INT NOT NULL, asin CHAR(10) NOT NULL, node VARCHAR(50) NOT NULL, price INT NOT NULL, review INT NOT NULL, rate FLOAT(2,1) NOT NULL, qa INT NOT NULL, shipping CHAR(3) NOT NULL, seller INT NOT NULL, avg_sale INT NOT NULL, inventory_date DATE NOT NULL, limited VARCHAR(3) NOT NULL, img_url VARCHAR(50) NOT NULL, status VARCHAR(3) NOT NULL, PRIMARY KEY (rank)'
+        columns = 'rank INT NOT NULL, asin CHAR(10) NOT NULL, node VARCHAR(50) NOT NULL, price float NOT NULL, review INT NOT NULL, rate FLOAT(2,1) NOT NULL, qa INT NOT NULL, shipping CHAR(3) NOT NULL, seller INT NOT NULL, avg_sale INT NOT NULL, inventory_date DATE NOT NULL, limited VARCHAR(3) NOT NULL, img_url VARCHAR(50) NOT NULL, status VARCHAR(3) NOT NULL, PRIMARY KEY (rank)'
         status = True
         if self.amsql.is_mysql_table_exsist(self.db, table) == False:
             status = self.amsql.create_table(self.db, table, columns)
@@ -95,7 +95,7 @@ class AmazonData():
 
     def create_asin_info_table(self, table): #table_name format: node + '-' + type +'-' + asin + '-' + 'info'
         status = True
-        columns = 'rank INT NOT NULL, asin CHAR(10) NOT NULL, node VARCHAR(50) NOT NULL, price INT NOT NULL, review INT NOT NULL, rate FLOAT(2,1) NOT NULL, qa INT NOT NULL, shipping CHAR(3) NOT NULL, seller INT NOT NULL, avg_sale INT NOT NULL, inventory_date DATE NOT NULL, limited VARCHAR(3) NOT NULL, img_url VARCHAR(20) NOT NULL, status VARCHAR(3) NOT NULL, PRIMARY KEY (rank)'
+        columns = 'rank INT NOT NULL, asin CHAR(10) NOT NULL, node VARCHAR(50) NOT NULL, price float NOT NULL, review INT NOT NULL, rate FLOAT(2,1) NOT NULL, qa INT NOT NULL, shipping CHAR(3) NOT NULL, seller INT NOT NULL, avg_sale INT NOT NULL, inventory_date DATE NOT NULL, limited VARCHAR(3) NOT NULL, img_url VARCHAR(20) NOT NULL, status VARCHAR(3) NOT NULL, PRIMARY KEY (rank)'
         if self.amsql.is_mysql_table_exsist(self.db, table) == False:
             status = self.amsql.create_table(self.db, table, columns)
 
