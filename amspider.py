@@ -153,7 +153,6 @@ def getseller_jp(template):
 def getseller_us(template):
     rule = r'\((.*?)\)'
     slotList = re.findall(rule, template)
-    print(slotList, flush=True)
     return slotList[0]
 
 def getqa_jp(template):
@@ -670,7 +669,7 @@ class AmazonSpider():
                         element = driver.find_element_by_xpath(tmp_symbol)
                         #  https://images-na.ssl-images-amazon.com/images/I/61EHMhJe1YL._SL500_SR160,160_.jpg
                         #  https://images-na.ssl-images-amazon.com/images/I/51-29ux0dCL._AC_UL200_SR200,200_.jpg
-                        print("ImgSrc is: " + element.get_attribute('src'), flush=True)
+                        # print("ImgSrc is: " + element.get_attribute('src'), flush=True)
                         asin_info_data['img_url'] = getimgidfromhref(element.get_attribute('src'))
 
                     tmp_symbol = CRITICAL_RANK_PREFIX_US + str(i + 1) + CRITICAL_RANK_POSTFIX_US
