@@ -617,9 +617,8 @@ class AmazonSpider():
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
                             print(element.get_attribute('title'), flush=True)
-                            print(element.get_attribute('title').split(' ')[1], flush=True)
-                            input("xxxx")
-                            asin_info_data['rate'] = float(element.text.split(' ')[0])
+                            print(element.get_attribute('title').split(' ')[0], flush=True)
+                            asin_info_data['rate'] = float(element.get_attribute('title').split(' ')[0])
                             print("Rate is: " + element.text.split(' ')[0], flush=True)
                     else:
                         asin_info_data['review'] = 0
