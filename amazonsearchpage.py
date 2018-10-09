@@ -64,7 +64,7 @@ class AmazonSearchPage(AmazonPage):
                 if fakediff == "1":
                     min_time = int(task_cf.get("search", "diff_time_min"))
                     max_time = int(task_cf.get("search", "diff_time_max"))
-                    self.enter_random_products(False, random.randint(0, 2), min_time, max_time, 3000, 5000)
+                    self.enter_random_products(False, random.randint(1, 2), min_time, max_time, 3000, 5000)
                 self.enter_next_page(3000, 5000)
         return False
 

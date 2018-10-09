@@ -526,7 +526,9 @@ if __name__ == "__main__":
                             addcart = cf.get("addcart", "status")
                             if addcart == "1":
                                 print(("* 开始加购物车。。。"), flush=True)
-                                asinpage.add_cart(3000, 5000)
+                                status = asinpage.add_cart(3000, 5000)
+                                if status == False:
+                                    print("* 加购物车失败。。。", flush=True)
 
                             searchpage.back_prev_page_by_country(searchpage_handle, 3000, 5000)
                             
