@@ -145,7 +145,15 @@ def getsale_jp(template):
 def getsale_us(template):
     rule = r'the (.*?) available'
     slotList = re.findall(rule, template)
-    return slotList[0]
+    if slotList[0].isdigit() == False:
+        rule = r'only (.*?) of'
+        slotList = re.findall(rule, template)
+        if slotList[0].isdigit() == False:
+            return 0
+        else:
+            return slotList[0]
+    else:
+        return slotList[0]
 
 def getseller_jp(template):
     return template.split('：')[1]
@@ -972,14 +980,14 @@ class AmazonSpider():
                             else:
                                 element = driver.find_element(*INVENTORY_TIPS_US)
                                 if 'a limit' in element.text:
-                                    print("check limited", flush= True)
+                                    # print("check limited", flush= True)
                                     data['limited'] = 'yes'
                                     data['inventory'] = 0
                                 else:
                                     # ss
-                                    print(getsale_us(element.text), flush=True)
+                                    # print(getsale_us(element.text), flush=True)
                                     data['inventory'] = int(getsale_us(element.text))
-                                    print("inventory is: " + str(data['inventory']), flush=True)
+                                    # print("inventory is: " + str(data['inventory']), flush=True)
 
                     if amazonasinpage.is_element_exsist(*ITEM_DELETE_US) == False:
                         print("Inventory Delete can't be found... + " + asin, flush=True)
