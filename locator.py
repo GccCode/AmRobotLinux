@@ -34,7 +34,7 @@ class AmazonAccountPageLocator(AmazonPageLocator):
 
 class AmazonAsinPageLocator(AmazonPageLocator):
     ADDCARTBUTTON = (By.ID, 'add-to-cart-button')
-    NOTHANKSAFTERCART = (By.ID, 'SiNoCoverage')
+    NOTHANKSAFTERCART = (By.ID, 'siNoCoverage-announce')
     ADDWISHLISTSUBMITBUTTON = (By.ID, 'add-to-wishlist-button-submit')
     CREATELISTBUTTON = (By.XPATH, '//*[@id=\'WLNEW_cancel\']/../../span[3]/span/span')
     WISHLISTSELETE = (By.XPATH, '//*[@id=\'WLNEW_list_type_WL\']/../span')
