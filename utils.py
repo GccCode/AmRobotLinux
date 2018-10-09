@@ -16,6 +16,7 @@ import string
 import zipfile
 import datetime
 import amazonwrapper
+import traceback
 
 
 #0)
@@ -264,81 +265,93 @@ def generate_address():
 
 
 def generate_card(ips_array):
-    url = r'http://www.fakeaddressgenerator.com/World/us_address_generator'
-    referer = r'http://www.fakeaddressgenerator.com/World'
-    header = {'user-agent': generate_user_agent(), 'referer': referer}
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    # proxy_line = getrandomline("proxy.txt")
-    # ip, port, username, passwd = proxy_line.split(":")
-    user_prefix = 'lum-customer-hl_ecee3b35-zone-shared_test_api-ip-'
-    user_postfix = amazonwrapper.get_ramdon_accessible_ip(ips_array)
-    if user_postfix == False:
-        print("can't get accessible ip", flush=True)
-        exit(-1)
-    else:
-        print("proxy ip for generate card is: " + user_postfix, flush=True)
-    ip = 'zproxy.lum-superproxy.io'
-    port = '22225'
-    username = user_prefix + user_postfix
-    passwd = 'o9dagiaeighm'
-    proxy_dict = {
-        "http": "http://" + username + ":" + passwd + "@" + ip + ":" + port,
-        "https": "https://" + username + ":" + passwd + "@" + ip + ":" + port
-    }
-    text = requests.get(url, headers=header, proxies=proxy_dict).text
-    soup = BeautifulSoup(text, 'lxml')
-    info = soup.find_all('input')
-    lens = len(info)
-    if lens == 0:
+    try:
+        url = r'http://www.fakeaddressgenerator.com/World/us_address_generator'
+        referer = r'http://www.fakeaddressgenerator.com/World'
+        header = {'user-agent': generate_user_agent(), 'referer': referer}
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        # proxy_line = getrandomline("proxy.txt")
+        # ip, port, username, passwd = proxy_line.split(":")
+        user_prefix = 'lum-customer-hl_ecee3b35-zone-shared_test_api-ip-'
+        user_postfix = amazonwrapper.get_ramdon_accessible_ip(ips_array)
+        if user_postfix == False:
+            print("can't get accessible ip", flush=True)
+            exit(-1)
+        else:
+            print("proxy ip for generate card is: " + user_postfix, flush=True)
+        ip = 'zproxy.lum-superproxy.io'
+        port = '22225'
+        username = user_prefix + user_postfix
+        passwd = 'o9dagiaeighm'
+        proxy_dict = {
+            "http": "http://" + username + ":" + passwd + "@" + ip + ":" + port,
+            "https": "https://" + username + ":" + passwd + "@" + ip + ":" + port
+        }
+        text = requests.get(url, headers=header, proxies=proxy_dict).text
+        soup = BeautifulSoup(text, 'lxml')
+        info = soup.find_all('input')
+        lens = len(info)
+        if lens == 0:
+            return False
+        else:
+            return [info[5]['value'], info[22]['value'], info[24]['value']]
+        # for i in range(0, 25):
+        #     print(str(i) + " : " + info[i]['value'], flush=True)
+        # name_phone = info[0]['value'] + '#' + info[9]['value']
+        # name_visa = info[0]['value'] + '#' + info[11]['value'] + '#' + info[13]['value']
+    except Exception as e:
+        print(traceback.format_exc(), flush=True)
         return False
-    # for i in range(0, 25):
-    #     print(str(i) + " : " + info[i]['value'], flush=True)
-    # name_phone = info[0]['value'] + '#' + info[9]['value']
-    # name_visa = info[0]['value'] + '#' + info[11]['value'] + '#' + info[13]['value']
-    return [info[5]['value'], info[22]['value'], info[24]['value']]
+
 
 def generate_info_file(ips_array):
-    cf_info = configparser.ConfigParser()
-    cf_info.add_section("account")
-    cf_info.set("account", "country", "us")
-    username = generate_username()
-    cf_info.set("account", "username", username)
-    email = generate_email()
-    cf_info.set("account", "email", email)
-    password = generate_password()
-    cf_info.set("account", "password", password)
-    cf_info.add_section("bill_address")
-    cf_info.set("bill_address", "fullname", username)
-    address = generate_address()
-    line = address[0]
-    cf_info.set("bill_address", "addressline1", line)
-    city = address[1]
-    cf_info.set("bill_address", "city", city)
-    state = address[2]
-    cf_info.set("bill_address", "state", state)
-    zipcode = address[3]
-    cf_info.set("bill_address", "postalcode", zipcode)
-    cardinfo = generate_card(ips_array)
-    if cardinfo == False:
-        print(("* Generate Info In Failure..."), flush=True)
-        return False
-    phonenumber = cardinfo[0]
-    cf_info.set("bill_address", "phone", phonenumber)
-    cf_info.add_section("cardinfo")
-    cardnumber = cardinfo[1]
-    cf_info.set("cardinfo", "cardnumber", cardnumber)
-    validmonth = cardinfo[2].split('/')[0]
-    # validmonth = str(random.randint(1, 12))
-    cf_info.set("cardinfo", "month", validmonth)
-    validyear = cardinfo[2].split('/')[1]
-    if int(validyear) < 2019:
-        validyear = "2019"
-    # validyear = str(random.randint(2019, 2025))
-    cf_info.set("cardinfo", "year", validyear)
+    try:
+        cf_info = configparser.ConfigParser()
+        cf_info.add_section("account")
+        cf_info.set("account", "country", "us")
+        username = generate_username()
+        cf_info.set("account", "username", username)
+        email = generate_email()
+        cf_info.set("account", "email", email)
+        password = generate_password()
+        cf_info.set("account", "password", password)
+        cf_info.add_section("bill_address")
+        cf_info.set("bill_address", "fullname", username)
+        address = generate_address()
+        line = address[0]
+        cf_info.set("bill_address", "addressline1", line)
+        city = address[1]
+        cf_info.set("bill_address", "city", city)
+        state = address[2]
+        cf_info.set("bill_address", "state", state)
+        zipcode = address[3]
+        cf_info.set("bill_address", "postalcode", zipcode)
+        cardinfo = generate_card(ips_array)
+        if cardinfo == False:
+            print(("* Generate Info In Failure..."), flush=True)
+            return False
+        phonenumber = cardinfo[0]
+        cf_info.set("bill_address", "phone", phonenumber)
+        cf_info.add_section("cardinfo")
+        cardnumber = cardinfo[1]
+        cf_info.set("cardinfo", "cardnumber", cardnumber)
+        validmonth = cardinfo[2].split('/')[0]
+        # validmonth = str(random.randint(1, 12))
+        cf_info.set("cardinfo", "month", validmonth)
+        validyear = cardinfo[2].split('/')[1]
+        if int(validyear) < 2019:
+            validyear = "2019"
+        # validyear = str(random.randint(2019, 2025))
+        cf_info.set("cardinfo", "year", validyear)
 
-    cf_info.write(open('info.txt', 'w'))
-    print(("* Generate Info Sucessfully..."), flush=True)
-    return True
+        cf_info.write(open('info.txt', 'w'))
+    except Exception as e:
+        print(traceback.format_exc(), flush=True)
+        status = False
+    else:
+        status = True
+        print(("* Generate Info Sucessfully..."), flush=True)
+    return status
 
 def generate_info_file_jp():
     cf_info = configparser.ConfigParser()
