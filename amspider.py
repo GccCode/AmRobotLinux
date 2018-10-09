@@ -608,7 +608,7 @@ class AmazonSpider():
                 amazonpage.random_sleep(3000, 5000)
                 print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
 
-                for i in range(0, 50):
+                for i in range(0, 3):
                     tmp_symbol = CRITICAL_TITLE_PREFIX_US + str(i + 1) + CRITICAL_TITLE_POSTFIX_US
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
@@ -669,8 +669,8 @@ class AmazonSpider():
                         element = driver.find_element_by_xpath(tmp_symbol)
                         #  https://images-na.ssl-images-amazon.com/images/I/61EHMhJe1YL._SL500_SR160,160_.jpg
                         #  https://images-na.ssl-images-amazon.com/images/I/51-29ux0dCL._AC_UL200_SR200,200_.jpg
+                        print("ImgSrc is: " + element.get_attribute('src'), flush=True)
                         asin_info_data['img_url'] = getimgidfromhref(element.get_attribute('src'))
-                        # print("ImgSrc is: " + element.get_attribute('src'), flush=True)
 
                     tmp_symbol = CRITICAL_RANK_PREFIX_US + str(i + 1) + CRITICAL_RANK_POSTFIX_US
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):

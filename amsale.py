@@ -12,8 +12,8 @@ import io
 import time
 
 
-def get_task_nodes(task_id):
-    amazontask_db_name = 'amazontask'
+def get_task_nodes(db_name, task_id):
+    amazontask_db_name = db_name
     amazondata = AmazonData()
     status = amazondata.create_database(amazontask_db_name)
     if status == False:
@@ -141,6 +141,7 @@ if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     task_id = sys.argv[1]   # 1
     node_type = sys.argv[2] # BS - NR
+    country = sys.argv[3] # us/jp
     t1 = time.time()
     ips_array = amazonwrapper.get_all_accessible_ip()
     if ips_array == False:
@@ -150,9 +151,15 @@ if __name__ == "__main__":
     print("总耗时：" + format(t2 - t1))
     amazonspider = AmazonSpider()
     amazondata = AmazonData()
-    status = amazondata.connect_database('amazondata')
+    if country == 'jp':
+        status = amazondata.connect_database('amazondata')
+    elif country == 'us':
+        status = amazondata.connect_database('amazondata_us')
     if status == True:
-        node_cursor = get_task_nodes(task_id)
+        if country == 'jp':
+            node_cursor = get_task_nodes('amazontask', task_id)
+        elif country == 'us':
+            node_cursor = get_task_nodes('amazontask_us', task_id)
         if node_cursor != False:
             while is_all_task_finish(task_id) == False:
                 # task_info_array_len = node_cursor.rowcount
