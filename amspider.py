@@ -1331,14 +1331,17 @@ if __name__ == "__main__":
     node = sys.argv[1]
     type = sys.argv[2]
     node_name = sys.argv[3]
+    country = sys.argv[4]
     ips_array = amazonwrapper.get_all_accessible_ip()
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
     amazonspider = AmazonSpider()
     asin = 'B078RZVZ3T'
-    # amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
-    amazonspider.us_node_gather(node, node_name, type, 3, ips_array)
+    if country == 'jp':
+        amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
+    elif country == 'us':
+        amazonspider.us_node_gather(node, node_name, type, 3, ips_array)
     # amazonspider.get_inventory_us(False, asin, ips_array)
     # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
     # for i in range(0, 100):
