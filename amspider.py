@@ -693,57 +693,55 @@ class AmazonSpider():
                 driver.quit()
                 if status == False:
                     return False
-
-            status = True
-            inventory_array = []
-            asin_info_remove_array = []
-            try:
-                for i in range(0, len(asin_info_array)):
-                    tmp_info = asin_info_array[i]
-                    result = self.get_inventory_us(False, tmp_info['asin'], ips_array)
-                    if result == False or result == -111:
-                        asin_info_remove_array.append(asin_info_array[i])
-                        tmp_info['status'] = 'err'
-                    else:
-                        tmp_info['shipping'] = result['shipping']
-                        tmp_info['seller'] = result['seller']
-                        tmp_info['qa'] = result['qa']
-                        tmp_info['limited'] = result['limited']
-                        if result['seller'] == 1:
-                            inventory_array.append(copy.deepcopy(result))
-                        else:
-                            asin_info_remove_array.append(asin_info_array[i])
-
-            except Exception as e:
-                status = False
-                amazonpage.window_capture('unknown-error')
-                print(traceback.format_exc(), flush=True)
-                print(str(e), flush=True)
-            finally:
-                if status == False:
-                    return False
-
-            for i in range(0, len(asin_info_remove_array)):
-                asin_info_array.remove(asin_info_remove_array[i])
-
-            if len(asin_info_array) != len(inventory_array):
-                print(len(asin_info_array), flush=True)
-                print(len(inventory_array), flush=True)
-
-            print(len(asin_info_array), flush=True)
-            print(len(inventory_array), flush=True)
-
-            for i in range(0, len(asin_info_array)):
-                with open('test.txt', 'a') as f:
-                    f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
-                print(inventory_array[i])
-                with open('test.txt', 'a') as f:
-                    f.writelines(json.dumps(asin_info_array[i], cls=DateEncoder) + "\n")
-                f.close()
-                print(asin_info_array[i])
-
         input("xxxxxx")
         exit(-1)
+            # status = True
+            # inventory_array = []
+            # asin_info_remove_array = []
+            # try:
+            #     for i in range(0, len(asin_info_array)):
+            #         tmp_info = asin_info_array[i]
+            #         result = self.get_inventory_us(False, tmp_info['asin'], ips_array)
+            #         if result == False or result == -111:
+            #             asin_info_remove_array.append(asin_info_array[i])
+            #             tmp_info['status'] = 'err'
+            #         else:
+            #             tmp_info['shipping'] = result['shipping']
+            #             tmp_info['seller'] = result['seller']
+            #             tmp_info['qa'] = result['qa']
+            #             tmp_info['limited'] = result['limited']
+            #             if result['seller'] == 1:
+            #                 inventory_array.append(copy.deepcopy(result))
+            #             else:
+            #                 asin_info_remove_array.append(asin_info_array[i])
+            #
+            # except Exception as e:
+            #     status = False
+            #     amazonpage.window_capture('unknown-error')
+            #     print(traceback.format_exc(), flush=True)
+            #     print(str(e), flush=True)
+            # finally:
+            #     if status == False:
+            #         return False
+            #
+            # for i in range(0, len(asin_info_remove_array)):
+            #     asin_info_array.remove(asin_info_remove_array[i])
+            #
+            # if len(asin_info_array) != len(inventory_array):
+            #     print(len(asin_info_array), flush=True)
+            #     print(len(inventory_array), flush=True)
+            #
+            # print(len(asin_info_array), flush=True)
+            # print(len(inventory_array), flush=True)
+            #
+            # for i in range(0, len(asin_info_array)):
+            #     with open('test.txt', 'a') as f:
+            #         f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
+            #     print(inventory_array[i])
+            #     with open('test.txt', 'a') as f:
+            #         f.writelines(json.dumps(asin_info_array[i], cls=DateEncoder) + "\n")
+            #     f.close()
+            #     print(asin_info_array[i])
 
             # amazondata = AmazonData()
             # status = amazondata.create_database('amazondata_us')
