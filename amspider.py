@@ -1020,8 +1020,8 @@ class AmazonSpider():
 
             status = amazonasinpage.add_cart(5000, 8000)
             if status == True:
-                if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
-                    amazonasinpage.click(*NO_THANKS)
+                # if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
+                #     amazonasinpage.click(*NO_THANKS)
 
                 amazonasinpage.random_sleep(1000, 2000)
                 if amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON):
@@ -1211,8 +1211,8 @@ class AmazonSpider():
 
             status = amazonasinpage.add_cart(5000, 8000)
             if status == True:
-                if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
-                    amazonasinpage.click(*NO_THANKS)
+                # if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
+                #     amazonasinpage.click(*NO_THANKS)
 
                 amazonasinpage.random_sleep(1000, 2000)
                 if amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON):
