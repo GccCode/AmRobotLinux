@@ -24,6 +24,9 @@ class AmazonAsinPage(AmazonPage):
                 # print(("**** Add Cart..."), flush=True)
                 if self.is_element_exsist(*self.locator.NOTHANKSAFTERCART) == True:
                     self.click(*self.locator.NOTHANKSAFTERCART)
+                    print("click?")
+                else:
+                    print("inexsisted...", flush=True)
             else:
                 status = False
                 print("Addcart element can't find..", flush=True)
