@@ -165,15 +165,15 @@ def getqa_us(template):
 
 def getprice_jp(price):
     if '-' in price:
-        return int(price.split('-')[0].strip('￥ ').replace(',', ''))
+        return float(price.split('-')[0].strip('￥ ').replace(',', ''))
     else:
-        return int(price.strip('￥ ').replace(',', ''))
+        return float(price.strip('￥ ').replace(',', ''))
 
 def getprice_us(price):
     if '-' in price:
-        return int(price.split('-')[0].strip('$ ').replace(',', ''))
+        return float(price.split('-')[0].strip('$ ').replace(',', ''))
     else:
-        return int(price.strip('$ ').replace(',', ''))
+        return float(price.strip('$ ').replace(',', ''))
 
 def insert_task_node(table, data):
     amazontask_db_name = 'amazontask'
