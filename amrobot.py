@@ -478,7 +478,7 @@ if __name__ == "__main__":
                         elif type == "1":
                             entry_type = "normal"
 
-                        asinresult = searchpage.find_target_product(asin, entry_type, int(page))
+                        asinresult = searchpage.find_target_product(asin, entry_type, (int(page) + 1))
                         if asinresult != False:
                             fakeview = cf.get("search", "fakeview")
                             if fakeview == "1":
