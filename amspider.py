@@ -620,6 +620,7 @@ class AmazonSpider():
                             print(element.text.split(' '), flush=True)
                             asin_info_data['rate'] = float(element.text.split(' ')[0])
                             print("Rate is: " + element.text.split(' ')[0], flush=True)
+                            input("xxxx")
                     else:
                         asin_info_data['review'] = 0
                         print("Review Count is: 0", flush=True)
