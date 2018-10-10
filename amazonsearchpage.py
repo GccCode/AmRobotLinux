@@ -73,7 +73,9 @@ class AmazonSearchPage(AmazonPage):
         for i in range(0, items):
             self.enter_random_product(asin, random.randint(start_time, end_time), begin, end)
 
-    def click_random_products_per_page(self, admin, keyword, blackaisn, whiteasin):
+    def click_random_products_per_page(self, admin, keyword, blackasin, whiteasin):
+        print(blackasin, flush=True)
+        print(whiteasin, flush=True)
         normal, sponsored = self.filter_asin(whiteasin)
         normal_selected = random.sample(normal, random.randint(1, len(normal)))
         normal_selected_asin = []
@@ -104,13 +106,14 @@ class AmazonSearchPage(AmazonPage):
                 sponsored_lens = 2
             elif sponsored_lens >= 5:
                 sponsored_lens = random.randint(2, 3)
-            blackaisn_array = blackaisn.spilt(':')
+            blackaisn_array = blackasin.spilt(':')
             print(blackaisn_array, flush=True)
             for i in range(0, sponsored_lens):
                 asin = sponsored_selected_asin[i]
                 print(asin, flush=True)
-                if blackaisn != False:
+                if blackasin != False:
                     if asin in blackaisn_array:
+                        print("?????", flush=True)
                         continue
                 asinresult = self.find_target_asin(asin, "sponsored")
                 if asinresult != False:
@@ -119,7 +122,7 @@ class AmazonSearchPage(AmazonPage):
                     admin.record_tasks(keyword, [asin, ])
                     self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
-            if blackaisn != False:
+            if blackasin != False:
                 for i in range(len(blackaisn_array)):
                     asinresult = self.find_target_asin(blackaisn_array[i], "sponsored")
                     if asinresult != False:
