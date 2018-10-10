@@ -9,7 +9,7 @@ from datetime import datetime
 from datetime import timedelta
 
 
-xls_file_array = ['apparel',
+xls_file_array_jp = ['apparel',
                   'automotive',
                   'baby',
                   'beauty',
@@ -25,7 +25,20 @@ xls_file_array = ['apparel',
                   'toys',
                   'health']
 
-# xls_file_array = [ 'health']
+xls_file_array_us = ['automotive',
+                  'baby',
+                  'beauty',
+                  'cell_phones',
+                  'electronics',
+                  'fashion',
+                  'garden',
+                  'home_improvement',
+                  'pet_supplies',
+                  'home_kitchen',
+                  'office_products',
+                  'sporting_goods',
+                  'toys_games'
+                  ]
 
 def insert_all_ip_info(ipfile):
     amazondata = AmazonData()
@@ -176,13 +189,13 @@ def mark_unaccessible_ip(ip):
 
     return status
 
-def insert_all_node_info():
+def insert_all_node_info(xls_file_array):
     amazondata = AmazonData()
-    status = amazondata.create_database('node_info')
+    status = amazondata.create_database('node_info_us')
     if status == False:
         print("node_info create in failure..", flush=True)
     else:
-        status = amazondata.connect_database('node_info')
+        status = amazondata.connect_database('node_info_us')
         if status == False:
             print("connect in failure..", flush=True)
         else:
@@ -242,7 +255,7 @@ def get_all_table(db_name, condition):
 
     return False
 
-def get_all_node_name():
+def get_all_node_name(xls_file_array):
     amazondata = AmazonData()
     status = amazondata.connect_database('amazontask')
     if status == False:
@@ -279,10 +292,21 @@ def get_node_name(db_name, table_name, node):
                 result = cursor.fetchall()
                 # print(result)
                 return result
-        else:
-            print("get node name in failure.. + " + db_name, flush=True)
 
         amazondata.disconnect_database()
+
+    return False
+
+def get_node_name_from_all(db_name, node, country):
+    if country == 'us':
+        node_table_array = xls_file_array_us
+    elif country == 'jp':
+        node_table_array = xls_file_array_jp
+
+    for node_table in node_table_array:
+        result = get_node_name(db_name, node_table, node)
+        if result != False:
+            return result[0][1]
 
     return False
 
@@ -390,4 +414,5 @@ if __name__ == "__main__":
     # fix_all_unaccessible_ip('../fix_ip.txt')
     # average_all_task()
     # get_all_node_name()
-    update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
+    # update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
+    insert_all_node_info(xls_file_array_us)

@@ -1023,7 +1023,7 @@ class AmazonSpider():
             status = -111
         except Exception as e:
             status = False
-            amazonasinpage.window_capture('unknown-error')
+            amazonasinpage.window_capture(asin + '-unknown-error')
             print(traceback.format_exc(), flush=True)
             print(e, flush=True)
         finally:
@@ -1224,42 +1224,43 @@ class AmazonSpider():
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    # chrome_options = webdriver.ChromeOptions()
-    # prefs = {
-    #     'profile.default_content_setting_values': {
-    #         'images': 2,
-    #         # 'javascript': 2
-    #     }
-    # }
-    # chrome_options.add_experimental_option("prefs", prefs)
-    # driver = webdriver.Chrome(chrome_options=chrome_options)
-    # driver.set_page_load_timeout(60)
-    # driver.set_script_timeout(60)
-    # node = '2285178051'
-    # type = 'BS'
-    node = sys.argv[1]
+    node_file = sys.argv[1]
     type = sys.argv[2]
-    node_name = sys.argv[3]
-    country = sys.argv[4]
+    country = sys.argv[3]
+
     ips_array = amazonwrapper.get_all_accessible_ip()
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
     amazonspider = AmazonSpider()
-    asin = 'B078RZVZ3T'
-    if country == 'jp':
-        amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
-    elif country == 'us':
-        amazonspider.us_node_gather(node, node_name, type, 2, ips_array)
-    # amazonspider.get_inventory_us(False, asin, ips_array)
-    # asin_array = ['B077HLQ81K', 'B00FRDOCBS', 'B07BGXF6KF', 'B01LX9MVA0']
-    # for i in range(0, 100):
-    #     t1 = time.time()
-    #     print("Testing <" + str(i) + '>', flush=True)
-    #     get_inventory_jp(driver, asin_array[random.randint(0, (len(asin_array)) - 1)])
-    #     time.sleep(random.randint(3, 5))
-    #     t2 = time.time()
-    #     print("总耗时：" + format(t2 - t1))
-    #     print("Test End\n", flush=True)
-    # get_inventory_jp(False, "B06ZXXQ54K")
-    # driver.quit()
+    try:
+        f = open(node_file)  # 返回一个文件对象
+        line = f.readline()  # 调用文件的 readline()方法
+        while line:
+            t1 = time.time()
+            if len(line.strip('\n'))  > 0:
+                node = line.strip('\n')
+                print(node, flush=True)
+                node_name = False
+                if country == 'us':
+                    node_name = amazonwrapper.get_node_name_from_all('node_info_us', node, country)
+                elif country == 'jp':
+                    node_name = amazonwrapper.get_node_name_from_all('node_info', node, country)
+
+                if node_name == False:
+                    print("get node name in failure..", flush=True)
+                    exit(-1)
+                if country == 'jp':
+                    amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
+                elif country == 'us':
+                    amazonspider.us_node_gather(node, node_name, type, 2, ips_array)
+
+                t2 = time.time()
+                print("Total Time：" + format(t2 - t1), flush=True)
+
+            line = f.readline()
+
+        f.close()
+    except Exception as e:
+        print(str(e), flush=True)
+        status = False
