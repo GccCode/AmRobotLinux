@@ -197,7 +197,9 @@ class AmazonSearchPage(AmazonPage):
         normal = []
         sponsored = []
         asinresults = self.driver.find_elements(*self.locator.ASINRESULTS)
+        print(len(asinresults), flush=True)
         for asinresult in asinresults:
+            print("xxxxxxxlll", flush=True)
             if self.is_asin_sponsored(asinresult, asinresult.get_attribute('data-asin')) != True:
                 # print(("** 找到目标产品 - 普通。。。"), flush=True)
                 if whiteasin != False:
