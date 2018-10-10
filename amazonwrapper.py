@@ -204,7 +204,7 @@ def insert_all_node_info(xls_file_array):
                 workbook = xlrd.open_workbook(filename)
                 # worksheets = workbook.sheet_names()
                 # print('%s - worksheets is %s' % (index, worksheets))
-                print(xls_file_array[index])
+                print(xls_file_array[index], flush=True)
                 status = amazondata.create_node_info_table(xls_file_array[index])
                 if status == False:
                     print("create note info table in failure..", flush=True)
