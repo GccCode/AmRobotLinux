@@ -72,11 +72,11 @@ if __name__ == "__main__":
                         paymentpage = AmazonPaymentPage(driver)
                         paymentpage.add_new_payment(5000, 10000)
 
-            amazonpage.enter_amazon_page(3000, 5000)
+            amazonpage.enter_amazon_page(30, 50)
             amazonpage.wait_searchbox_exsist()
             searchpage = AmazonSearchPage(driver)
             print(("* Start Search Keyword.... + " + keyword), flush=True)
-            amazonpage.search_asin(keyword, 5000, 8000)
+            amazonpage.search_asin(keyword, 3000, 5000)
             searchpage.click_random_products(admin, keyword, blackasin, whiteasin)
             admin.finish_task(keyword)
             t2 = time.time()

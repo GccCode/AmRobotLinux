@@ -389,9 +389,6 @@ def customized_broswer_with_luminati(ips_array):
         proxy_password='o9dagiaeighm'
     )
     option.add_extension(proxyauth_plugin_path)
-    # option.add_argument('--no-sandbox')
-    # option.add_argument('--disable-gpu')
-    # option.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(chrome_options=option)
     driver.set_page_load_timeout(60)
     driver.set_script_timeout(60)

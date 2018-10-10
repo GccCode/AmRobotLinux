@@ -84,7 +84,6 @@ class AmazonSearchPage(AmazonPage):
         sponsored_selected_asin = []
         for index in range(0, len(sponsored_selected)):
             sponsored_selected_asin.append(sponsored_selected[index].get_attribute('data-asin'))
-        print(sponsored_selected_asin, flush=True)
         normal_lens = len(normal_selected_asin)
         if normal_lens != 0:
             if normal_lens > 1:
@@ -98,14 +97,12 @@ class AmazonSearchPage(AmazonPage):
             #         self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
         sponsored_lens = len(sponsored_selected_asin)
-        print("sponsored lens is " + str(sponsored_lens), flush=True)
         if sponsored_lens != 0:
             if sponsored_lens > 1 and sponsored_lens < 4:
                 sponsored_lens = 2
             elif sponsored_lens >= 5:
                 sponsored_lens = random.randint(2, 3)
             blackaisn_array = blackasin.split(':')
-            print(blackaisn_array, flush=True)
             for i in range(0, sponsored_lens):
                 asin = sponsored_selected_asin[i]
                 print(asin, flush=True)
@@ -126,7 +123,6 @@ class AmazonSearchPage(AmazonPage):
                         currenthandle = self.enter_asin_page(asinresult, blackaisn_array[i], 60000, 85000)
                         admin.record_tasks(keyword, [blackaisn_array[i], ])
                         self.back_prev_page_by_country(currenthandle, 3000, 5000)
-
 
     def click_random_products(self, admin, keyword, blackasin, whiteasin):
         page = 0
