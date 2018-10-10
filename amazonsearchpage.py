@@ -279,24 +279,32 @@ class AmazonSearchPage(AmazonPage):
             print(asinresult.size, flush=True)
 
     def click_asin_by_title_us(self, asinresult, asin):
-        if self.is_asin_amazon_choice(asinresult, asin):
-            asinresult.find_element(*self.locator.ASINTITLE_US_AC).click()
-        elif self.is_asin_sponsored(asinresult, asin):
-            asinresult.find_element(*self.locator.ASINTITLE_US_SP).click()
-        elif self.is_asin_bestseller(asinresult, asin):
-            asinresult.find_element(*self.locator.ASINTITLE_US_BS).click()
-        else:
-            asinresult.find_element(*self.locator.ASINTITLE_US).click()
+        try:
+            if self.is_asin_amazon_choice(asinresult, asin):
+                asinresult.find_element(*self.locator.ASINTITLE_US_AC).click()
+            elif self.is_asin_sponsored(asinresult, asin):
+                asinresult.find_element(*self.locator.ASINTITLE_US_SP).click()
+            elif self.is_asin_bestseller(asinresult, asin):
+                asinresult.find_element(*self.locator.ASINTITLE_US_BS).click()
+            else:
+                asinresult.find_element(*self.locator.ASINTITLE_US).click()
+        except:
+            print(("**** Enter " + asin + " By Title Link.."), flush=True)
+            print(asinresult.size, flush=True)
 
     def click_asin_by_title_us_small(self, asinresult, asin):
-        if self.is_asin_amazon_choice(asinresult, asin):
-            asinresult.find_element(*self.locator.ASINTITLE_US_S).click()
-        elif self.is_asin_sponsored(asinresult, asin):
-            asinresult.find_element(*self.locator.ASINTITLE_US_SP_S).click()
-        elif self.is_asin_bestseller(asinresult, asin):
-            asinresult.find_element(*self.locator.ASINTITLE_US_S).click()
-        else:
-            asinresult.find_element(*self.locator.ASINTITLE_US_S).click()
+        try:
+            if self.is_asin_amazon_choice(asinresult, asin):
+                asinresult.find_element(*self.locator.ASINTITLE_US_S).click()
+            elif self.is_asin_sponsored(asinresult, asin):
+                asinresult.find_element(*self.locator.ASINTITLE_US_SP_S).click()
+            elif self.is_asin_bestseller(asinresult, asin):
+                asinresult.find_element(*self.locator.ASINTITLE_US_S).click()
+            else:
+                asinresult.find_element(*self.locator.ASINTITLE_US_S).click()
+        except:
+            print(("**** Enter " + asin + " By Title Link.."), flush=True)
+            print(asinresult.size, flush=True)
 
     def enter_asin_page(self, asinresult, asin, begin, end):
         country = self.cf.get("account", "country")
@@ -310,8 +318,6 @@ class AmazonSearchPage(AmazonPage):
             elif country == "jp":
                 self.click_asin_by_img_jp_small(asinresult, asin)
         else:
-            print(("**** Enter " + asin + " By Title Link.."), flush=True)
-            print(asinresult.size, flush=True)
             if country == 'us':
                 if int(asinresult.size['width']) > 500:
                     self.click_asin_by_title_us(asinresult, asin)
