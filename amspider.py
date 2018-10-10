@@ -145,10 +145,10 @@ def getsale_jp(template):
 def getsale_us(template):
     rule = r'the (.*?) available'
     slotList = re.findall(rule, template)
-    if slotList[0].isdigit() == False:
+    if len(slotList) < 1:
         rule = r'only (.*?) of'
         slotList = re.findall(rule, template)
-        if slotList[0].isdigit() == False:
+        if len(slotList) < 1:
             return 0
         else:
             return slotList[0]

@@ -526,6 +526,9 @@ class Administrator():
                     count = int(self.record_cf.get(keyword, asins[i]))
                     count += 1
                     self.record_cf.set(keyword, asins[i], str(count))
+                status = amazonwrapper.update_click_data('amkiller', keyword, asins[i])
+                if status == False:
+                    print("update click data in failure..", flush=True)
             print(asins, flush=True)
             print("* Recording Task: ", flush=True)
             self.record_cf.write(open(self.recordfile, 'w'))

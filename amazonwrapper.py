@@ -4,6 +4,11 @@
 from amazondata import AmazonData
 import xlrd
 import random
+from datetime import date
+from datetime import datetime
+from datetime import timedelta
+
+
 xls_file_array = ['apparel',
                   'automotive',
                   'baby',
@@ -113,6 +118,39 @@ def get_all_accessible_ip():
             else:
                 status = False
 
+    return status
+
+def update_click_data(db_name, keyword, asin):
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("amkiller database created in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("amkiller database connected in failure..", flush=True)
+        else:
+            status = amazondata.create_amkiller_keyword_table(keyword)
+            if status == False:
+                print("keyword table created in failure..", flush=True)
+            else:
+                cur_date = date.today()
+                data = {
+                    'date': cur_date
+                }
+                status = amazondata.insert_amkiller_keyword_data(keyword, data)
+                if status == False:
+                    print("keyword insert data in failure..", flush=True)
+                else:
+                    column = asin + ' INT NOT NULL'
+                    status = amazondata.add_keyword_column(db_name, keyword, asin, column)
+                    if status == False:
+                        print("keyword add column in failure..", flush=True)
+                    else:
+                        condition = 'date=\'' + cur_date.strftime("%Y-%m-%d") + '\''
+                        status = amazondata.update_data_autoinc(keyword, asin, condition)
+                        if status == False:
+                            print("keyword asin update data in failure..", flush=True)
     return status
 
 def get_ramdon_accessible_ip(ips_array):
@@ -350,4 +388,5 @@ if __name__ == "__main__":
     # mark_unaccessible_ip('196.16.109.149:8000')
     # fix_all_unaccessible_ip('../fix_ip.txt')
     # average_all_task()
-    get_all_node_name()
+    # get_all_node_name()
+    update_click_data('amkiller', 'tree_swing', 'B0746QS8T2')
