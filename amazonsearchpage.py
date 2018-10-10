@@ -105,12 +105,12 @@ class AmazonSearchPage(AmazonPage):
             elif sponsored_lens >= 5:
                 sponsored_lens = random.randint(2, 3)
 
-            black_clicked_flag = False
+            blackaisn_array = blackaisn.spilt(':')
             for i in range(0, sponsored_lens):
                 asin = sponsored_selected_asin[i]
                 if blackaisn != False:
-                    if blackaisn == asin:
-                        black_clicked_flag = True
+                    if asin in blackaisn_array:
+                        continue
                 asinresult = self.find_target_asin(asin, "sponsored")
                 if asinresult != False:
                     currenthandle = self.enter_asin_page(asinresult, asin, 60000, 85000)
@@ -118,11 +118,11 @@ class AmazonSearchPage(AmazonPage):
                     self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
             if blackaisn != False:
-                if black_clicked_flag == False:
-                    asinresult = self.find_target_asin(blackaisn, "sponsored")
+                for i in range(len(blackaisn_array)):
+                    asinresult = self.find_target_asin(blackaisn_array[i], "sponsored")
                     if asinresult != False:
-                        currenthandle = self.enter_asin_page(asinresult, blackaisn, 60000, 85000)
-                        admin.record_tasks(keyword, [blackaisn, ])
+                        currenthandle = self.enter_asin_page(asinresult, blackaisn_array[i], 60000, 85000)
+                        admin.record_tasks(keyword, [blackaisn_array[i], ])
                         self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
 
@@ -201,7 +201,9 @@ class AmazonSearchPage(AmazonPage):
             elif self.is_asin_sponsored(asinresult, asinresult.get_attribute('data-asin')):
                 # print(("** 找到目标产品 - 广告。。。"), flush=True)
                 if whiteasin != False:
-                    if whiteasin != asinresult.get_attribute('data-asin'):
+                    whiteasin_array = whiteasin.split(':')
+                    if asinresult.get_attribute('data-asin') not in whiteasin_array:
+                    # if whiteasin != asinresult.get_attribute('data-asin'):
                         sponsored.append(asinresult)
                 else:
                     sponsored.append(asinresult)

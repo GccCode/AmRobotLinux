@@ -121,6 +121,7 @@ def get_all_accessible_ip():
     return status
 
 def update_click_data(db_name, keyword, asin):
+    table = keyword.replace(' ', '_')
     amazondata = AmazonData()
     status = amazondata.create_database(db_name)
     if status == False:
@@ -130,7 +131,7 @@ def update_click_data(db_name, keyword, asin):
         if status == False:
             print("amkiller database connected in failure..", flush=True)
         else:
-            status = amazondata.create_amkiller_keyword_table(keyword)
+            status = amazondata.create_amkiller_keyword_table(table)
             if status == False:
                 print("keyword table created in failure..", flush=True)
             else:
@@ -138,17 +139,17 @@ def update_click_data(db_name, keyword, asin):
                 data = {
                     'date': cur_date
                 }
-                status = amazondata.insert_amkiller_keyword_data(keyword, data)
+                status = amazondata.insert_amkiller_keyword_data(table, data)
                 if status == False:
                     print("keyword insert data in failure..", flush=True)
                 else:
                     column = asin + ' INT NOT NULL'
-                    status = amazondata.add_keyword_column(db_name, keyword, asin, column)
+                    status = amazondata.add_keyword_column(db_name, table, asin, column)
                     if status == False:
                         print("keyword add column in failure..", flush=True)
                     else:
                         condition = 'date=\'' + cur_date.strftime("%Y-%m-%d") + '\''
-                        status = amazondata.update_data_autoinc(keyword, asin, condition)
+                        status = amazondata.update_data_autoinc(table, asin, condition)
                         if status == False:
                             print("keyword asin update data in failure..", flush=True)
     return status
@@ -389,4 +390,4 @@ if __name__ == "__main__":
     # fix_all_unaccessible_ip('../fix_ip.txt')
     # average_all_task()
     # get_all_node_name()
-    update_click_data('amkiller', 'tree_swing', 'B0746QS8T2')
+    update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
