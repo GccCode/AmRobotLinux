@@ -113,6 +113,7 @@ class AmazonSearchPage(AmazonPage):
                         continue
                 asinresult = self.find_target_asin(asin, "sponsored")
                 if asinresult != False:
+                    print("enter sponsored_asin + " + asin, flush=True)
                     currenthandle = self.enter_asin_page(asinresult, asin, 60000, 85000)
                     admin.record_tasks(keyword, [asin, ])
                     self.back_prev_page_by_country(currenthandle, 3000, 5000)
@@ -121,6 +122,7 @@ class AmazonSearchPage(AmazonPage):
                 for i in range(len(blackaisn_array)):
                     asinresult = self.find_target_asin(blackaisn_array[i], "sponsored")
                     if asinresult != False:
+                        print("enter blackasin + " + blackaisn_array[i], flush=True)
                         currenthandle = self.enter_asin_page(asinresult, blackaisn_array[i], 60000, 85000)
                         admin.record_tasks(keyword, [blackaisn_array[i], ])
                         self.back_prev_page_by_country(currenthandle, 3000, 5000)
