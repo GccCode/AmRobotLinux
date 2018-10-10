@@ -374,7 +374,7 @@ def customized_broswer_with_luminati(ips_array):
     index = random.randint(0, (len(useragentlist) - 1))
     useragent = "--user-agent=" + useragentlist[index]
     option.add_argument(useragent)
-    # print(useragent, flush=True)
+    print(useragent, flush=True)
     user_prefix = 'lum-customer-hl_ecee3b35-zone-shared_test_api-ip-'
     ip = amazonwrapper.get_ramdon_accessible_ip(ips_array)
     if ip == False:
