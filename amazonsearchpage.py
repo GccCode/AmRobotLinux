@@ -209,9 +209,10 @@ class AmazonSearchPage(AmazonPage):
                 # print(("** 找到目标产品 - 广告。。。"), flush=True)
                 if whiteasin != False:
                     whiteasin_array = whiteasin.split(':')
+                    print(whiteasin_array, flush=True)
+                    print(asinresult.get_attribute('data-asin'), flush=True)
                     if asinresult.get_attribute('data-asin') not in whiteasin_array:
                     # if whiteasin != asinresult.get_attribute('data-asin'):
-                        print(asinresult.get_attribute('data-asin'), flush=True)
                         sponsored.append(asinresult)
                     else:
                         print("y???", flush=True)
