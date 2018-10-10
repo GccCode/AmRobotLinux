@@ -40,11 +40,7 @@ if __name__ == "__main__":
             continue
         keyword = admin.get_random_task()
         whiteasin = admin.get_whiteasin(keyword)
-        if whiteasin != False:
-            print(whiteasin, flush=True)
         blackasin = admin.get_blackasin(keyword)
-        if blackasin != False:
-            print(blackasin, flush=True)
         driver = utils.customized_broswer_with_luminati(ips_array)
         t1 = time.time()
         amazonpage = AmazonPage(driver)
@@ -58,7 +54,7 @@ if __name__ == "__main__":
                 registerpage = AmazonRegisterPage(driver)
                 registerpage.register(5000, 10000)
                 tmp = random.randint(1, 100)
-                if tmp < 30:
+                if tmp < 10:
                     ## add bill address
                     print(("* Add Bill Address..."), flush=True)
                     amazonpage.enter_account_page(3000, 5000)
@@ -67,7 +63,7 @@ if __name__ == "__main__":
                     addresspage = AmazonAddressPage(driver)
                     addresspage.add_address("bill", 5000, 10000)
                     tmp = random.randint(1, 100)
-                    if tmp < 30:
+                    if tmp < 10:
                         ## add payment
                         print(("* Add Card..."), flush=True)
                         amazonpage.enter_account_page(3000, 5000)

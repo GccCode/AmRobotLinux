@@ -111,11 +111,10 @@ class AmazonSearchPage(AmazonPage):
                 print(asin, flush=True)
                 if blackasin != False:
                     if asin in blackaisn_array:
-                        print("?????", flush=True)
+                        print("current asin included in blackasin_array..", flush=True)
                         continue
                 asinresult = self.find_target_asin(asin, "sponsored")
                 if asinresult != False:
-                    print("enter sponsored_asin + " + asin, flush=True)
                     currenthandle = self.enter_asin_page(asinresult, asin, 60000, 85000)
                     admin.record_tasks(keyword, [asin, ])
                     self.back_prev_page_by_country(currenthandle, 3000, 5000)
@@ -124,7 +123,6 @@ class AmazonSearchPage(AmazonPage):
                 for i in range(len(blackaisn_array)):
                     asinresult = self.find_target_asin(blackaisn_array[i], "sponsored")
                     if asinresult != False:
-                        print("enter blackasin + " + blackaisn_array[i], flush=True)
                         currenthandle = self.enter_asin_page(asinresult, blackaisn_array[i], 60000, 85000)
                         admin.record_tasks(keyword, [blackaisn_array[i], ])
                         self.back_prev_page_by_country(currenthandle, 3000, 5000)
@@ -134,7 +132,6 @@ class AmazonSearchPage(AmazonPage):
         page = 0
         pages = random.randint(1, 2)
         while page < pages:
-            print("click_random_products", flush=True)
             self.click_random_products_per_page(admin, keyword, blackasin, whiteasin)
             self.enter_next_page(3000, 5000)
             page += 1

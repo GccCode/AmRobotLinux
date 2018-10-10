@@ -529,8 +529,8 @@ class Administrator():
                 status = amazonwrapper.update_click_data('amkiller', keyword, asins[i])
                 if status == False:
                     print("update click data in failure..", flush=True)
-            print(asins, flush=True)
-            print("* Recording Task: ", flush=True)
+            # print(asins, flush=True)
+            # print("* Recording Task: ", flush=True)
             self.record_cf.write(open(self.recordfile, 'w'))
 
     def get_tasks(self):
