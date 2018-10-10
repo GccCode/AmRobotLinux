@@ -133,6 +133,7 @@ class AmazonSearchPage(AmazonPage):
         page = 0
         pages = random.randint(1, 2)
         while page < pages:
+            print("click_random_products", flush=True)
             self.click_random_products_per_page(admin, keyword, blackasin, whiteasin)
             self.enter_next_page(3000, 5000)
             page += 1
@@ -204,6 +205,7 @@ class AmazonSearchPage(AmazonPage):
                     else:
                         print("x?????", flush=True)
                 else:
+                    print("lllllllllll", flush=True)
                     normal.append(asinresult)
             elif self.is_asin_sponsored(asinresult, asinresult.get_attribute('data-asin')):
                 # print(("** 找到目标产品 - 广告。。。"), flush=True)
@@ -217,6 +219,7 @@ class AmazonSearchPage(AmazonPage):
                     else:
                         print("y???", flush=True)
                 else:
+                    print("9999999", flush=True)
                     sponsored.append(asinresult)
 
         return normal, sponsored
