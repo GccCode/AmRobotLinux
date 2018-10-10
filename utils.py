@@ -380,8 +380,6 @@ def customized_broswer_with_luminati(ips_array):
     if ip == False:
         print("can't get accessible ip", flush=True)
         exit(-1)
-    else:
-        print("proxy ip is: " + ip, flush=True)
     proxyauth_plugin_path = create_proxyauth_extension(
         proxy_host='zproxy.lum-superproxy.io',
         proxy_port=22225,

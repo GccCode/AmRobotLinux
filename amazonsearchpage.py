@@ -89,12 +89,12 @@ class AmazonSearchPage(AmazonPage):
             if normal_lens > 1:
                 normal_lens = random.randint(1, 2)
 
-            # for i in range(0, normal_lens):
-            #     asin = normal_selected_asin[i]
-            #     asinresult = self.find_target_asin(asin, "normal")
-            #     if asinresult != False:
-            #         currenthandle = self.enter_asin_page(asinresult, asin, 28000, 35000)
-            #         self.back_prev_page_by_country(currenthandle, 3000, 5000)
+            for i in range(0, normal_lens):
+                asin = normal_selected_asin[i]
+                asinresult = self.find_target_asin(asin, "normal")
+                if asinresult != False:
+                    currenthandle = self.enter_asin_page(asinresult, asin, 28000, 35000)
+                    self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
         sponsored_lens = len(sponsored_selected_asin)
         if sponsored_lens != 0:
@@ -105,10 +105,9 @@ class AmazonSearchPage(AmazonPage):
             blackaisn_array = blackasin.split(':')
             for i in range(0, sponsored_lens):
                 asin = sponsored_selected_asin[i]
-                print(asin, flush=True)
                 if blackasin != False:
                     if asin in blackaisn_array:
-                        print("current asin included in blackasin_array..", flush=True)
+                        print(asin + " included in blackasin_array..", flush=True)
                         continue
                 asinresult = self.find_target_asin(asin, "sponsored")
                 if asinresult != False:
@@ -188,7 +187,6 @@ class AmazonSearchPage(AmazonPage):
         normal = []
         sponsored = []
         asinresults = self.driver.find_elements(*self.locator.ASINRESULTS)
-        print(len(asinresults), flush=True)
         for asinresult in asinresults:
             if self.is_asin_sponsored(asinresult, asinresult.get_attribute('data-asin')) != True:
                 # print(("** 找到目标产品 - 普通。。。"), flush=True)
@@ -252,24 +250,33 @@ class AmazonSearchPage(AmazonPage):
             asinresult.find_element(*self.locator.ASINTITLE_JP).click()
 
     def click_asin_by_img_us(self, asinresult, asin):
-        if self.is_asin_amazon_choice(asinresult, asin):
-            asinresult.find_element(*self.locator.ASINIMAGE_US_AC).click()
-        elif self.is_asin_bestseller(asinresult, asin):
-            asinresult.find_element(*self.locator.ASINIMAGE_US_BS).click()
-        elif self.is_asin_sponsored(asinresult, asin):
-            asinresult.find_element(*self.locator.ASINIMAGE_US).click()
-        else:
-            asinresult.find_element(*self.locator.ASINIMAGE_US).click()
+        try:
+            if self.is_asin_amazon_choice(asinresult, asin):
+                asinresult.find_element(*self.locator.ASINIMAGE_US_AC).click()
+            elif self.is_asin_bestseller(asinresult, asin):
+                asinresult.find_element(*self.locator.ASINIMAGE_US_BS).click()
+            elif self.is_asin_sponsored(asinresult, asin):
+                asinresult.find_element(*self.locator.ASINIMAGE_US).click()
+            else:
+                asinresult.find_element(*self.locator.ASINIMAGE_US).click()
+        except:
+            print(("**** Enter " + asin + " By Image Link.."), flush=True)
+            print(asinresult.size, flush=True)
+
 
     def click_asin_by_img_us_small(self, asinresult, asin):
-        if self.is_asin_amazon_choice(asinresult, asin):
-            asinresult.find_element(*self.locator.ASINIMAGE_US_S).click()
-        elif self.is_asin_sponsored(asinresult, asin):
-            asinresult.find_element(*self.locator.ASINIMAGE_US_S).click()
-        elif self.is_asin_bestseller(asinresult, asin):
-            asinresult.find_element(*self.locator.ASINIMAGE_US_S).click()
-        else:
-            asinresult.find_element(*self.locator.ASINIMAGE_US_S).click()
+        try:
+            if self.is_asin_amazon_choice(asinresult, asin):
+                asinresult.find_element(*self.locator.ASINIMAGE_US_S).click()
+            elif self.is_asin_sponsored(asinresult, asin):
+                asinresult.find_element(*self.locator.ASINIMAGE_US_S).click()
+            elif self.is_asin_bestseller(asinresult, asin):
+                asinresult.find_element(*self.locator.ASINIMAGE_US_S).click()
+            else:
+                asinresult.find_element(*self.locator.ASINIMAGE_US_S).click()
+        except:
+            print(("**** Enter " + asin + " By Image Link.."), flush=True)
+            print(asinresult.size, flush=True)
 
     def click_asin_by_title_us(self, asinresult, asin):
         if self.is_asin_amazon_choice(asinresult, asin):
@@ -295,8 +302,6 @@ class AmazonSearchPage(AmazonPage):
         country = self.cf.get("account", "country")
         option = random.randint(1, 2)
         if option == 1:
-            print(("**** Enter " + asin + " By Image Link.."), flush=True)
-            print(asinresult.size, flush=True)
             if country == 'us':
                 if int(asinresult.size['width']) > 500:
                     self.click_asin_by_img_us(asinresult, asin)
