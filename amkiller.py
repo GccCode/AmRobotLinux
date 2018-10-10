@@ -22,7 +22,7 @@ if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     cf = configparser.ConfigParser()
     cf.read("task.txt")
-    amkillerfile = cf.get("configfile", "amkiller")
+    amkillerfile = sys.argv[1]
     min_time = cf.get("search", "view_time_min")
     max_time = cf.get("search", "view_time_max")
 

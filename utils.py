@@ -277,8 +277,6 @@ def generate_card(ips_array):
         if user_postfix == False:
             print("can't get accessible ip", flush=True)
             exit(-1)
-        else:
-            print("proxy ip for generate card is: " + user_postfix, flush=True)
         ip = 'zproxy.lum-superproxy.io'
         port = '22225'
         username = user_prefix + user_postfix
