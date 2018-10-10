@@ -201,6 +201,8 @@ class AmazonSearchPage(AmazonPage):
                     if asinresult.get_attribute('data-asin') not in whiteasin_array:
                     # if whiteasin != asinresult.get_attribute('data-asin'):
                         normal.append(asinresult)
+                    else:
+                        print("x?????", flush=True)
                 else:
                     normal.append(asinresult)
             elif self.is_asin_sponsored(asinresult, asinresult.get_attribute('data-asin')):
@@ -211,6 +213,8 @@ class AmazonSearchPage(AmazonPage):
                     # if whiteasin != asinresult.get_attribute('data-asin'):
                         print(asinresult.get_attribute('data-asin'), flush=True)
                         sponsored.append(asinresult)
+                    else:
+                        print("y???", flush=True)
                 else:
                     sponsored.append(asinresult)
 
