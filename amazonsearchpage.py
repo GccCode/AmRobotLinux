@@ -74,8 +74,6 @@ class AmazonSearchPage(AmazonPage):
             self.enter_random_product(asin, random.randint(start_time, end_time), begin, end)
 
     def click_random_products_per_page(self, admin, keyword, blackasin, whiteasin):
-        print(blackasin, flush=True)
-        print(whiteasin, flush=True)
         normal, sponsored = self.filter_asin(whiteasin)
         normal_selected = random.sample(normal, random.randint(1, len(normal)))
         normal_selected_asin = []
@@ -100,13 +98,13 @@ class AmazonSearchPage(AmazonPage):
             #         self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
         sponsored_lens = len(sponsored_selected_asin)
-        print("sponsored lens is" + str(sponsored_lens), flush=True)
+        print("sponsored lens is " + str(sponsored_lens), flush=True)
         if sponsored_lens != 0:
             if sponsored_lens > 1 and sponsored_lens < 4:
                 sponsored_lens = 2
             elif sponsored_lens >= 5:
                 sponsored_lens = random.randint(2, 3)
-            blackaisn_array = blackasin.spilt(':')
+            blackaisn_array = blackasin.split(':')
             print(blackaisn_array, flush=True)
             for i in range(0, sponsored_lens):
                 asin = sponsored_selected_asin[i]
@@ -199,7 +197,6 @@ class AmazonSearchPage(AmazonPage):
         asinresults = self.driver.find_elements(*self.locator.ASINRESULTS)
         print(len(asinresults), flush=True)
         for asinresult in asinresults:
-            print("xxxxxxxlll", flush=True)
             if self.is_asin_sponsored(asinresult, asinresult.get_attribute('data-asin')) != True:
                 # print(("** 找到目标产品 - 普通。。。"), flush=True)
                 if whiteasin != False:
@@ -207,22 +204,15 @@ class AmazonSearchPage(AmazonPage):
                     if asinresult.get_attribute('data-asin') not in whiteasin_array:
                     # if whiteasin != asinresult.get_attribute('data-asin'):
                         normal.append(asinresult)
-                    else:
-                        print("x?????", flush=True)
                 else:
-                    print("lllllllllll", flush=True)
                     normal.append(asinresult)
             elif self.is_asin_sponsored(asinresult, asinresult.get_attribute('data-asin')):
                 # print(("** 找到目标产品 - 广告。。。"), flush=True)
                 if whiteasin != False:
                     whiteasin_array = whiteasin.split(':')
-                    print(whiteasin_array, flush=True)
-                    print(asinresult.get_attribute('data-asin'), flush=True)
                     if asinresult.get_attribute('data-asin') not in whiteasin_array:
                     # if whiteasin != asinresult.get_attribute('data-asin'):
                         sponsored.append(asinresult)
-                    else:
-                        print("y???", flush=True)
                 else:
                     print("9999999", flush=True)
                     sponsored.append(asinresult)
