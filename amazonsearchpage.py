@@ -98,7 +98,7 @@ class AmazonSearchPage(AmazonPage):
             #         self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
         sponsored_lens = len(sponsored_selected_asin)
-        print("sponsored lens is" + sponsored_lens, flush=True)
+        print("sponsored lens is" + str(sponsored_lens), flush=True)
         if sponsored_lens != 0:
             if sponsored_lens > 1 and sponsored_lens < 4:
                 sponsored_lens = 2
