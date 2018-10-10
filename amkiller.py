@@ -49,7 +49,7 @@ if __name__ == "__main__":
         t1 = time.time()
         amazonpage = AmazonPage(driver)
         try:
-            tmp = random.randint(1, 100)
+            tmp = 50 # random.randint(1, 100)
             if tmp < 30:
                 ## registeration
                 print(("* Registeration..."), flush=True)

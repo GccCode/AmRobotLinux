@@ -91,12 +91,12 @@ class AmazonSearchPage(AmazonPage):
             if normal_lens > 1:
                 normal_lens = random.randint(1, 2)
 
-            for i in range(0, normal_lens):
-                asin = normal_selected_asin[i]
-                asinresult = self.find_target_asin(asin, "normal")
-                if asinresult != False:
-                    currenthandle = self.enter_asin_page(asinresult, asin, 28000, 35000)
-                    self.back_prev_page_by_country(currenthandle, 3000, 5000)
+            # for i in range(0, normal_lens):
+            #     asin = normal_selected_asin[i]
+            #     asinresult = self.find_target_asin(asin, "normal")
+            #     if asinresult != False:
+            #         currenthandle = self.enter_asin_page(asinresult, asin, 28000, 35000)
+            #         self.back_prev_page_by_country(currenthandle, 3000, 5000)
 
         sponsored_lens = len(sponsored_selected_asin)
         if sponsored_lens != 0:
@@ -104,10 +104,12 @@ class AmazonSearchPage(AmazonPage):
                 sponsored_lens = 2
             elif sponsored_lens >= 5:
                 sponsored_lens = random.randint(2, 3)
-
+            print(sponsored_lens, flush=True)
             blackaisn_array = blackaisn.spilt(':')
+            print(blackaisn_array, flush=True)
             for i in range(0, sponsored_lens):
                 asin = sponsored_selected_asin[i]
+                print(asin, flush=True)
                 if blackaisn != False:
                     if asin in blackaisn_array:
                         continue
