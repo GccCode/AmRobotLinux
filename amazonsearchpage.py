@@ -75,7 +75,7 @@ class AmazonSearchPage(AmazonPage):
 
     def click_random_products_per_page(self, admin, keyword, blackaisn, whiteasin):
         normal, sponsored = self.filter_asin(whiteasin)
-
+        print(sponsored, flush=True)
         normal_selected = random.sample(normal, random.randint(1, len(normal)))
         normal_selected_asin = []
         for index in range(0, len(normal_selected)):
@@ -85,7 +85,7 @@ class AmazonSearchPage(AmazonPage):
         sponsored_selected_asin = []
         for index in range(0, len(sponsored_selected)):
             sponsored_selected_asin.append(sponsored_selected[index].get_attribute('data-asin'))
-
+        print(sponsored_selected_asin, flush=True)
         normal_lens = len(normal_selected_asin)
         if normal_lens != 0:
             if normal_lens > 1:
