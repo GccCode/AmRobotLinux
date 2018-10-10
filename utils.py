@@ -38,7 +38,7 @@ useragentlist = [
     # 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0)',
     # 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
     # 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)',
-    'Mozilla/5.0 (Windows NT 6.1; rv:61.0) Gecko/20100101 Firefox/61.0'
+    # 'Mozilla/5.0 (Windows NT 6.1; rv:61.0) Gecko/20100101 Firefox/61.0'
 ]
 
 def getfilelines(filename, eol='\n', buffsize=4096):
