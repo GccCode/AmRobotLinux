@@ -46,7 +46,7 @@ if __name__ == "__main__":
         amazonpage = AmazonPage(driver)
         try:
             random.randint(1, 100)
-            if count < 50:
+            if count < 30:
                 ## registeration
                 print(("* Registeration..."), flush=True)
                 amazonpage.enter_amazon_page(3000, 5000)
