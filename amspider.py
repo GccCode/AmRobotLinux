@@ -718,10 +718,10 @@ class AmazonSpider():
                         tmp_info['seller'] = result['seller']
                         tmp_info['qa'] = result['qa']
                         tmp_info['limited'] = result['limited']
-                        if result['seller'] == 1:
-                            inventory_array.append(copy.deepcopy(result))
-                        else:
-                            asin_info_remove_array.append(asin_info_array[i])
+                        # if result['seller'] == 1:
+                        inventory_array.append(copy.deepcopy(result))
+                        # else:
+                        #     asin_info_remove_array.append(asin_info_array[i])
 
             except Exception as e:
                 status = False
