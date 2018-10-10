@@ -75,7 +75,6 @@ class AmazonSearchPage(AmazonPage):
 
     def click_random_products_per_page(self, admin, keyword, blackaisn, whiteasin):
         normal, sponsored = self.filter_asin(whiteasin)
-        print(sponsored, flush=True)
         normal_selected = random.sample(normal, random.randint(1, len(normal)))
         normal_selected_asin = []
         for index in range(0, len(normal_selected)):
@@ -198,7 +197,9 @@ class AmazonSearchPage(AmazonPage):
             if self.is_asin_sponsored(asinresult, asinresult.get_attribute('data-asin')) != True:
                 # print(("** 找到目标产品 - 普通。。。"), flush=True)
                 if whiteasin != False:
-                    if whiteasin != asinresult.get_attribute('data-asin'):
+                    whiteasin_array = whiteasin.split(':')
+                    if asinresult.get_attribute('data-asin') not in whiteasin_array:
+                    # if whiteasin != asinresult.get_attribute('data-asin'):
                         normal.append(asinresult)
                 else:
                     normal.append(asinresult)
@@ -206,11 +207,9 @@ class AmazonSearchPage(AmazonPage):
                 # print(("** 找到目标产品 - 广告。。。"), flush=True)
                 if whiteasin != False:
                     whiteasin_array = whiteasin.split(':')
-                    print(whiteasin_array, flush=True)
-                    print(asinresult.get_attribute('data-asin'), flush=True)
                     if asinresult.get_attribute('data-asin') not in whiteasin_array:
                     # if whiteasin != asinresult.get_attribute('data-asin'):
-                        print("xxxxxx?", flush=True)
+                        print(asinresult.get_attribute('data-asin'), flush=True)
                         sponsored.append(asinresult)
                 else:
                     sponsored.append(asinresult)
