@@ -1263,6 +1263,9 @@ if __name__ == "__main__":
 
                 t2 = time.time()
                 print("Total Time：" + format(t2 - t1), flush=True)
+                f_ok = open('ok' + node_file, 'a')
+                f_ok.write(line)
+                f_ok.close()
 
             line = f.readline()
 
