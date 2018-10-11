@@ -210,12 +210,12 @@ class AmazonSpider():
             datetime1 = datetime.strptime('1990-01-28','%Y-%m-%d')
             date1 = datetime1.date()
             asin_info_data = {
-                'rank': None,
+                'rank': 0,
                 'asin': None,
                 'node': node,
-                'price': None,
-                'review': None,
-                'rate': None,
+                'price': 0,
+                'review': 0,
+                'rate': 0,
                 'qa': 0,
                 'shipping': None,
                 'seller': 0,
@@ -575,19 +575,19 @@ class AmazonSpider():
 
         return status
 
-    def us_node_gather(self, node, node_name, type, pages, ips_array):
+    def us_node_gather(self, db_name, node, node_name, type, pages, ips_array, is_sale):
         status = True
         t1 = time.time()
         for page in range(0, pages):
             datetime1 = datetime.strptime('1990-01-28','%Y-%m-%d')
             date1 = datetime1.date()
             asin_info_data = {
-                'rank': None,
+                'rank': 0,
                 'asin': None,
                 'node': node,
-                'price': None,
-                'review': None,
-                'rate': None,
+                'price': 0,
+                'review': 0,
+                'rate': 0,
                 'qa': 0,
                 'shipping': None,
                 'seller': 0,
@@ -710,7 +710,7 @@ class AmazonSpider():
             try:
                 for i in range(0, len(asin_info_array)):
                     tmp_info = asin_info_array[i]
-                    result = self.get_inventory_us(False, tmp_info['asin'], ips_array)
+                    result = self.get_inventory_us(False, tmp_info['asin'], ips_array, is_sale)
                     if result == False or result == -111:
                         asin_info_remove_array.append(asin_info_array[i])
                         tmp_info['status'] = 'err'
@@ -720,7 +720,8 @@ class AmazonSpider():
                         tmp_info['qa'] = result['qa']
                         tmp_info['limited'] = result['limited']
                         # if result['seller'] == 1:
-                        inventory_array.append(copy.deepcopy(result))
+                        if is_sale == True:
+                            inventory_array.append(copy.deepcopy(result))
                         # else:
                         #     asin_info_remove_array.append(asin_info_array[i])
 
@@ -733,12 +734,13 @@ class AmazonSpider():
                 if status == False:
                     return False
 
-            for i in range(0, len(asin_info_remove_array)):
-                asin_info_array.remove(asin_info_remove_array[i])
+            if is_sale == True:
+                for i in range(0, len(asin_info_remove_array)):
+                    asin_info_array.remove(asin_info_remove_array[i])
 
-            if len(asin_info_array) != len(inventory_array):
-                print(len(asin_info_array), flush=True)
-                print(len(inventory_array), flush=True)
+                if len(asin_info_array) != len(inventory_array):
+                    print(len(asin_info_array), flush=True)
+                    print(len(inventory_array), flush=True)
 
             # print(len(asin_info_array), flush=True)
             # print(len(inventory_array), flush=True)
@@ -752,9 +754,9 @@ class AmazonSpider():
             #     f.close()
             #     print(asin_info_array[i])
 
-            status = amazondata.create_database('amazondata_us')
+            status = amazondata.create_database(db_name)
             if status == True:
-                status = amazondata.connect_database('amazondata_us')
+                status = amazondata.connect_database(db_name)
                 if status == True:
                     for i in range(0, len(asin_info_array)):
                         asin = asin_info_array[i]['asin']
@@ -765,7 +767,7 @@ class AmazonSpider():
                             status = amazondata.insert_node_data(node_table, asin_info_array[i])
                             if status == True:
                                 # print("node_data inserted sucessfully.. + " + node_table, flush=True)
-                                if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] == 1:
+                                if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] == 1 and is_sale:
                                     inventory_table = 'INVENTORY_' + asin
                                     status = amazondata.create_inventory_table(inventory_table)
                                     if status == True:
@@ -844,7 +846,7 @@ class AmazonSpider():
         return status
 
 
-    def get_inventory_us(self, driver_upper, asin, ips_array):
+    def get_inventory_us(self, driver_upper, asin, ips_array, is_sale):
         if driver_upper == False:
             chrome_options = webdriver.ChromeOptions()
             prefs = {
@@ -879,9 +881,9 @@ class AmazonSpider():
         status = False
         data = {
             'shipping'  : 'FBM',
-            'seller'    : None,
-            'qa'        : None,
-            'inventory' : None,
+            'seller'    : 0,
+            'qa'        : 0,
+            'inventory' : 0,
             'limited'   : 'no'
         }
         try:
@@ -929,6 +931,9 @@ class AmazonSpider():
                 # print(element.text, flush=True)
             else:
                 data['seller'] = 0
+
+            if is_sale == False:
+                return data
 
             status = amazonasinpage.add_cart(5000, 8000)
             if status == True:
@@ -1233,6 +1238,11 @@ if __name__ == "__main__":
     node_file = sys.argv[1]
     type = sys.argv[2]
     country = sys.argv[3]
+    if sys.argv[4] == 1:
+        is_sale = True
+    elif sys.argv[4] ==0:
+        is_sale = False
+    db_name = sys.argv[5]
 
     ips_array = amazonwrapper.get_all_accessible_ip()
     if ips_array == False:
@@ -1259,7 +1269,7 @@ if __name__ == "__main__":
                 if country == 'jp':
                     amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
                 elif country == 'us':
-                    amazonspider.us_node_gather(node, node_name, type, 2, ips_array)
+                    amazonspider.us_node_gather(db_name, node, node_name, type, 2, ips_array, True)
 
                 t2 = time.time()
                 print("Total Time：" + format(t2 - t1), flush=True)
