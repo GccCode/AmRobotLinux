@@ -1238,9 +1238,9 @@ if __name__ == "__main__":
     node_file = sys.argv[1]
     type = sys.argv[2]
     country = sys.argv[3]
-    if sys.argv[4] == 1:
+    if sys.argv[4] == '1':
         is_sale = True
-    elif sys.argv[4] ==0:
+    elif sys.argv[4] == '0':
         is_sale = False
     db_name = sys.argv[5]
 
