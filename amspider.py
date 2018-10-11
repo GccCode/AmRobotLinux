@@ -1269,7 +1269,7 @@ if __name__ == "__main__":
                 if country == 'jp':
                     amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
                 elif country == 'us':
-                    amazonspider.us_node_gather(db_name, node, node_name, type, 2, ips_array, True)
+                    amazonspider.us_node_gather(db_name, node, node_name, type, 2, ips_array, is_sale)
 
                 t2 = time.time()
                 print("Total Time：" + format(t2 - t1), flush=True)
