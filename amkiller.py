@@ -39,6 +39,8 @@ if __name__ == "__main__":
         if ret == False:
             continue
         keyword = admin.get_random_task()
+        if keyword == False:
+            exit(-1)
         whiteasin = admin.get_whiteasin(keyword)
         blackasin = admin.get_blackasin(keyword)
         driver = utils.customized_broswer_with_luminati(ips_array)

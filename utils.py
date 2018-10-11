@@ -533,7 +533,10 @@ class Administrator():
         return len(self.get_tasks())
 
     def get_random_task(self):
-        return self.get_tasks()[random.randint(0, (self.get_tasks_len() - 1))]
+        if self.get_tasks_len() == 0:
+            return False
+        else:
+            return self.get_tasks()[random.randint(0, (self.get_tasks_len() - 1))]
 
     def is_run_out(self, section):
         count = self.task_cf.get(section, "count")
