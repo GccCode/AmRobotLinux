@@ -706,6 +706,7 @@ class AmazonSpider():
             status = True
             inventory_array = []
             asin_info_remove_array = []
+            amazondata = AmazonData()
             try:
                 for i in range(0, len(asin_info_array)):
                     tmp_info = asin_info_array[i]
@@ -751,7 +752,6 @@ class AmazonSpider():
             #     f.close()
             #     print(asin_info_array[i])
 
-            amazondata = AmazonData()
             status = amazondata.create_database('amazondata_us')
             if status == True:
                 status = amazondata.connect_database('amazondata_us')
@@ -867,6 +867,9 @@ class AmazonSpider():
                 proxy_username=user_prefix+ip,
                 proxy_password='o9dagiaeighm'
             )
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--disable-gpu')
+            chrome_options.add_argument('--disable-dev-shm-usage')
             chrome_options.add_extension(proxyauth_plugin_path)
             driver = webdriver.Chrome(chrome_options=chrome_options)
             driver.set_page_load_timeout(60)
@@ -1058,6 +1061,9 @@ class AmazonSpider():
                 proxy_username=user_prefix+ip,
                 proxy_password='o9dagiaeighm'
             )
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--disable-gpu')
+            chrome_options.add_argument('--disable-dev-shm-usage')
             chrome_options.add_extension(proxyauth_plugin_path)
             driver = webdriver.Chrome(chrome_options=chrome_options)
             driver.set_page_load_timeout(60)
