@@ -739,7 +739,7 @@ class AmazonSpider():
                 # print(str(e), flush=True)
             finally:
                 if status == False:
-                    print("xxxxxxxxxxxxxxxx", flush=True)
+                    print("yyyyyyyyyyyyyy", flush=True)
                     return False
 
             if is_sale == True:
