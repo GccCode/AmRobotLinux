@@ -1307,6 +1307,7 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
                 else:
                     status = amazonwrapper.update_data(db_name, table, 'status', '\'err\'', sql_condition)
 
+            node_info = amazonwrapper.get_one_data(db_name, table, condition)
             t2 = time.time()
             print("Total Time：" + format(t2 - t1), flush=True)
     except Exception as e:
