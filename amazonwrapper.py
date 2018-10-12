@@ -272,7 +272,7 @@ def update_data(db_name, table, key, value, condition):
     if status == False:
         print("connect in failure..", flush=True)
     else:
-        status = amazondata.update_data(table, key, value,  condition)
+        status = amazondata.update_data(table, key, value, condition)
         if status == False:
             print("update data in failure.. + " + db_name, flush=True)
 

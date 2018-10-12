@@ -1291,6 +1291,7 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
             node_name = node_info[1]
             print('node is ' + node, flush=True)
             print('node_name is ' + node_name, flush=True)
+            print('country is ' + country, flush=True)
             sql_condition = 'node=' + '\'' + node + '\''
             status = amazonwrapper.update_data(db_name, table, 'status', '\'run\'', sql_condition)
             if status != False:
