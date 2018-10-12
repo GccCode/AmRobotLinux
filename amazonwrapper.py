@@ -489,4 +489,5 @@ if __name__ == "__main__":
     # insert_all_node_info(xls_file_array_us)
     add_new_column('node_info_us', False, 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
     # delete_column('node_info_us', 'automotive', 'status')
+    # delete_column('node_info_us', False, 'status')
     # get_one_data('node_info_us', 'automotive', False)
