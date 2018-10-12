@@ -625,6 +625,9 @@ class AmazonSpider():
                         element = driver.find_element_by_xpath(tmp_symbol)
                         asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
                         # print("Asin is: " + asin_info_data['asin'], flush=True)
+                    else:
+                        status = False
+                        return status
 
                     tmp_symbol = CRITICAL_REVIEWS_PREFIX_US + str(i + 1) + CRITICAL_REVIEWS_POSTFIX_US
                     has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))

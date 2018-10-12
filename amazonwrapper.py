@@ -257,7 +257,7 @@ def get_one_data(db_name, table, condition):
         cursor = amazondata.query(sql)
         if cursor != False:
             result = cursor.fetchone()
-            print(result, flush=True)
+            # print(result, flush=True)
             return result
         else:
             print("get one data in failure.. + " + db_name, flush=True)
@@ -275,7 +275,6 @@ def update_data(db_name, table, key, value, condition):
         status = amazondata.update_data(table, key, value, condition)
         if status == False:
             print("update data in failure.. + " + db_name, flush=True)
-
         amazondata.disconnect_database()
 
     return status
