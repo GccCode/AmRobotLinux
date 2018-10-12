@@ -707,6 +707,7 @@ class AmazonSpider():
             finally:
                 driver.quit()
                 if status == False:
+                    print("xxxxxxxxxxxxxxxx", flush=True)
                     return False
 
             status = True
