@@ -891,6 +891,9 @@ class AmazonSpider():
             else:
                 data['shipping'] = 'FBM'
 
+            print(data['shipping'], flush=True)
+            input('xxxx')
+
             if amazonasinpage.is_element_exsist(*QA_COUNT):
                 element = driver.find_element(*QA_COUNT)
                 data['qa'] = int(getqa_us(element.text))
