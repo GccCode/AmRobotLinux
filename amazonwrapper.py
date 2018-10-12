@@ -257,7 +257,7 @@ def get_one_data(db_name, table, condition):
         cursor = amazondata.query(sql)
         if cursor != False:
             result = cursor.fetchone()
-            # print(result, flush=True)
+            print(result, flush=True)
             return result
         else:
             print("get one data in failure.. + " + db_name, flush=True)
@@ -487,6 +487,6 @@ if __name__ == "__main__":
     # get_all_node_name()
     # update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
     # insert_all_node_info(xls_file_array_us)
-    # add_new_column('node_info_us', False, 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\'))')
+    add_new_column('node_info_us', False, 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
     # delete_column('node_info_us', 'automotive', 'status')
-    get_one_data('node_info_us', 'automotive', False)
+    # get_one_data('node_info_us', 'automotive', False)
