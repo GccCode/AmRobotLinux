@@ -30,7 +30,8 @@ BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a'
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
 FBA_FLAG = (By.ID, "SSOFpopoverLink")
 AB_FLAG_JP = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
-AB_FLAG_US = (By.XPATH, '//*[@id=\'merchant-info\']/text()[position()=1]')
+# AB_FLAG_US = (By.XPATH, '//*[@id=\'merchant-info\']/text()[position()=1]')
+AB_FLAG_US = (By.ID, 'merchant-info')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
 VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
 VIEW_CART_BUTTON1 = (By.ID, 'hlb-view-cart')
@@ -885,6 +886,7 @@ class AmazonSpider():
                 data['shipping'] = 'FBA'
             elif amazonasinpage.is_element_exsist(*AB_FLAG_US):
                 element = driver.find_element(*AB_FLAG_US)
+                print(element.text, flush=True)
                 if 'Ships from and sold by Amazon.com' in element.text:
                     print("sold by Amazon Basic..", flush=True)
                     data['shipping'] = 'AB'
