@@ -1298,17 +1298,22 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
                 if country == 'jp':
                     status = amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
                 elif country == 'us':
+                    print("xxxxx", flush=True)
                     status = amazonspider.us_node_gather(db_name, node, node_name, type, 2, ips_array, is_sale)
 
                 if status != False:
                     status = amazonwrapper.update_data(db_name, table, 'status', '\'ok\'', sql_condition)
                     if status != False:
                         print("amspider finish " + node, flush=True)
+                else:
+                    print("yyyy", flush=True)
+                    amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
 
             t2 = time.time()
             print("Total Time：" + format(t2 - t1), flush=True)
     except Exception as e:
         print(str(e), flush=True)
+        amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
