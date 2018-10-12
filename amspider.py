@@ -891,6 +891,9 @@ class AmazonSpider():
             else:
                 data['shipping'] = 'FBM'
 
+            print(data['shipping'], flush=True)
+            input('xxxx')
+
             if amazonasinpage.is_element_exsist(*QA_COUNT):
                 element = driver.find_element(*QA_COUNT)
                 data['qa'] = int(getqa_us(element.text))
@@ -1299,6 +1302,9 @@ def amspider_test(node, node_name, type):
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+    amspider_test('13591416011', 'XXXX', 'BS')
+
     node_file = sys.argv[1]
     if node_file != '0':
         type = sys.argv[2]
