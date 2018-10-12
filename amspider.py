@@ -707,9 +707,8 @@ class AmazonSpider():
             finally:
                 driver.quit()
                 if status == False:
-                    print("xxxxxxxxxxxxxxxx", flush=True)
                     return False
-            print("zzzzzzzzzzzz", flush=True)
+
             status = True
             inventory_array = []
             asin_info_remove_array = []
@@ -739,7 +738,6 @@ class AmazonSpider():
                 # print(str(e), flush=True)
             finally:
                 if status == False:
-                    print("yyyyyyyyyyyyyy", flush=True)
                     return False
 
             if is_sale == True:
@@ -1294,7 +1292,6 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
             t1 = time.time()
             node = node_info[0]
             node_name = node_info[1]
-            print('node is ' + node, flush=True)
             sql_condition = 'node=' + '\'' + node + '\''
             status = amazonwrapper.update_data(db_name, table, 'status', '\'run\'', sql_condition)
             if status != False:
@@ -1307,16 +1304,11 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
                     status = amazonwrapper.update_data(db_name, table, 'status', '\'ok\'', sql_condition)
                     if status != False:
                         print("amspider finish " + node, flush=True)
-                    else:
-                        print("why????", flush=True)
                 else:
                     status = amazonwrapper.update_data(db_name, table, 'status', '\'err\'', sql_condition)
-                    if status == False:
-                        print('why2...' + node, flush=True)
 
             t2 = time.time()
             print("Total Time：" + format(t2 - t1), flush=True)
-            input(".....")
     except Exception as e:
         print(str(e), flush=True)
         amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
@@ -1343,6 +1335,6 @@ if __name__ == "__main__":
         db_name = sys.argv[5]
         table = sys.argv[6]
         condition = sys.argv[7]
-        print(condition, flush=True)
+        # print(condition, flush=True)
         amspider_from_mysql(db_name, table, condition, type, country, is_sale)
 
