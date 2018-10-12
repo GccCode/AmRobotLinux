@@ -1289,8 +1289,22 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
         print(str(e), flush=True)
         amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
 
+def amspider_test(node, node_name, type):
+    ips_array = amazonwrapper.get_all_accessible_ip()
+    if ips_array == False:
+        print("no accessible ip", flush=True)
+        exit(-1)
+    amazonspider = AmazonSpider()
+    try:
+        status = amazonspider.us_node_gather('data_us', node, node_name, type, 2, ips_array, True)
+    except Exception as e:
+        print(str(e), flush=True)
+
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+    amspider_test('13591416011', 'XXXX', 'BS')
+
     node_file = sys.argv[1]
     if node_file != '0':
         type = sys.argv[2]
