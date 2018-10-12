@@ -1283,7 +1283,7 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
         exit(-1)
     amazonspider = AmazonSpider()
     try:
-        condition = condition + ' and status<>\'ok\''
+        condition = condition + ' and status<>\'ok\' and status<>\'err\''
         node_info = amazonwrapper.get_one_data(db_name, table, condition)
         while node_info != False:
             t1 = time.time()
@@ -1303,7 +1303,7 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
                     if status != False:
                         print("amspider finish " + node, flush=True)
                 else:
-                    amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
+                    amazonwrapper.update_data(db_name, table, 'status', '\'err\'', sql_condition)
 
             t2 = time.time()
             print("Total Time：" + format(t2 - t1), flush=True)
