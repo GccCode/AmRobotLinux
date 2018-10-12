@@ -898,9 +898,9 @@ class AmazonSpider():
                 data['shipping'] = 'FBA'
             elif amazonasinpage.is_element_exsist(*AB_FLAG_US):
                 element = driver.find_element(*AB_FLAG_US)
-                print(element.text, flush=True)
+                # print(element.text, flush=True)
                 if 'Ships from and sold by Amazon.com' in element.text:
-                    print("sold by Amazon Basic..", flush=True)
+                    # print("sold by Amazon Basic..", flush=True)
                     data['shipping'] = 'AB'
             else:
                 data['shipping'] = 'FBM'
