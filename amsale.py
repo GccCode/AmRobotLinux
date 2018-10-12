@@ -26,9 +26,9 @@ def get_task_nodes(db_name, task_id):
             print("Connect Database In Failure + " + amazontask_db_name, flush=True)
             status = False
         else:
-            status = amazondata.create_task_table('SALE_TASK')
+            status = amazondata.create_task_table('sale_task_jp')
             if status == False:
-                print("Create Table In Failure + SALE_TASK", flush=True)
+                print("Create Table In Failure + sale_task_jp", flush=True)
             else:
                 sql = 'select * from SALE_TASK where task_id=' + task_id
                 cursor = amazondata.select_data(sql)
