@@ -206,7 +206,7 @@ class AmazonSpider():
     def __init__(self):
         pass
 
-    def jp_node_gather(self, node, node_name, type, pages, ips_array):
+    def jp_node_gather(self, db_name, node, node_name, type, pages, ips_array):
         status = True
         t1 = time.time()
         for page in range(0, pages):
@@ -482,9 +482,9 @@ class AmazonSpider():
             #     print(asin_info_array[i])
 
             amazondata = AmazonData()
-            status = amazondata.create_database('amazondata')
+            status = amazondata.create_database(db_name)
             if status == True:
-                status = amazondata.connect_database('amazondata')
+                status = amazondata.connect_database(db_name)
                 if status == True:
                     for i in range(0, len(asin_info_array)):
                         asin = asin_info_array[i]['asin']
@@ -520,11 +520,11 @@ class AmazonSpider():
                                                 # print("invetory_date update sucessfully.. + " + node_table, flush=True)
                                                 task_data = {
                                                     'node': node,
-                                                    'task_id': '1',
+                                                    'status': 'ok',
                                                     'last_date': cur_date,
                                                     'node_name': node_name
                                                 }
-                                                status = insert_task_node('SALE_TASK', task_data)
+                                                status = insert_task_node('sale_task_jp', task_data)
                                                 if status == False:
                                                     print("insert task node in failure... + " +  node, flush=True)
                                                 status = amazondata.get_yesterday_sale(inventory_table)
@@ -793,7 +793,7 @@ class AmazonSpider():
                                                 # print("invetory_date update sucessfully.. + " + node_table, flush=True)
                                                 task_data = {
                                                     'node': node,
-                                                    'task_id': '1',
+                                                    'status': 'ok',
                                                     'last_date': cur_date,
                                                     'node_name': node_name
                                                 }
@@ -1261,7 +1261,7 @@ def amspider_from_file(node_file, type, country, is_sale, db_name):
                     print("get node name in failure..", flush=True)
                     exit(-1)
                 if country == 'jp':
-                    amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
+                    amazonspider.jp_node_gather(db_name, node, node_name, type, 3, ips_array)
                 elif country == 'us':
                     amazonspider.us_node_gather(db_name, node, node_name, type, 2, ips_array, is_sale)
 
@@ -1294,9 +1294,9 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
             status = amazonwrapper.update_data(db_name, table, 'status', '\'run\'', sql_condition)
             if status != False:
                 if country == 'jp':
-                    status = amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
+                    status = amazonspider.jp_node_gather('data_jp', node, node_name, type, 3, ips_array)
                 elif country == 'us':
-                    status = amazonspider.us_node_gather(db_name, node, node_name, type, 2, ips_array, is_sale)
+                    status = amazonspider.us_node_gather('data_us', node, node_name, type, 2, ips_array, is_sale)
                 if status != False:
                     status = amazonwrapper.update_data(db_name, table, 'status', '\'ok\'', sql_condition)
                     if status != False:
