@@ -152,8 +152,12 @@ def getsale_us(template):
         if len(slotList) < 1:
             return 0
         else:
+            if len(slotList[0]) > 4:
+                print(template, flush=True)
             return slotList[0]
     else:
+        if len(slotList[0]) > 4:
+            print(template, flush=True)
         return slotList[0]
 
 def getseller_jp(template):
