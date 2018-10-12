@@ -297,6 +297,30 @@ def add_new_column(db_name, condition, column_name, column):
 
     return False
 
+def delete_tables(db_name, condition):
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        sql = 'SHOW TABLES'
+        cursor = amazondata.query(sql)
+        if cursor != False:
+            result = cursor.fetchall()
+            for index in range(len(result)):
+                if condition in result[index][0]:
+                    delete_sql = 'drop table ' + result[index][0]
+                    print(delete_sql, flush=True)
+                    cursor = amazondata.query(delete_sql)
+                    # if cursor == False:
+                    #     print("delete table in failure.. + " + db_name, flush=True)
+        else:
+            print("get all table in failure.. + " + db_name, flush=True)
+
+        amazondata.disconnect_database()
+
+    return False
+
 def get_all_table(db_name, condition):
     table_array= []
     amazondata = AmazonData()
@@ -487,6 +511,7 @@ if __name__ == "__main__":
     # get_all_node_name()
     # update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
     # insert_all_node_info(xls_file_array_us)
+    # delete_tables('node_info_us', '_BS')
     delete_column('node_info_us', False, 'status')
     add_new_column('node_info_us',False, 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
     # delete_column('node_info_us', 'automotive', 'status')
