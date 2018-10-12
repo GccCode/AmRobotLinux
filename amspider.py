@@ -169,10 +169,10 @@ def getseller_us(template):
 def getqa_jp(template):
     rule = r'(.*?)人'
     slotList = re.findall(rule, template)
-    return slotList[0]
+    return slotList[0].strip('+')
 
 def getqa_us(template):
-    return template.split(' ')[0]
+    return template.split(' ')[0].strip('+')
 
 def getprice_jp(price):
     if '-' in price:
