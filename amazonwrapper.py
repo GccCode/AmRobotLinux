@@ -278,7 +278,7 @@ def update_data(db_name, table, key, value, condition):
 
         amazondata.disconnect_database()
 
-    return False
+    return status
 
 def add_new_column(db_name, condition, column_name, column):
     table_array = get_all_table(db_name, condition)
