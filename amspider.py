@@ -1309,7 +1309,7 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     node_file = sys.argv[1]
-    if node_file != 0:
+    if node_file != '0':
         type = sys.argv[2]
         country = sys.argv[3]
         if sys.argv[4] == '1':
