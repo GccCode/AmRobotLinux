@@ -627,7 +627,7 @@ class AmazonSpider():
                         # print("Asin is: " + asin_info_data['asin'], flush=True)
                     else:
                         status = False
-                        return status
+                        break
 
                     tmp_symbol = CRITICAL_REVIEWS_PREFIX_US + str(i + 1) + CRITICAL_REVIEWS_POSTFIX_US
                     has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
@@ -738,6 +738,7 @@ class AmazonSpider():
                 # print(str(e), flush=True)
             finally:
                 if status == False:
+                    print("xxxxxxxxxxxxxxxx", flush=True)
                     return False
 
             if is_sale == True:
