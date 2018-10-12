@@ -709,7 +709,7 @@ class AmazonSpider():
                 if status == False:
                     print("xxxxxxxxxxxxxxxx", flush=True)
                     return False
-
+            print("zzzzzzzzzzzz", flush=True)
             status = True
             inventory_array = []
             asin_info_remove_array = []
@@ -1302,7 +1302,7 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
                     status = amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
                 elif country == 'us':
                     status = amazonspider.us_node_gather(db_name, node, node_name, type, 2, ips_array, is_sale)
-
+                print(status, flush=True)
                 if status != False:
                     status = amazonwrapper.update_data(db_name, table, 'status', '\'ok\'', sql_condition)
                     if status != False:
@@ -1316,6 +1316,7 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
 
             t2 = time.time()
             print("Total Time：" + format(t2 - t1), flush=True)
+            input(".....")
     except Exception as e:
         print(str(e), flush=True)
         amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
