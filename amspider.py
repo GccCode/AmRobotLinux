@@ -161,7 +161,10 @@ def getseller_jp(template):
 def getseller_us(template):
     rule = r'\((.*?)\)'
     slotList = re.findall(rule, template)
-    return slotList[0]
+    if len(slotList) < 1:
+        return 0
+    else:
+        return slotList[0]
 
 def getqa_jp(template):
     rule = r'(.*?)人'
@@ -729,7 +732,7 @@ class AmazonSpider():
                 status = False
                 amazonpage.window_capture('unknown-error')
                 print(traceback.format_exc(), flush=True)
-                print(str(e), flush=True)
+                # print(str(e), flush=True)
             finally:
                 if status == False:
                     return False
@@ -932,96 +935,96 @@ class AmazonSpider():
             else:
                 data['seller'] = 0
 
-            if is_sale == False:
-                return data
-
-            status = amazonasinpage.add_cart(5000, 8000)
-            if status == True:
-                if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
-                    amazonasinpage.click(*NO_THANKS)
-
-                amazonasinpage.random_sleep(1000, 2000)
-                if amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON):
-                    amazonasinpage.click(*VIEW_CART_BUTTON)
-                    amazonasinpage.random_sleep(3000, 5000)
-                elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
-                    amazonasinpage.click(*VIEW_CART_BUTTON1)
-                    amazonasinpage.random_sleep(3000, 5000)
-                elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON2):
-                    amazonasinpage.click(*VIEW_CART_BUTTON2)
-                    amazonasinpage.random_sleep(3000, 5000)
-                elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON3):
-                    amazonasinpage.click(*VIEW_CART_BUTTON3)
-                    amazonasinpage.random_sleep(3000, 5000)
-                else:
-                    if amazonasinpage.is_element_exsist(*DEAL_SYMBOL) or amazonasinpage.is_element_exsist(*DEAL_STATUS):
-                        print("Listing running deal... + " + asin, flush=True)
-                        # status = -2 # deal
-                        data['inventory'] = 0
-                        status = data
-                        amazonasinpage.window_capture(asin + '-dealing-')
-                    else:
-                        status = False
-                        print("View Cart can't be found... + " + asin, flush=True)
-                        amazonasinpage.window_capture(asin + '-noviewcart-')
-
+            if is_sale:
+                status = amazonasinpage.add_cart(5000, 8000)
                 if status == True:
-                    if amazonasinpage.is_element_exsist(*ITEM_INPUT_US) == False:
-                        print("Inventory Input can't be found... + " + asin, flush=True)
-                        status = False
+                    if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
+                        amazonasinpage.click(*NO_THANKS)
+
+                    amazonasinpage.random_sleep(1000, 2000)
+                    if amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON):
+                        amazonasinpage.click(*VIEW_CART_BUTTON)
+                        amazonasinpage.random_sleep(3000, 5000)
+                    elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
+                        amazonasinpage.click(*VIEW_CART_BUTTON1)
+                        amazonasinpage.random_sleep(3000, 5000)
+                    elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON2):
+                        amazonasinpage.click(*VIEW_CART_BUTTON2)
+                        amazonasinpage.random_sleep(3000, 5000)
+                    elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON3):
+                        amazonasinpage.click(*VIEW_CART_BUTTON3)
+                        amazonasinpage.random_sleep(3000, 5000)
                     else:
-                        amazonasinpage.input("999", *ITEM_INPUT_US)
-                        if amazonasinpage.is_element_exsist(*ITEM_SUBMIT_US) == False:
-                            print("Inventory Update can't be found... + " + asin, flush=True)
+                        if amazonasinpage.is_element_exsist(*DEAL_SYMBOL) or amazonasinpage.is_element_exsist(*DEAL_STATUS):
+                            print("Listing running deal... + " + asin, flush=True)
+                            # status = -2 # deal
+                            data['inventory'] = 0
+                            status = data
+                            amazonasinpage.window_capture(asin + '-dealing-')
+                        else:
+                            status = False
+                            print("View Cart can't be found... + " + asin, flush=True)
+                            amazonasinpage.window_capture(asin + '-noviewcart-')
+
+                    if status == True:
+                        if amazonasinpage.is_element_exsist(*ITEM_INPUT_US) == False:
+                            print("Inventory Input can't be found... + " + asin, flush=True)
                             status = False
                         else:
-                            amazonasinpage.click(*ITEM_SUBMIT_US)
-                            amazonasinpage.random_sleep(3000, 5000)
-                            if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_US) == False:
-                                if amazonasinpage.is_element_exsist(*ITEM_INPUT_US):
-                                    element = driver.find_element(*ITEM_INPUT_US)
-                                    # print("Inventory Over " + element.get_attribute('value') + ' + ' + asin, flush=True)
-                                    data['inventory'] = int(element.get_attribute('value'))
-                                else:
-                                    print("Inventory Tips can't be found... + " + asin, flush=True)
-                                    status = False
+                            amazonasinpage.input("999", *ITEM_INPUT_US)
+                            if amazonasinpage.is_element_exsist(*ITEM_SUBMIT_US) == False:
+                                print("Inventory Update can't be found... + " + asin, flush=True)
+                                status = False
                             else:
-                                element = driver.find_element(*INVENTORY_TIPS_US)
-                                if 'a limit' in element.text:
-                                    # print("check limited", flush= True)
-                                    data['limited'] = 'yes'
-                                    data['inventory'] = 0
+                                amazonasinpage.click(*ITEM_SUBMIT_US)
+                                amazonasinpage.random_sleep(3000, 5000)
+                                if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_US) == False:
+                                    if amazonasinpage.is_element_exsist(*ITEM_INPUT_US):
+                                        element = driver.find_element(*ITEM_INPUT_US)
+                                        # print("Inventory Over " + element.get_attribute('value') + ' + ' + asin, flush=True)
+                                        data['inventory'] = int(element.get_attribute('value'))
+                                    else:
+                                        print("Inventory Tips can't be found... + " + asin, flush=True)
+                                        status = False
                                 else:
-                                    # ss
-                                    # print(getsale_us(element.text), flush=True)
-                                    data['inventory'] = int(getsale_us(element.text))
-                                    # print("inventory is: " + str(data['inventory']), flush=True)
+                                    element = driver.find_element(*INVENTORY_TIPS_US)
+                                    if 'a limit' in element.text:
+                                        # print("check limited", flush= True)
+                                        data['limited'] = 'yes'
+                                        data['inventory'] = 0
+                                    else:
+                                        # ss
+                                        # print(getsale_us(element.text), flush=True)
+                                        data['inventory'] = int(getsale_us(element.text))
+                                        # print("inventory is: " + str(data['inventory']), flush=True)
 
-                    if amazonasinpage.is_element_exsist(*ITEM_DELETE_US) == False:
-                        print("Inventory Delete can't be found... + " + asin, flush=True)
-                        status = False
-                    else:
-                        amazonasinpage.click(*ITEM_DELETE_US)
-                        amazonasinpage.random_sleep(2000, 3000)
+                        if amazonasinpage.is_element_exsist(*ITEM_DELETE_US) == False:
+                            print("Inventory Delete can't be found... + " + asin, flush=True)
+                            status = False
+                        else:
+                            amazonasinpage.click(*ITEM_DELETE_US)
+                            amazonasinpage.random_sleep(2000, 3000)
 
-                if status != False:
-                    # print(data, flush=True)
-                    status = data
-            else:
-                if amazonasinpage.is_element_exsist(*ITEM_OUT_OF_STOCK) and data['seller'] != None and data['qa'] != None:
-                    print("no inventroy.. + " + asin, flush=True)
-                    data['inventory'] = 0
-                    status = data
-                    amazonasinpage.window_capture(asin + '-noinv-')
-                elif amazonasinpage.is_element_exsist(*DEAL_SYMBOL) or amazonasinpage.is_element_exsist(*DEAL_STATUS):
-                        print("Listing running deal... + " + asin, flush=True)
-                        # status = -2 # deal
+                    if status != False:
+                        # print(data, flush=True)
+                        status = data
+                else:
+                    if amazonasinpage.is_element_exsist(*ITEM_OUT_OF_STOCK) and data['seller'] != None and data['qa'] != None:
+                        print("no inventroy.. + " + asin, flush=True)
                         data['inventory'] = 0
                         status = data
-                        amazonasinpage.window_capture(asin + '-dealing-')
-                else:
-                    print("no buycart.. + " + asin, flush=True)
-                    amazonasinpage.window_capture(asin + '-nocart-')
+                        amazonasinpage.window_capture(asin + '-noinv-')
+                    elif amazonasinpage.is_element_exsist(*DEAL_SYMBOL) or amazonasinpage.is_element_exsist(*DEAL_STATUS):
+                            print("Listing running deal... + " + asin, flush=True)
+                            # status = -2 # deal
+                            data['inventory'] = 0
+                            status = data
+                            amazonasinpage.window_capture(asin + '-dealing-')
+                    else:
+                        print("no buycart.. + " + asin, flush=True)
+                        amazonasinpage.window_capture(asin + '-nocart-')
+            else:
+                status = data
         except NoSuchElementException as msg:
             status = False
             print("Except: NoSuchElementException", flush=True)
@@ -1233,17 +1236,7 @@ class AmazonSpider():
                 driver.quit()
             return status
 
-if __name__ == "__main__":
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    node_file = sys.argv[1]
-    type = sys.argv[2]
-    country = sys.argv[3]
-    if sys.argv[4] == '1':
-        is_sale = True
-    elif sys.argv[4] == '0':
-        is_sale = False
-    db_name = sys.argv[5]
-
+def amspider_from_file(node_file, type, country, is_sale, db_name):
     ips_array = amazonwrapper.get_all_accessible_ip()
     if ips_array == False:
         print("no accessible ip", flush=True)
@@ -1254,7 +1247,7 @@ if __name__ == "__main__":
         line = f.readline()  # 调用文件的 readline()方法
         while line:
             t1 = time.time()
-            if len(line.strip('\n'))  > 0:
+            if len(line.strip('\n')) > 0:
                 node = line.strip('\n')
                 print(node, flush=True)
                 node_name = False
@@ -1282,4 +1275,59 @@ if __name__ == "__main__":
         f.close()
     except Exception as e:
         print(str(e), flush=True)
-        status = False
+
+def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
+    ips_array = amazonwrapper.get_all_accessible_ip()
+    if ips_array == False:
+        print("no accessible ip", flush=True)
+        exit(-1)
+    amazonspider = AmazonSpider()
+    try:
+        node_info = amazonwrapper.get_one_data(db_name, table, condition)
+        while node_info != False:
+            t1 = time.time()
+            node = node_info[0]
+            node_name = node_info[1]
+            sql_condition = 'node=' + '\'' + node + '\''
+            status = amazonwrapper.update_data(db_name, table, 'status', '\'run\'', sql_condition)
+            if status != False:
+                if country == 'jp':
+                    status = amazonspider.jp_node_gather(node, node_name, type, 3, ips_array)
+                elif country == 'us':
+                    status = amazonspider.us_node_gather(db_name, node, node_name, type, 2, ips_array, is_sale)
+
+                if status != False:
+                    status = amazonwrapper.update_data(db_name, table, 'status', '\'ok\'', sql_condition)
+                    if status != False:
+                        print("amspider finish " + node, flush=True)
+
+            t2 = time.time()
+            print("Total Time：" + format(t2 - t1), flush=True)
+    except Exception as e:
+        print(str(e), flush=True)
+
+if __name__ == "__main__":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    node_file = sys.argv[1]
+    if node_file != 0:
+        type = sys.argv[2]
+        country = sys.argv[3]
+        if sys.argv[4] == '1':
+            is_sale = True
+        elif sys.argv[4] == '0':
+            is_sale = False
+        db_name = sys.argv[5]
+        amspider_from_file(node_file, type, country, is_sale, db_name)
+    else: # python3.6 amspider.py 0 BS us 1 node_info_us automotive node=\'10350150011\'
+        type = sys.argv[2]
+        country = sys.argv[3]
+        if sys.argv[4] == '1':
+            is_sale = True
+        elif sys.argv[4] == '0':
+            is_sale = False
+        db_name = sys.argv[5]
+        table = sys.argv[6]
+        condition = sys.argv[7]
+        print(condition, flush=True)
+        amspider_from_mysql(db_name, table, condition, type, country, is_sale)
+

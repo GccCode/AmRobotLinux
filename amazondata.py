@@ -108,6 +108,20 @@ class AmazonData():
 
         return status
 
+    def add_column(self, db_name, table, column_name, column):
+        status = True
+        if self.amsql.is_mysql_column_exsit(self.db, db_name, table, column_name) == False:
+            status = self.amsql.add_column(self.db, table, column)
+
+        return status
+
+    def delete_column(self, db_name, table, column_name):
+        status = True
+        if self.amsql.is_mysql_column_exsit(self.db, db_name, table, column_name):
+            status = self.amsql.delete_column(self.db, table, column_name)
+
+        return status
+
     def select_data(self, sql):
         return  self.amsql.select_data(self.db, sql)
 

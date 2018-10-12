@@ -226,6 +226,78 @@ def insert_all_node_info(xls_file_array):
 
         amazondata.disconnect_database()
 
+def delete_column(db_name, condition, column_name):
+    table_array = get_all_table(db_name, condition)
+    if table_array != False:
+        amazondata = AmazonData()
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            for table in table_array:
+                status = amazondata.delete_column(db_name, table, column_name)
+                if status == False:
+                    print("delete column in failure..", flush=True)
+                    return False
+
+            amazondata.disconnect_database()
+
+    return False
+
+def get_one_data(db_name, table, condition):
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        if condition != False:
+            sql = 'select * from ' + table + ' where ' + condition
+        else:
+            sql = 'select * from ' + table
+        cursor = amazondata.query(sql)
+        if cursor != False:
+            result = cursor.fetchone()
+            print(result, flush=True)
+            return result
+        else:
+            print("get one data in failure.. + " + db_name, flush=True)
+
+        amazondata.disconnect_database()
+
+    return False
+
+def update_data(db_name, table, key, value, condition):
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        status = amazondata.update_data(table, key, value,  condition)
+        if status == False:
+            print("update data in failure.. + " + db_name, flush=True)
+
+        amazondata.disconnect_database()
+
+    return False
+
+def add_new_column(db_name, condition, column_name, column):
+    table_array = get_all_table(db_name, condition)
+    if table_array != False:
+        amazondata = AmazonData()
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            for table in table_array:
+                status = amazondata.add_column(db_name, table, column_name, column)
+                if status == False:
+                    print("add column in failure..", flush=True)
+                    return False
+
+            amazondata.disconnect_database()
+
+    return False
+
 def get_all_table(db_name, condition):
     table_array= []
     amazondata = AmazonData()
@@ -415,4 +487,7 @@ if __name__ == "__main__":
     # average_all_task()
     # get_all_node_name()
     # update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
-    insert_all_node_info(xls_file_array_us)
+    # insert_all_node_info(xls_file_array_us)
+    # add_new_column('node_info_us', False, 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\'))')
+    # delete_column('node_info_us', 'automotive', 'status')
+    get_one_data('node_info_us', 'automotive', False)

@@ -153,6 +153,40 @@ class AmazonSql():
         finally:
             return status
 
+    def modify_column(self, db, table, column):
+        # 'ALTER TABLE TABLE_NAME ADD COLUMN NEW_COLUMN_NAME varchar(45) not null'
+        status = True
+        sql = 'ALTER TABLE ' + table + ' MODIFY COLUMN ' + column
+        print(sql, flush=True)
+        try:
+            cursor = db.cursor()
+            cursor.execute(sql)
+            db.commit()
+            # print("AmazonSql Add Column Sucessfully + " + column, flush=True)
+        except Exception as e:
+            print(str(e), flush=True)
+            status = False
+            db.rollback()
+        finally:
+            return status
+
+    def delete_column(self, db, table, column):
+        # 'ALTER TABLE TABLE_NAME ADD COLUMN NEW_COLUMN_NAME varchar(45) not null'
+        status = True
+        sql = 'ALTER TABLE ' + table + ' DROP COLUMN ' + column
+        print(sql, flush=True)
+        try:
+            cursor = db.cursor()
+            cursor.execute(sql)
+            db.commit()
+            # print("AmazonSql Add Column Sucessfully + " + column, flush=True)
+        except Exception as e:
+            print(str(e), flush=True)
+            status = False
+            db.rollback()
+        finally:
+            return status
+
     def update_data(self, db, table, key, value, condition):
         # 'UPDATE students SET age = %s WHERE name = %s'
         status = True
