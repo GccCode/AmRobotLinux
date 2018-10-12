@@ -206,7 +206,7 @@ class AmazonSpider():
     def __init__(self):
         pass
 
-    def jp_node_gather(self, db_name, node, node_name, type, pages, ips_array):
+    def jp_node_gather(self, db_name, node, node_name, type, pages, ips_array, is_sale):
         status = True
         t1 = time.time()
         for page in range(0, pages):
@@ -406,41 +406,15 @@ class AmazonSpider():
                     return False
 
             status = True
-            # chrome_options = webdriver.ChromeOptions()
-            # prefs = {
-            #     'profile.default_content_setting_values': {
-            #         'images': 2,
-            #         'javascript': 2
-            #     }
-            # }
-            # chrome_options.add_experimental_option("prefs", prefs)
-            # driver = webdriver.Chrome(chrome_options=chrome_options)
-            # driver.set_page_load_timeout(60)
-            # driver.set_script_timeout(60)
-            driver = False
             inventory_array = []
             asin_info_remove_array = []
             try:
                 for i in range(0, len(asin_info_array)):
                     tmp_info = asin_info_array[i]
-                    result = self.get_inventory_jp(driver, tmp_info['asin'], ips_array)
+                    result = self.get_inventory_jp(False, tmp_info['asin'], ips_array, is_sale)
                     if result == False or result == -111:
                         asin_info_remove_array.append(asin_info_array[i])
                         tmp_info['status'] = 'err'
-                        if driver != False:
-                            driver.quit()
-                            time.sleep(2)
-                            chrome_options = webdriver.ChromeOptions()
-                            prefs = {
-                                'profile.default_content_setting_values': {
-                                    'images': 2,
-                                    'javascript': 2
-                                }
-                            }
-                            chrome_options.add_experimental_option("prefs", prefs)
-                            driver = webdriver.Chrome(chrome_options=chrome_options)
-                            driver.set_page_load_timeout(60)
-                            driver.set_script_timeout(60)
                     else:
                         tmp_info['shipping'] = result['shipping']
                         tmp_info['seller'] = result['seller']
@@ -457,8 +431,6 @@ class AmazonSpider():
                 print(traceback.format_exc(), flush=True)
                 print(str(e), flush=True)
             finally:
-                if driver != False:
-                    driver.quit()
                 if status == False:
                     return False
 
@@ -1043,7 +1015,7 @@ class AmazonSpider():
                 driver.quit()
             return status
 
-    def get_inventory_jp(self, driver_upper, asin, ips_array):
+    def get_inventory_jp(self, driver_upper, asin, ips_array, is_sale):
         if driver_upper == False:
             chrome_options = webdriver.ChromeOptions()
             prefs = {
@@ -1133,93 +1105,96 @@ class AmazonSpider():
             else:
                 data['seller'] = 0
 
-            status = amazonasinpage.add_cart(5000, 8000)
-            if status == True:
-                if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
-                    amazonasinpage.click(*NO_THANKS)
-
-                amazonasinpage.random_sleep(1000, 2000)
-                if amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON):
-                    amazonasinpage.click(*VIEW_CART_BUTTON)
-                    amazonasinpage.random_sleep(3000, 5000)
-                elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
-                    amazonasinpage.click(*VIEW_CART_BUTTON1)
-                    amazonasinpage.random_sleep(3000, 5000)
-                elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON2):
-                    amazonasinpage.click(*VIEW_CART_BUTTON2)
-                    amazonasinpage.random_sleep(3000, 5000)
-                elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON3):
-                    amazonasinpage.click(*VIEW_CART_BUTTON3)
-                    amazonasinpage.random_sleep(3000, 5000)
-                else:
-                    if amazonasinpage.is_element_exsist(*DEAL_SYMBOL) or amazonasinpage.is_element_exsist(*DEAL_STATUS):
-                        print("Listing running deal... + " + asin, flush=True)
-                        # status = -2 # deal
-                        data['inventory'] = 0
-                        status = data
-                        amazonasinpage.window_capture(asin + '-dealing-')
-                    else:
-                        status = False
-                        print("View Cart can't be found... + " + asin, flush=True)
-                        amazonasinpage.window_capture(asin + '-noviewcart-')
-
+            if is_sale:
+                status = amazonasinpage.add_cart(5000, 8000)
                 if status == True:
-                    if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP) == False:
-                        print("Inventory Input can't be found... + " + asin, flush=True)
-                        status = False
+                    if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
+                        amazonasinpage.click(*NO_THANKS)
+
+                    amazonasinpage.random_sleep(1000, 2000)
+                    if amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON):
+                        amazonasinpage.click(*VIEW_CART_BUTTON)
+                        amazonasinpage.random_sleep(3000, 5000)
+                    elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON1):
+                        amazonasinpage.click(*VIEW_CART_BUTTON1)
+                        amazonasinpage.random_sleep(3000, 5000)
+                    elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON2):
+                        amazonasinpage.click(*VIEW_CART_BUTTON2)
+                        amazonasinpage.random_sleep(3000, 5000)
+                    elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON3):
+                        amazonasinpage.click(*VIEW_CART_BUTTON3)
+                        amazonasinpage.random_sleep(3000, 5000)
                     else:
-                        amazonasinpage.input("999", *ITEM_INPUT_JP)
-                        if amazonasinpage.is_element_exsist(*ITEM_SUBMIT_JP) == False:
-                            print("Inventory Update can't be found... + " + asin, flush=True)
+                        if amazonasinpage.is_element_exsist(*DEAL_SYMBOL) or amazonasinpage.is_element_exsist(*DEAL_STATUS):
+                            print("Listing running deal... + " + asin, flush=True)
+                            # status = -2 # deal
+                            data['inventory'] = 0
+                            status = data
+                            amazonasinpage.window_capture(asin + '-dealing-')
+                        else:
+                            status = False
+                            print("View Cart can't be found... + " + asin, flush=True)
+                            amazonasinpage.window_capture(asin + '-noviewcart-')
+
+                    if status == True:
+                        if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP) == False:
+                            print("Inventory Input can't be found... + " + asin, flush=True)
                             status = False
                         else:
-                            amazonasinpage.click(*ITEM_SUBMIT_JP)
-                            amazonasinpage.random_sleep(3000, 5000)
-                            if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_JP) == False:
-                                if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP):
-                                    element = driver.find_element(*ITEM_INPUT_JP)
-                                    # print("Inventory Over " + element.get_attribute('value') + ' + ' + asin, flush=True)
-                                    data['inventory'] = int(element.get_attribute('value'))
-                                else:
-                                    print("Inventory Tips can't be found... + " + asin, flush=True)
-                                    status = False
+                            amazonasinpage.input("999", *ITEM_INPUT_JP)
+                            if amazonasinpage.is_element_exsist(*ITEM_SUBMIT_JP) == False:
+                                print("Inventory Update can't be found... + " + asin, flush=True)
+                                status = False
                             else:
-                                element = driver.find_element(*INVENTORY_TIPS_JP)
-                                # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
-                                # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
-                                if '客様お一人' in element.text:
-                                    # print("check limited", flush= True)
-                                    data['limited'] = 'yes'
-                                    data['inventory'] = 0
+                                amazonasinpage.click(*ITEM_SUBMIT_JP)
+                                amazonasinpage.random_sleep(3000, 5000)
+                                if amazonasinpage.is_element_exsist(*INVENTORY_TIPS_JP) == False:
+                                    if amazonasinpage.is_element_exsist(*ITEM_INPUT_JP):
+                                        element = driver.find_element(*ITEM_INPUT_JP)
+                                        # print("Inventory Over " + element.get_attribute('value') + ' + ' + asin, flush=True)
+                                        data['inventory'] = int(element.get_attribute('value'))
+                                    else:
+                                        print("Inventory Tips can't be found... + " + asin, flush=True)
+                                        status = False
                                 else:
-                                    # ss
-                                    data['inventory'] = int(getsale_jp(element.text))
-                                    # print("inventory is: " + str(data['inventory']), flush=True)
-                    if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
-                        print("Inventory Delete can't be found... + " + asin, flush=True)
-                        status = False
-                    else:
-                        amazonasinpage.click(*ITEM_DELETE_JP)
-                        amazonasinpage.random_sleep(2000, 3000)
+                                    element = driver.find_element(*INVENTORY_TIPS_JP)
+                                    # この商品は、273点のご注文に制限させていただいております。詳しくは、商品の詳細ページをご確認ください。
+                                    # この出品者が出品している Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) の購入は、お客様お一人あたり10までと限定されていますので、注文数を Amazon Echo Dot 壁掛け ハンガー ホルダー エコードット専用 充電ケーブル付き 充電しながら使用可能 エコードット スピーカー スタンド 保護ケース Alexa アレクサ 第2世代専用 壁掛け カバー (白) から10に変更しました。
+                                    if '客様お一人' in element.text:
+                                        # print("check limited", flush= True)
+                                        data['limited'] = 'yes'
+                                        data['inventory'] = 0
+                                    else:
+                                        # ss
+                                        data['inventory'] = int(getsale_jp(element.text))
+                                        # print("inventory is: " + str(data['inventory']), flush=True)
+                        if amazonasinpage.is_element_exsist(*ITEM_DELETE_JP) == False:
+                            print("Inventory Delete can't be found... + " + asin, flush=True)
+                            status = False
+                        else:
+                            amazonasinpage.click(*ITEM_DELETE_JP)
+                            amazonasinpage.random_sleep(2000, 3000)
 
-                if status != False:
-                    # print(data, flush=True)
-                    status = data
-            else:
-                if amazonasinpage.is_element_exsist(*ITEM_OUT_OF_STOCK) and data['seller'] != None and data['qa'] != None:
-                    print("no inventroy.. + " + asin, flush=True)
-                    data['inventory'] = 0
-                    status = data
-                    amazonasinpage.window_capture(asin + '-noinv-')
-                elif amazonasinpage.is_element_exsist(*DEAL_SYMBOL) or amazonasinpage.is_element_exsist(*DEAL_STATUS):
-                        print("Listing running deal... + " + asin, flush=True)
-                        # status = -2 # deal
+                    if status != False:
+                        # print(data, flush=True)
+                        status = data
+                else:
+                    if amazonasinpage.is_element_exsist(*ITEM_OUT_OF_STOCK) and data['seller'] != None and data['qa'] != None:
+                        print("no inventroy.. + " + asin, flush=True)
                         data['inventory'] = 0
                         status = data
-                        amazonasinpage.window_capture(asin + '-dealing-')
-                else:
-                    print("no buycart.. + " + asin, flush=True)
-                    amazonasinpage.window_capture(asin + '-nocart-')
+                        amazonasinpage.window_capture(asin + '-noinv-')
+                    elif amazonasinpage.is_element_exsist(*DEAL_SYMBOL) or amazonasinpage.is_element_exsist(*DEAL_STATUS):
+                            print("Listing running deal... + " + asin, flush=True)
+                            # status = -2 # deal
+                            data['inventory'] = 0
+                            status = data
+                            amazonasinpage.window_capture(asin + '-dealing-')
+                    else:
+                        print("no buycart.. + " + asin, flush=True)
+                        amazonasinpage.window_capture(asin + '-nocart-')
+            else:
+                status = data
         except NoSuchElementException as msg:
             status = False
             print("Except: NoSuchElementException", flush=True)
@@ -1229,7 +1204,7 @@ class AmazonSpider():
             status = -111
         except Exception as e:
             status = False
-            amazonasinpage.window_capture('unknown-error')
+            amazonasinpage.window_capture(asin + 'unknown-error')
             print(traceback.format_exc(), flush=True)
             print(e, flush=True)
         finally:
@@ -1261,7 +1236,7 @@ def amspider_from_file(node_file, type, country, is_sale, db_name):
                     print("get node name in failure..", flush=True)
                     exit(-1)
                 if country == 'jp':
-                    amazonspider.jp_node_gather(db_name, node, node_name, type, 3, ips_array)
+                    amazonspider.jp_node_gather(db_name, node, node_name, type, 3, ips_array, is_sale)
                 elif country == 'us':
                     amazonspider.us_node_gather(db_name, node, node_name, type, 2, ips_array, is_sale)
 
@@ -1294,7 +1269,7 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
             status = amazonwrapper.update_data(db_name, table, 'status', '\'run\'', sql_condition)
             if status != False:
                 if country == 'jp':
-                    status = amazonspider.jp_node_gather('data_jp', node, node_name, type, 3, ips_array)
+                    status = amazonspider.jp_node_gather('data_jp', node, node_name, type, 3, ips_array, is_sale)
                 elif country == 'us':
                     status = amazonspider.us_node_gather('data_us', node, node_name, type, 2, ips_array, is_sale)
                 if status != False:

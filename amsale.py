@@ -182,7 +182,7 @@ def amsale_from_mysql(country):
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")):
                                             status = True
                                     if status == True:
-                                        result = amazonspider.get_inventory_jp(driver, asin, ips_array)
+                                        result = amazonspider.get_inventory_jp(driver, asin, ips_array, True)
                                         if result != False and result != -111:
                                             cur_date = date.today()
                                             data = {
@@ -315,7 +315,7 @@ if __name__ == "__main__":
                                         asin_info = asin_info_array[asin_index]
                                         asin = asin_info[1]
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] == 1:
-                                            result = amazonspider.get_inventory_jp(driver, asin, ips_array)
+                                            result = amazonspider.get_inventory_jp(driver, asin, ips_array, True)
                                             if result != False and result != -111:
                                                 cur_date = date.today()
                                                 data = {
