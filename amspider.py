@@ -1286,7 +1286,7 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
         exit(-1)
     amazonspider = AmazonSpider()
     try:
-        condition = condition + ' and status<>\'ok\' and status<>\'err\''
+        condition = condition + ' and status<>\'ok\' and status<>\'err\' and status<>\'run\''
         node_info = amazonwrapper.get_one_data(db_name, table, condition)
         while node_info != False:
             t1 = time.time()
