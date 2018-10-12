@@ -1307,8 +1307,12 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
                     status = amazonwrapper.update_data(db_name, table, 'status', '\'ok\'', sql_condition)
                     if status != False:
                         print("amspider finish " + node, flush=True)
+                    else:
+                        print("why????", flush=True)
                 else:
-                    amazonwrapper.update_data(db_name, table, 'status', '\'err\'', sql_condition)
+                    status = amazonwrapper.update_data(db_name, table, 'status', '\'err\'', sql_condition)
+                    if status == False:
+                        print('why2...' + node, flush=True)
 
             t2 = time.time()
             print("Total Time：" + format(t2 - t1), flush=True)
