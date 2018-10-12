@@ -154,10 +154,14 @@ def getsale_us(template):
         else:
             if len(slotList[0]) > 4:
                 print(template, flush=True)
+                print(slotList[0].split(' ')[len(slotList[0].split(' ')) - 1], flush=True)
+                return slotList[0].split(' ')[len(slotList[0].split(' ')) - 1]
             return slotList[0]
     else:
         if len(slotList[0]) > 4:
             print(template, flush=True)
+            print(slotList[0].split(' ')[len(slotList[0].split(' ')) - 1], flush=True)
+            return slotList[0].split(' ')[len(slotList[0].split(' ')) - 1]
         return slotList[0]
 
 def getseller_jp(template):
@@ -194,16 +198,20 @@ def getprice_us(price):
 def insert_task_node(table, data):
     amazontask_db_name = 'amazontask'
     amazondata = AmazonData()
-    status = amazondata.connect_database(amazontask_db_name)
+    status = amazondata.create_database(amazontask_db_name)
     if status == False:
-        print("Connect Database In Failure + " + amazontask_db_name, flush=True)
-        status = False
+        print("Create Database In Failure + " + amazontask_db_name, flush=True)
     else:
-        status = amazondata.create_task_table(table)
-        if status != False:
-            status = amazondata.insert_task_data(table, data)
+        status = amazondata.connect_database(amazontask_db_name)
+        if status == False:
+            print("Connect Database In Failure + " + amazontask_db_name, flush=True)
+            status = False
+        else:
+            status = amazondata.create_task_table(table)
+            if status != False:
+                status = amazondata.insert_task_data(table, data)
 
-        amazondata.disconnect_database()
+            amazondata.disconnect_database()
 
     return status
 
