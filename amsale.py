@@ -176,7 +176,7 @@ def amsale_from_mysql(country):
                                     asin = asin_info[1]
                                     status = False
                                     if country == 'us':
-                                        if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] == 1 and asin_info[7] == 'FBA' and float(asin_info[3]) > 9:
+                                        if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] == 1 and asin_info[7] != 'FBM' and float(asin_info[3]) > 9:
                                             status = True
                                     elif country == 'jp':
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")):
