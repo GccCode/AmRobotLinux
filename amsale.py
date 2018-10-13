@@ -102,8 +102,11 @@ def is_task_finish(db_name, table, node):
 
     return status
 
-def is_all_inventory_finish(node_table):
-    amazontask_db_name = 'amazondata'
+def is_all_inventory_finish(country, node_table):
+    if country == 'us':
+        amazontask_db_name = 'data_us'
+    elif country == 'jp':
+        amazontask_db_name = 'data_jp'
     amazondata = AmazonData()
     status = amazondata.connect_database(amazontask_db_name)
     if status == False:
@@ -146,24 +149,24 @@ def amsale_from_mysql(country, node_type):
     amazondata = AmazonData()
     status = False
     if country == 'us':
-        table = 'sale_task_us'
+        task_table = 'sale_task_us'
         status = amazondata.connect_database('data_us')
     elif country == 'jp':
-        table = 'sale_task_jp'
+        task_table = 'sale_task_jp'
         status = amazondata.connect_database('data_jp')
     if status == True:
         try:
             status_condition = 'status<>\'no\''
-            node_task = amazonwrapper.get_one_data(db_name, table, status_condition)
+            node_task = amazonwrapper.get_one_data(db_name, task_table, status_condition)
             while node_task != False:
                 t1 = time.time()
                 node = node_task[0]
                 node_table = node + '_' + node_type
                 sql_condition = 'node=' + '\'' + node + '\''
-                status = amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
+                status = amazonwrapper.update_data(db_name, task_table, 'status', '\'no\'', sql_condition)
                 if status != False:
-                    while is_task_finish(db_name, table, node) == False:
-                        while is_all_inventory_finish(node_table) == False:
+                    while is_task_finish(db_name, task_table, node) == False:
+                        while is_all_inventory_finish(country, node_table) == False:
                             asin_cursor = get_asin_rows_from_node(amazondata, node_table)
                             if asin_cursor != False:
                                 asin_info_array = asin_cursor.fetchall()
@@ -244,12 +247,12 @@ def amsale_from_mysql(country, node_type):
                                             if status == False:
                                                 print("update asin status faild.. + " + node + ' ' + asin, flush=True)
 
-                        if is_all_inventory_finish(node_table) == True:
-                            status = update_task_node(db_name, table, node)
+                        if is_all_inventory_finish(country, node_table) == True:
+                            status = update_task_node(db_name, task_table, node)
                             if status == False:
                                 print("update task node failed.. + " + node, flush=True)
                             else:
-                                status = amazonwrapper.update_data(db_name, table, 'status', '\'ok\'', sql_condition)
+                                status = amazonwrapper.update_data(db_name, task_table, 'status', '\'ok\'', sql_condition)
                                 if status != False:
                                     print("amsale finish " + node, flush=True)
 
@@ -258,10 +261,10 @@ def amsale_from_mysql(country, node_type):
 
                 t2 = time.time()
                 print("总耗时：" + format(t2 - t1))
-                node_task = amazonwrapper.get_one_data(db_name, table, status_condition)
+                node_task = amazonwrapper.get_one_data(db_name, task_table, status_condition)
         except Exception as e:
             print(traceback.format_exc(), flush=True)
-            amazonwrapper.update_data(db_name, table, 'status', '\'ok\'', sql_condition)
+            amazonwrapper.update_data(db_name, task_table, 'status', '\'ok\'', sql_condition)
 
         amazondata.disconnect_database()
     else:
