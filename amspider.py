@@ -1507,8 +1507,8 @@ def amspider_test(node, node_name, type, filename):
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-    amspider_test('GWA', 'automotive', 'SL', '../ss.xls')
-    exit()
+    # amspider_test('GWA', 'automotive', 'SL', '../ss.xls')
+    # exit()
     node_file = sys.argv[1]
     if node_file != '0':
         type = sys.argv[2]

@@ -253,6 +253,9 @@ def amsale_from_mysql(country):
                                 if status != False:
                                     print("amsale finish " + node, flush=True)
 
+                                print("test finish...", flush=True)
+                                exit()
+
                 t2 = time.time()
                 print("总耗时：" + format(t2 - t1))
                 node_task = amazonwrapper.get_one_data(db_name, table, status_condition)
