@@ -171,7 +171,7 @@ def amsale_from_mysql(country, node_type):
                     while is_task_finish(db_name, task_table, node) == False:
                         print("22222", flush=True)
                         while is_all_inventory_finish(country, node_table) == False:
-                            print("333", flush=True)
+                            print("333 + " + node_table, flush=True)
                             asin_cursor = get_asin_rows_from_node(amazondata, node_table)
                             if asin_cursor != False:
                                 asin_info_array = asin_cursor.fetchall()
