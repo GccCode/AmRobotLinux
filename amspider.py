@@ -613,7 +613,7 @@ class AmazonSpider():
                     else:
                         status = -111
                         print("network crashing??", flush=True)
-                        break
+                        return status
 
                     tmp_symbol = CRITICAL_REVIEWS_PREFIX_US + str(i + 1) + CRITICAL_REVIEWS_POSTFIX_US
                     has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
