@@ -861,19 +861,19 @@ class AmazonSpider():
             'status': 'ok'
         }
         asin_info_array = []
-        chrome_options = webdriver.ChromeOptions()
-        prefs = {
-            'profile.default_content_setting_values': {
-                'images': 2,
-                # 'javascript': 2
-            }
-        }
-        chrome_options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Chrome(chrome_options=chrome_options)
-        driver.set_page_load_timeout(60)
-        driver.set_script_timeout(60)
+        # chrome_options = webdriver.ChromeOptions()
+        # prefs = {
+        #     'profile.default_content_setting_values': {
+        #         'images': 2,
+        #         # 'javascript': 2
+        #     }
+        # }
+        # chrome_options.add_experimental_option("prefs", prefs)
+        # driver = webdriver.Chrome(chrome_options=chrome_options)
+        # driver.set_page_load_timeout(60)
+        # driver.set_script_timeout(60)
         try:
-            amazonpage = AmazonPage(driver) # /ref=zg_bs_pg_1?_encoding=UTF8&pg=2
+            # amazonpage = AmazonPage(driver) # /ref=zg_bs_pg_1?_encoding=UTF8&pg=2
 
             workbook = xlrd.open_workbook(filename)
             worksheet1 = workbook.sheet_by_index(0)
@@ -887,11 +887,10 @@ class AmazonSpider():
                 asin_info_data['rank'] = int(row[0])
 
                 asin_info_array.append(copy.deepcopy(asin_info_data))
-                print(asin_info_data['asin'], flush=True)
+                print(asin_info_data, flush=True)
                 print("** ------------------- **", flush=True)
         except Exception as e:
             status = False
-            amazonpage.window_capture('unknown-error')
             print(traceback.format_exc(), flush=True)
         finally:
             if status == False:
@@ -922,7 +921,6 @@ class AmazonSpider():
 
         except Exception as e:
             status = False
-            amazonpage.window_capture('unknown-error')
             print(traceback.format_exc(), flush=True)
             # print(str(e), flush=True)
         finally:
@@ -936,18 +934,6 @@ class AmazonSpider():
             if len(asin_info_array) != len(inventory_array):
                 print(len(asin_info_array), flush=True)
                 print(len(inventory_array), flush=True)
-
-        # print(len(asin_info_array), flush=True)
-        # print(len(inventory_array), flush=True)
-        #
-        # for i in range(0, len(asin_info_array)):
-        #     with open('test.txt', 'a') as f:
-        #         f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
-        #     print(inventory_array[i])
-        #     with open('test.txt', 'a') as f:
-        #         f.writelines(json.dumps(asin_info_array[i], cls=DateEncoder) + "\n")
-        #     f.close()
-        #     print(asin_info_array[i])
 
         status = amazondata.create_database(db_name)
         if status == True:
