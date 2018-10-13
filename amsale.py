@@ -115,7 +115,7 @@ def is_all_inventory_finish(country, node_table):
     else:
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-        sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller=1 and shipping<>\'FBM\' and price<9' + ' and inventory_date <> ' + value
+        sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller=1 and shipping<>\'FBM\' and price>9' + ' and inventory_date <> ' + value
         status = amazondata.select_data(sql)
         if status == False:
             status = True
@@ -132,7 +132,7 @@ def get_asin_rows_from_node(ad, country, table):
     if country == 'us':
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller=1 and shipping<>\'FBM\' and price<9 and inventory_date <> ' + value
+        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller=1 and shipping<>\'FBM\' and price>9 and inventory_date <> ' + value
     elif country == 'jp':
         sql = 'select * from ' + table + ' where status=\'ok\' and limited=\'no\''
     cursor = ad.select_data(sql)
@@ -275,6 +275,7 @@ def amsale_from_mysql(country, node_type):
                 t2 = time.time()
                 print("总耗时：" + format(t2 - t1))
                 node_task = amazonwrapper.get_one_data(db_name, task_table, status_condition)
+                exit()
         except Exception as e:
             print(traceback.format_exc(), flush=True)
             amazonwrapper.update_data(db_name, task_table, 'status', '\'ok\'', sql_condition)
