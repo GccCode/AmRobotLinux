@@ -115,7 +115,10 @@ def is_all_inventory_finish(country, node_table):
     else:
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-        sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller=1 and shipping<>\'FBM\' and price>9' + ' and inventory_date <> ' + value
+        if country == 'us':
+            sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller=1 and shipping<>\'FBM\' and price>9' + ' and inventory_date <> ' + value
+        elif country == 'jp':
+            sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\'' + ' and inventory_date <> ' + value
         status = amazondata.select_data(sql)
         if status == False:
             status = True
@@ -129,12 +132,12 @@ def is_all_inventory_finish(country, node_table):
 
 def get_asin_rows_from_node(ad, country, table):
     status = False
+    cur_date = date.today()
+    value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
     if country == 'us':
-        cur_date = date.today()
-        value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller=1 and shipping<>\'FBM\' and price>9 and inventory_date <> ' + value
     elif country == 'jp':
-        sql = 'select * from ' + table + ' where status=\'ok\' and limited=\'no\''
+        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\'' + ' and inventory_date <> ' + value
     cursor = ad.select_data(sql)
     if cursor == False:
         print("Get Asin_Rows From Node In Failure" + table, flush=True)
@@ -166,7 +169,6 @@ def amsale_from_mysql(country, node_type):
             status_condition = 'status<>\'no\' and last_date<>' + value
             node_task = amazonwrapper.get_one_data(db_name, task_table, status_condition)
             while node_task != False:
-                print("111111", flush=True)
                 t1 = time.time()
                 node = node_task[0]
                 node_table = node + '_' + node_type
@@ -174,9 +176,7 @@ def amsale_from_mysql(country, node_type):
                 status = amazonwrapper.update_data(db_name, task_table, 'status', '\'no\'', sql_condition)
                 if status != False:
                     while is_task_finish(db_name, task_table, node) == False:
-                        print("22222", flush=True)
                         while is_all_inventory_finish(country, node_table) == False:
-                            print("333 + " + node_table, flush=True)
                             asin_cursor = get_asin_rows_from_node(amazondata, country, node_table)
                             if asin_cursor != False:
                                 asin_info_array = asin_cursor.fetchall()
@@ -198,7 +198,6 @@ def amsale_from_mysql(country, node_type):
                                         if country == 'jp':
                                             result = amazonspider.get_inventory_jp(False, asin, ips_array, True)
                                         elif country == 'us':
-                                            print("????", flush=True)
                                             result = amazonspider.get_inventory_us(False, asin, ips_array, True)
                                         if result != False and result != -111:
                                             cur_date = date.today()
