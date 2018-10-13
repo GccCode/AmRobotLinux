@@ -136,7 +136,7 @@ def get_asin_rows_from_node(ad, table):
 
     return status
 
-def amsale_from_mysql(country):
+def amsale_from_mysql(country, node_type):
     ips_array = amazonwrapper.get_all_accessible_ip()
     if ips_array == False:
         print("no accessible ip", flush=True)
@@ -269,7 +269,7 @@ def amsale_from_mysql(country):
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    amsale_from_mysql('us')
+    amsale_from_mysql('us', 'BS')
     exit()
     # task_id = sys.argv[1]   # 1
     # node_type = sys.argv[2] # BS - NR
