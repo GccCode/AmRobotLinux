@@ -895,8 +895,7 @@ class AmazonSpider():
         finally:
             if status == False:
                 return False
-        input("xxxx")
-        exit()
+
         status = True
         inventory_array = []
         asin_info_remove_array = []
