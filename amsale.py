@@ -161,6 +161,7 @@ def amsale_from_mysql(country, node_type):
             status_condition = 'status<>\'no\' and last_date<>' + value
             node_task = amazonwrapper.get_one_data(db_name, task_table, status_condition)
             while node_task != False:
+                print("111111", flush=True)
                 t1 = time.time()
                 node = node_task[0]
                 node_table = node + '_' + node_type
@@ -168,7 +169,9 @@ def amsale_from_mysql(country, node_type):
                 status = amazonwrapper.update_data(db_name, task_table, 'status', '\'no\'', sql_condition)
                 if status != False:
                     while is_task_finish(db_name, task_table, node) == False:
+                        print("22222", flush=True)
                         while is_all_inventory_finish(country, node_table) == False:
+                            print("333", flush=True)
                             asin_cursor = get_asin_rows_from_node(amazondata, node_table)
                             if asin_cursor != False:
                                 asin_info_array = asin_cursor.fetchall()
