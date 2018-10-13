@@ -264,8 +264,6 @@ def amsale_from_mysql(country, node_type):
                             status = update_task_node(db_name, task_table, node)
                             if status == False:
                                 print("update task node failed.. + " + node, flush=True)
-                            else:
-                                print("test finish..." + node, flush=True)
 
                             status = amazonwrapper.update_data(db_name, task_table, 'status', '\'ok\'', sql_condition)
                             if status != False:
@@ -274,7 +272,6 @@ def amsale_from_mysql(country, node_type):
                 t2 = time.time()
                 print("总耗时：" + format(t2 - t1))
                 node_task = amazonwrapper.get_one_data(db_name, task_table, status_condition)
-                exit()
         except Exception as e:
             print(traceback.format_exc(), flush=True)
             amazonwrapper.update_data(db_name, task_table, 'status', '\'ok\'', sql_condition)
