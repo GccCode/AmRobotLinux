@@ -126,8 +126,8 @@ def is_all_inventory_finish(node_table):
 
 def get_asin_rows_from_node(ad, table):
     status = False
-    sql = 'select * from ' + table + ' where status=\'ok\' and limited=\'no\'' + ' and node=' + node
-    cursor = amazondata.select_data(sql)
+    sql = 'select * from ' + table + ' where status=\'ok\' and limited=\'no\''
+    cursor = ad.select_data(sql)
     if cursor == False:
         print("Get Asin_Rows From Node In Failure" + table, flush=True)
         status = False
@@ -182,7 +182,7 @@ def amsale_from_mysql(country, node_type):
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")):
                                             status = True
                                     if status == True:
-                                        result = amazonspider.get_inventory_jp(driver, asin, ips_array, True)
+                                        result = amazonspider.get_inventory_jp(False, asin, ips_array, True)
                                         if result != False and result != -111:
                                             cur_date = date.today()
                                             data = {
