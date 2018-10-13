@@ -5,8 +5,6 @@ from amazondata import AmazonData
 import xlrd
 import random
 from datetime import date
-from datetime import datetime
-from datetime import timedelta
 
 
 xls_file_array_jp = ['apparel',

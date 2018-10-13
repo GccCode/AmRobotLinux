@@ -20,6 +20,7 @@ from amazondata import AmazonData
 import amazonwrapper
 import utils
 import traceback
+import xlrd
 
 
 LOGO = (By.ID, 'nav-logo')
@@ -599,11 +600,7 @@ class AmazonSpider():
             driver.set_script_timeout(60)
             try:
                 amazonpage = AmazonPage(driver) # /ref=zg_bs_pg_1?_encoding=UTF8&pg=2
-                if type == 'BS':
-                    url = "https://www.amazon.com/gp/bestsellers/electronics/" + node + "/ref=zg_bs_pg_1?_encoding=UTF8&pg=" + str(page + 1)
-                elif type == 'seller':
-                    me = node_name
-                    url = "https://www.amazon.com/s/ref=sr_pg_2?me=" + me + "&page=" + str(page + 1)
+                url = "https://www.amazon.com/gp/bestsellers/electronics/" + node + "/ref=zg_bs_pg_1?_encoding=UTF8&pg=" + str(page + 1)
                 driver.get(url)
                 amazonpage.random_sleep(3000, 5000)
                 print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
@@ -841,6 +838,207 @@ class AmazonSpider():
 
         return status
 
+    def us_seller_gather(self, db_name, node, node_name, type, filename, ips_array, is_sale):
+        status = True
+        t1 = time.time()
+
+        datetime1 = datetime.strptime('1990-01-28','%Y-%m-%d')
+        date1 = datetime1.date()
+        asin_info_data = {
+            'rank': 0,
+            'asin': None,
+            'node': node,
+            'price': 0,
+            'review': 0,
+            'rate': 0,
+            'qa': 0,
+            'shipping': None,
+            'seller': 0,
+            'avg_sale': 0,
+            'inventory_date': date1,
+            'limited': 'no',
+            'img_url': 'none',
+            'status': 'ok'
+        }
+        asin_info_array = []
+        chrome_options = webdriver.ChromeOptions()
+        prefs = {
+            'profile.default_content_setting_values': {
+                'images': 2,
+                # 'javascript': 2
+            }
+        }
+        chrome_options.add_experimental_option("prefs", prefs)
+        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver.set_page_load_timeout(60)
+        driver.set_script_timeout(60)
+        try:
+            amazonpage = AmazonPage(driver) # /ref=zg_bs_pg_1?_encoding=UTF8&pg=2
+
+            workbook = xlrd.open_workbook(filename)
+            worksheet1 = workbook.sheet_by_index(0)
+            num_rows = worksheet1.nrows
+            for curr_row in range(1, num_rows):
+                row = worksheet1.row_values(curr_row)
+                asin_info_data['asin'] = row[1].strip(' ')
+                asin_info_data['review'] = int(row[5])
+                asin_info_data['rate'] = float(row[6])
+                asin_info_data['price'] = float(row[3])
+                asin_info_data['rank'] = int(row[0])
+
+                asin_info_array.append(copy.deepcopy(asin_info_data))
+                print(asin_info_data['asin'], flush=True)
+                print("** ------------------- **", flush=True)
+        except Exception as e:
+            status = False
+            amazonpage.window_capture('unknown-error')
+            print(traceback.format_exc(), flush=True)
+        finally:
+            if status == False:
+                return False
+        input("xxxx")
+        exit()
+        status = True
+        inventory_array = []
+        asin_info_remove_array = []
+        amazondata = AmazonData()
+        try:
+            for i in range(0, len(asin_info_array)):
+                tmp_info = asin_info_array[i]
+                result = self.get_inventory_us(False, tmp_info['asin'], ips_array, is_sale)
+                if result == False or result == -111:
+                    asin_info_remove_array.append(asin_info_array[i])
+                    tmp_info['status'] = 'err'
+                else:
+                    tmp_info['shipping'] = result['shipping']
+                    tmp_info['seller'] = result['seller']
+                    tmp_info['qa'] = result['qa']
+                    tmp_info['limited'] = result['limited']
+                    # if result['seller'] == 1:
+                    if is_sale == True:
+                        inventory_array.append(copy.deepcopy(result))
+                    # else:
+                    #     asin_info_remove_array.append(asin_info_array[i])
+
+        except Exception as e:
+            status = False
+            amazonpage.window_capture('unknown-error')
+            print(traceback.format_exc(), flush=True)
+            # print(str(e), flush=True)
+        finally:
+            if status == False:
+                return False
+
+        if is_sale == True:
+            for i in range(0, len(asin_info_remove_array)):
+                asin_info_array.remove(asin_info_remove_array[i])
+
+            if len(asin_info_array) != len(inventory_array):
+                print(len(asin_info_array), flush=True)
+                print(len(inventory_array), flush=True)
+
+        # print(len(asin_info_array), flush=True)
+        # print(len(inventory_array), flush=True)
+        #
+        # for i in range(0, len(asin_info_array)):
+        #     with open('test.txt', 'a') as f:
+        #         f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
+        #     print(inventory_array[i])
+        #     with open('test.txt', 'a') as f:
+        #         f.writelines(json.dumps(asin_info_array[i], cls=DateEncoder) + "\n")
+        #     f.close()
+        #     print(asin_info_array[i])
+
+        status = amazondata.create_database(db_name)
+        if status == True:
+            status = amazondata.connect_database(db_name)
+            if status == True:
+                for i in range(0, len(asin_info_array)):
+                    asin = asin_info_array[i]['asin']
+                    node_table = node + '_' + type
+                    status = amazondata.create_node_table(node_table)
+                    if status == True:
+                        # print("node_table create sucessfully + " + node_table, flush=True)
+                        status = amazondata.insert_node_data(node_table, asin_info_array[i])
+                        if status == True:
+                            # print("node_data inserted sucessfully.. + " + node_table, flush=True)
+                            if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] == 1 and is_sale:
+                                inventory_table = 'INVENTORY_' + asin
+                                status = amazondata.create_inventory_table(inventory_table)
+                                if status == True:
+                                    # print("inventory_table create sucessfully + " + inventory_table, flush=True)
+                                    cur_date = date.today()
+                                    data = {
+                                        'date' : cur_date,
+                                        'inventory' : inventory_array[i]['inventory']
+                                    }
+                                    status = amazondata.insert_inventory_data(inventory_table, data)
+                                    if status == True:
+                                        # print("inventory data insert sucessfully.. + " + inventory_table, flush=True)
+                                        condition = 'asin=\'' + asin + '\''
+                                        value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+                                        status = amazondata.update_data(node_table, 'inventory_date', value, condition)
+                                        if status == True:
+                                            # print("invetory_date update sucessfully.. + " + node_table, flush=True)
+                                            task_data = {
+                                                'node': node,
+                                                'status': 'ok',
+                                                'last_date': cur_date,
+                                                'node_name': node_name
+                                            }
+                                            status = insert_task_node('sale_task_us', task_data)
+                                            if status == False:
+                                                print("insert task node in failure... + " +  node, flush=True)
+                                            status = amazondata.get_yesterday_sale(inventory_table)
+                                            if status != -999:
+                                                # print("get_yesterday_sale sucessfully.. + " + inventory_table, flush=True)
+                                                yesterday = date.today() + timedelta(days=-1)
+                                                data = {
+                                                    'date' : yesterday,
+                                                    'sale' : copy.deepcopy(status)
+                                                }
+                                                sale_table = 'SALE_' + asin
+                                                status = amazondata.create_sale_table(sale_table)
+                                                if status == True:
+                                                    # print("sale_table create sucessfully.. + " + sale_table, flush=True)
+                                                    status = amazondata.insert_sale_data(sale_table, data)
+                                                    if status == True:
+                                                        # print("sale_data insert sucessfully... + " + sale_table, flush=True)
+                                                        avg_sale = amazondata.get_column_avg(sale_table, 'sale')
+                                                        if avg_sale != -999:
+                                                            status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
+                                                            if status == False:
+                                                                print("avg_sale update fail.. + " + node_table, flush=True)
+                                                            # else:
+                                                            #     print("avg_sale update successfully.. + " + node_table, flush=True)
+                                                        # else:
+                                                        #     print(" get avg_sale fail.. + " + node_table, flush=True)
+                                                    else:
+                                                        print("sale_data insert fail... + " + sale_table, flush=True)
+                                                else:
+                                                    print("sale_table create fail.. + " + sale_table, flush=True)
+                                        else:
+                                            print("invetory_date update fail.. + " + node_table, flush=True)
+                                    else:
+                                        print("inventory data insert fail.. + " + inventory_table, flush=True)
+                                else:
+                                    print("inventory_table create fail + " + inventory_table, flush=True)
+                            else:
+                                pass
+                                # print('Inventory Limited, no need to record...', flush=True)
+                        else:
+                            print("asin_info_data inserted fail.. + " + node_table, flush=True)
+                    else:
+                        print("node_table create fail + " + node_table, flush=True)
+
+                amazondata.disconnect_database()
+            else:
+                print("connect_database fail..", flush=True)
+
+        t2 = time.time()
+        print("总耗时：" + format(t2 - t1))
+
+        return status
 
     def get_inventory_us(self, driver_upper, asin, ips_array, is_sale):
         if driver_upper == False:
@@ -1310,21 +1508,21 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
         print(str(e), flush=True)
         amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
 
-def amspider_test(node, node_name, type, page):
+def amspider_test(node, node_name, type, filename):
     ips_array = amazonwrapper.get_all_accessible_ip()
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
     amazonspider = AmazonSpider()
     try:
-        status = amazonspider.us_node_gather('data_us', node, node_name, type, page, ips_array, True)
+        status = amazonspider.us_seller_gather('data_us', node, node_name, type, filename, ips_array, True)
     except Exception as e:
         print(str(e), flush=True)
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-    amspider_test('GWA', 'AZZQLCSVQ753J', 'seller', 1)
+    amspider_test('GWA', 'automotive', 'SL', '../ss.xls')
     exit()
     node_file = sys.argv[1]
     if node_file != '0':
