@@ -269,6 +269,8 @@ def amsale_from_mysql(country):
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    amsale_from_mysql('us')
+    exit()
     task_id = sys.argv[1]   # 1
     node_type = sys.argv[2] # BS - NR
     country = sys.argv[3] # us/jp
