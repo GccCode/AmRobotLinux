@@ -156,7 +156,9 @@ def amsale_from_mysql(country, node_type):
         status = amazondata.connect_database('data_jp')
     if status == True:
         try:
-            status_condition = 'status<>\'no\''
+            cur_date = date.today()
+            value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+            status_condition = 'status<>\'no\' and last_date<>' + value
             node_task = amazonwrapper.get_one_data(db_name, task_table, status_condition)
             while node_task != False:
                 t1 = time.time()
@@ -252,12 +254,11 @@ def amsale_from_mysql(country, node_type):
                             if status == False:
                                 print("update task node failed.. + " + node, flush=True)
                             else:
-                                status = amazonwrapper.update_data(db_name, task_table, 'status', '\'ok\'', sql_condition)
-                                if status != False:
-                                    print("amsale finish " + node, flush=True)
+                                print("test finish..." + node, flush=True)
 
-                                print("test finish...", flush=True)
-                                exit()
+                            status = amazonwrapper.update_data(db_name, task_table, 'status', '\'ok\'', sql_condition)
+                            if status != False:
+                                print("amsale finish " + node, flush=True)
 
                 t2 = time.time()
                 print("总耗时：" + format(t2 - t1))
