@@ -255,7 +255,7 @@ def amsale_from_mysql(country, node_type):
                                                     exit(-1)
                                                 status = False
                                                 continue
-                                            print("Get Inventory Jp In Failure.", flush=True)
+                                            print("Get Inventory In Failure.", flush=True)
                                             status = update_asin_status_err(amazondata, node, asin)
                                             if status == False:
                                                 print("update asin status faild.. + " + node + ' ' + asin, flush=True)
@@ -282,7 +282,9 @@ def amsale_from_mysql(country, node_type):
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    amsale_from_mysql('us', 'BS')
+    country = sys.argv[1]
+    type = sys.argv[2]
+    amsale_from_mysql(country, type)
     exit()
     # task_id = sys.argv[1]   # 1
     # node_type = sys.argv[2] # BS - NR
