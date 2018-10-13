@@ -190,6 +190,7 @@ def amsale_from_mysql(country, node_type):
                                         if country == 'jp':
                                             result = amazonspider.get_inventory_jp(False, asin, ips_array, True)
                                         elif country == 'us':
+                                            print("????", flush=True)
                                             result = amazonspider.get_inventory_us(False, asin, ips_array, True)
                                         if result != False and result != -111:
                                             cur_date = date.today()
