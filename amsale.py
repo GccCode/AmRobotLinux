@@ -127,9 +127,14 @@ def is_all_inventory_finish(country, node_table):
     return status
 
 
-def get_asin_rows_from_node(ad, table):
+def get_asin_rows_from_node(ad, country, table):
     status = False
-    sql = 'select * from ' + table + ' where status=\'ok\' and limited=\'no\''
+    if country == 'us':
+        # asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] == 1 and asin_info[7] != 'FBM' and float(asin_info[3]) > 9:
+        sql = 'select * from ' + table + ' where status=\'ok\' and limited=\'no\' and seller=1 and shipping<>\'FBM\' and price<9 and inventory_date<>\'' + date.today().strftime("%Y-%m-%d") + '\''
+        print(sql, flush=True)
+    elif country == 'jp':
+        sql = 'select * from ' + table + ' where status=\'ok\' and limited=\'no\''
     cursor = ad.select_data(sql)
     if cursor == False:
         print("Get Asin_Rows From Node In Failure" + table, flush=True)
@@ -172,7 +177,7 @@ def amsale_from_mysql(country, node_type):
                         print("22222", flush=True)
                         while is_all_inventory_finish(country, node_table) == False:
                             print("333 + " + node_table, flush=True)
-                            asin_cursor = get_asin_rows_from_node(amazondata, node_table)
+                            asin_cursor = get_asin_rows_from_node(amazondata, country, node_table)
                             if asin_cursor != False:
                                 asin_info_array = asin_cursor.fetchall()
                                 asin_info_array_len = len(asin_info_array)
