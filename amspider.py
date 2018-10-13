@@ -599,7 +599,7 @@ class AmazonSpider():
             driver.set_script_timeout(60)
             try:
                 amazonpage = AmazonPage(driver) # /ref=zg_bs_pg_1?_encoding=UTF8&pg=2
-                url = "https://www.amazon.com/gp/bestsellers/electronics/" + node + "/ref=zg_bs_pg_1?_encoding=UTF8&pg="  + str(page + 1)
+                url = "https://www.amazon.com/gp/bestsellers/electronics/" + node + "/ref=zg_bs_pg_1?_encoding=UTF8&pg=" + str(page + 1)
                 driver.get(url)
                 amazonpage.random_sleep(3000, 5000)
                 print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
@@ -611,7 +611,8 @@ class AmazonSpider():
                         asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
                         # print("Asin is: " + asin_info_data['asin'], flush=True)
                     else:
-                        status = False
+                        status = -111
+                        print("network crashing??", flush=True)
                         break
 
                     tmp_symbol = CRITICAL_REVIEWS_PREFIX_US + str(i + 1) + CRITICAL_REVIEWS_POSTFIX_US
@@ -1289,11 +1290,11 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
                     status = amazonspider.jp_node_gather('data_jp', node, node_name, type, 3, ips_array, is_sale)
                 elif country == 'us':
                     status = amazonspider.us_node_gather('data_us', node, node_name, type, 2, ips_array, is_sale)
-                if status != False:
+                if status != False and status != -111:
                     status = amazonwrapper.update_data(db_name, table, 'status', '\'ok\'', sql_condition)
                     if status != False:
                         print("amspider finish " + node, flush=True)
-                else:
+                elif status == False:
                     status = amazonwrapper.update_data(db_name, table, 'status', '\'err\'', sql_condition)
 
             node_info = amazonwrapper.get_one_data(db_name, table, condition)
