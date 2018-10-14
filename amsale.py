@@ -173,6 +173,9 @@ def amsale_from_mysql(country, node_type):
                 node = node_task[0]
                 node_table = node + '_' + node_type
                 sql_condition = 'node=' + '\'' + node + '\''
+                print(node, flush=True)
+                print(node_table, flush=True)
+                print(sql_condition, flush=True)
                 status = amazonwrapper.update_data(db_name, task_table, 'status', '\'no\'', sql_condition)
                 if status != False:
                     while is_task_finish(db_name, task_table, node) == False:
