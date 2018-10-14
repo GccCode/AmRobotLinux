@@ -91,7 +91,7 @@ def is_task_finish(db_name, table, node):
     else:
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-        sql = 'select * from ' + table + ' where node=' + node + ' and last_date <> ' + value
+        sql = 'select * from ' + table + ' where node=\'' + node + '\' and last_date <> ' + value
         status = amazondata.select_data(sql)
         if status == False:
             status = True
