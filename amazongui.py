@@ -8,16 +8,22 @@ class AmazonGUI():
     def __init__(self):
         pass
 
-    def create_page(self, node, node_name, type, css_file, data, output):
+    def create_page(self, country, node, node_name, type, css_file, data, output):
         page_name =  node_name.split('/')[len(node_name.split('/')) - 1]
         mainpage = PyH(page_name)
         mainpage.addCSS(css_file)
         maindiv = div()
         mainpage <<  maindiv
-        if type == 'BS':
-            maintitlelink = 'https://www.amazon.co.jp/gp/bestsellers/electronics/' + node
-        elif type == 'NR':
-            maintitlelink = 'https://www.amazon.co.jp/gp/new-releases/electronics/' + node
+        if country == 'jp': #
+            if type == 'BS':
+                maintitlelink = 'https://www.amazon.co.jp/gp/bestsellers/electronics/' + node
+            elif type == 'NR':
+                maintitlelink = 'https://www.amazon.co.jp/gp/new-releases/electronics/' + node
+        elif country == 'us':
+            if type == 'BS' or type == 'SL':
+                maintitlelink = 'https://www.amazon.com/gp/bestsellers/electronics/' + node
+            elif type == 'NR':
+                maintitlelink = 'https://www.amazon.com/gp/new-releases/electronics/' + node
         maintitle_a = a(node_name, href=maintitlelink, target ="_blank")
         maintitle = h4()
         maintitle << maintitle_a
@@ -45,19 +51,32 @@ class AmazonGUI():
             seller = data[index][8]
             avg_sale = data[index][9]
             limited = data[index][11]
-            tmp_data = [rank, asin, img_src, ('￥ ' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
+            if country == 'jp':
+                tmp_data = [rank, asin, img_src, ('￥ ' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
+            elif country == 'us':
+                tmp_data = [rank, asin, img_src, ('$' + str(price)), review, rate, qa, shipping, seller, avg_sale,
+                            limited]
             for i in range(0, 11):
                 if i != 1 and i != 2:
                     tmp_td = td(str(tmp_data[i]))
                 elif i == 1:
-                    asin_link = 'https://www.amazon.co.jp/dp/' + tmp_data[1]
+                    if country == 'jp':
+                        asin_link = 'https://www.amazon.co.jp/dp/' + tmp_data[1]
+                    elif country == 'us':
+                        asin_link = 'https://www.amazon.com/dp/' + tmp_data[1]
                     asin_a  = a(asin,  href=asin_link, target ="_blank")
                     tmp_td = td()
                     tmp_td << asin_a
                 elif i == 2:
-                    asin_link = 'https://www.amazon.co.jp/dp/' + tmp_data[1]
+                    if country == 'jp':
+                        asin_link = 'https://www.amazon.co.jp/dp/' + tmp_data[1]
+                    elif country == 'us':
+                        asin_link = 'https://www.amazon.com/dp/' + tmp_data[1]
                     img_a = a(href=asin_link, target ="_blank")
-                    img_src = 'https://images-na.ssl-images-amazon.com/images/I/'+ tmp_data[2] + '._SL500_SR160,160_.jpg'
+                    if country == 'jp':
+                        img_src = 'https://images-na.ssl-images-amazon.com/images/I/'+ tmp_data[2] + '._SL500_SR160,160_.jpg'
+                    elif country == 'us':
+                        img_src = 'https://images-na.ssl-images-amazon.com/images/I/' + tmp_data[2] + '._AC_UL200_SR200,200_.jpg'
                     img_img = img(border="0", src=img_src)
                     img_a << img_img
                     tmp_td = td()
@@ -72,10 +91,18 @@ class AmazonGUI():
 
 if __name__ == "__main__":
     amazongui = AmazonGUI()
-    data = get_all_data('amazondata', '5662827051_BS', False)
-    if data != False:
-        node_name = get_node_name('node_info', 'health', '5662827051')
-        if node_name != False:
-            amazongui.create_page('5662827051', node_name[0][1], 'BS', 'amazongui.css', data, '../')
-            amazondata = AmazonData()
+    condition = 'length(node)>4'
+    table_array = get_all_data('amazontask', 'sale_task_us', 'node', False)
+    for node in table_array:
+        if len(node[0]) > 4:
+            print(node[0], flush=True)
+            table_name = node[0] + '_BS'
+            condition = 'avg_sale>0'
+            data = get_all_data('data_us', table_name, False, condition)
+            if data != False:
+                if len(data) > 3:
+                    node_name = get_node_name_from_all('node_info_us', node[0], 'us')
+                    if node_name != False:
+                        print(node_name.replace(' & ', '_'), flush=True)
+                        amazongui.create_page('us', node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../')
 

@@ -403,7 +403,7 @@ def get_node_name_from_all(db_name, node, country):
 
     return False
 
-def get_all_data(db_name, table_name, column):
+def get_all_data(db_name, table_name, column, condition):
     table_array = []
     amazondata = AmazonData()
     status = amazondata.connect_database(db_name)
@@ -411,9 +411,15 @@ def get_all_data(db_name, table_name, column):
         print("connect in failure..", flush=True)
     else:
         if column == False:
-            sql = 'select * from ' + table_name
+            if condition == False:
+                sql = 'select * from ' + table_name
+            else:
+                sql = 'select * from ' + table_name + ' where ' + condition
         else:
-            sql = 'select ' + column + ' from ' +table_name
+            if condition == False:
+                sql = 'select ' + column + ' from ' +table_name
+            else:
+                sql = 'select ' + column + ' from ' + table_name + ' where ' + condition
         cursor = amazondata.query(sql)
         if cursor != False:
             if cursor.rowcount > 0:
@@ -433,7 +439,7 @@ def update_asin_status_ok(db_name, node):
     if status == False:
         print("connect in failure..", flush=True)
     else:
-        asin_array = get_all_data(db_name, (node + '_BS'), 'asin')
+        asin_array = get_all_data(db_name, (node + '_BS'), 'asin', False)
         if asin_array != False:
             for index in range(len(asin_array)):
                 # print(asin_array[index])
@@ -441,16 +447,19 @@ def update_asin_status_ok(db_name, node):
                 amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
         amazondata.disconnect_database()
 
-def update_all_task_status():
-    db_name = 'amazontask'
+def update_all_task_status(db_name, table, country):
     amazondata = AmazonData()
     status = amazondata.connect_database(db_name)
     if status == False:
         print("connect in failure..", flush=True)
     else:
-        node_array = get_all_data(db_name, 'SALE_TASK', 'node')
+        condition = 'length(node)>4'
+        node_array = get_all_data(db_name, table, 'node', condition)
         for index in range(len(node_array)):
-            update_asin_status_ok('amazondata', node_array[index][0])
+            if country == 'jp':
+                update_asin_status_ok('data_jp', node_array[index][0])
+            elif country == 'us':
+                update_asin_status_ok('data_us', node_array[index][0])
         amazondata.disconnect_database()
 
 def average_all_task():
@@ -460,7 +469,7 @@ def average_all_task():
     if status == False:
         print("connect in failure..", flush=True)
     else:
-        node_array = get_all_data(db_name, 'SALE_TASK', 'node')
+        node_array = get_all_data(db_name, 'SALE_TASK', 'node', False)
         limit = int(len(node_array) / 3)
         for index in range(len(node_array)):
             # print(asin_array[index])
@@ -473,18 +482,25 @@ def average_all_task():
                 amazondata.update_data('SALE_TASK', 'task_id', '\'3\'', condition)
         amazondata.disconnect_database()
 
-def update_all_task_date(db_name, date):
+def update_all_task_date(db_name, date, country):
     amazondata = AmazonData()
     status = amazondata.connect_database(db_name)
     if status == False:
         print("connect in failure..", flush=True)
     else:
-        node_array = get_all_data(db_name, 'SALE_TASK', 'node')
+        if country == 'jp':
+            task_table = 'sale_task_jp'
+            data_table = 'data_jp'
+        elif country == 'us':
+            task_table = 'sale_task_us'
+            data_table = 'data_us'
+
+        node_array = get_all_data(db_name, task_table, 'node', False)
         for index in range(len(node_array)):
             # print(asin_array[index])
             condition = 'node=\'' + node_array[index][0] + '\''
-            amazondata.update_data('SALE_TASK', 'last_date', '\'' + date + '\'', condition)
-            update_asin_status_ok('amazondata', node_array[index][0])
+            amazondata.update_data(task_table, 'last_date', '\'' + date + '\'', condition)
+            update_asin_status_ok(data_table, node_array[index][0])
         amazondata.disconnect_database()
 
 # SELECT CREATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='amazondata' AND TABLE_NAME='INVENTORY_B07GYTTF8B';
@@ -510,8 +526,8 @@ if __name__ == "__main__":
     # update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
     # insert_all_node_info(xls_file_array_us)
     # delete_tables('node_info_us', '_BS')
-    delete_column('node_info_us', 'sporting_goods', 'status')
-    add_new_column('node_info_us', 'sporting_goods', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
+    # delete_column('node_info_us', 'sporting_goods', 'status')
+    # add_new_column('node_info_us', 'sporting_goods', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
     # delete_column('node_info_us', 'automotive', 'status')
-
+    update_all_task_status('amazontask', 'sale_task_us', 'us')
     # get_one_data('node_info_us', 'automotive', False)
