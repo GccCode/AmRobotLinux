@@ -21,6 +21,7 @@ import amazonwrapper
 import utils
 import traceback
 import xlrd
+import amazonglobal
 
 
 LOGO = (By.ID, 'nav-logo')
@@ -140,9 +141,13 @@ def getimgidfromhref(template):
     return slotList[0]
 
 def getsale_jp(template):
-    rule = r'、(.*?)点'
-    slotList = re.findall(rule, template)
-    return slotList[0]
+    try:
+        rule = r'、(.*?)点'
+        slotList = re.findall(rule, template)
+        return slotList[0]
+    except:
+        print(template, flush=True)
+        print(traceback.format_exc(), flush=True)
 
 def getsale_us(template):
     rule = r'the (.*?) available'
@@ -197,7 +202,7 @@ def getprice_us(price):
         return float(price.strip('$ ').replace(',', ''))
 
 def insert_task_node(table, data):
-    amazontask_db_name = 'amazontask'
+    amazontask_db_name = amazonglobal.db_name_task
     amazondata = AmazonData()
     status = amazondata.create_database(amazontask_db_name)
     if status == False:
@@ -411,9 +416,9 @@ class AmazonSpider():
                 print("Except: NoSuchElementException", flush=True)
             except Exception as e:
                 status = False
-                amazonpage.window_capture('unknown-error')
+                # amazonpage.window_capture('unknown-error')
                 print(traceback.format_exc(), flush=True)
-                print(e, flush=True)
+                # print(e, flush=True)
             finally:
                 driver.quit()
                 if status == False:
@@ -434,16 +439,17 @@ class AmazonSpider():
                         tmp_info['seller'] = result['seller']
                         tmp_info['qa'] = result['qa']
                         tmp_info['limited'] = result['limited']
-                        if result['seller'] == 1:
+                        # if result['seller'] == 1:
+                        if is_sale:
                             inventory_array.append(copy.deepcopy(result))
-                        else:
-                            asin_info_remove_array.append(asin_info_array[i])
+                        # else:
+                        #     asin_info_remove_array.append(asin_info_array[i])
 
             except Exception as e:
                 status = False
-                amazonpage.window_capture('unknown-error')
+                # amazonpage.window_capture('unknown-error')
                 print(traceback.format_exc(), flush=True)
-                print(str(e), flush=True)
+                # print(str(e), flush=True)
             finally:
                 if status == False:
                     return False
@@ -510,7 +516,7 @@ class AmazonSpider():
                                                     'last_date': cur_date,
                                                     'node_name': node_name
                                                 }
-                                                status = insert_task_node('sale_task_jp', task_data)
+                                                status = insert_task_node(amazonglobal.table_sale_task_jp, task_data)
                                                 if status == False:
                                                     print("insert task node in failure... + " +  node, flush=True)
                                                 status = amazondata.get_yesterday_sale(inventory_table)
@@ -690,7 +696,7 @@ class AmazonSpider():
                 status = False
                 amazonpage.window_capture('unknown-error')
                 print(traceback.format_exc(), flush=True)
-                print(e, flush=True)
+                # print(e, flush=True)
             finally:
                 driver.quit()
                 if status == False:
@@ -720,7 +726,7 @@ class AmazonSpider():
 
             except Exception as e:
                 status = False
-                amazonpage.window_capture(asin + 'unknown-error')
+                # amazonpage.window_capture(asin + 'unknown-error')
                 print(traceback.format_exc(), flush=True)
                 # print(str(e), flush=True)
             finally:
@@ -784,7 +790,7 @@ class AmazonSpider():
                                                     'last_date': cur_date,
                                                     'node_name': node_name
                                                 }
-                                                status = insert_task_node('sale_task_us', task_data)
+                                                status = insert_task_node(amazonglobal.table_sale_task_us, task_data)
                                                 if status == False:
                                                     print("insert task node in failure... + " +  node, flush=True)
                                                 status = amazondata.get_yesterday_sale(inventory_table)
@@ -1409,9 +1415,9 @@ class AmazonSpider():
             status = -111
         except Exception as e:
             status = False
-            amazonasinpage.window_capture(asin + 'unknown-error')
+            # amazonasinpage.window_capture(asin + 'unknown-error')
             print(traceback.format_exc(), flush=True)
-            print(e, flush=True)
+            # print(e, flush=True)
         finally:
             if driver_upper == False:
                 driver.quit()
