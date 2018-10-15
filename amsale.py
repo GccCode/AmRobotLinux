@@ -411,6 +411,8 @@ if __name__ == "__main__":
         print("task running..", flush=True)
     else:
         print("task stop...", flush=True)
+        update_task_status()
+        update_token_count()
     if is_token_runout():
         print("token runout...", flush=True)
     else:
