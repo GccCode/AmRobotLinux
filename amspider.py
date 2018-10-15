@@ -473,15 +473,15 @@ class AmazonSpider():
                             node_table = node + '_' + type
                             status = amazondata.create_node_table(node_table)
                             if status == True:
-                                # print("node_table create sucessfully + " + node_table, flush=True)
+                                print("node_table create sucessfully + " + node_table, flush=True)
                                 status = amazondata.insert_node_data(node_table, asin_info_array[i])
                                 if status == True:
-                                    # print("node_data inserted sucessfully.. + " + node_table, flush=True)
+                                    print("node_data inserted sucessfully.. + " + node_table, flush=True)
                                     if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['shipping'] != 'FBM' and float(asin_info_array[i]['price']) > 800:
                                         inventory_table = 'INVENTORY_' + asin
                                         status = amazondata.create_inventory_table(inventory_table)
                                         if status == True:
-                                            # print("inventory_table create sucessfully + " + inventory_table, flush=True)
+                                            print("inventory_table create sucessfully + " + inventory_table, flush=True)
                                             cur_date = date.today()
                                             data = {
                                                 'date' : cur_date,
@@ -489,12 +489,12 @@ class AmazonSpider():
                                             }
                                             status = amazondata.insert_inventory_data(inventory_table, data)
                                             if status == True:
-                                                # print("inventory data insert sucessfully.. + " + inventory_table, flush=True)
+                                                print("inventory data insert sucessfully.. + " + inventory_table, flush=True)
                                                 condition = 'asin=\'' + asin + '\''
                                                 value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
                                                 status = amazondata.update_data(node_table, 'inventory_date', value, condition)
                                                 if status == True:
-                                                    # print("invetory_date update sucessfully.. + " + node_table, flush=True)
+                                                    print("invetory_date update sucessfully.. + " + node_table, flush=True)
                                                     task_data = {
                                                         'node': node,
                                                         'status': 'ok',
@@ -506,7 +506,7 @@ class AmazonSpider():
                                                         print("insert task node in failure... + " +  node, flush=True)
                                                     status = amazondata.get_yesterday_sale(inventory_table)
                                                     if status != -999:
-                                                        # print("get_yesterday_sale sucessfully.. + " + inventory_table, flush=True)
+                                                        print("get_yesterday_sale sucessfully.. + " + inventory_table, flush=True)
                                                         yesterday = date.today() + timedelta(days=-1)
                                                         data = {
                                                             'date' : yesterday,
@@ -515,10 +515,10 @@ class AmazonSpider():
                                                         sale_table = 'SALE_' + asin
                                                         status = amazondata.create_sale_table(sale_table)
                                                         if status == True:
-                                                            # print("sale_table create sucessfully.. + " + sale_table, flush=True)
+                                                            print("sale_table create sucessfully.. + " + sale_table, flush=True)
                                                             status = amazondata.insert_sale_data(sale_table, data)
                                                             if status == True:
-                                                                # print("sale_data insert sucessfully... + " + sale_table, flush=True)
+                                                                print("sale_data insert sucessfully... + " + sale_table, flush=True)
                                                                 avg_sale = amazondata.get_column_avg(sale_table, 'sale')
                                                                 if avg_sale != -999:
                                                                     status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
