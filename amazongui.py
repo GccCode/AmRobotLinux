@@ -100,9 +100,8 @@ if __name__ == "__main__":
             condition = 'avg_sale>0'
             data = get_all_data('data_us', table_name, False, condition)
             if data != False:
-                if len(data) > 3:
-                    node_name = get_node_name_from_all('node_info_us', node[0], 'us')
-                    if node_name != False:
-                        print(node_name.replace(' & ', '_'), flush=True)
-                        amazongui.create_page('us', node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page/')
+                node_name = get_node_name_from_all('node_info_us', node[0], 'us')
+                if node_name != False:
+                    print(node_name.replace(' & ', '_'), flush=True)
+                    amazongui.create_page('us', node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page/')
 
