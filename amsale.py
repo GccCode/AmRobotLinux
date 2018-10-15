@@ -424,6 +424,7 @@ if __name__ == "__main__":
                     amsale_from_mysql(country, type)
 
             time.sleep(60)
+            print("task is not running...", flush=True)
 
     elif task == 'fix':
         while True:
@@ -437,6 +438,10 @@ if __name__ == "__main__":
                 status = update_token_count()
                 if status == False:
                     print('update token count in failure...', flush=True)
+                else:
+                    print("update token count ok...", flush=True)
+            else:
+                print('token not runout now...', flush=True)
 
             time.sleep(60)
     # task_id = sys.argv[1]   # 1
