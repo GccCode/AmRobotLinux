@@ -104,5 +104,5 @@ if __name__ == "__main__":
                     node_name = get_node_name_from_all('node_info_us', node[0], 'us')
                     if node_name != False:
                         print(node_name.replace(' & ', '_'), flush=True)
-                        amazongui.create_page('us', node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../')
+                        amazongui.create_page('us', node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page')
 
