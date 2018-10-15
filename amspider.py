@@ -720,7 +720,7 @@ class AmazonSpider():
 
             except Exception as e:
                 status = False
-                amazonpage.window_capture('unknown-error')
+                amazonpage.window_capture(asin + 'unknown-error')
                 print(traceback.format_exc(), flush=True)
                 # print(str(e), flush=True)
             finally:
@@ -760,7 +760,7 @@ class AmazonSpider():
                             status = amazondata.insert_node_data(node_table, asin_info_array[i])
                             if status == True:
                                 # print("node_data inserted sucessfully.. + " + node_table, flush=True)
-                                if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] == 1 and is_sale:
+                                if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] > 0 and asin_info_array[i]['seller'] < 4 and is_sale:
                                     inventory_table = 'INVENTORY_' + asin
                                     status = amazondata.create_inventory_table(inventory_table)
                                     if status == True:

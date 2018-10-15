@@ -116,7 +116,7 @@ def is_all_inventory_finish(country, node_table):
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         if country == 'us':
-            sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller=1 and shipping<>\'FBM\' and price>9' + ' and inventory_date <> ' + value
+            sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>9' + ' and inventory_date <> ' + value
         elif country == 'jp':
             sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\'' + ' and inventory_date <> ' + value
         status = amazondata.select_data(sql)
@@ -173,9 +173,9 @@ def amsale_from_mysql(country, node_type):
                 node = node_task[0]
                 node_table = node + '_' + node_type
                 sql_condition = 'node=' + '\'' + node + '\''
-                print(node, flush=True)
-                print(node_table, flush=True)
-                print(sql_condition, flush=True)
+                # print(node, flush=True)
+                # print(node_table, flush=True)
+                # print(sql_condition, flush=True)
                 status = amazonwrapper.update_data(db_name, task_table, 'status', '\'no\'', sql_condition)
                 if status != False:
                     while is_task_finish(db_name, task_table, node) == False:
@@ -192,7 +192,7 @@ def amsale_from_mysql(country, node_type):
                                     asin = asin_info[1]
                                     status = False
                                     if country == 'us':
-                                        if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] == 1 and asin_info[7] != 'FBM' and float(asin_info[3]) > 9:
+                                        if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] > 0  and asin_info[8] < 4 and asin_info[7] != 'FBM' and float(asin_info[3]) > 9:
                                             status = True
                                     elif country == 'jp':
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")):
