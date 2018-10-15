@@ -94,14 +94,13 @@ if __name__ == "__main__":
     condition = 'length(node)>4'
     table_array = get_all_data('amazontask', 'sale_task_us', 'node', False)
     for node in table_array:
-        if len(node[0]) > 4:
-            print(node[0], flush=True)
-            table_name = node[0] + '_BS'
-            condition = 'avg_sale>0'
-            data = get_all_data('data_us', table_name, False, condition)
-            if data != False:
-                node_name = get_node_name_from_all('node_info_us', node[0], 'us')
-                if node_name != False:
-                    print(node_name.replace(' & ', '_'), flush=True)
-                    amazongui.create_page('us', node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page/')
+        print(node[0], flush=True)
+        table_name = node[0] + '_BS'
+        condition = 'avg_sale>0'
+        data = get_all_data('data_us', table_name, False, condition)
+        if data != False:
+            node_name = get_node_name_from_all('node_info_us', node[0], 'us')
+            if node_name != False:
+                print(node_name.replace(' & ', '_'), flush=True)
+                amazongui.create_page('us', node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page/')
 
