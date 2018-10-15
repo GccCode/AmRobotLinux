@@ -42,9 +42,6 @@ class AmazonData():
     def is_table_exsist(self, table):
         return self.amsql.is_mysql_table_exsist(self.db, table)
 
-    def is_asin_inventory_exsist(self, table, column):
-        return self.amsql.is_mysql_column_exsit(self.db, 'amazondata', table, column)
-
     def create_ip_table(self, table):
         columns = 'ip VARCHAR(30) NOT NULL, status VARCHAR(2) NOT NULL, PRIMARY KEY (ip)'
         status = True
@@ -66,6 +63,22 @@ class AmazonData():
 
     def insert_amkiller_keyword_data(self, table, data):
         return self.amsql.insert_data(self.db, table, data)
+
+    def create_token_table(self, table):
+        columns = 'count int(20) NOT NULL, PRIMARY KEY (count)'
+        status = True
+        if self.amsql.is_mysql_table_exsist(self.db, table) == False:
+            status = self.amsql.create_table(self.db, table, columns)
+
+        return status
+
+    def create_task_status_table(self, table):
+        columns = 'status CHAR(5) NOT NULL DEFAULT \'run\' check(status in(\'run\', \'stop\'), PRIMARY KEY (status)'
+        status = True
+        if self.amsql.is_mysql_table_exsist(self.db, table) == False:
+            status = self.amsql.create_table(self.db, table, columns)
+
+        return status
 
     def create_task_table(self, table):
         columns = 'node VARCHAR(50) NOT NULL, status CHAR(3) NOT NULL, last_date DATE NOT NULL, node_name VARCHAR(100) NOT NULL, PRIMARY KEY (node)'
@@ -103,6 +116,9 @@ class AmazonData():
 
     def update_data_autoinc(self, table, key, condition):
         return self.amsql.update_data_autoinc(self.db, table, key, condition)
+
+    def update_data_autodes(self, table, key, condition):
+        return self.amsql.update_data_autodes(self.db, table, key, condition)
 
     def add_keyword_column(self, db_name, table, asin, column):
         status = True

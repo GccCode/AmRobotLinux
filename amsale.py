@@ -11,6 +11,7 @@ import amazonwrapper
 import io
 import time
 import traceback
+import amazonglobal
 
 
 def get_task_nodes(db_name, task_id):
@@ -62,7 +63,7 @@ def update_asin_status_err(am, node, asin):
     return am.update_data(node + '_BS', 'status', '\'err\'', condition)
 
 def is_all_task_finish(task_id):
-    amazontask_db_name = 'amazontask'
+    amazontask_db_name = amazonglobal.db_name_task
     amazondata = AmazonData()
     status = amazondata.connect_database(amazontask_db_name)
     if status == False:
@@ -79,6 +80,122 @@ def is_all_task_finish(task_id):
             status = False
 
         amazondata.disconnect_database()
+
+    return status
+
+def is_token_runout():
+    db_name = amazonglobal.db_name_token
+    table = amazonglobal.table_token
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("create database in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("Connect Database In Failure + " + db_name, flush=True)
+            status = False
+        else:
+            status = amazondata.create_token_table(table)
+            if status == False:
+                print("create token table in failure...", flush=True)
+            else:
+                sql = 'select * from ' + table + ' where count<>0'
+                status = amazondata.select_data(sql)
+                if status == False:
+                    status = True
+                else:
+                    status = False
+
+            amazondata.disconnect_database()
+
+    return status
+
+def is_task_running():
+    db_name = amazonglobal.db_name_task
+    table = amazonglobal.table_sale_task_status
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("create database in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("Connect Database In Failure + " + db_name, flush=True)
+            status = False
+        else:
+            status = amazondata.create_task_status_table(table)
+            if status == False:
+                print("create task status table in failure...", flush=True)
+            else:
+                sql = 'select * from ' + table + ' where status=\'stop\''
+                status = amazondata.select_data(sql)
+                if status == False:
+                    status = True
+                else:
+                    status = False
+
+                amazondata.disconnect_database()
+
+    return status
+
+def update_task_status():
+    db_name = amazonglobal.db_name_task
+    table = amazonglobal.table_sale_task_status
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("create database in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("Connect Database In Failure + " + db_name, flush=True)
+            status = False
+        else:
+            condition = 'status=\'run\''
+            status = amazondata.update_data(table, 'status', '\'stop\'', condition)
+
+            amazondata.disconnect_database()
+
+    return status
+
+def update_token_count():
+    db_name = amazonglobal.db_name_token
+    table = amazonglobal.table_token
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("create database in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("Connect Database In Failure + " + db_name, flush=True)
+            status = False
+        else:
+            condition = 'count=0'
+            status = amazondata.update_data(table, 'count', 20, condition)
+
+            amazondata.disconnect_database()
+
+    return status
+
+def desc_token_count():
+    db_name = amazonglobal.db_name_token
+    table = amazonglobal.table_token
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("create database in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("Connect Database In Failure + " + db_name, flush=True)
+            status = False
+        else:
+            condition = 'count<>0'
+            status = amazondata.update_data_autodes(table, 'count', condition)
+
+            amazondata.disconnect_database()
 
     return status
 
@@ -104,13 +221,13 @@ def is_task_finish(db_name, table, node):
 
 def is_all_inventory_finish(country, node_table):
     if country == 'us':
-        amazontask_db_name = 'data_us'
+        data_db_name = amazonglobal.db_name_data_us
     elif country == 'jp':
-        amazontask_db_name = 'data_jp'
+        data_db_name = amazonglobal.db_name_data_jp
     amazondata = AmazonData()
-    status = amazondata.connect_database(amazontask_db_name)
+    status = amazondata.connect_database(data_db_name)
     if status == False:
-        print("Connect Database In Failure + " + amazontask_db_name, flush=True)
+        print("Connect Database In Failure + " + data_db_name, flush=True)
         status = False
     else:
         cur_date = date.today()
@@ -152,22 +269,22 @@ def amsale_from_mysql(country, node_type):
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
-    db_name = 'amazontask'
+    task_db = amazonglobal.db_name_task
     amazonspider = AmazonSpider()
     amazondata = AmazonData()
     status = False
     if country == 'us':
-        task_table = 'sale_task_us'
-        status = amazondata.connect_database('data_us')
+        task_table = amazonglobal.table_sale_task_us
+        status = amazondata.connect_database(amazonglobal.db_name_data_us)
     elif country == 'jp':
-        task_table = 'sale_task_jp'
-        status = amazondata.connect_database('data_jp')
+        task_table = amazonglobal.table_sale_task_jp
+        status = amazondata.connect_database(amazonglobal.db_name_data_jp)
     if status == True:
         try:
             cur_date = date.today()
             value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
             status_condition = 'status<>\'no\' and last_date<>' + value
-            node_task = amazonwrapper.get_one_data(db_name, task_table, status_condition)
+            node_task = amazonwrapper.get_one_data(task_db, task_table, status_condition)
             while node_task != False:
                 t1 = time.time()
                 node = node_task[0]
@@ -176,9 +293,9 @@ def amsale_from_mysql(country, node_type):
                 # print(node, flush=True)
                 # print(node_table, flush=True)
                 # print(sql_condition, flush=True)
-                status = amazonwrapper.update_data(db_name, task_table, 'status', '\'no\'', sql_condition)
+                status = amazonwrapper.update_data(task_db, task_table, 'status', '\'no\'', sql_condition)
                 if status != False:
-                    while is_task_finish(db_name, task_table, node) == False:
+                    while is_task_finish(task_db, task_table, node) == False:
                         while is_all_inventory_finish(country, node_table) == False:
                             asin_cursor = get_asin_rows_from_node(amazondata, country, node_table)
                             if asin_cursor != False:
@@ -268,21 +385,21 @@ def amsale_from_mysql(country, node_type):
                                                 print("update asin status faild.. + " + node + ' ' + asin, flush=True)
 
                         if is_all_inventory_finish(country, node_table) == True:
-                            status = update_task_node(db_name, task_table, node)
+                            status = update_task_node(task_db, task_table, node)
                             if status == False:
                                 print("update task node failed.. + " + node, flush=True)
 
-                            status = amazonwrapper.update_data(db_name, task_table, 'status', '\'ok\'', sql_condition)
+                            status = amazonwrapper.update_data(task_db, task_table, 'status', '\'ok\'', sql_condition)
                             if status != False:
                                 print("amsale finish " + node, flush=True)
 
                 t2 = time.time()
                 print("总耗时：" + format(t2 - t1))
-                node_task = amazonwrapper.get_one_data(db_name, task_table, status_condition)
+                node_task = amazonwrapper.get_one_data(task_db, task_table, status_condition)
         except Exception as e:
             print(traceback.format_exc(), flush=True)
             exit()
-            amazonwrapper.update_data(db_name, task_table, 'status', '\'ok\'', sql_condition)
+            amazonwrapper.update_data(task_db, task_table, 'status', '\'ok\'', sql_condition)
 
         amazondata.disconnect_database()
     else:
@@ -290,9 +407,41 @@ def amsale_from_mysql(country, node_type):
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    country = sys.argv[1]
-    type = sys.argv[2]
-    amsale_from_mysql(country, type)
+    if is_task_running():
+        print("task running..", flush=True)
+    else:
+        print("task stop...", flush=True)
+    if is_token_runout():
+        print("token runout...", flush=True)
+    else:
+        print("token not runout...", flush=True)
+        desc_token_count()
+
+    exit()
+    task = sys.argv[1]
+    if task == 'run':
+        country = sys.argv[2]
+        type = sys.argv[3]
+        while is_task_running():
+            while is_token_runout() == False:
+                status = desc_token_count()
+                if status == False:
+                    print('desc token count in failure...', flush=True)
+                    exit(-1)
+                amsale_from_mysql(country, type)
+    elif task == 'fix':
+        while is_task_running() == False:
+            country = sys.argv[2]
+            status = update_token_count()
+            if status == False:
+                print('update token count in failure...', flush=True)
+            else:
+                if country == 'us':
+                    amazonwrapper.update_all_task_status(amazonglobal.db_name_task, amazonglobal.table_sale_task_us, country)
+                elif country == 'jp':
+                    amazonwrapper.update_all_task_status(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, country)
+
+                time.sleep(60)
     # task_id = sys.argv[1]   # 1
     # node_type = sys.argv[2] # BS - NR
     # country = sys.argv[3] # us/jp

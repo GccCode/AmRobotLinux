@@ -220,6 +220,23 @@ class AmazonSql():
         finally:
             return status
 
+    def update_data_autodes(self, db, table, key, condition):
+        # 'UPDATE students SET age = %s WHERE name = %s'
+        status = True
+        sql = 'UPDATE ' + table + ' SET ' + key + '=' + key + '-1' + ' WHERE ' + condition
+        # print(sql, flush=True)
+        try:
+            cursor = db.cursor()
+            cursor.execute(sql)
+            db.commit()
+            # print("AmazonSql Update Data Sucessfully + " + key + ' ' + value + ' WHERE ' + condition, flush=True)
+        except Exception as e:
+            print(str(e), flush=True)
+            status = False
+            db.rollback()
+        finally:
+            return status
+
     def select_data(self, db, sql):
         # sql = 'SELECT * FROM students WHERE age >= 20'
         result = False
