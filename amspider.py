@@ -340,76 +340,76 @@ class AmazonSpider():
                         # print(asin_info_data['asin'], flush=True)
                         # print("** ------------------- **", flush=True)
 
-                # for i in range(0, 17):
-                #     tmp_symbol = NON_CRITICAL_TITLE_PREFIX + str(i + 1) + NON_CRITICAL_TITLE_POSTFIX
-                #     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                #         element = driver.find_element_by_xpath(tmp_symbol)
-                #         asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
-                #         # print("Asin is: " + getasinfromhref(element.get_attribute('href')), flush=True)
-                #
-                #     tmp_symbol = NON_CRITICAL_REVIEWS_PREFIX + str(i + 1) + NON_CRITICAL_REVIEWS_POSTFIX
-                #     has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
-                #     if has_review:
-                #         element = driver.find_element_by_xpath(tmp_symbol)
-                #         # print("Review Count is: " + element.text, flush=True)
-                #         asin_info_data['review'] = int(element.text.strip().replace(',', ''))
-                #         tmp_symbol = NON_CRITICAL_RATE_PREFIX + str(i + 1) + NON_CRITICAL_RATE_POSTFIX
-                #         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                #             element = driver.find_element_by_xpath(tmp_symbol)
-                #             asin_info_data['rate'] = float(element.get_attribute('title').split(' ')[1])
-                #             # print("Rate is: " + element.get_attribute('title').split(' ')[1], flush=True)
-                #     else:
-                #         asin_info_data['review'] = 0
-                #         # print("Review Count is: 0", flush=True)
-                #         asin_info_data['rate'] = 0
-                #         # print("Rate is: 0", flush=True)
-                #     if has_review:
-                #         tmp_symbol = NON_CRITICAL_FBA_PREFIX + str(i + 1) + NON_CRITICAL_FBA_POSTFIX
-                #         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                #             asin_info_data['shipping'] = "FBA"
-                #             # print("FBA", flush=True)
-                #             tmp_symbol = NON_CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX + str(i + 1) + NON_CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX
-                #         else:
-                #             asin_info_data['shipping'] = "FBM"
-                #             # print("FBM", flush=True)
-                #             tmp_symbol = NON_CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + NON_CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX
-                #         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                #             element = driver.find_element_by_xpath(tmp_symbol)
-                #             # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
-                #             asin_info_data['price'] = getprice_jp(element.text)
-                #     else:
-                #         tmp_symbol = NON_CRITICAL_FBA_PREFIX + str(i + 1) + NON_CRITICAL_FBA_POSTFIX
-                #         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                #             asin_info_data['shipping'] = "FBA"
-                #             # print("FBA", flush=True)
-                #             tmp_symbol = NON_CRITICAL_NO_REVIEW_FBA_PRICE_PREFIX + str(
-                #                 i + 1) + NON_CRITICAL_NO_REVIEW_FBA_PRICE_POSTFIX
-                #         else:
-                #             asin_info_data['shipping'] = "FBM"
-                #             # print("FBM", flush=True)
-                #             tmp_symbol = NON_CRITICAL_NO_REVIEW_FBM_PRICE_PREFIX + str(
-                #                 i + 1) + NON_CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
-                #         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                #             element = driver.find_element_by_xpath(tmp_symbol)
-                #             # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
-                #             asin_info_data['price'] = getprice_jp(element.text)
-                #
-                #     tmp_symbol = NON_CRITICAL_IMGSRC_PREFIX + str(i + 1) + NON_CRITICAL_IMGSRC_POSTFIX
-                #     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                #         element = driver.find_element_by_xpath(tmp_symbol)
-                #         asin_info_data['img_url'] = getimgidfromhref(element.get_attribute('src'))
-                #         # print("ImgSrc is: " + element.get_attribute('src'), flush=True)
-                #
-                #
-                #     tmp_symbol = NON_CRITICAL_RANK_PREFIX + str(i + 1) + NON_CRITICAL_RANK_POSTFIX + '1]'
-                #     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
-                #         element = driver.find_element_by_xpath(tmp_symbol)
-                #         # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
-                #         asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
-                #
-                #         asin_info_array.append(copy.deepcopy(asin_info_data))
-                #         # print(asin_info_data['asin'], flush=True)
-                #         # print("** ------------------- **", flush=True)
+                for i in range(0, 17):
+                    tmp_symbol = NON_CRITICAL_TITLE_PREFIX + str(i + 1) + NON_CRITICAL_TITLE_POSTFIX
+                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                        element = driver.find_element_by_xpath(tmp_symbol)
+                        asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
+                        # print("Asin is: " + getasinfromhref(element.get_attribute('href')), flush=True)
+
+                    tmp_symbol = NON_CRITICAL_REVIEWS_PREFIX + str(i + 1) + NON_CRITICAL_REVIEWS_POSTFIX
+                    has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
+                    if has_review:
+                        element = driver.find_element_by_xpath(tmp_symbol)
+                        # print("Review Count is: " + element.text, flush=True)
+                        asin_info_data['review'] = int(element.text.strip().replace(',', ''))
+                        tmp_symbol = NON_CRITICAL_RATE_PREFIX + str(i + 1) + NON_CRITICAL_RATE_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            element = driver.find_element_by_xpath(tmp_symbol)
+                            asin_info_data['rate'] = float(element.get_attribute('title').split(' ')[1])
+                            # print("Rate is: " + element.get_attribute('title').split(' ')[1], flush=True)
+                    else:
+                        asin_info_data['review'] = 0
+                        # print("Review Count is: 0", flush=True)
+                        asin_info_data['rate'] = 0
+                        # print("Rate is: 0", flush=True)
+                    if has_review:
+                        tmp_symbol = NON_CRITICAL_FBA_PREFIX + str(i + 1) + NON_CRITICAL_FBA_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            asin_info_data['shipping'] = "FBA"
+                            # print("FBA", flush=True)
+                            tmp_symbol = NON_CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX + str(i + 1) + NON_CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX
+                        else:
+                            asin_info_data['shipping'] = "FBM"
+                            # print("FBM", flush=True)
+                            tmp_symbol = NON_CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + NON_CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            element = driver.find_element_by_xpath(tmp_symbol)
+                            # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                            asin_info_data['price'] = getprice_jp(element.text)
+                    else:
+                        tmp_symbol = NON_CRITICAL_FBA_PREFIX + str(i + 1) + NON_CRITICAL_FBA_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            asin_info_data['shipping'] = "FBA"
+                            # print("FBA", flush=True)
+                            tmp_symbol = NON_CRITICAL_NO_REVIEW_FBA_PRICE_PREFIX + str(
+                                i + 1) + NON_CRITICAL_NO_REVIEW_FBA_PRICE_POSTFIX
+                        else:
+                            asin_info_data['shipping'] = "FBM"
+                            # print("FBM", flush=True)
+                            tmp_symbol = NON_CRITICAL_NO_REVIEW_FBM_PRICE_PREFIX + str(
+                                i + 1) + NON_CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
+                        if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                            element = driver.find_element_by_xpath(tmp_symbol)
+                            # print("Price is : " + element.text.strip('￥ ').replace(',', ''), flush=True)
+                            asin_info_data['price'] = getprice_jp(element.text)
+
+                    tmp_symbol = NON_CRITICAL_IMGSRC_PREFIX + str(i + 1) + NON_CRITICAL_IMGSRC_POSTFIX
+                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                        element = driver.find_element_by_xpath(tmp_symbol)
+                        asin_info_data['img_url'] = getimgidfromhref(element.get_attribute('src'))
+                        # print("ImgSrc is: " + element.get_attribute('src'), flush=True)
+
+
+                    tmp_symbol = NON_CRITICAL_RANK_PREFIX + str(i + 1) + NON_CRITICAL_RANK_POSTFIX + '1]'
+                    if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
+                        element = driver.find_element_by_xpath(tmp_symbol)
+                        # print("Top Rank is: " + element.text.strip().replace('.', ''), flush=True)
+                        asin_info_data['rank'] = int(element.text.strip().replace('.', ''))
+
+                        asin_info_array.append(copy.deepcopy(asin_info_data))
+                        # print(asin_info_data['asin'], flush=True)
+                        # print("** ------------------- **", flush=True)
 
                 amazonpage.random_sleep(2000, 5000)
             except NoSuchElementException as msg:
