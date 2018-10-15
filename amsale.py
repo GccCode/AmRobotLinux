@@ -277,6 +277,7 @@ def amsale_from_mysql(country, node_type):
                 node_task = amazonwrapper.get_one_data(db_name, task_table, status_condition)
         except Exception as e:
             print(traceback.format_exc(), flush=True)
+            exit()
             amazonwrapper.update_data(db_name, task_table, 'status', '\'ok\'', sql_condition)
 
         amazondata.disconnect_database()
@@ -288,7 +289,6 @@ if __name__ == "__main__":
     country = sys.argv[1]
     type = sys.argv[2]
     amsale_from_mysql(country, type)
-    exit()
     # task_id = sys.argv[1]   # 1
     # node_type = sys.argv[2] # BS - NR
     # country = sys.argv[3] # us/jp
