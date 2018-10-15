@@ -230,7 +230,6 @@ class AmazonSpider():
             tmp_info = asin_info_array[i]
             if tmp_info['status'] == 'no':
                 return False
-
         return True
 
     def jp_node_gather(self, db_name, node, node_name, type, pages, ips_array, is_sale):
@@ -268,7 +267,6 @@ class AmazonSpider():
             driver.set_page_load_timeout(60)
             driver.set_script_timeout(60)
             try:
-                print(is_sale, flush=True)
                 amazonpage = AmazonPage(driver)
                 url = "https://www.amazon.co.jp/gp/bestsellers/electronics/" + node + "#" + str(page + 1)
                 driver.get(url)
@@ -443,7 +441,6 @@ class AmazonSpider():
                         if tmp_info['status'] == 'no':
                             result = self.get_inventory_jp(False, tmp_info['asin'], ips_array, is_sale)
                             if result == False:
-                                print(result, flush=True)
                                 asin_info_remove_array.append(asin_info_array[i])
                                 tmp_info['status'] = 'err'
                             elif result == -111:
@@ -470,7 +467,6 @@ class AmazonSpider():
                     return False
 
             if is_sale:
-                print(asin_info_array, flush=True)
                 for i in range(0, len(asin_info_remove_array)):
                     asin_info_array.remove(asin_info_remove_array[i])
                 print(asin_info_array, flush=True)
@@ -590,7 +586,7 @@ class AmazonSpider():
                 'inventory_date': date1,
                 'limited': 'no',
                 'img_url': None,
-                'status': 'ok'
+                'status': 'no'
             }
             asin_info_array = []
             chrome_options = webdriver.ChromeOptions()
@@ -694,9 +690,8 @@ class AmazonSpider():
                 print("Except: NoSuchElementException", flush=True)
             except Exception as e:
                 status = False
-                amazonpage.window_capture('unknown-error')
+                # amazonpage.window_capture('unknown-error')
                 print(traceback.format_exc(), flush=True)
-                # print(e, flush=True)
             finally:
                 driver.quit()
                 if status == False:
@@ -707,28 +702,29 @@ class AmazonSpider():
             asin_info_remove_array = []
             amazondata = AmazonData()
             try:
-                for i in range(0, len(asin_info_array)):
-                    tmp_info = asin_info_array[i]
-                    result = self.get_inventory_us(False, tmp_info['asin'], ips_array, is_sale)
-                    if result == False or result == -111:
-                        asin_info_remove_array.append(asin_info_array[i])
-                        tmp_info['status'] = 'err'
-                    else:
-                        tmp_info['shipping'] = result['shipping']
-                        tmp_info['seller'] = result['seller']
-                        tmp_info['qa'] = result['qa']
-                        tmp_info['limited'] = result['limited']
-                        # if result['seller'] == 1:
-                        if is_sale == True:
-                            inventory_array.append(copy.deepcopy(result))
-                        # else:
-                        #     asin_info_remove_array.append(asin_info_array[i])
+                while self.is_all_asin_ok(asin_info_array) == False:
+                    for i in range(0, len(asin_info_array)):
+                        tmp_info = asin_info_array[i]
+                        if tmp_info['status'] == 'no':
+                            result = self.get_inventory_us(False, tmp_info['asin'], ips_array, is_sale)
+                            if result == False or result == -111:
+                                asin_info_remove_array.append(asin_info_array[i])
+                                tmp_info['status'] = 'err'
+                            elif result == -111:
+                                print("ip problems...", flush=True)
+                                tmp_info['status'] = 'no'
+                            else:
+                                tmp_info['shipping'] = result['shipping']
+                                tmp_info['seller'] = result['seller']
+                                tmp_info['qa'] = result['qa']
+                                tmp_info['limited'] = result['limited']
+                                tmp_info['status'] = 'ok'
 
+                                if is_sale == True:
+                                    inventory_array.append(copy.deepcopy(result))
             except Exception as e:
                 status = False
-                # amazonpage.window_capture(asin + 'unknown-error')
                 print(traceback.format_exc(), flush=True)
-                # print(str(e), flush=True)
             finally:
                 if status == False:
                     return False
@@ -740,18 +736,6 @@ class AmazonSpider():
                 if len(asin_info_array) != len(inventory_array):
                     print(len(asin_info_array), flush=True)
                     print(len(inventory_array), flush=True)
-
-            # print(len(asin_info_array), flush=True)
-            # print(len(inventory_array), flush=True)
-            #
-            # for i in range(0, len(asin_info_array)):
-            #     with open('test.txt', 'a') as f:
-            #         f.writelines(json.dumps(inventory_array[i], cls=DateEncoder) + "\n")
-            #     print(inventory_array[i])
-            #     with open('test.txt', 'a') as f:
-            #         f.writelines(json.dumps(asin_info_array[i], cls=DateEncoder) + "\n")
-            #     f.close()
-            #     print(asin_info_array[i])
 
             status = amazondata.create_database(db_name)
             if status == True:
