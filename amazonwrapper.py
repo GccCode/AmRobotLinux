@@ -5,6 +5,7 @@ from amazondata import AmazonData
 import xlrd
 import random
 from datetime import date
+import amazonglobal
 
 
 xls_file_array_jp = ['apparel',
@@ -489,18 +490,18 @@ def update_all_task_date(db_name, date, country):
         print("connect in failure..", flush=True)
     else:
         if country == 'jp':
-            task_table = 'sale_task_jp'
-            data_table = 'data_jp'
+            task_table = amazonglobal.table_sale_task_jp
+            data_db = amazonglobal.db_name_data_jp
         elif country == 'us':
-            task_table = 'sale_task_us'
-            data_table = 'data_us'
+            task_table = amazonglobal.table_sale_task_us
+            data_db = amazonglobal.db_name_data_us
 
         node_array = get_all_data(db_name, task_table, 'node', False)
         for index in range(len(node_array)):
             # print(asin_array[index])
             condition = 'node=\'' + node_array[index][0] + '\''
             amazondata.update_data(task_table, 'last_date', '\'' + date + '\'', condition)
-            update_asin_status_ok(data_table, node_array[index][0])
+            update_asin_status_ok(data_db, node_array[index][0])
         amazondata.disconnect_database()
 
 # SELECT CREATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='amazondata' AND TABLE_NAME='INVENTORY_B07GYTTF8B';
