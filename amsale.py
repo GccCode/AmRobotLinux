@@ -412,9 +412,10 @@ if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     if is_task_running():
         print("task running..", flush=True)
+        update_task_status('stop')
     else:
         print("task stop...", flush=True)
-        update_task_status()
+        update_task_status('run')
         update_token_count()
     if is_token_runout():
         print("token runout...", flush=True)
