@@ -447,6 +447,7 @@ class AmazonSpider():
                                 asin_info_remove_array.append(asin_info_array[i])
                                 tmp_info['status'] = 'err'
                             elif result == -111:
+                                print("ip problems...", flush=True)
                                 tmp_info['status'] = 'no'
                             else:
                                 tmp_info['shipping'] = result['shipping']
