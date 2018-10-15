@@ -213,6 +213,10 @@ def amsale_from_mysql(country, node_type):
                                                 status = amazondata.update_data(node_table, 'limited', '\'yes\'', condition)
                                             else:
                                                 inventory_table = 'INVENTORY_' + asin
+                                                if amazondata.is_table_exsist(inventory_table) == False:
+                                                    status = amazondata.create_inventory_table(inventory_table)
+                                                    if status == False:
+                                                        print("create invetory table in failure...", flush=True)
                                                 status = amazondata.insert_inventory_data(inventory_table, data)
                                                 if status == True:
                                                     condition = 'asin=\'' + asin + '\''

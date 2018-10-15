@@ -39,6 +39,9 @@ class AmazonData():
     def is_asin_info_table_exsist(self, table):
         return self.amsql.is_mysql_table_exsist(self.db, table)
 
+    def is_table_exsist(self, table):
+        return self.amsql.is_mysql_table_exsist(self.db, table)
+
     def is_asin_inventory_exsist(self, table, column):
         return self.amsql.is_mysql_column_exsit(self.db, 'amazondata', table, column)
 
