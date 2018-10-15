@@ -433,7 +433,7 @@ class AmazonSpider():
                     tmp_info = asin_info_array[i]
                     result = self.get_inventory_jp(False, tmp_info['asin'], ips_array, is_sale)
                     if result == False or result == -111:
-                        print("?????", flush=True)
+                        print(result, flush=True)
                         asin_info_remove_array.append(asin_info_array[i])
                         tmp_info['status'] = 'err'
                     else:
