@@ -139,7 +139,7 @@ def is_task_running():
 
     return status
 
-def update_task_status():
+def update_task_status(task_status):
     db_name = amazonglobal.db_name_task
     table = amazonglobal.table_sale_task_status
     amazondata = AmazonData()
@@ -152,8 +152,11 @@ def update_task_status():
             print("Connect Database In Failure + " + db_name, flush=True)
             status = False
         else:
-            condition = 'status=\'run\''
-            status = amazondata.update_data(table, 'status', '\'stop\'', condition)
+            if task_status == 'stop':
+                condition = 'status=\'run\''
+            elif task_status == 'run':
+                condition = 'status=\'stop\''
+            status = amazondata.update_data(table, 'status', '\''+ task_status + '\'', condition)
 
             amazondata.disconnect_database()
 
