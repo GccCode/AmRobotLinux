@@ -410,20 +410,6 @@ def amsale_from_mysql(country, node_type):
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    if is_task_running():
-        print("task running..", flush=True)
-        update_task_status('stop')
-    else:
-        print("task stop...", flush=True)
-        update_task_status('run')
-        update_token_count()
-    if is_token_runout():
-        print("token runout...", flush=True)
-    else:
-        print("token not runout...", flush=True)
-        desc_token_count()
-
-    exit()
     task = sys.argv[1]
     if task == 'run':
         country = sys.argv[2]
@@ -435,6 +421,7 @@ if __name__ == "__main__":
                     print('desc token count in failure...', flush=True)
                     exit(-1)
                 amsale_from_mysql(country, type)
+            update_task_status('stop')
     elif task == 'fix':
         while is_task_running() == False:
             country = sys.argv[2]
