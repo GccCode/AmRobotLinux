@@ -414,27 +414,31 @@ if __name__ == "__main__":
     if task == 'run':
         country = sys.argv[2]
         type = sys.argv[3]
-        while is_task_running():
-            while is_token_runout() == False:
-                status = desc_token_count()
-                if status == False:
-                    print('desc token count in failure...', flush=True)
-                    exit(-1)
-                amsale_from_mysql(country, type)
-            update_task_status('stop')
+        while True:
+            while is_task_running():
+                while is_token_runout() == False:
+                    status = desc_token_count()
+                    if status == False:
+                        print('desc token count in failure...', flush=True)
+                        exit(-1)
+                    amsale_from_mysql(country, type)
+
+            time.sleep(60)
+
     elif task == 'fix':
-        while is_task_running() == False:
+        while True:
             country = sys.argv[2]
-            status = update_token_count()
-            if status == False:
-                print('update token count in failure...', flush=True)
-            else:
+            if is_token_runout():
                 if country == 'us':
                     amazonwrapper.update_all_task_status(amazonglobal.db_name_task, amazonglobal.table_sale_task_us, country)
                 elif country == 'jp':
                     amazonwrapper.update_all_task_status(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, country)
 
-                time.sleep(60)
+                status = update_token_count()
+                if status == False:
+                    print('update token count in failure...', flush=True)
+
+            time.sleep(60)
     # task_id = sys.argv[1]   # 1
     # node_type = sys.argv[2] # BS - NR
     # country = sys.argv[3] # us/jp
