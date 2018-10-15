@@ -39,6 +39,14 @@ xls_file_array_us = ['automotive',
                   'toys_games'
                   ]
 
+def isDigit(x):
+    try:
+        x=int(x)
+        return isinstance(x,int)
+    except ValueError:
+        return False
+
+
 def insert_all_ip_info(ipfile):
     amazondata = AmazonData()
     status = amazondata.create_database('ip_info')
