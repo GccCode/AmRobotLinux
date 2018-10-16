@@ -163,7 +163,7 @@ def update_click_data(db_name, keyword, asin):
                 if status == False:
                     print("keyword insert data in failure..", flush=True)
                 else:
-                    column = asin + ' INT(0) NOT NULL'
+                    column = asin + ' INT default 0'
                     status = amazondata.add_keyword_column(db_name, table, asin, column)
                     if status == False:
                         print("keyword add column in failure..", flush=True)
