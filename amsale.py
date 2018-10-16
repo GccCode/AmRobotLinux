@@ -268,7 +268,7 @@ def get_asin_rows_from_node(ad, country, table):
     return status
 
 def amsale_from_mysql(country, node_type):
-    ips_array = amazonwrapper.get_all_accessible_ip()
+    ips_array = amazonwrapper.get_all_accessible_ip(country)
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
@@ -376,7 +376,7 @@ def amsale_from_mysql(country, node_type):
                                         else:
                                             if result == -111:
                                                 print("Ip blocking..", flush=True)
-                                                ips_array = amazonwrapper.get_all_accessible_ip()
+                                                ips_array = amazonwrapper.get_all_accessible_ip(country)
                                                 if ips_array == False:
                                                     print("no accessible ip", flush=True)
                                                     exit(-1)

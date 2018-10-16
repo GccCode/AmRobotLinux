@@ -23,13 +23,14 @@ if __name__ == "__main__":
     cf = configparser.ConfigParser()
     cf.read("task.txt")
     amkillerfile = sys.argv[1]
+    country = sys.argv[2]
     min_time = cf.get("search", "view_time_min")
     max_time = cf.get("search", "view_time_max")
 
     admin = utils.Administrator(amkillerfile)
     count = 0
     print("* Resolution：" + str(pyautogui.size()))
-    ips_array = amazonwrapper.get_all_accessible_ip()
+    ips_array = amazonwrapper.get_all_accessible_ip(country)
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)

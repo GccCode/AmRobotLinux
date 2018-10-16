@@ -26,8 +26,8 @@ if __name__ == "__main__":
     amtaskfile = cf.get("configfile", "amtask")
     min_time = cf.get("search", "view_time_min")
     max_time = cf.get("search", "view_time_max")
-
-    ips_array = amazonwrapper.get_all_accessible_ip()
+    country = sys.argv[1]
+    ips_array = amazonwrapper.get_all_accessible_ip(country)
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)

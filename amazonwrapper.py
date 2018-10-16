@@ -83,17 +83,21 @@ def insert_all_ip_info(ipfile):
 
     return status
 
-def fix_all_unaccessible_ip(ipfile):
+def fix_all_unaccessible_ip(country, ipfile):
+    if country == 'us':
+        db_name = amazonglobal.db_name_ip_info_us
+    elif country == 'jp':
+        db_name = amazonglobal.db_name_ip_info_jp
     amazondata = AmazonData()
-    status = amazondata.create_database('ip_info')
+    status = amazondata.create_database(db_name)
     if status == False:
         print("node_info create in failure..", flush=True)
     else:
-        status = amazondata.connect_database('ip_info')
+        status = amazondata.connect_database(db_name)
         if status == False:
             print("connect in failure..", flush=True)
         else:
-            status = amazondata.create_ip_table('ip_pool')
+            status = amazondata.create_ip_table(amazonglobal.table_ip_pool)
             if status != False:
                 try:
                     f = open(ipfile)  # 返回一个文件对象
@@ -103,7 +107,7 @@ def fix_all_unaccessible_ip(ipfile):
                             ip = line.strip('\n')
                             print(line.strip('\n'))
                             condition = 'ip=\'' + ip + '\''
-                            status = amazondata.update_data('ip_pool', 'status', '\'ok\'', condition)
+                            status = amazondata.update_data(amazonglobal.table_ip_pool, 'status', '\'ok\'', condition)
                             if status == False:
                                 break
                         line = f.readline()
@@ -117,13 +121,17 @@ def fix_all_unaccessible_ip(ipfile):
 
     return status
 
-def get_all_accessible_ip():
+def get_all_accessible_ip(country):
+    if country == 'us':
+        db_name = amazonglobal.db_name_ip_info_us
+    elif country == 'jp':
+        db_name = amazonglobal.db_name_ip_info_jp
     amazondata = AmazonData()
-    status = amazondata.create_database('ip_info')
+    status = amazondata.create_database(db_name)
     if status == False:
         print("node_info create in failure..", flush=True)
     else:
-        status = amazondata.connect_database('ip_info')
+        status = amazondata.connect_database(db_name)
         if status == False:
             print("connect in failure..", flush=True)
         else:
@@ -181,13 +189,17 @@ def get_ramdon_accessible_ip(ips_array):
         return False
 
 
-def mark_unaccessible_ip(ip):
+def mark_unaccessible_ip(country, ip):
+    if country == 'us':
+        db_name = amazonglobal.db_name_ip_info_us
+    elif country == 'jp':
+        db_name = amazonglobal.db_name_ip_info_jp
     amazondata = AmazonData()
-    status = amazondata.create_database('ip_info')
+    status = amazondata.create_database(db_name)
     if status == False:
         print("node_info create in failure..", flush=True)
     else:
-        status = amazondata.connect_database('ip_info')
+        status = amazondata.connect_database(db_name)
         if status == False:
             print("connect in failure..", flush=True)
         else:

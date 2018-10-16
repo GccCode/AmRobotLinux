@@ -174,12 +174,12 @@ def getseller_jp(template):
     return template.split('：')[1]
 
 def getseller_us(template):
-    rule = r'\((.*?)\)'
-    slotList = re.findall(rule, template)
-    if len(slotList) < 1:
-        return 0
-    else:
+    try:
+        rule = r'\((.*?)\)'
+        slotList = re.findall(rule, template)
         return slotList[0]
+    except:
+        return 0
 
 def getqa_jp(template):
     rule = r'(.*?)人'
@@ -1065,7 +1065,7 @@ class AmazonSpider():
                 return False
 
             if driver.title == "Amazon CAPTCHA" or amazonasinpage.is_element_exsist(*LOGO) == False:
-                amazonwrapper.mark_unaccessible_ip(ip)
+                amazonwrapper.mark_unaccessible_ip(country, ip)
                 status = -111
                 return -111
 
@@ -1197,7 +1197,7 @@ class AmazonSpider():
             print("Except: NoSuchElementException", flush=True)
         except TimeoutException as msg:
             print("Except: TimeoutException", flush=True)
-            amazonwrapper.mark_unaccessible_ip(ip)
+            amazonwrapper.mark_unaccessible_ip(country, ip)
             status = -111
         except Exception as e:
             status = False
@@ -1266,7 +1266,7 @@ class AmazonSpider():
                 return False
 
             if driver.title == "Amazon CAPTCHA" or amazonasinpage.is_element_exsist(*LOGO) == False:
-                amazonwrapper.mark_unaccessible_ip(ip)
+                amazonwrapper.mark_unaccessible_ip(country, ip)
                 status = -111
                 return -111
 
@@ -1394,7 +1394,7 @@ class AmazonSpider():
             print("Except: NoSuchElementException", flush=True)
         except TimeoutException as msg:
             print("Except: TimeoutException", flush=True)
-            amazonwrapper.mark_unaccessible_ip(ip)
+            amazonwrapper.mark_unaccessible_ip(country, ip)
             status = -111
         except Exception as e:
             status = False
@@ -1407,7 +1407,7 @@ class AmazonSpider():
             return status
 
 def amspider_from_file(node_file, type, country, is_sale, db_name):
-    ips_array = amazonwrapper.get_all_accessible_ip()
+    ips_array = amazonwrapper.get_all_accessible_ip(country)
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
@@ -1447,7 +1447,7 @@ def amspider_from_file(node_file, type, country, is_sale, db_name):
         print(str(e), flush=True)
 
 def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
-    ips_array = amazonwrapper.get_all_accessible_ip()
+    ips_array = amazonwrapper.get_all_accessible_ip(country)
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
@@ -1482,8 +1482,8 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
         print(str(e), flush=True)
         amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
 
-def amspider_test(node, node_name, type, filename):
-    ips_array = amazonwrapper.get_all_accessible_ip()
+def amspider_test(country, node, node_name, type, filename):
+    ips_array = amazonwrapper.get_all_accessible_ip(country)
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
