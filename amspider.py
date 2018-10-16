@@ -469,7 +469,6 @@ class AmazonSpider():
             if is_sale:
                 for i in range(0, len(asin_info_remove_array)):
                     asin_info_array.remove(asin_info_remove_array[i])
-                print(asin_info_array, flush=True)
                 if len(asin_info_array) != len(inventory_array):
                     print(len(asin_info_array), flush=True)
                     print(len(inventory_array), flush=True)
