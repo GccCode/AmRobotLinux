@@ -474,7 +474,7 @@ def update_all_task_status(db_name, table, country):
     if status == False:
         print("connect in failure..", flush=True)
     else:
-        condition = 'length(node)>4'
+        condition = False # 'length(node)>4'
         node_array = get_all_data(db_name, table, 'node', condition)
         for index in range(len(node_array)):
             if country == 'jp':
@@ -503,7 +503,7 @@ def average_all_task():
                 amazondata.update_data('SALE_TASK', 'task_id', '\'3\'', condition)
         amazondata.disconnect_database()
 
-def update_all_task_date(db_name, date, country):
+def update_all_task_date_status(db_name, date, country):
     amazondata = AmazonData()
     status = amazondata.connect_database(db_name)
     if status == False:
@@ -521,6 +521,7 @@ def update_all_task_date(db_name, date, country):
             # print(asin_array[index])
             condition = 'node=\'' + node_array[index][0] + '\''
             amazondata.update_data(task_table, 'last_date', '\'' + date + '\'', condition)
+            amazondata.update_data(task_table, 'status', '\'' + 'ok' + '\'', condition)
             update_asin_status_ok(data_db, node_array[index][0])
         amazondata.disconnect_database()
 
@@ -547,8 +548,8 @@ if __name__ == "__main__":
     # update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
     # insert_all_node_info(xls_file_array_us)
     # delete_tables('node_info_us', '_BS')
-    delete_column('node_info_us', 'garden', 'status')
-    add_new_column('node_info_us', 'garden', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
+    # delete_column('node_info_us', 'garden', 'status')
+    # add_new_column('node_info_us', 'garden', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
     # delete_column('node_info_us', 'automotive', 'status')
-    # update_all_task_status('amazontask', 'sale_task_us', 'us')
+    update_all_task_status('amazontask', 'sale_task_us', 'us')
     # get_one_data('node_info_us', 'automotive', False)
