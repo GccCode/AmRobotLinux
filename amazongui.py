@@ -3,6 +3,8 @@
 
 from pyh import *
 from amazonwrapper import *
+import sys
+import amazonglobal
 
 class AmazonGUI():
     def __init__(self):
@@ -91,8 +93,12 @@ class AmazonGUI():
 
 if __name__ == "__main__":
     amazongui = AmazonGUI()
+    country = sys.argv[1]
     condition = 'length(node)>4'
-    table_array = get_all_data('amazontask', 'sale_task_us', 'node', False)
+    if country == 'us':
+        table_array = get_all_data(amazonglobal.db_name_task, amazonglobal.table_sale_task_us, 'node', False)
+    elif country == 'jp':
+        table_array = get_all_data(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, 'node', False)
     for node in table_array:
         print(node[0], flush=True)
         table_name = node[0] + '_BS'
@@ -103,7 +109,14 @@ if __name__ == "__main__":
                 node_name = get_node_name_from_all('node_info_us', node[0], 'us')
                 if node_name != False:
                     print(node_name.replace(' & ', '_'), flush=True)
-                    amazongui.create_page('us', node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page/')
+                    if country == 'us':
+                        amazongui.create_page('us', node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page/')
+                    elif country == 'jp':
+                        amazongui.create_page('jp', node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page_jp/')
+
             else:
-                amazongui.create_page('us', node[0], node[0], 'BS', 'amazongui.css', data, '../html_page/')
+                if country == 'us':
+                    amazongui.create_page('us', node[0], node[0], 'BS', 'amazongui.css', data, '../html_page/')
+                elif country == 'jp':
+                    amazongui.create_page('us', node[0], node[0], 'BS', 'amazongui.css', data, '../html_page_jp/')
 
