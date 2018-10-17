@@ -182,6 +182,40 @@ def update_click_data(db_name, keyword, asin):
                             print("keyword asin update data in failure..", flush=True)
     return status
 
+def update_rank_data(db_name, table, keyword, rank_info):
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("database created in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("database connected in failure..", flush=True)
+        else:
+            status = amazondata.create_rank_keyword_table(table)
+            if status == False:
+                print("rank keyword table created in failure..", flush=True)
+            else:
+                cur_date = date.today()
+                data = {
+                    'keyword': keyword
+                }
+                status = amazondata.insert_rank_data(table, data)
+                if status == False:
+                    print("keyword insert in failure..", flush=True)
+                else:
+                    rank = rank_info[0] + '-' + rank_info[1]
+                    column = cur_date.strftime("%Y_%m_%d") + ' VARCHAR(10) default \'0\''
+                    status = amazondata.add_keyword_column(db_name, table, cur_date.strftime("%Y_%m_%d"), column)
+                    if status == False:
+                        print("keyword add column in failure..", flush=True)
+                    else:
+                        condition = 'keyword=\'' + keyword + '\''
+                        status = amazondata.update_data(table, cur_date.strftime("%Y_%m_%d"), rank, condition)
+                        if status == False:
+                            print("keyword rank update data in failure..", flush=True)
+    return status
+
 def get_ramdon_accessible_ip(ips_array):
     if ips_array != False:
         return ips_array[random.randint(0, (len(ips_array) - 1))][0]
@@ -548,8 +582,8 @@ if __name__ == "__main__":
     # update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
     # insert_all_node_info(xls_file_array_us)
     # delete_tables('node_info_us', '_BS')
-    # delete_column('node_info_us', 'garden', 'status')
-    # add_new_column('node_info_us', 'garden', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
+    delete_column('node_info_us', 'electronics', 'status')
+    add_new_column('node_info_us', 'electronics', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
     # delete_column('node_info_us', 'automotive', 'status')
-    update_all_task_status('amazontask', 'sale_task_us', 'us')
+    # update_all_task_status('amazontask', 'sale_task_us', 'us')
     # get_one_data('node_info_us', 'automotive', False)

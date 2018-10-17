@@ -619,9 +619,11 @@ class AmazonSpider():
                             if 'no Best Sellers' in element.text:
                                 status = False
                             else:
+                                amazonpage.window_capture(node + '-unknown-error')
                                 print("network crashing??", flush=True)
                                 status = -111
                         else:
+                            amazonpage.window_capture(node + '-unknown-error')
                             print("network crashing??", flush=True)
                             status = -111
 

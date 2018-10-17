@@ -61,7 +61,18 @@ class AmazonData():
 
         return status
 
+    def create_rank_keyword_table(self, table):
+        columns = 'keyword VARCHAR(50) NOT NULL, PRIMARY KEY(keyword)'
+        status = True
+        if self.amsql.is_mysql_table_exsist(self.db, table) == False:
+            status = self.amsql.create_table(self.db, table, columns)
+
+        return status
+
     def insert_amkiller_keyword_data(self, table, data):
+        return self.amsql.insert_data(self.db, table, data)
+
+    def insert_rank_data(self, table, data):
         return self.amsql.insert_data(self.db, table, data)
 
     def create_token_table(self, table):
@@ -124,6 +135,13 @@ class AmazonData():
         status = True
         if self.amsql.is_mysql_column_exsit(self.db, db_name, table, asin) == False:
             status = self.amsql.add_column(self.db, table, column)
+
+        return status
+
+    def add_rank_column(self, db_name, table, date, date_column):
+        status = True
+        if self.amsql.is_mysql_column_exsit(self.db, db_name, table, date) == False:
+            status = self.amsql.add_column(self.db, table, date_column)
 
         return status
 

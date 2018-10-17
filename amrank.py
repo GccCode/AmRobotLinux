@@ -10,21 +10,9 @@ from amazonsearchpage import  AmazonSearchPage
 import io
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
+from amazondata import AmazonData
+import amazonglobal
 
-#0)
-#1) Chrome
-#2) Firefox+Win7:
-#3) Safari+Win7:
-#4) Opera+Win7:
-#5) IE+Win7+ie9：
-#6) Win7+ie8：
-#7) WinXP+ie8：
-#8) WinXP+ie7：
-#9) WinXP+ie6：
-useragentlist = [
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 6.1; rv:61.0) Gecko/20100101 Firefox/61.0'
-]
 
 def customized_broswer():
     option = webdriver.ChromeOptions()
@@ -50,6 +38,7 @@ if __name__ == "__main__":
     # cf.read("task.txt")
 
     driver = customized_broswer()
+    amazondata = AmazonData()
     t1 = time.time()
     try:
         amazonpage = AmazonPage(driver)
@@ -67,7 +56,23 @@ if __name__ == "__main__":
         amazonpage.search_asin(keyword, 8000, 10000)
         asinresult = searchpage.find_target_product_rank(asin, entry_type, int(5))
         if asinresult != False:
-            pass
+            status = amazondata.create_database(amazonglobal.db_name_rank_data_us)
+            if status == False:
+                pass
+            else:
+                status = amazondata.connect_database(amazonglobal.db_name_rank_data_us)
+                if status == False:
+                    pass
+                else:
+                    table_name = asin + '_' + entry_type
+                    status = amazondata.create_rank_asin_table(table_name)
+                    if status == False:
+                        pass
+                    else:
+                        pass
+                        # add date column
+                        # insert keyword data
+                        # insert rank data-date
         else:
             print(("can't find the asin"), flush=True)
     except NoSuchElementException as msg:
