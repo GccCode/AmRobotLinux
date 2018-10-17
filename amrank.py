@@ -63,19 +63,19 @@ if __name__ == "__main__":
         #asin = "B01HWSQIGM"
         #asin = "B075C6G6M1"
         asin = "B015OXL2MW"
-        print(("* 开始搜索关键词。。。"), flush=True)
+        print(("start search keyword"), flush=True)
         amazonpage.search_asin(keyword, 8000, 10000)
         asinresult = searchpage.find_target_product_rank(asin, entry_type, int(5))
         if asinresult != False:
             pass
         else:
-            print(("找不到产品！！！！"), flush=True)
+            print(("can't find the asin"), flush=True)
     except NoSuchElementException as msg:
-        print(("* 找不到元素。。。"), flush=True)
+        print(("can't find the element"), flush=True)
     except TimeoutException as msg:
-        print(("* 网页加载超时。。。"), flush=True)
+        print(("page loaded timeout"), flush=True)
     except:
-        print(("* 其他未知异常。。。"), flush=True)
+        print(("unknown error"), flush=True)
     finally:
         t2 = time.time()
         print("总耗时：" + format(t2 - t1))
