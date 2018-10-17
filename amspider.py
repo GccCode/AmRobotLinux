@@ -1268,6 +1268,7 @@ class AmazonSpider():
             if driver.title == "Amazon CAPTCHA" or amazonasinpage.is_element_exsist(*LOGO) == False:
                 amazonwrapper.mark_unaccessible_ip('jp', ip)
                 status = -111
+                amazonasinpage.window_capture(asin + '-ip-block')
                 return -111
 
             amazonasinpage.select_size(asin, 1000, 2000)

@@ -435,7 +435,7 @@ if __name__ == "__main__":
                 # amazonwrapper.update_all_task_status(amazonglobal.db_name_task, amazonglobal.table_sale_task_us, country)
                 amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)
             elif country == 'jp':
-                amazonwrapper.update_all_task_status(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, country)
+                # amazonwrapper.update_all_task_status(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, country)
                 amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)
             if is_token_runout():
                 status = update_token_count()
