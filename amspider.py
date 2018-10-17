@@ -27,6 +27,7 @@ import amazonglobal
 LOGO = (By.ID, 'nav-logo')
 INEXSISTED_FLAG_JP = (By.CSS_SELECTOR, 'img[alt=\'Amazon\']')
 INEXSISTED_FLAG_US = (By.CSS_SELECTOR, 'img[alt=\'Dogs of Amazon\']')
+UNKNOWN_NODE_US = (By.XPATH, '//*[@id=\'zg-center-div\']/h4')
 
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
@@ -613,8 +614,17 @@ class AmazonSpider():
                         asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
                         # print("Asin is: " + asin_info_data['asin'], flush=True)
                     else:
-                        status = -111
-                        print("network crashing??", flush=True)
+                        if amazonpage.is_element_exsist(*UNKNOWN_NODE_US):
+                            element = driver.find_element(*UNKNOWN_NODE_US)
+                            if 'no Best Sellers' in element.text:
+                                status = False
+                            else:
+                                print("network crashing??", flush=True)
+                                status = -111
+                        else:
+                            print("network crashing??", flush=True)
+                            status = -111
+
                         return status
 
                     tmp_symbol = CRITICAL_REVIEWS_PREFIX_US + str(i + 1) + CRITICAL_REVIEWS_POSTFIX_US
