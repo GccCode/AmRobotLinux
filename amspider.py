@@ -1065,7 +1065,7 @@ class AmazonSpider():
                 return False
 
             if driver.title == "Amazon CAPTCHA" or amazonasinpage.is_element_exsist(*LOGO) == False:
-                amazonwrapper.mark_unaccessible_ip(country, ip)
+                amazonwrapper.mark_unaccessible_ip('us', ip)
                 status = -111
                 return -111
 
@@ -1266,7 +1266,7 @@ class AmazonSpider():
                 return False
 
             if driver.title == "Amazon CAPTCHA" or amazonasinpage.is_element_exsist(*LOGO) == False:
-                amazonwrapper.mark_unaccessible_ip(country, ip)
+                amazonwrapper.mark_unaccessible_ip('jp', ip)
                 status = -111
                 return -111
 
