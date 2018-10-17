@@ -97,26 +97,30 @@ if __name__ == "__main__":
     condition = 'length(node)>4'
     if country == 'us':
         table_array = get_all_data(amazonglobal.db_name_task, amazonglobal.table_sale_task_us, 'node', False)
+        db_name_data = amazonglobal.db_name_data_us
+        db_name_node = amazonglobal.db_name_node_info_us
     elif country == 'jp':
         table_array = get_all_data(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, 'node', False)
+        db_name_data = amazonglobal.db_name_data_jp
+        db_name_node = amazonglobal.db_name_node_info_jp
     for node in table_array:
         print(node[0], flush=True)
         table_name = node[0] + '_BS'
         condition = 'avg_sale>0'
-        data = get_all_data('data_us', table_name, False, condition)
+        data = get_all_data(db_name_data, table_name, False, condition)
         if data != False:
             if isDigit(node[0]):
-                node_name = get_node_name_from_all('node_info_us', node[0], 'us')
+                node_name = get_node_name_from_all(db_name_node, node[0], country)
                 if node_name != False:
                     print(node_name.replace(' & ', '_'), flush=True)
                     if country == 'us':
-                        amazongui.create_page('us', node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page/')
+                        amazongui.create_page(country, node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page/')
                     elif country == 'jp':
-                        amazongui.create_page('jp', node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page_jp/')
+                        amazongui.create_page(country, node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page_jp/')
 
             else:
                 if country == 'us':
-                    amazongui.create_page('us', node[0], node[0], 'BS', 'amazongui.css', data, '../html_page/')
+                    amazongui.create_page(country, node[0], node[0], 'BS', 'amazongui.css', data, '../html_page/')
                 elif country == 'jp':
-                    amazongui.create_page('us', node[0], node[0], 'BS', 'amazongui.css', data, '../html_page_jp/')
+                    amazongui.create_page(country, node[0], node[0], 'BS', 'amazongui.css', data, '../html_page_jp/')
 
