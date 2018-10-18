@@ -161,9 +161,9 @@ class AmazonPage(BaseAction):
         if self.is_element_exsist(*self.locator.SEARCH):
             self.input(keyword, *self.locator.SEARCH)
             element = self.driver.find_element(*self.locator.SEARCH)
-            print("Content input is: " + element.text, flush=True)
-            if element.text != keyword:
-                print("Content input is: " + element.text, flush=True)
+            print("Content input is: " + element.get_attribute('value'), flush=True)
+            if element.get_attribute('value') != keyword:
+                print("Content input is: " + element.get_attribute('value'), flush=True)
                 return False
         self.click(*self.locator.SUBMITKEYWORD)
         return True
