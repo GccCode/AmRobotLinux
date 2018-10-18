@@ -206,7 +206,7 @@ def update_rank_data(db_name, table, keyword, rank_info):
                 else:
                     rank = str(rank_info[0]) + '_' + str(rank_info[1])
                     column = cur_date.strftime("%Y_%m_%d") + ' VARCHAR(10) default \'0\''
-                    status = amazondata.add_keyword_column(db_name, table, cur_date.strftime("%Y_%m_%d"), column)
+                    status = amazondata.add_rank_column(db_name, table, cur_date.strftime("%Y_%m_%d"), column)
                     if status == False:
                         print("keyword add column in failure..", flush=True)
                     else:
