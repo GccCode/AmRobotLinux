@@ -17,7 +17,7 @@ import traceback
 def get_rank_data(ips_array, country, asin, keyword, entry_type):
     try:
         driver = utils.customized_broswer_with_luminati(ips_array)
-        status = amazonwrapper.update_rank_task_status(country, keyword, entry_type, 'no')
+        status = amazonwrapper.update_rank_task_run_status(country, keyword, entry_type, 'no')
         if status == False:
             print("update rank task status in failure..", flush=True)
         amazonpage = AmazonPage(driver)
@@ -38,17 +38,21 @@ def get_rank_data(ips_array, country, asin, keyword, entry_type):
             if status == False:
                 print("update rank data in failure..", flush=True)
             else:
-                status = amazonwrapper.update_rank_task_status(country, keyword, entry_type, 'ok')
+                status = amazonwrapper.update_rank_task_run_status(country, keyword, entry_type, 'ok')
                 if status == False:
                     print("update rank task status in failure..", flush=True)
+                status = amazonwrapper.update_rank_task_date(country, keyword, entry_type)
+                if status == False:
+                    print("update rank task date in failure..", flush=True)
+
         else:
             print(("can't find the asin"), flush=True)
-            status = amazonwrapper.update_rank_task_status(country, keyword, entry_type, 'ok')
+            status = amazonwrapper.update_rank_task_run_status(country, keyword, entry_type, 'ok')
             if status == False:
                 print("update rank task status in failure..", flush=True)
     except NoSuchElementException as msg:
         print(("can't find the element"), flush=True)
-        status = amazonwrapper.update_rank_task_status(country, keyword, entry_type, 'ok')
+        status = amazonwrapper.update_rank_task_run_status(country, keyword, entry_type, 'ok')
         if status == False:
             print("update rank task status in failure..", flush=True)
     except TimeoutException as msg:

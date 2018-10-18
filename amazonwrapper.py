@@ -219,7 +219,7 @@ def update_rank_data(db_name, table, keyword, rank_info):
 
     return status
 
-def update_rank_task_status(country, keyword, entry_type, run_status):
+def update_rank_task_run_status(country, keyword, entry_type, run_status):
     db_name = amazonglobal.db_name_rank_task
     if country == 'us':
         table = amazonglobal.table_rank_task_us
@@ -238,12 +238,30 @@ def update_rank_task_status(country, keyword, entry_type, run_status):
             status = amazondata.update_data(table, 'status', '\'' + run_status + '\'', condition)
             if status == False:
                 print("update rank task run_status in failure ", flush=True)
-            else:
-                cur_date = date.today()
-                value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-                status = amazondata.update_data(table, 'last_date', value, condition)
-                if status == False:
-                    print("update rank task last_date in failure ", flush=True)
+
+    return status
+
+def update_rank_task_date(country, keyword, entry_type):
+    db_name = amazonglobal.db_name_rank_task
+    if country == 'us':
+        table = amazonglobal.table_rank_task_us
+    elif country == 'jp':
+        table = amazonglobal.table_rank_task_jp
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("node_info create in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            condition = 'keyword=\'' + keyword + '\' and type=\'' + entry_type + '\''
+            cur_date = date.today()
+            value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+            status = amazondata.update_data(table, 'last_date', value, condition)
+            if status == False:
+                print("update rank task last_date in failure ", flush=True)
 
     return status
 
