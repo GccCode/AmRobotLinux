@@ -236,6 +236,61 @@ def update_rank_task_status(country, keyword, entry_type, run_status):
         else:
             condition = 'keyword=\'' + keyword + '\' and type=\'' + entry_type + '\''
             status = amazondata.update_data(table, 'status', '\'' + run_status + '\'', condition)
+            if status == False:
+                print("update rank task run_status in failure ", flush=True)
+            else:
+                cur_date = date.today()
+                value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+                status = amazondata.update_data(table, 'last_date', value, condition)
+                if status == False:
+                    print("update rank task last_date in failure ", flush=True)
+
+    return status
+
+def is_task_finish(db_name, table, node):
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("Connect Database In Failure + " + db_name, flush=True)
+        status = False
+    else:
+        cur_date = date.today()
+        value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+        sql = 'select status from ' + table + ' where node=\'' + node + '\' and last_date <> ' + value + ' limit 1'
+        status = amazondata.select_data(sql)
+        if status == False:
+            status = True
+        else:
+            status = False
+
+        amazondata.disconnect_database()
+
+    return status
+
+def is_all_inventory_finish(country, node_table):
+    if country == 'us':
+        data_db_name = amazonglobal.db_name_data_us
+    elif country == 'jp':
+        data_db_name = amazonglobal.db_name_data_jp
+    amazondata = AmazonData()
+    status = amazondata.connect_database(data_db_name)
+    if status == False:
+        print("Connect Database In Failure + " + data_db_name, flush=True)
+        status = False
+    else:
+        cur_date = date.today()
+        value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+        if country == 'us':
+            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>9' + ' and inventory_date <> ' + value + ' limit 1'
+        elif country == 'jp':
+            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value + ' limit 1'
+        status = amazondata.select_data(sql)
+        if status == False:
+            status = True
+        else:
+            status = False
+
+        amazondata.disconnect_database()
 
     return status
 

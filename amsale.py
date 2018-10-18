@@ -202,53 +202,6 @@ def desc_token_count():
 
     return status
 
-def is_task_finish(db_name, table, node):
-    amazondata = AmazonData()
-    status = amazondata.connect_database(db_name)
-    if status == False:
-        print("Connect Database In Failure + " + db_name, flush=True)
-        status = False
-    else:
-        cur_date = date.today()
-        value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-        sql = 'select status from ' + table + ' where node=\'' + node + '\' and last_date <> ' + value + ' limit 1'
-        status = amazondata.select_data(sql)
-        if status == False:
-            status = True
-        else:
-            status = False
-
-        amazondata.disconnect_database()
-
-    return status
-
-def is_all_inventory_finish(country, node_table):
-    if country == 'us':
-        data_db_name = amazonglobal.db_name_data_us
-    elif country == 'jp':
-        data_db_name = amazonglobal.db_name_data_jp
-    amazondata = AmazonData()
-    status = amazondata.connect_database(data_db_name)
-    if status == False:
-        print("Connect Database In Failure + " + data_db_name, flush=True)
-        status = False
-    else:
-        cur_date = date.today()
-        value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-        if country == 'us':
-            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>9' + ' and inventory_date <> ' + value + ' limit 1'
-        elif country == 'jp':
-            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value + ' limit 1'
-        status = amazondata.select_data(sql)
-        if status == False:
-            status = True
-        else:
-            status = False
-
-        amazondata.disconnect_database()
-
-    return status
-
 
 def get_asin_rows_from_node(ad, country, table):
     status = False
@@ -298,8 +251,8 @@ def amsale_from_mysql(country, node_type):
                 # print(sql_condition, flush=True)
                 status = amazonwrapper.update_data(task_db, task_table, 'status', '\'no\'', sql_condition)
                 if status != False:
-                    while is_task_finish(task_db, task_table, node) == False:
-                        while is_all_inventory_finish(country, node_table) == False:
+                    while amazonwrapper.is_task_finish(task_db, task_table, node) == False:
+                        while amazonwrapper.is_all_inventory_finish(country, node_table) == False:
                             asin_cursor = get_asin_rows_from_node(amazondata, country, node_table)
                             if asin_cursor != False:
                                 asin_info_array = asin_cursor.fetchall()
@@ -387,7 +340,7 @@ def amsale_from_mysql(country, node_type):
                                             if status == False:
                                                 print("update asin status faild.. + " + node + ' ' + asin, flush=True)
 
-                        if is_all_inventory_finish(country, node_table) == True:
+                        if amazonwrapper.is_all_inventory_finish(country, node_table) == True:
                             status = update_task_node(task_db, task_table, node)
                             if status == False:
                                 print("update task node failed.. + " + node, flush=True)
@@ -397,7 +350,7 @@ def amsale_from_mysql(country, node_type):
                                 print("amsale finish " + node, flush=True)
 
                 t2 = time.time()
-                print("总耗时：" + format(t2 - t1))
+                # print("总耗时：" + format(t2 - t1))
                 node_task = amazonwrapper.get_one_data(task_db, task_table, status_condition)
         except Exception as e:
             print(traceback.format_exc(), flush=True)
