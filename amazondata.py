@@ -62,7 +62,7 @@ class AmazonData():
         return status
 
     def create_rank_keyword_table(self, table):
-        columns = 'keyword VARCHAR(50) NOT NULL, PRIMARY KEY(keyword)'
+        columns = 'keyword VARCHAR(50) NOT NULL, type CHAR(10) NOT NULL, PRIMARY KEY(keyword)'
         status = True
         if self.amsql.is_mysql_table_exsist(self.db, table) == False:
             status = self.amsql.create_table(self.db, table, columns)
