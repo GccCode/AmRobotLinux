@@ -214,6 +214,29 @@ def update_rank_data(db_name, table, keyword, rank_info):
                         status = amazondata.update_data(table, cur_date.strftime("%Y_%m_%d"), rank, condition)
                         if status == False:
                             print("keyword rank update data in failure..", flush=True)
+                        else:
+                            pass
+
+    return status
+
+def update_rank_task_status(country, keyword, entry_type, run_status):
+    db_name = amazonglobal.db_name_rank_task
+    if country == 'us':
+        table = amazonglobal.table_rank_task_us
+    elif country == 'jp':
+        table = amazonglobal.table_rank_task_jp
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("node_info create in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            condition = 'keyword=\'' + keyword + '\' and type=\'' + entry_type + '\''
+            status = amazondata.update_data(table, 'status', '\'' + run_status + '\'', condition)
+
     return status
 
 def get_ramdon_accessible_ip(ips_array):

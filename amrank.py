@@ -12,6 +12,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from amazondata import AmazonData
 import amazonglobal
+from amazonwrapper import *
 
 
 def customized_broswer():
@@ -45,7 +46,7 @@ if __name__ == "__main__":
         driver.get('https://www.amazon.com')
         amazonpage.wait_searchbox_exsist()
         searchpage = AmazonSearchPage(driver)
-        asinresult = False
+        # asinresult = False
         #entry_type = "sponsored"
         entry_type = "normal"
         keyword = "swing swivel"
@@ -56,23 +57,13 @@ if __name__ == "__main__":
         amazonpage.search_asin(keyword, 8000, 10000)
         asinresult = searchpage.find_target_product_rank(asin, entry_type, int(5))
         if asinresult != False:
-            status = amazondata.create_database(amazonglobal.db_name_rank_data_us)
+            db_name_rank_data = amazonglobal.db_name_rank_data_us
+            table_rank_data = amazonglobal.table_rank_data_us
+            status = update_rank_data(db_name_rank_data, table_rank_data, keyword, asinresult)
             if status == False:
                 pass
             else:
-                status = amazondata.connect_database(amazonglobal.db_name_rank_data_us)
-                if status == False:
-                    pass
-                else:
-                    table_name = asin + '_' + entry_type
-                    status = amazondata.create_rank_asin_table(table_name)
-                    if status == False:
-                        pass
-                    else:
-                        pass
-                        # add date column
-                        # insert keyword data
-                        # insert rank data-date
+                pass
         else:
             print(("can't find the asin"), flush=True)
     except NoSuchElementException as msg:

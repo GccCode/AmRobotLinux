@@ -49,7 +49,7 @@ if __name__ == "__main__":
         amazonpage = AmazonPage(driver)
         try:
             tmp = random.randint(1, 100)
-            if tmp < 30:
+            if tmp < 200: #30:
                 ## registeration
                 print(("* Registeration..."), flush=True)
                 amazonpage.enter_amazon_page(3000, 5000)
@@ -57,7 +57,7 @@ if __name__ == "__main__":
                 registerpage = AmazonRegisterPage(driver)
                 registerpage.register(5000, 10000)
                 tmp = random.randint(1, 100)
-                if tmp < 10:
+                if tmp < 200: #10:
                     ## add bill address
                     print(("* Add Bill Address..."), flush=True)
                     amazonpage.enter_account_page(3000, 5000)
@@ -66,7 +66,7 @@ if __name__ == "__main__":
                     addresspage = AmazonAddressPage(driver)
                     addresspage.add_address("bill", 5000, 10000)
                     tmp = random.randint(1, 100)
-                    if tmp < 10:
+                    if tmp < 200: #10:
                         ## add payment
                         print(("* Add Card..."), flush=True)
                         amazonpage.enter_account_page(3000, 5000)
@@ -74,7 +74,8 @@ if __name__ == "__main__":
                         accountpage.enter_payment_page(3000, 5000)
                         paymentpage = AmazonPaymentPage(driver)
                         paymentpage.add_new_payment(5000, 10000)
-
+            input("xxxx")
+            exit()
             amazonpage.enter_amazon_page(30, 50)
             amazonpage.wait_searchbox_exsist()
             searchpage = AmazonSearchPage(driver)
