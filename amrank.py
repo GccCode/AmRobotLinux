@@ -38,36 +38,24 @@ def get_rank_data(ips_array, country, asin, keyword, entry_type):
             if status == False:
                 print("update rank data in failure..", flush=True)
             else:
-                status = amazonwrapper.update_rank_task_run_status(country, keyword, entry_type, 'ok')
-                if status == False:
-                    print("update rank task status in failure..", flush=True)
                 status = amazonwrapper.update_rank_task_date(country, keyword, entry_type)
                 if status == False:
                     print("update rank task date in failure..", flush=True)
 
         else:
             print(("can't find the asin"), flush=True)
-            status = amazonwrapper.update_rank_task_run_status(country, keyword, entry_type, 'ok')
-            if status == False:
-                print("update rank task status in failure..", flush=True)
     except NoSuchElementException as msg:
         print(("can't find the element"), flush=True)
-        status = amazonwrapper.update_rank_task_run_status(country, keyword, entry_type, 'ok')
-        if status == False:
-            print("update rank task status in failure..", flush=True)
     except TimeoutException as msg:
         print(("page loaded timeout"), flush=True)
-        status = amazonwrapper.update_rank_task_status(country, keyword, entry_type, 'ok')
-        if status == False:
-            print("update rank task status in failure..", flush=True)
     except:
         print(("unknown error"), flush=True)
-        status = amazonwrapper.update_rank_task_status(country, keyword, entry_type, 'ok')
-        if status == False:
-            print("update rank task status in failure..", flush=True)
     finally:
         if driver != False:
             driver.quit()
+        status = amazonwrapper.update_rank_task_status(country, keyword, entry_type, 'ok')
+        if status == False:
+            print("update rank task status in failure..", flush=True)
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
