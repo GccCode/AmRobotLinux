@@ -37,7 +37,7 @@ def get_rank_data(ips_array, country, asin, keyword, entry_type):
         if asinresult != False:
             db_name_rank_data = amazonglobal.db_name_rank_data_us
             table_rank_data = amazonglobal.table_rank_data_us
-            status = amazonwrapper.update_rank_data(db_name_rank_data, table_rank_data, keyword, asinresult)
+            status = amazonwrapper.update_rank_data(db_name_rank_data, table_rank_data, keyword, entry_type, asinresult)
             if status == False:
                 print("update rank data in failure..", flush=True)
             else:

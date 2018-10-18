@@ -182,7 +182,7 @@ def update_click_data(db_name, keyword, asin):
                             print("keyword asin update data in failure..", flush=True)
     return status
 
-def update_rank_data(db_name, table, keyword, rank_info):
+def update_rank_data(db_name, table, keyword, type, rank_info):
     amazondata = AmazonData()
     status = amazondata.create_database(db_name)
     if status == False:
@@ -206,11 +206,12 @@ def update_rank_data(db_name, table, keyword, rank_info):
                 else:
                     rank = str(rank_info[0]) + '_' + str(rank_info[1])
                     column = cur_date.strftime("%Y_%m_%d") + ' VARCHAR(10) default \'0\''
+                    print(column, flush=True)
                     status = amazondata.add_rank_column(db_name, table, cur_date.strftime("%Y_%m_%d"), column)
                     if status == False:
                         print("keyword add column in failure..", flush=True)
                     else:
-                        condition = 'keyword=\'' + keyword + '\''
+                        condition = 'keyword=\'' + keyword + '\' and type=\'' + type + '\''
                         status = amazondata.update_data(table, cur_date.strftime("%Y_%m_%d"), rank, condition)
                         if status == False:
                             print("keyword rank update data in failure..", flush=True)
