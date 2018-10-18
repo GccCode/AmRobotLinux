@@ -128,7 +128,7 @@ def is_task_running():
             if status == False:
                 print("create task status table in failure...", flush=True)
             else:
-                sql = 'select * from ' + table + ' where status=\'stop\''
+                sql = 'select status from ' + table + ' where status=\'stop\' limit 1'
                 status = amazondata.select_data(sql)
                 if status == False:
                     status = True
@@ -211,7 +211,7 @@ def is_task_finish(db_name, table, node):
     else:
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-        sql = 'select * from ' + table + ' where node=\'' + node + '\' and last_date <> ' + value
+        sql = 'select status from ' + table + ' where node=\'' + node + '\' and last_date <> ' + value + ' limit 1'
         status = amazondata.select_data(sql)
         if status == False:
             status = True
@@ -236,9 +236,9 @@ def is_all_inventory_finish(country, node_table):
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         if country == 'us':
-            sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>9' + ' and inventory_date <> ' + value
+            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>9' + ' and inventory_date <> ' + value + ' limit 1'
         elif country == 'jp':
-            sql = 'select * from ' + node_table + ' where limited=\'no\' and status=\'ok\' and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value
+            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value + ' limit 1'
         status = amazondata.select_data(sql)
         if status == False:
             status = True
