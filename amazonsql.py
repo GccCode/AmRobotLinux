@@ -191,7 +191,6 @@ class AmazonSql():
         # 'UPDATE students SET age = %s WHERE name = %s'
         status = True
         sql = 'UPDATE {table} SET {key} = {value} WHERE {condition}'.format(table=table, key=key, value=value, condition=condition)
-        print(sql, flush=True)
         try:
             cursor = db.cursor()
             cursor.execute(sql)
