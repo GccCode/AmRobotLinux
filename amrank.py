@@ -53,7 +53,7 @@ def get_rank_data(ips_array, country, asin, keyword, entry_type):
     finally:
         if driver != False:
             driver.quit()
-        status = amazonwrapper.update_rank_task_status(country, keyword, entry_type, 'ok')
+        status = amazonwrapper.update_rank_task_run_status(country, keyword, entry_type, 'ok')
         if status == False:
             print("update rank task status in failure..", flush=True)
 
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     try:
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-        status_condition = 'status<>\'no\' and last_date<>' + value
+        status_condition = 'status<>\'no\'' #' and last_date<>' + value
         rank_task = amazonwrapper.get_one_data(amazonglobal.db_name_rank_task, task_table, status_condition)
         while rank_task != False:
             asin = rank_task[1]
