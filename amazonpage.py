@@ -158,8 +158,14 @@ class AmazonPage(BaseAction):
         self.random_sleep(begin, end)
 
     def search_asin(self, keyword, begin, end):
-        self.input(keyword, *self.locator.SEARCH)
+        if self.is_element_exsist(*self.locator.SEARCH):
+            self.input(keyword, *self.locator.SEARCH)
+            element = self.driver.find_element(*self.locator.SEARCH)
+            if element.text != keyword:
+                print("Content input is: " + element.text, flush=True)
+                return False
         self.click(*self.locator.SUBMITKEYWORD)
+        return True
 
     def wait_searchbox_exsist(self):
         return self.wait_element_match(60, True, *self.locator.SEARCH)
