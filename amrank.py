@@ -25,7 +25,10 @@ def get_rank_data(ips_array, country, asin, keyword, entry_type):
             driver.get('https://www.amazon.com')
         elif country == 'jp':
             driver.get('https://www.amazon.co.jp')
-        amazonpage.wait_searchbox_exsist()
+        status = amazonpage.wait_searchbox_exsist()
+        if status == False:
+            print("ip problems..", flush=True)
+            return False
         searchpage = AmazonSearchPage(driver)
 
         print(("start search keyword"), flush=True)

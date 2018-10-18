@@ -162,7 +162,7 @@ class AmazonPage(BaseAction):
         self.click(*self.locator.SUBMITKEYWORD)
 
     def wait_searchbox_exsist(self):
-        self.wait_element_match(60, True, *self.locator.SEARCH)
+        return self.wait_element_match(60, True, *self.locator.SEARCH)
 
 # if __name__ == "__main__":
 #     #option = webdriver.ChromeOptions()
