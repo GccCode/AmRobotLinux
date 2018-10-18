@@ -61,6 +61,7 @@ if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
     country = sys.argv[1]
+    task_type = sys.argv[2]
     ips_array = amazonwrapper.get_all_accessible_ip(country)
     if ips_array == False:
         print("no accessible ip", flush=True)
@@ -74,7 +75,10 @@ if __name__ == "__main__":
     try:
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-        status_condition = 'status<>\'no\'' #' and last_date<>' + value
+        if task_type == 'fix':
+            status_condition = 'status<>\'no\'' #' and last_date<>' + value
+        elif task_type == 'run':
+            status_condition = 'status<>\'no\' and last_date<>' + value
         rank_task = amazonwrapper.get_one_data(amazonglobal.db_name_rank_task, task_table, status_condition)
         while rank_task != False:
             asin = rank_task[1]
