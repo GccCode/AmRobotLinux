@@ -103,9 +103,9 @@ if __name__ == "__main__":
             status_condition = 'status<>\'no\' and last_date<>' + value
             rank_task = amazonwrapper.get_one_data(amazonglobal.db_name_rank_task, task_table, status_condition)
             while rank_task != False:
-                asin = rank_task[1]
-                keyword = rank_task[2]
-                entry_type = rank_task[3]
+                asin = rank_task[2]
+                keyword = rank_task[3]
+                entry_type = rank_task[4]
                 print(asin, flush=True)
                 print(keyword, flush=True)
                 print(entry_type, flush=True)
