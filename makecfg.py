@@ -74,6 +74,8 @@ if __name__ == "__main__":
                 type = keep_input_bool("*** 是否设置代理？(否-0，是-1）：")
                 if type == "1":
                     cf.set("proxy", "status", "1")
+                    host_type = keep_input_bool("*** 设置代理类型（sock5-0，https-1)：")
+                    cf.set("proxy", "type", host_type)
                     host_ip = input("*** 请输入代理ip端口（格式：IP:端口）：")
                     cf.set("proxy", "proxy", host_ip)
                 else:

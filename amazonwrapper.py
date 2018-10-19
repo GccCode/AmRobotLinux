@@ -217,6 +217,7 @@ def update_rank_data(db_name, table, keyword, type, rank_info):
                             print("keyword rank update data in failure..", flush=True)
                         else:
                             pass
+            amazondata.disconnect_database()
 
     return status
 
@@ -239,6 +240,7 @@ def update_rank_task_run_status(country, keyword, entry_type, run_status):
             status = amazondata.update_data(table, 'status', '\'' + run_status + '\'', condition)
             if status == False:
                 print("update rank task run_status in failure ", flush=True)
+        amazondata.disconnect_database()
 
     return status
 
@@ -263,7 +265,7 @@ def update_rank_task_date(country, keyword, entry_type):
             status = amazondata.update_data(table, 'last_date', value, condition)
             if status == False:
                 print("update rank task last_date in failure ", flush=True)
-
+        amazondata.disconnect_database()
     return status
 
 def is_task_finish(db_name, table, node):
@@ -336,6 +338,7 @@ def mark_unaccessible_ip(country, ip):
         else:
             condition = 'ip=\'' + ip + '\''
             status = amazondata.update_data('ip_pool', 'status', '\'no\'', condition)
+            amazondata.disconnect_database()
 
     return status
 
@@ -521,6 +524,7 @@ def get_all_node_name(xls_file_array):
                             return False
                         break
                         # return node_name[1]
+        amazondata.disconnect_database()
 
     return False
 

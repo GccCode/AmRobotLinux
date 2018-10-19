@@ -71,7 +71,14 @@ def customized_broswer():
     status = cf.get("proxy", "status")
     if status == "1":
         host_port = cf.get("proxy", "proxy")
-        proxy_socks_argument = '--proxy-server=socks5://' + host_port
+        host_type = cf.get("proxy", "type")
+        if host_type == '0':
+            proxy_socks_argument = '--proxy-server=socks5://' + host_port
+        elif host_type == '1':
+            proxy_socks_argument = '--proxy-server=https://' + host_port
+        else:
+            print("代理IP设置出错。", flush=True)
+            exit(-1)
         option.add_argument(proxy_socks_argument)
     ua = cf.get("broswer", "type")
     if int(ua) > 1:
