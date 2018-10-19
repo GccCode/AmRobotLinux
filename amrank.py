@@ -35,10 +35,10 @@ def get_rank_data(ips_array, country, asin, keyword, entry_type):
         print(("start search keyword"), flush=True)
         status = amazonpage.search_asin(keyword, 8000, 10000)
         if status != False:
+            db_name_rank_data = amazonglobal.db_name_rank_data_us
+            table_rank_data = amazonglobal.table_rank_data_us
             asinresult = searchpage.find_target_product_rank(asin, entry_type, int(5))
             if asinresult != False:
-                db_name_rank_data = amazonglobal.db_name_rank_data_us
-                table_rank_data = amazonglobal.table_rank_data_us
                 status = amazonwrapper.update_rank_data(db_name_rank_data, table_rank_data, keyword, entry_type, asinresult)
                 if status == False:
                     print("update rank data in failure..", flush=True)
@@ -49,6 +49,13 @@ def get_rank_data(ips_array, country, asin, keyword, entry_type):
 
             else:
                 print(("can't find the asin"), flush=True)
+                status = amazonwrapper.update_rank_data(db_name_rank_data, table_rank_data, keyword, entry_type, [99, 99])
+                if status == False:
+                    print("update rank data in failure..", flush=True)
+                else:
+                    status = amazonwrapper.update_rank_task_date(country, keyword, entry_type)
+                    if status == False:
+                        print("update rank task date in failure..", flush=True)
     except NoSuchElementException as msg:
         print(("can't find the element"), flush=True)
     except TimeoutException as msg:
