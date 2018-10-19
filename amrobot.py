@@ -83,6 +83,7 @@ def customized_broswer():
                 proxy_username='magiccode',
                 proxy_password='KBLUI0XT47FT5R0LTLH21609'
             )
+            
             option.add_extension(proxyauth_plugin_path)
         elif host_type == '2':
             proxy_socks_argument = '--proxy-server=https://' + host_port
