@@ -194,6 +194,7 @@ def get_all_accessible_ip(country):
                     status = False
             else:
                 status = False
+            amazondata.disconnect_database()
 
     return status
 
@@ -229,6 +230,7 @@ def update_click_data(db_name, keyword, asin):
                         status = amazondata.update_data_autoinc(table, asin, condition)
                         if status == False:
                             print("keyword asin update data in failure..", flush=True)
+                amazondata.disconnect_database()
     return status
 
 def update_rank_data(db_name, table, keyword, type, rank_info):

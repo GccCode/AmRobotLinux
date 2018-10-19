@@ -290,6 +290,7 @@ if __name__ == "__main__":
         print("connect to amazondata database fail..", flush=True)
     else:
         print("connect to default database ok..", flush=True)
+        amazondata.disconnect_database()
 
     # status = amazondata.update_data('2285178051_bs_B07GP8QY8H', 'avg_sale', '30', 'asin=\'B07D8LJ9F2\'')
     # if status == False:
