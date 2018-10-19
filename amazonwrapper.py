@@ -724,7 +724,7 @@ def update_all_rank_task_date_status(date, country):
         id_array = get_all_data(db_name, task_table, 'id', False)
         for index in range(len(id_array)):
             # print(asin_array[index])
-            condition = 'id=\'' + id_array[index][0] + '\''
+            condition = 'id=' + str(id_array[index][0])
             amazondata.update_data(task_table, 'last_date', '\'' + date + '\'', condition)
             amazondata.update_data(task_table, 'status', '\'' + 'ok' + '\'', condition)
         amazondata.disconnect_database()
