@@ -210,7 +210,7 @@ def get_asin_rows_from_node(ad, country, table):
     if country == 'us':
         sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>9 and inventory_date <> ' + value
     elif country == 'jp':
-        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value
+        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value
     cursor = ad.select_data(sql)
     if cursor == False:
         print("Get Asin_Rows From Node In Failure" + table, flush=True)
@@ -268,7 +268,7 @@ def amsale_from_mysql(country, node_type):
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] > 0  and asin_info[8] < 4 and asin_info[7] != 'FBM' and float(asin_info[3]) > 9:
                                             status = True
                                     elif country == 'jp':
-                                        if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[7] != 'FBM' and float(asin_info[3]) > 800:
+                                        if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] > 0  and asin_info[8] < 4 and asin_info[7] != 'FBM' and float(asin_info[3]) > 800:
                                             status = True
                                     if status == True:
                                         if country == 'jp':

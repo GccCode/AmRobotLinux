@@ -7,6 +7,7 @@ import random
 from datetime import date
 from datetime import timedelta
 import amazonglobal
+import time
 
 
 xls_file_array_jp = ['apparel',
@@ -81,6 +82,82 @@ def insert_all_ip_info(ipfile):
                     status = False
                 finally:
                     amazondata.disconnect_database()
+
+    return status
+
+def delete_sale_inventory_table(country, node):
+    if country == 'us':
+        db_name = amazonglobal.db_name_data_us
+    elif country == 'jp':
+        db_name = amazonglobal.db_name_data_jp
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        try:
+            asin_info_array = get_all_data(db_name, node + '_BS', 'asin', False)
+            for index in range(len(asin_info_array)):
+                print(asin_info_array[index][0], flush=True)
+                table = 'INVENTORY_' + asin_info_array[index][0]
+                sql = 'drop table ' + table
+                if amazondata.is_table_exsist(table):
+                    status = amazondata.query(sql)
+                    if status == False:
+                        print("delete inventory table in failure..", flush=True)
+                    else:
+                        print('ok..', flush=True)
+                table = 'SALE_' + asin_info_array[index][0]
+                sql = 'drop table ' + table
+                if amazondata.is_table_exsist(table):
+                    status = amazondata.query(sql)
+                    if status == False:
+                        print("delete sale table in failure..", flush=True)
+                    else:
+                        print('ok..', flush=True)
+        except Exception as e:
+            print(str(e), flush=True)
+            status = False
+        finally:
+            amazondata.disconnect_database()
+
+def delete_sale_task(country, task_delete_file):
+    db_name = amazonglobal.db_name_task
+    if country == 'us':
+        sale_task_table = amazonglobal.table_sale_task_us
+    elif country == 'jp':
+        sale_task_table = amazonglobal.table_sale_task_jp
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("amazontask create in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            try:
+                f = open(task_delete_file)  # 返回一个文件对象
+                line = f.readline()  # 调用文件的 readline()方法
+                while line: # name:asin:keyword:type
+                    tmp_line = line.strip('\n')
+                    # delete_sale_inventory_table(country, tmp_line)
+                    sql = 'delete from ' + sale_task_table + ' where node=\'' + tmp_line + '\''
+                    # print(sql, flush=True)
+                    # print(db_name, flush=True)
+                    # print(sale_task_table, flush=True)
+                    status = amazondata.query(sql)
+                    if status == False:
+                        break
+                    line = f.readline()
+                    time.sleep(0.5)
+
+                f.close()
+            except Exception as e:
+                print(str(e), flush=True)
+                status = False
+            finally:
+                amazondata.disconnect_database()
 
     return status
 
@@ -355,7 +432,7 @@ def is_all_inventory_finish(country, node_table):
         if country == 'us':
             sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>9' + ' and inventory_date <> ' + value + ' limit 1'
         elif country == 'jp':
-            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value + ' limit 1'
+            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value + ' limit 1'
         status = amazondata.select_data(sql)
         if status == False:
             status = True
@@ -754,8 +831,9 @@ if __name__ == "__main__":
     # update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
     # insert_all_node_info(xls_file_array_us)
     # delete_tables('node_info_us', '_BS')
-    delete_column('node_info_us', 'electronics', 'status')
-    add_new_column('node_info_us', 'electronics', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
+    # delete_column('node_info_us', 'electronics', 'status')
+    # add_new_column('node_info_us', 'electronics', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
     # delete_column('node_info_us', 'automotive', 'status')
     # update_all_task_status('amazontask', 'sale_task_us', 'us')
     # get_one_data('node_info_us', 'automotive', False)
+    delete_sale_task('us', 'task_delete.txt')

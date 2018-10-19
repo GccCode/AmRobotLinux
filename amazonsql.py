@@ -102,13 +102,18 @@ class AmazonSql():
         try:
             cursor = db.cursor()
             cursor.execute(sql)
-            if cursor.rowcount > 0:
-                status = cursor
+            if 'delete' in sql or 'update' in sql:
+                db.commit()
+                status = True
             else:
-                status = False
+                if cursor.rowcount > 0:
+                    status = cursor
+                else:
+                    status = False
         except Exception as e:
             print(str(e), flush=True)
             status = False
+            db.rollback()
         finally:
             return status
 

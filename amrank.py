@@ -90,20 +90,6 @@ if __name__ == "__main__":
         if task_type == 'set':
             rank_file = sys.argv[3]
             amazonwrapper.insert_all_keyword(rank_file, country)
-            # status_condition = 'status<>\'no\'' #' and last_date<>' + value
-            # rank_task_array = amazonwrapper.get_all_data(amazonglobal.db_name_rank_task, task_table, False, status_condition)
-            # if rank_task_array == False:
-            #     print("get all rank task in failure..", flush=True)
-            # else:
-            #     for index in range(len(rank_task_array)):
-            #         rank_task = rank_task_array[index]
-            #         asin = rank_task[1]
-            #         keyword = rank_task[2]
-            #         entry_type = rank_task[3]
-            #         print(asin, flush=True)
-            #         print(keyword, flush=True)
-            #         print(entry_type, flush=True)
-            #         get_rank_data(ips_array, country, asin, keyword, entry_type)
         elif task_type == 'run':
             yesterday = date.today() + timedelta(days=-1)
             amazonwrapper.update_all_rank_task_date_status(yesterday.strftime("%Y-%m-%d"), country)
@@ -113,9 +99,9 @@ if __name__ == "__main__":
                 asin = rank_task[2]
                 keyword = rank_task[3]
                 entry_type = rank_task[4]
-                print(asin, flush=True)
+                # print(asin, flush=True)
                 print(keyword, flush=True)
-                print(entry_type, flush=True)
+                # print(entry_type, flush=True)
                 get_rank_data(ips_array, country, asin, keyword, entry_type)
                 rank_task = amazonwrapper.get_one_data(amazonglobal.db_name_rank_task, task_table, status_condition)
     except:
