@@ -590,13 +590,13 @@ class AmazonSpider():
             }
             asin_info_array = []
             chrome_options = webdriver.ChromeOptions()
-            prefs = {
-                'profile.default_content_setting_values': {
-                    'images': 2,
-                    # 'javascript': 2
-                }
-            }
-            chrome_options.add_experimental_option("prefs", prefs)
+            # prefs = {
+            #     'profile.default_content_setting_values': {
+            #         'images': 2,
+            #         # 'javascript': 2
+            #     }
+            # }
+            # chrome_options.add_experimental_option("prefs", prefs)
             driver = webdriver.Chrome(chrome_options=chrome_options)
             driver.set_page_load_timeout(60)
             driver.set_script_timeout(60)
@@ -619,11 +619,9 @@ class AmazonSpider():
                             if 'no Best Sellers' in element.text:
                                 status = False
                             else:
-                                amazonpage.window_capture(node + '-unknown-error')
                                 print("network crashing??", flush=True)
                                 status = -111
                         else:
-                            amazonpage.window_capture(node + '-unknown-error')
                             print("network crashing??", flush=True)
                             status = -111
 
