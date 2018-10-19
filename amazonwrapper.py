@@ -830,7 +830,6 @@ if __name__ == "__main__":
     # get_all_node_name()
     # update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
     # insert_all_node_info(xls_file_array_us)
-    # delete_tables('node_info_us', '_BS')
     delete_column('node_info', 'ce', 'status')
     add_new_column('node_info', 'ce', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
     # delete_column('node_info_us', 'automotive', 'status')
