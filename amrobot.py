@@ -17,6 +17,7 @@ from amazonpaymentpage import AmazonPaymentPage
 from amazonsigninpage import AmazonSignInPage
 from amazonsearchpage import  AmazonSearchPage
 from amazonasinpage import  AmazonAsinPage
+import utils
 
 #0)
 #1) Chrome
@@ -74,14 +75,21 @@ def customized_broswer():
         host_type = cf.get("proxy", "type")
         if host_type == '0':
             proxy_socks_argument = '--proxy-server=socks5://' + host_port
+            option.add_argument(proxy_socks_argument)
         elif host_type == '1':
-            proxy_socks_argument = '--proxy-server=http://' + host_port
+            proxyauth_plugin_path = utils.create_proxyauth_extension(
+                proxy_host=host_port.split(':')[0],
+                proxy_port=host_port.split(':')[1],
+                proxy_username='magiccode',
+                proxy_password='option.add_argument(proxy_socks_argument)'
+            )
+            option.add_extension(proxyauth_plugin_path)
         elif host_type == '2':
             proxy_socks_argument = '--proxy-server=https://' + host_port
+            option.add_argument(proxy_socks_argument)
         else:
             print("代理IP设置出错。", flush=True)
             exit(-1)
-        option.add_argument(proxy_socks_argument)
     ua = cf.get("broswer", "type")
     if int(ua) > 1:
         index = int(ua) - 1
