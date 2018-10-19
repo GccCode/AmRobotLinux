@@ -65,10 +65,10 @@ class AmazonPage(BaseAction):
             self.driver.execute_script("window.stop();")
 
         self.random_sleep(begin, end)
-        if os.path.exists('cookies.json'):
-            print(("** 加载cookies。。。。"), flush=True)
-            self.load_cookies()
-            self.random_sleep(2000, 3000)
+        # if os.path.exists('cookies.json'):
+        #     print(("** 加载cookies。。。。"), flush=True)
+        #     self.load_cookies()
+        #     self.random_sleep(2000, 3000)
 
     def get_currenthandle(self):
         return self.driver.current_window_handle
