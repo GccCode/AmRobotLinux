@@ -614,18 +614,17 @@ class AmazonSpider():
                         asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
                         # print("Asin is: " + asin_info_data['asin'], flush=True)
                     else:
-                        if amazonpage.is_element_exsist(*UNKNOWN_NODE_US):
+                        if amazonpage.is_element_exsist(*UNKNOWN_NODE_US) and i == 0:
                             element = driver.find_element(*UNKNOWN_NODE_US)
                             if 'no Best Sellers' in element.text:
                                 status = False
-                            else:
-                                print("network crashing??", flush=True)
-                                status = -111
+                                return status
+                        elif i != 0:
+                            continue
                         else:
-                            print("network crashing??", flush=True)
+                            print("network crashing?? + " + str(i), flush=True)
                             status = -111
-
-                        return status
+                            return status
 
                     tmp_symbol = CRITICAL_REVIEWS_PREFIX_US + str(i + 1) + CRITICAL_REVIEWS_POSTFIX_US
                     has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
@@ -659,6 +658,8 @@ class AmazonSpider():
                             element = driver.find_element_by_xpath(tmp_symbol)
                             # print("Price is : " + element.text.strip('$ ').replace(',', ''), flush=True)
                             asin_info_data['price'] = getprice_us(element.text)
+                        else:
+                            continue
                     else:
                         tmp_symbol = CRITICAL_FBA_PREFIX_US + str(i + 1) + CRITICAL_FBA_POSTFIX_US
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
@@ -675,6 +676,8 @@ class AmazonSpider():
                             element = driver.find_element_by_xpath(tmp_symbol)
                             # print("Price is : " + element.text.strip('$ ').replace(',', ''), flush=True)
                             asin_info_data['price'] = getprice_us(element.text)
+                        else:
+                            continue
 
                     tmp_symbol = CRITICAL_IMGSRC_PREFIX_US + str(i + 1) + CRITICAL_IMGSRC_POSTFIX_US
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
@@ -693,6 +696,8 @@ class AmazonSpider():
                         asin_info_array.append(copy.deepcopy(asin_info_data))
                         # print(asin_info_data['asin'], flush=True)
                         # print("** ------------------- **", flush=True)
+                    else:
+                        continue
                 amazonpage.random_sleep(2000, 5000)
             except NoSuchElementException as msg:
                 status = False
