@@ -5,6 +5,7 @@ from amazondata import AmazonData
 import xlrd
 import random
 from datetime import date
+from datetime import timedelta
 import amazonglobal
 
 
@@ -70,6 +71,54 @@ def insert_all_ip_info(ipfile):
                             }
                             print(line.strip('\n'))
                             status = amazondata.insert_ip_info_data('ip_pool', data)
+                            if status == False:
+                                break
+                        line = f.readline()
+
+                    f.close()
+                except Exception as e:
+                    print(str(e), flush=True)
+                    status = False
+                finally:
+                    amazondata.disconnect_database()
+
+    return status
+
+def insert_all_keyword(rank_file, country):
+    db_name = amazonglobal.db_name_rank_task
+    if country == 'us':
+        rank_task_table = amazonglobal.table_rank_task_us
+    elif country == 'jp':
+        rank_task_table = amazonglobal.table_rank_task_jp
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("node_info create in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            status = amazondata.create_rank_task_table(rank_task_table)
+            if status != False:
+                try:
+                    yesterday = date.today() + timedelta(days=-1)
+                    f = open(rank_file)  # 返回一个文件对象
+                    line = f.readline()  # 调用文件的 readline()方法
+                    while line: # name:asin:keyword:type
+                        if ':' in line:
+                            tmp_line = line.strip('\n')
+                            asin_info = tmp_line.split(':')
+                            data = {
+                                'name': asin_info[0],
+                                'asin': asin_info[1],
+                                'keyword': asin_info[2],
+                                'type': asin_info[3],
+                                'last_date': yesterday.strftime("%Y-%m-%d"),
+                                'status': 'ok'
+                            }
+                            print(line.strip('\n'))
+                            status = amazondata.insert_rank_data(rank_task_table, data)
                             if status == False:
                                 break
                         line = f.readline()
@@ -658,6 +707,26 @@ def update_all_task_date_status(db_name, date, country):
             amazondata.update_data(task_table, 'last_date', '\'' + date + '\'', condition)
             amazondata.update_data(task_table, 'status', '\'' + 'ok' + '\'', condition)
             update_asin_status_ok(data_db, node_array[index][0])
+        amazondata.disconnect_database()
+
+def update_all_rank_task_date_status(date, country):
+    if country == 'jp':
+        task_table = amazonglobal.table_rank_task_jp
+        db_name = amazonglobal.db_name_rank_task
+    elif country == 'us':
+        task_table = amazonglobal.table_rank_task_us
+        db_name = amazonglobal.db_name_rank_task
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        id_array = get_all_data(db_name, task_table, 'id', False)
+        for index in range(len(id_array)):
+            # print(asin_array[index])
+            condition = 'id=\'' + id_array[index][0] + '\''
+            amazondata.update_data(task_table, 'last_date', '\'' + date + '\'', condition)
+            amazondata.update_data(task_table, 'status', '\'' + 'ok' + '\'', condition)
         amazondata.disconnect_database()
 
 # SELECT CREATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='amazondata' AND TABLE_NAME='INVENTORY_B07GYTTF8B';
