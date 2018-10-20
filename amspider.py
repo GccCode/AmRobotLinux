@@ -608,6 +608,7 @@ class AmazonSpider():
                 print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
 
                 for i in range(0, 50):
+                    unavailable = False
                     tmp_symbol = CRITICAL_TITLE_PREFIX_US + str(i + 1) + CRITICAL_TITLE_POSTFIX_US
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
@@ -619,12 +620,8 @@ class AmazonSpider():
                             if 'no Best Sellers' in element.text:
                                 status = False
                                 return status
-                        elif i != 0:
-                            continue
                         else:
-                            print("network crashing?? + " + str(i), flush=True)
-                            status = -111
-                            return status
+                            continue
 
                     tmp_symbol = CRITICAL_REVIEWS_PREFIX_US + str(i + 1) + CRITICAL_REVIEWS_POSTFIX_US
                     has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
@@ -1492,8 +1489,8 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
                     status = amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
 
             node_info = amazonwrapper.get_one_data(db_name, table, condition)
-            t2 = time.time()
-            print("Total Time：" + format(t2 - t1), flush=True)
+            # t2 = time.time()
+            # print("Total Time：" + format(t2 - t1), flush=True)
     except Exception as e:
         print(str(e), flush=True)
         amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
