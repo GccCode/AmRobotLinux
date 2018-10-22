@@ -79,7 +79,7 @@ class AmazonGUI():
             elif country == 'us':
                 tmp_data = [rank, asin, img_src, ('$' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
                 db_name_sale = amazonglobal.db_name_data_us
-            sale_data_array = get_all_data(db_name_sale, 'SALE_' + asin, False, False)
+            sale_data_array = get_all_data(db_name_sale, 'SALE_' + asin, 'sale', False)
             print(sale_data_array, flush=True)
             exit()
             for i in range(0, 11):
