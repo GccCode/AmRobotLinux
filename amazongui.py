@@ -5,10 +5,30 @@ from pyh import *
 from amazonwrapper import *
 import sys
 import amazonglobal
+import pandas as pd
 
 class AmazonGUI():
     def __init__(self):
         pass
+
+    def get_unexpected_err(self, data):
+        four = pd.Series(data).describe()
+        Q1 = four['25%']
+        Q3 = four['75%']
+        IQR = Q3 - Q1
+
+        upper = Q3 + 1.5 * IQR
+        lower = Q1 - 1.5 * IQR
+
+        return upper
+
+    def check_unexpected_err(self, data, err_value):
+        count = 0
+        for index in range(len(data)):
+            if data[index] > err_value:
+                count += 1
+
+        return count
 
     def create_page(self, country, node, node_name, type, css_file, data, output):
         page_name =  node_name.split('/')[len(node_name.split('/')) - 1]
@@ -55,9 +75,13 @@ class AmazonGUI():
             limited = data[index][11]
             if country == 'jp':
                 tmp_data = [rank, asin, img_src, ('￥ ' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
+                db_name_sale = amazonglobal.db_name_data_us
             elif country == 'us':
-                tmp_data = [rank, asin, img_src, ('$' + str(price)), review, rate, qa, shipping, seller, avg_sale,
-                            limited]
+                tmp_data = [rank, asin, img_src, ('$' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
+                db_name_sale = amazonglobal.db_name_data_jp
+            sale_data_array = get_all_data(db_name_sale, 'SALE_' + asin, False, False)
+            print(sale_data_array, flush=True)
+            exit()
             for i in range(0, 11):
                 if i != 1 and i != 2:
                     tmp_td = td(str(tmp_data[i]))
