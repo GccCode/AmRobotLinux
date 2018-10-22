@@ -16,7 +16,7 @@ class AmazonGUI():
         for index in range(len(data)):
             print(data[index][0])
             sale_data_array.append(int(data[index][0]))
-        four = pd.Series(data).describe()
+        four = pd.Series(sale_data_array).describe()
         Q1 = four['25%']
         Q3 = four['75%']
         IQR = Q3 - Q1
