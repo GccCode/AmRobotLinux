@@ -14,7 +14,7 @@ class AmazonGUI():
     def get_unexpected_err(self, data):
         sale_data_array = []
         for index in range(len(data)):
-            print(data[index][0], flush=True)
+            # print(data[index][0], flush=True)
             sale_data_array.append(int(data[index][0]))
         four = pd.Series(sale_data_array).describe()
         Q1 = four['25%']
@@ -32,7 +32,7 @@ class AmazonGUI():
         for index in range(len(data)):
             if int(data[index][0]) > ((err_range[1] + err_range[0])/2):
                 count += 1
-        print(count, flush=True)
+        # print(count, flush=True)
         return count
 
     def create_page(self, country, node, node_name, type, css_file, data, output, check_err):
@@ -80,19 +80,23 @@ class AmazonGUI():
             shipping = data[index][7]
             seller = data[index][8]
             avg_sale = data[index][9]
-            limited = data[index][11]
+
             if country == 'jp':
-                tmp_data = [rank, asin, img_src, ('￥ ' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
                 db_name_sale = amazonglobal.db_name_data_jp
             elif country == 'us':
-                tmp_data = [rank, asin, img_src, ('$' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
                 db_name_sale = amazonglobal.db_name_data_us
-            sale_data_array = get_all_data(db_name_sale, 'SALE_' + asin, 'sale', False)
-            err_value = self.get_unexpected_err(sale_data_array)
-            err_count = self.check_unexpected_err(sale_data_array, err_value)
-            check_status = str(((err_value[1] + err_value[0])/2)) + '_' + str(err_count)
-            print(check_status, flush=True)
-            exit()
+            if check_status == '0':
+                limited = data[index][11]
+            elif check_status == '1':
+                sale_data_array = get_all_data(db_name_sale, 'SALE_' + asin, 'sale', False)
+                err_value = self.get_unexpected_err(sale_data_array)
+                err_count = self.check_unexpected_err(sale_data_array, err_value)
+                check_status = str(((err_value[1] + err_value[0])/2)) + '_' + str(err_count)
+                limited = check_status
+            if country == 'jp':
+                tmp_data = [rank, asin, img_src, ('￥ ' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
+            elif country == 'us':
+                tmp_data = [rank, asin, img_src, ('$' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
             for i in range(0, 11):
                 if i != 1 and i != 2:
                     tmp_td = td(str(tmp_data[i]))
