@@ -85,9 +85,9 @@ class AmazonGUI():
                 db_name_sale = amazonglobal.db_name_data_jp
             elif country == 'us':
                 db_name_sale = amazonglobal.db_name_data_us
-            if check_status == '0':
+            if check_err == '0':
                 limited = data[index][11]
-            elif check_status == '1':
+            elif check_err == '1':
                 sale_data_array = get_all_data(db_name_sale, 'SALE_' + asin, 'sale', False)
                 err_value = self.get_unexpected_err(sale_data_array)
                 err_count = self.check_unexpected_err(sale_data_array, err_value)
