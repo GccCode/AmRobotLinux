@@ -30,7 +30,8 @@ class AmazonGUI():
         count = 0
 
         for index in range(len(data)):
-            if int(data[index][0]) > ((err_range[1] + err_range[0])/2):
+            # if int(data[index][0]) > ((err_range[1] + err_range[0])/2):
+            if int(data[index][0] > err_range[0]):
                 count += 1
         # print(count, flush=True)
         return count
