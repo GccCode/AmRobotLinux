@@ -35,7 +35,7 @@ class AmazonGUI():
         print(count, flush=True)
         return count
 
-    def create_page(self, country, node, node_name, type, css_file, data, output):
+    def create_page(self, country, node, node_name, type, css_file, data, output, type):
         page_name =  node_name.split('/')[len(node_name.split('/')) - 1]
         mainpage = PyH(page_name)
         mainpage.addCSS(css_file)
@@ -62,7 +62,10 @@ class AmazonGUI():
         thead_row << head_row
         info_table << thead_row
         head_row << th('排名') + th('ASIN') + th('主图') +th('单价') + th('评论')
-        head_row << th('评分') + th('QA') + th('物流') + th('卖家数') + th('平均日销量') + th('限购')
+        if type == '0':
+            head_row << th('评分') + th('QA') + th('物流') + th('卖家数') + th('平均日销量') + th('限购')
+        elif type == '1':
+            head_row << th('评分') + th('QA') + th('物流') + th('卖家数') + th('平均日销量') + th('校验')
         tbody_row = tbody()
         info_table << tbody_row
         for index in range(len(data)):
