@@ -14,6 +14,7 @@ class AmazonGUI():
     def get_unexpected_err(self, data):
         sale_data_array = []
         for index in range(len(data)):
+            print(data[index][0])
             sale_data_array.append(int(data[index][0]))
         four = pd.Series(data).describe()
         Q1 = four['25%']
@@ -28,7 +29,7 @@ class AmazonGUI():
     def check_unexpected_err(self, data, err_value):
         count = 0
         for index in range(len(data)):
-            if data[index] > err_value:
+            if int(data[index][0]) > err_value:
                 count += 1
 
         return count
