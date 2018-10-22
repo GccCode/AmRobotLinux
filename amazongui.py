@@ -87,6 +87,8 @@ class AmazonGUI():
             sale_data_array = get_all_data(db_name_sale, 'SALE_' + asin, 'sale', False)
             err_value = self.get_unexpected_err(sale_data_array)
             err_count = self.check_unexpected_err(sale_data_array, err_value)
+            check_status = str(((err_value[1] + err_value[0])/2)) + '_' + str(err_count)
+            print(check_status, flush=True)
             exit()
             for i in range(0, 11):
                 if i != 1 and i != 2:
