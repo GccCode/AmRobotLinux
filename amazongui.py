@@ -75,10 +75,10 @@ class AmazonGUI():
             limited = data[index][11]
             if country == 'jp':
                 tmp_data = [rank, asin, img_src, ('￥ ' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
-                db_name_sale = amazonglobal.db_name_data_us
+                db_name_sale = amazonglobal.db_name_data_jp
             elif country == 'us':
                 tmp_data = [rank, asin, img_src, ('$' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
-                db_name_sale = amazonglobal.db_name_data_jp
+                db_name_sale = amazonglobal.db_name_data_us
             sale_data_array = get_all_data(db_name_sale, 'SALE_' + asin, False, False)
             print(sale_data_array, flush=True)
             exit()
