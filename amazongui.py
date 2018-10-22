@@ -14,7 +14,7 @@ class AmazonGUI():
     def get_unexpected_err(self, data):
         sale_data_array = []
         for index in range(len(data)):
-            print(data[index][0])
+            print(data[index][0], flush=True)
             sale_data_array.append(int(data[index][0]))
         four = pd.Series(sale_data_array).describe()
         Q1 = four['25%']
@@ -24,14 +24,15 @@ class AmazonGUI():
         upper = Q3 + 1.5 * IQR
         lower = Q1 - 1.5 * IQR
 
-        return upper
+        return [upper, lower]
 
-    def check_unexpected_err(self, data, err_value):
+    def check_unexpected_err(self, data, err_range):
         count = 0
-        for index in range(len(data)):
-            if int(data[index][0]) > err_value:
-                count += 1
 
+        for index in range(len(data)):
+            if int(data[index][0]) > ((err_range[1] + err_range[0])/2):
+                count += 1
+        print(count, flush=True)
         return count
 
     def create_page(self, country, node, node_name, type, css_file, data, output):
@@ -84,10 +85,8 @@ class AmazonGUI():
                 tmp_data = [rank, asin, img_src, ('$' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
                 db_name_sale = amazonglobal.db_name_data_us
             sale_data_array = get_all_data(db_name_sale, 'SALE_' + asin, 'sale', False)
-            print(sale_data_array, flush=True)
             err_value = self.get_unexpected_err(sale_data_array)
-            print(err_value, flush=True)
-            print(self.check_unexpected_err(sale_data_array, err_value), flush=True)
+            err_count = self.check_unexpected_err(sale_data_array, err_value)
             exit()
             for i in range(0, 11):
                 if i != 1 and i != 2:
