@@ -1201,7 +1201,7 @@ class AmazonSpider():
                             amazonasinpage.window_capture(asin + '-dealing-')
                     else:
                         print("no buycart.. + " + asin, flush=True)
-                        amazonasinpage.window_capture(asin + '-nocart-')
+                        # amazonasinpage.window_capture(asin + '-nocart-')
             else:
                 status = data
         except NoSuchElementException as msg:
@@ -1213,9 +1213,9 @@ class AmazonSpider():
             status = -111
         except Exception as e:
             status = False
-            amazonasinpage.window_capture(asin + '-unknown-error')
+            # amazonasinpage.window_capture(asin + '-unknown-error')
             print(traceback.format_exc(), flush=True)
-            print(e, flush=True)
+            # print(e, flush=True)
         finally:
             if driver_upper == False:
                 driver.quit()

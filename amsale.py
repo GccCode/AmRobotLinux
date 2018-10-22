@@ -176,7 +176,7 @@ def update_token_count():
             status = False
         else:
             condition = 'count=0'
-            status = amazondata.update_data(table, 'count', 20, condition)
+            status = amazondata.update_data(table, 'count', 40, condition)
 
             amazondata.disconnect_database()
 
