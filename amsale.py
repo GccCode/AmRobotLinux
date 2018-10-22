@@ -376,7 +376,7 @@ if __name__ == "__main__":
                         exit(-1)
                     amsale_from_mysql(country, type)
 
-            time.sleep(60)
+            time.sleep(300)
             print("task is not running...", flush=True)
 
     elif task == 'fix':
