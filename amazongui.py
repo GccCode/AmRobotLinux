@@ -129,6 +129,7 @@ class AmazonGUI():
 if __name__ == "__main__":
     amazongui = AmazonGUI()
     country = sys.argv[1]
+    type = sys.argv[2]
     condition = 'length(node)>4'
     if country == 'us':
         table_array = get_all_data(amazonglobal.db_name_task, amazonglobal.table_sale_task_us, 'node', False)
@@ -149,9 +150,9 @@ if __name__ == "__main__":
                 if node_name != False:
                     print(node_name.replace(' & ', '_'), flush=True)
                     if country == 'us':
-                        amazongui.create_page(country, node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page/')
+                        amazongui.create_page(country, node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page/', type)
                     elif country == 'jp':
-                        amazongui.create_page(country, node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page_jp/')
+                        amazongui.create_page(country, node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page_jp/', type)
 
             else:
                 if country == 'us':
