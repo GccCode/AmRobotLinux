@@ -223,7 +223,6 @@ def is_in_task_delete_data(country, node):
                     if cursor == False:
                         print("insert data in failure", flush=True)
                     else:
-                        print(cursor, flush=True)
                         status = True
                 except Exception:
                     print(traceback.format_exc(), flush=True)
