@@ -8,6 +8,7 @@ from datetime import date
 from datetime import timedelta
 import amazonglobal
 import time
+import traceback
 
 
 xls_file_array_jp = ['apparel',
@@ -148,7 +149,13 @@ def delete_sale_task(country, task_delete_file):
                     # print(sale_task_table, flush=True)
                     status = amazondata.query(sql)
                     if status == False:
+                        print("delete node in sale_task_table in failure", flush=True)
                         break
+                    else:
+                        status = insert_task_delete_data(country, tmp_line)
+                        if status == False:
+                            print("insert task delete in failure", flush=True)
+                            break
                     line = f.readline()
                     time.sleep(0.5)
 
@@ -158,6 +165,68 @@ def delete_sale_task(country, task_delete_file):
                 status = False
             finally:
                 amazondata.disconnect_database()
+
+    return status
+
+def insert_task_delete_data(country, node):
+    db_name = amazonglobal.db_name_task
+    if country == 'us':
+        task_delete_table = amazonglobal.table_sale_task_delete_us
+    elif country == 'jp':
+        task_delete_table = amazonglobal.table_sale_task_delete_jp
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("database create in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            status = amazondata.create_task_delete_table(task_delete_table)
+            if status != False:
+                try:
+                    data = {
+                        'node': node
+                    }
+                    status = amazondata.insert_rank_data(task_delete_table, data)
+                    if status == False:
+                        print("insert data in failure", flush=True)
+                except Exception:
+                    print(traceback.format_exc(), flush=True)
+                    status = False
+            amazondata.disconnect_database()
+
+    return status
+
+def is_in_task_delete_data(country, node):
+    db_name = amazonglobal.db_name_task
+    if country == 'us':
+        task_delete_table = amazonglobal.table_sale_task_delete_us
+    elif country == 'jp':
+        task_delete_table = amazonglobal.table_sale_task_delete_jp
+    amazondata = AmazonData()
+    status = amazondata.create_database(db_name)
+    if status == False:
+        print("database create in failure..", flush=True)
+    else:
+        status = amazondata.connect_database(db_name)
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            status = amazondata.create_task_delete_table(task_delete_table)
+            if status != False:
+                try:
+                    sql = 'select * from ' + task_delete_table + ' where node=\'' + node + '\''
+                    cursor = amazondata.query(sql)
+                    if cursor == False:
+                        print("insert data in failure", flush=True)
+                    else:
+                        status = True
+                except Exception:
+                    print(traceback.format_exc(), flush=True)
+                    status = False
+            amazondata.disconnect_database()
 
     return status
 

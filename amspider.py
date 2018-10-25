@@ -1472,27 +1472,28 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
             t1 = time.time()
             node = node_info[0]
             node_name = node_info[1]
-            sql_condition = 'node=' + '\'' + node + '\''
-            status = amazonwrapper.update_data(db_name, table, 'status', '\'run\'', sql_condition)
-            if status != False:
-                if country == 'jp':
-                    status = amazonspider.jp_node_gather(amazonglobal.db_name_data_jp, node, node_name, type, 1, ips_array, is_sale)
-                elif country == 'us':
-                    status = amazonspider.us_node_gather(amazonglobal.db_name_data_us, node, node_name, type, 2, ips_array, is_sale)
-                if status != False and status != -111:
-                    status = amazonwrapper.update_data(db_name, table, 'status', '\'ok\'', sql_condition)
-                    if status != False:
-                        print("amspider finish " + node, flush=True)
-                elif status == False:
-                    status = amazonwrapper.update_data(db_name, table, 'status', '\'err\'', sql_condition)
-                elif status == -111:
-                    status = amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
+            if amazonwrapper.is_in_task_delete_data(country, node) == False:
+                sql_condition = 'node=' + '\'' + node + '\''
+                status = amazonwrapper.update_data(db_name, table, 'status', '\'run\'', sql_condition)
+                if status != False:
+                    if country == 'jp':
+                        status = amazonspider.jp_node_gather(amazonglobal.db_name_data_jp, node, node_name, type, 1, ips_array, is_sale)
+                    elif country == 'us':
+                        status = amazonspider.us_node_gather(amazonglobal.db_name_data_us, node, node_name, type, 2, ips_array, is_sale)
+                    if status != False and status != -111:
+                        status = amazonwrapper.update_data(db_name, table, 'status', '\'ok\'', sql_condition)
+                        if status != False:
+                            print("amspider finish " + node, flush=True)
+                    elif status == False:
+                        status = amazonwrapper.update_data(db_name, table, 'status', '\'err\'', sql_condition)
+                    elif status == -111:
+                        status = amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
 
-            node_info = amazonwrapper.get_one_data(db_name, table, condition)
-            # t2 = time.time()
-            # print("Total Time：" + format(t2 - t1), flush=True)
+                node_info = amazonwrapper.get_one_data(db_name, table, condition)
+                # t2 = time.time()
+                # print("Total Time：" + format(t2 - t1), flush=True)
     except Exception as e:
-        print(str(e), flush=True)
+        print(traceback.format_exc(), flush=True)
         amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
 
 def amspider_test(country, node, node_name, type, filename):

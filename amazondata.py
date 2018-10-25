@@ -58,6 +58,14 @@ class AmazonData():
 
         return status
 
+    def create_task_delete_table(self, table):
+        columns = 'node varchar(50) not null, PRIMARY KEY(node)'
+        status = True
+        if self.amsql.is_mysql_table_exsist(self.db, table) == False:
+            status = self.amsql.create_table(self.db, table, columns)
+
+        return status
+
     def insert_ip_info_data(self, table, data):
         return self.amsql.insert_data(self.db, table, data)
 
