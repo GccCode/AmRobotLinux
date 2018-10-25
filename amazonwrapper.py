@@ -220,7 +220,7 @@ def is_in_task_delete_data(country, node):
                     sql = 'select * from ' + task_delete_table + ' where node=\'' + node + '\''
                     cursor = amazondata.query(sql)
                     if cursor == False:
-                        print("insert data in failure", flush=True)
+                        status = cursor
                     else:
                         status = True
                 except Exception:
