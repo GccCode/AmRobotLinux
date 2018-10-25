@@ -499,7 +499,7 @@ def is_all_inventory_finish(country, node_table):
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         if country == 'us':
-            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>10' + ' and inventory_date <> ' + value + ' limit 1'
+            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>=19' + ' and inventory_date <> ' + value + ' limit 1'
         elif country == 'jp':
             sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value + ' limit 1'
         status = amazondata.select_data(sql)
@@ -900,9 +900,9 @@ if __name__ == "__main__":
     # get_all_node_name()
     # update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
     # insert_all_node_info(xls_file_array_us)
-    delete_column('node_info_us', 'sporting_goods', 'status')
-    add_new_column('node_info_us', 'sporting_goods', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
+    # delete_column('node_info_us', 'sporting_goods', 'status')
+    # add_new_column('node_info_us', 'sporting_goods', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
     # delete_column('node_info_us', 'automotive', 'status')
     # update_all_task_status('amazontask', 'sale_task_us', 'us')
     # get_one_data('node_info_us', 'automotive', False)
-    # delete_sale_task('us', 'task_delete.txt')
+    delete_sale_task('us', 'task_delete.txt')

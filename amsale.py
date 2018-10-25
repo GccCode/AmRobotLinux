@@ -208,7 +208,7 @@ def get_asin_rows_from_node(ad, country, table):
     cur_date = date.today()
     value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
     if country == 'us':
-        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>10 and inventory_date <> ' + value
+        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>=19 and inventory_date <> ' + value
     elif country == 'jp':
         sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value
     cursor = ad.select_data(sql)
