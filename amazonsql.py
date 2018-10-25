@@ -107,6 +107,7 @@ class AmazonSql():
                 status = True
             else:
                 if cursor.rowcount > 0:
+                    print(cursor.fetchall(), flush=True)
                     status = cursor
                 else:
                     status = False
