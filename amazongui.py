@@ -70,7 +70,7 @@ class AmazonGUI():
                             break
                     if flag == False:
                         sale_data_array.append(0)
-
+                print(days_data_array, flush=True)
                 print(sale_data_array, flush=True)
 
             amazondata.disconnect_database()
