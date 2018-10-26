@@ -57,7 +57,7 @@ class AmazonGUI():
         else:
             table_sale = 'SALE_' + asin
             table_inventory = 'INVENTORY_' + asin
-            sale_array = get_all_data(db_name_data, table_sale, False, False)
+            sale_array = get_all_data(db_name_data, table_inventory, False, False)
             if sale_array == False:
                 print("get all data in failure", flush=True)
             else:
