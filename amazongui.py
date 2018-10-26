@@ -43,7 +43,7 @@ class AmazonGUI():
         # generate sale data of last 15 days
         # generate inventory data of last 15 days
         # generate line image
-        days_data_array = get_days_array_of_day(15, -1)
+        days_data_array = get_days_array_of_day(14, -1)
         sale_data_array = []
         inventory_data_array = []
         amazondata = AmazonData()
