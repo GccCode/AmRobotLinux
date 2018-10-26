@@ -79,8 +79,8 @@ class AmazonGUI():
                     if flag == False:
                         inventory_data_array.append(0)
 
-            print(sale_data_array, flush=True)
-            print(inventory_data_array, flush=True)
+            # print(sale_data_array, flush=True)
+            # print(inventory_data_array, flush=True)
 
             grid = Grid()
 
@@ -148,6 +148,8 @@ class AmazonGUI():
             seller = data[index][8]
             avg_sale = data[index][9]
 
+            self.create_sale_inventory_page(country, asin)
+
             if country == 'jp':
                 db_name_sale = amazonglobal.db_name_data_jp
             elif country == 'us':
@@ -187,6 +189,11 @@ class AmazonGUI():
                     img_a << img_img
                     tmp_td = td()
                     tmp_td << img_a
+                elif i == 9:
+                    avg_sale_link = './daily_sale/' + asin + '.html'
+                    avg_sale_a = a(avg_sale,  href=avg_sale_link, target="_blank")
+                    tmp_td = td()
+                    tmp_td << avg_sale_a
                 else:
                     tmp_td = td(str(tmp_data[i]))
 
