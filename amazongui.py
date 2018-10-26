@@ -61,7 +61,7 @@ class AmazonGUI():
             if sale_array == False:
                 print("get all data in failure", flush=True)
             else:
-                for index in range(0, 15):
+                for index in range(15):
                     flag = False
                     for i in range(len(sale_array)):
                         if sale_array[i][0].strftime('%Y-%m-%d') == days_data_array[index]:
