@@ -65,11 +65,11 @@ class AmazonGUI():
                     flag = False
                     for i in range(0, len(sale_array)):
                         if sale_array[i][0].strftime('%Y-%m-%d') == days_data_array[index]:
-                            sale_data_array[index] = int(sale_array[i][1])
+                            sale_data_array.append(int(sale_array[i][1]))
                             flag = True
                             break
                     if flag == False:
-                        sale_data_array[index] = 0
+                        sale_data_array.append(0)
 
                 print(sale_data_array, flush=True)
 
