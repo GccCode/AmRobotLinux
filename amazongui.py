@@ -126,7 +126,7 @@ class AmazonGUI():
 
         return maindiv
 
-    def create_page_together(self, country, type, css_file, output, check_err):
+    def create_page_together(self, table_array, country, type, css_file, output, check_err):
         page_name = "Potential Product"
         mainpage = PyH(page_name)
         mainpage.addCSS(css_file)
@@ -248,15 +248,15 @@ if __name__ == "__main__":
     task_type = sys.argv[1]
     country = sys.argv[2]
     check_err = sys.argv[3]
+    if country == 'us':
+        table_array = get_all_data(amazonglobal.db_name_task, amazonglobal.table_sale_task_us, 'node', False)
+        db_name_data = amazonglobal.db_name_data_us
+        db_name_node = amazonglobal.db_name_node_info_us
+    elif country == 'jp':
+        table_array = get_all_data(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, 'node', False)
+        db_name_data = amazonglobal.db_name_data_jp
+        db_name_node = amazonglobal.db_name_node_info_jp
     if task_type == 'single':
-        if country == 'us':
-            table_array = get_all_data(amazonglobal.db_name_task, amazonglobal.table_sale_task_us, 'node', False)
-            db_name_data = amazonglobal.db_name_data_us
-            db_name_node = amazonglobal.db_name_node_info_us
-        elif country == 'jp':
-            table_array = get_all_data(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, 'node', False)
-            db_name_data = amazonglobal.db_name_data_jp
-            db_name_node = amazonglobal.db_name_node_info_jp
         for node in table_array:
             print(node[0], flush=True)
             table_name = node[0] + '_BS'
@@ -279,7 +279,7 @@ if __name__ == "__main__":
                         amazongui.create_page(country, node[0], node[0], 'BS', 'amazongui.css', data, '../html_page_jp/', check_err)
     elif task_type == 'total':
         if country == 'us':
-            amazongui.create_page_together(country, 'BS', 'amazongui.css', '../html_page/', check_err)
+            amazongui.create_page_together(table_array, country, 'BS', 'amazongui.css', '../html_page/', check_err)
         elif country == 'jp':
-            amazongui.create_page_together(country, 'BS', 'amazongui.css', '../html_page_jp/', check_err)
+            amazongui.create_page_together(table_array, country, 'BS', 'amazongui.css', '../html_page_jp/', check_err)
 
