@@ -126,14 +126,14 @@ class AmazonGUI():
 
         return maindiv
 
-    def create_page_together(self, table_array, country, price, type, css_file, output, check_err):
+    def create_page_together(self, table_array, country, avg_sale, price, type, css_file, output, check_err):
         page_name = "Potential Product"
         mainpage = PyH(page_name)
         mainpage.addCSS(css_file)
         for node in table_array:
             if is_in_task_delete_data(country, node[0]) == False:
                 table_name = node[0] + '_BS'
-                condition = 'avg_sale>=5 and price>=' + price
+                condition = 'avg_sale>=' + avg_sale + ' and price>=' + price
                 data = get_all_data(db_name_data, table_name, False, condition)
                 if data != False:
                     if isDigit(node[0]):
@@ -249,8 +249,9 @@ if __name__ == "__main__":
     amazongui = AmazonGUI()
     task_type = sys.argv[1]
     country = sys.argv[2]
-    price = sys.argv[3]
-    check_err = sys.argv[4]
+    avg_sale = sys.argv[3]
+    price = sys.argv[4]
+    check_err = sys.argv[5]
     if country == 'us':
         table_array = get_all_data(amazonglobal.db_name_task, amazonglobal.table_sale_task_us, 'node', False)
         db_name_data = amazonglobal.db_name_data_us
@@ -263,7 +264,7 @@ if __name__ == "__main__":
         for node in table_array:
             print(node[0], flush=True)
             table_name = node[0] + '_BS'
-            condition = 'avg_sale>' + price
+            condition = 'avg_sale>' + avg_sale + ' and price>=' + price
             data = get_all_data(db_name_data, table_name, False, condition)
             if data != False:
                 if isDigit(node[0]):
@@ -282,7 +283,7 @@ if __name__ == "__main__":
                         amazongui.create_page(country, node[0], node[0], 'BS', 'amazongui.css', data, '../html_page_jp/', check_err)
     elif task_type == 'total':
         if country == 'us':
-            amazongui.create_page_together(table_array, country, price, 'BS', 'amazongui.css', '../html_page/', check_err)
+            amazongui.create_page_together(table_array, country, avg_sale, price, 'BS', 'amazongui.css', '../html_page/', check_err)
         elif country == 'jp':
-            amazongui.create_page_together(table_array, country, price, 'BS', 'amazongui.css', '../html_page_jp/', check_err)
+            amazongui.create_page_together(table_array, country, avg_sale, price, 'BS', 'amazongui.css', '../html_page_jp/', check_err)
 

@@ -779,8 +779,8 @@ def get_all_data(db_name, table_name, column, condition):
                 result = cursor.fetchall()
                 # print(result)
                 return result
-        else:
-            print("get all table in failure.. + " + db_name, flush=True)
+        # else:
+        #     print("get all table in failure.. + " + db_name, flush=True)
 
         amazondata.disconnect_database()
 
