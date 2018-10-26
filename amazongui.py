@@ -98,7 +98,7 @@ class AmazonGUI():
             line.add("销量", days_data_array, sale_data_array, mark_point=["max"], mark_line=["average"])
             overlap = Overlap(width=1200, height=600)
             overlap.add(bar)
-            overlap.add(line, is_add_yaxis=True, yaxis_index=300)
+            overlap.add(line, is_add_yaxis=True, yaxis_index=1)
 
             grid.add(overlap, grid_right="20%")
             filename = '../html_page/daily_sale/' + asin + '.html'
