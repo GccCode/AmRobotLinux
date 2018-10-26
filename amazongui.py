@@ -84,18 +84,18 @@ class AmazonGUI():
 
             grid = Grid()
 
-            bar = Bar(title="过去15天历史销量与库存", title_pos="40%")
+            bar = Bar(title="过去15天历史销量与库存", title_pos="30%")
             bar.add(
                 "库存",
                 days_data_array,
                 inventory_data_array,
-                yaxis_max=1050,
+                yaxis_max=999,
                 legend_pos="85%",
                 legend_orient="vertical",
                 legend_top="45%",
             )
             line = Line()
-            line.add("销量", days_data_array, sale_data_array, mark_point=["max"], mark_line=["average"])
+            line.add("销量", days_data_array, sale_data_array, mark_point=["max"], mark_line=["average"], yaxis_max=500)
             overlap = Overlap(width=1200, height=600)
             overlap.add(bar)
             overlap.add(line, is_add_yaxis=True, yaxis_index=1)
