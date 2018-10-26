@@ -36,9 +36,38 @@ class AmazonGUI():
         # print(count, flush=True)
         return count
 
+    def create_sale_inventory_page(self, country, asin):
+        # get sale data
+        # get inventory data
+        # generate last 15 days date
+        # generate sale data of last 15 days
+        # generate inventory data of last 15 days
+        # generate line image
+        days_data_array = get_days_array_of_day(15, -1)
+        sale_data_array = []
+        inventory_data_array = []
+        amazondata = AmazonData()
+        if country == 'us':
+            db_name_data = amazonglobal.db_name_data_us
+        elif country == 'jp':
+            db_name_data = amazonglobal.db_name_data_jp
+        status = amazondata.connect_database(db_name_data)
+        if status == False:
+            print("connect in failure..", flush=True)
+        else:
+            table_sale = 'SALE_' + asin
+            table_inventory = 'INVENTORY_' + asin
+            sale_array = get_all_data(db_name_data, table_sale, False, False)
+            if sale_array == False:
+                print("get all data in failure", flush=True)
+            else:
+                print(sale_array, flush=True)
+
+            amazondata.disconnect_database()
+
     def collect_page_together(self, country, node, node_name, type, data, check_err):
         maindiv = div()
-        if country == 'jp': #
+        if country == 'jp':
             if type == 'BS':
                 maintitlelink = 'https://www.amazon.co.jp/gp/bestsellers/electronics/' + node
             elif type == 'NR':
@@ -247,6 +276,8 @@ class AmazonGUI():
 
 if __name__ == "__main__":
     amazongui = AmazonGUI()
+    amazongui.create_sale_inventory_page('us', 'B07JMSWCGD')
+    exit()
     task_type = sys.argv[1]
     country = sys.argv[2]
     avg_sale = sys.argv[3]
