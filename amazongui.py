@@ -143,9 +143,9 @@ class AmazonGUI():
                 else:
                     node_name = node[0]
 
-                maindiv = self.collect_page_together(country, node, node_name, type, data, check_err)
+                maindiv = self.collect_page_together(country, node[0], node_name, type, data, check_err)
                 mainpage << maindiv
-        filename = output + page_name + '-'  +node + '.html'
+        filename = output + page_name + '.html'
         mainpage.printOut(filename)
 
     def create_page(self, country, node, node_name, type, css_file, data, output, check_err):
