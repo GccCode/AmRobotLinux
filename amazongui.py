@@ -131,20 +131,22 @@ class AmazonGUI():
         mainpage = PyH(page_name)
         mainpage.addCSS(css_file)
         for node in table_array:
-            print(node[0], flush=True)
-            table_name = node[0] + '_BS'
-            condition = 'avg_sale>=5 and price>=19'
-            data = get_all_data(db_name_data, table_name, False, condition)
-            if data != False:
-                if isDigit(node[0]):
-                    node_name = get_node_name_from_all(db_name_node, node[0], country)
-                    if node_name == False:
-                        print("get node name in failure.", flush=True)
-                else:
-                    node_name = node[0]
+            if is_in_task_delete_data(country, node[0]) == False:
+                table_name = node[0] + '_BS'
+                condition = 'avg_sale>=5 and price>=19'
+                data = get_all_data(db_name_data, table_name, False, condition)
+                if data != False:
+                    if isDigit(node[0]):
+                        node_name = get_node_name_from_all(db_name_node, node[0], country)
+                        if node_name == False:
+                            print("get node name in failure.", flush=True)
+                    else:
+                        node_name = node[0]
 
-                maindiv = self.collect_page_together(country, node[0], node_name, type, data, check_err)
-                mainpage << maindiv
+                    maindiv = self.collect_page_together(country, node[0], node_name, type, data, check_err)
+                    mainpage << maindiv
+            else:
+                continue
         filename = output + page_name + '.html'
         mainpage.printOut(filename)
 
