@@ -57,7 +57,7 @@ class AmazonGUI():
         else:
             table_sale = 'SALE_' + asin
             table_inventory = 'INVENTORY_' + asin
-            sale_array = get_all_data(db_name_data, table_inventory, False, False)
+            sale_array = get_all_data(db_name_data, table_sale, False, False)
             if sale_array == False:
                 print("get all data in failure", flush=True)
             else:
@@ -65,15 +65,27 @@ class AmazonGUI():
                     flag = False
                     for i in range(len(sale_array)):
                         if sale_array[i][0].strftime('%Y-%m-%d') == days_data_array[index]:
-                            print(days_data_array[index], flush=True)
-                            print(sale_array[i][0], flush=True)
                             sale_data_array.append(int(sale_array[i][1]))
                             flag = True
                             break
                     if flag == False:
                         sale_data_array.append(0)
-                print(days_data_array, flush=True)
-                print(sale_data_array, flush=True)
+            inventory_array = get_all_data(db_name_data, table_inventory, False, False)
+            if inventory_array == False:
+                print("get all data in failure", flush=True)
+            else:
+                for index in range(15):
+                    flag = False
+                    for i in range(len(inventory_array)):
+                        if inventory_array[i][0].strftime('%Y-%m-%d') == days_data_array[index]:
+                            inventory_data_array.append(int(inventory_array[i][1]))
+                            flag = True
+                            break
+                    if flag == False:
+                        inventory_data_array.append(0)
+
+            print(sale_data_array, flush=True)
+            print(inventory_data_array, flush=True)
 
             amazondata.disconnect_database()
 
