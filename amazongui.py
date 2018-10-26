@@ -324,8 +324,8 @@ class AmazonGUI():
 
 if __name__ == "__main__":
     amazongui = AmazonGUI()
-    amazongui.create_sale_inventory_page('us', 'B07JMSWCGD')
-    exit()
+    # amazongui.create_sale_inventory_page('us', 'B07JMSWCGD')
+    # exit()
     task_type = sys.argv[1]
     country = sys.argv[2]
     avg_sale = sys.argv[3]
