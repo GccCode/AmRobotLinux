@@ -133,7 +133,7 @@ class AmazonGUI():
         for node in table_array:
             print(node[0], flush=True)
             table_name = node[0] + '_BS'
-            condition = 'avg_sale>5'
+            condition = 'avg_sale>=5 and price>=19'
             data = get_all_data(db_name_data, table_name, False, condition)
             if data != False:
                 if isDigit(node[0]):
