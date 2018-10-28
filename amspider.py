@@ -1178,11 +1178,8 @@ class AmazonSpider():
                                     else:
                                         # ss
                                         # print(getsale_us(element.text), flush=True)
-                                        if getsale_us(element.text) != '999':
-                                            data['inventory'] = int(getsale_us(element.text))
-                                        else:
-                                            data['inventory'] = 0
-                                            # print("inventory is: " + str(data['inventory']), flush=True)
+                                        data['inventory'] = int(getsale_us(element.text))
+                                        # print("inventory is: " + str(data['inventory']), flush=True)
 
                         if amazonasinpage.is_element_exsist(*ITEM_DELETE_US) == False:
                             print("Inventory Delete can't be found... + " + asin, flush=True)
