@@ -89,7 +89,7 @@ class AmazonGUI():
                 "库存",
                 days_data_array,
                 inventory_data_array,
-                yaxis_max=1000,
+                yaxis_max=1200,
                 legend_pos="85%",
                 legend_orient="vertical",
                 legend_top="45%",
