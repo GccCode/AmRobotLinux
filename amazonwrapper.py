@@ -970,6 +970,31 @@ def get_all_data(db_name, table_name, column, condition):
 
     return False
 
+def delete_unused_node_task(country, condition):
+    db_name = amazonglobal.db_name_task
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        if country == 'jp':
+            task_table = amazonglobal.table_sale_task_jp
+            data_db = amazonglobal.db_name_data_jp
+        elif country == 'us':
+            task_table = amazonglobal.table_sale_task_us
+            data_db = amazonglobal.db_name_data_us
+
+        node_array = get_all_data(db_name, task_table, 'node', False)
+        for index in range(len(node_array)):
+            table_name = node_array[index][0] + '_BS'
+            data = get_all_data(data_db, table_name, False, condition)
+            if data == False:
+                sql = 'delete from ' + task_table + ' where node=\'' + node_array[index][0] + '\''
+                status = amazondata.query(sql)
+                if status == False:
+                    print("delete unused node in failure..", flush=True)
+        amazondata.disconnect_database()
+
 def update_asin_status_ok(db_name, node):
     amazondata = AmazonData()
     status = amazondata.connect_database(db_name)
@@ -1089,6 +1114,7 @@ if __name__ == "__main__":
     # delete_column('node_info_us', 'automotive', 'status')
     # update_all_task_status('amazontask', 'sale_task_us', 'us')
     # get_one_data('node_info_us', 'automotive', False)
-    delete_sale_task('us', 'task_delete.txt')
+    # delete_sale_task('us', 'task_delete.txt')
     # print(get_days_array_of_day(7, -1), flush=True)
     # print(get_days_array_of_day(2, 1), flush=True)
+    delete_unused_node_task('us', 'avg_sale>5 and price>=19')
