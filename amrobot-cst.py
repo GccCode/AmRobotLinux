@@ -197,8 +197,8 @@ def customized_broswer():
     return driver
 
 if __name__ == "__main__":
-    # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='gbk')
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    # sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='gbk')
     while True:
         print("========= 程序功能选择 ========")
         print("版本号： 1810311249")
