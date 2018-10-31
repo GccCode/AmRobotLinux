@@ -385,9 +385,7 @@ if __name__ == "__main__":
             today = date.today()
             yesterday = date.today() + timedelta(days=-1)
             if country == 'us':
-                if is_token_runout() == False:
-                    print("update_all_task_date_status", flush=True)
-                    amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)
+                amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)
             elif country == 'jp':
                 # amazonwrapper.update_all_task_status(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, country)
                 amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)

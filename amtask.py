@@ -26,6 +26,7 @@ if __name__ == "__main__":
     amtaskfile = cf.get("configfile", "amtask")
     min_time = cf.get("search", "view_time_min")
     max_time = cf.get("search", "view_time_max")
+    page = cf.get("search", "page")
     country = sys.argv[1]
     ips_array = amazonwrapper.get_all_accessible_ip(country)
     if ips_array == False:
@@ -75,7 +76,7 @@ if __name__ == "__main__":
                 print(("* Start To Search Keyword " + keyword), flush=True)
                 amazonpage.search_asin(keyword, 5000, 8000)
                 searchpage_handle = amazonpage.get_currenthandle()
-                asinresult = searchpage.find_target_product(task, "normal", int(5))
+                asinresult = searchpage.find_target_product(task, "normal", int(page) + 1)
                 if asinresult != False:
                     searchpage.enter_asin_page(asinresult, task, 3000, 5000)
 
