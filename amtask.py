@@ -113,7 +113,7 @@ if __name__ == "__main__":
                     if admin.is_add_wishlist_image(task) == "1":
                         asinpage.add_wishlist(5000, 8000, task)
                     else:
-                        asinpage.add_wishlist(5000, 8000, task)
+                        asinpage.add_wishlist(5000, 8000, False)
                 else:
                     possible = random.randint(1, 100)
                     if possible < 70:
