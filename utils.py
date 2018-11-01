@@ -560,6 +560,9 @@ class Administrator():
     def is_super_link(self, section):
         return self.task_cf.get(section, "link")
 
+    def is_login_required(self, section):
+        return self.task_cf.get(section, "login")
+
     def is_qa_submit_needed(self, section):
         return self.task_cf.get(section, "qa_submit")
 

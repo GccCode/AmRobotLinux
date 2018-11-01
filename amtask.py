@@ -40,24 +40,32 @@ if __name__ == "__main__":
         driver = utils.customized_broswer_with_luminati(ips_array)
         t1 = time.time()
         try:
+            login_flag = False
+            possible = random.randint(1, 100)
             amazonpage = AmazonPage(driver)
-            ## registeration
-            amazonpage.enter_amazon_page(3000, 5000)
-            amazonpage.enter_register_page(3000, 5000)
-            registerpage = AmazonRegisterPage(driver)
-            registerpage.register(5000, 10000)
-            ## add bill address
-            amazonpage.enter_account_page(3000, 5000)
-            accountpage = AmazonAccountPage(driver)
-            accountpage.enter_address_page(3000, 5000)
-            addresspage = AmazonAddressPage(driver)
-            addresspage.add_address("bill", 5000, 10000)
-            ## add payment
-            amazonpage.enter_account_page(3000, 5000)
-            accountpage = AmazonAccountPage(driver)
-            accountpage.enter_payment_page(3000, 5000)
-            paymentpage = AmazonPaymentPage(driver)
-            paymentpage.add_new_payment(5000, 10000)
+            if possible > 40 or admin.is_login_required(task):
+                ## registeration
+                amazonpage.enter_amazon_page(3000, 5000)
+                amazonpage.enter_register_page(3000, 5000)
+                registerpage = AmazonRegisterPage(driver)
+                registerpage.register(5000, 10000)
+                login_flag = True
+                possible = random.randint(1, 100)
+                ## add bill address
+                if possible > 70:
+                    amazonpage.enter_account_page(3000, 5000)
+                    accountpage = AmazonAccountPage(driver)
+                    accountpage.enter_address_page(3000, 5000)
+                    addresspage = AmazonAddressPage(driver)
+                    addresspage.add_address("bill", 5000, 10000)
+                    possible = random.randint(1, 100)
+                    if possible > 70:
+                        ## add payment
+                        amazonpage.enter_account_page(3000, 5000)
+                        accountpage = AmazonAccountPage(driver)
+                        accountpage.enter_payment_page(3000, 5000)
+                        paymentpage = AmazonPaymentPage(driver)
+                        paymentpage.add_new_payment(5000, 10000)
 
             amazonpage.enter_amazon_page(3000, 5000)
 
@@ -76,6 +84,7 @@ if __name__ == "__main__":
                 print(("* Start To Search Keyword " + keyword), flush=True)
                 amazonpage.search_asin(keyword, 5000, 8000)
                 searchpage_handle = amazonpage.get_currenthandle()
+                print(task, flush=True)
                 asinresult = searchpage.find_target_product(task, "normal", int(page) + 1)
                 if asinresult != False:
                     searchpage.enter_asin_page(asinresult, task, 3000, 5000)
@@ -88,7 +97,7 @@ if __name__ == "__main__":
                 searchpage.switch_to_new_page(searchpage_handle)  # 切换到产品页handle
 
                 qa_submit = admin.is_qa_submit_needed(task)
-                if qa_submit == "1":
+                if qa_submit == "1" and login_flag:
                     print(("* Start To Submit QA...."), flush=True)
                     content = admin.get_qa_content(task)
                     asinpage.ask_qa(content, 3000, 5000)
@@ -108,7 +117,7 @@ if __name__ == "__main__":
                         amazonpage.navigation_back(3000, 5000)
 
                 wishlist = admin.is_add_wishlist_needed(task)
-                if wishlist == "1":
+                if wishlist == "1" and login_flag:
                     print(("* Start To Add Wishlist..."), flush=True)
                     if admin.is_add_wishlist_image(task) == "1":
                         asinpage.add_wishlist(5000, 8000, task)
