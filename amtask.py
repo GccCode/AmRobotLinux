@@ -88,7 +88,7 @@ if __name__ == "__main__":
                 asinresult = searchpage.find_target_product(task, "normal", int(page) + 1)
                 if asinresult != False:
                     searchpage.enter_asin_page(asinresult, task, 3000, 5000)
-                    searchpage.random_walk(random.randint(10, 20))
+                    searchpage.random_walk(random.randint(50, 100))
 
             if asinresult != False:
                 print(("* Start To View The Product By Searching.."), flush=True)
