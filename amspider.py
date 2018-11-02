@@ -1139,6 +1139,7 @@ class AmazonSpider():
                     if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_US):
                         amazonasinpage.click(*PRIME_CHECKBOX_US)
                         prime_checkbox_flag = True
+                        print("select the prime checkbox", flush=True)
                     maindiv_element_array = driver.find_elements(*MULTI_SELLERS_DIV_US)
                     index = 0
                     for maindiv_element in maindiv_element_array:
