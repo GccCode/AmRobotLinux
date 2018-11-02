@@ -1541,7 +1541,7 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
         print(traceback.format_exc(), flush=True)
         amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
 
-def amspider_test():
+def amspider_test(country):
     ips_array = amazonwrapper.get_all_accessible_ip(country)
     if ips_array == False:
         print("no accessible ip", flush=True)
@@ -1555,7 +1555,7 @@ def amspider_test():
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-    amspider_test()
+    amspider_test('us')
     input("xxx")
     exit()
     node_file = sys.argv[1]
