@@ -1144,7 +1144,8 @@ class AmazonSpider():
                     index = 0
                     for maindiv_element in maindiv_element_array:
                         index += 1
-                        ADDCART_BUTTON_FROM_SELLER = (By.ID, '//*[@id=\'a-autoid-' + str(index - 1) + '\']')
+                        # ADDCART_BUTTON_FROM_SELLER = (By.ID, '//*[@id=\'a-autoid-' + str(index - 1) + '\']')
+                        ADDCART_BUTTON_FROM_SELLER = (By.CSS_SELECTOR, 'input[name=\'submit.addToCart\']')
                         print(index, flush=True)
                         if (index - 1) == 0:
                             continue
@@ -1154,6 +1155,7 @@ class AmazonSpider():
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
                                     if seller_name_element.text == seller_name:
+                                        print("xxxxxxxxxx", flush=True)
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
                                             amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
                                             amazonasinpage.random_sleep(1000, 2000)
