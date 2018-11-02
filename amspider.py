@@ -1136,45 +1136,39 @@ class AmazonSpider():
                 else:
                     amazonasinpage.click(*BUYER_COUNT)
                     amazonasinpage.random_sleep(1000, 2000)
+                    prime_checkbox_flag = False
                     if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_US):
-                        print("ffffffffff", flush=True)
                         amazonasinpage.click(*PRIME_CHECKBOX_US)
-                    else:
-                        print("gggg", flush=True)
+                        prime_checkbox_flag = True
                     maindiv_element_array = driver.find_elements(*MULTI_SELLERS_DIV_US)
                     index = 0
                     for maindiv_element in maindiv_element_array:
                         index += 1
+                        ADDCART_BUTTON_FROM_SELLER = (By.ID, '//*[@id=\'a-autoid-' + str(index - 1) + '\']')
                         print(index, flush=True)
-                        if index < 0:#(index - 1) == 0:
+                        if (index - 1) == 0:
                             continue
                         else:
-                            if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_US):
+                            if (amazonasinpage.is_element_exsist(*SELLER_IS_FBA_US) and prime_checkbox_flag == False) or prime_checkbox_flag:
                                 print("?????", flush=True)
-                                fba_element = maindiv_element.find_element(*SELLER_IS_FBA_US)
-                                if 'Fulfillment by Amazon' in fba_element.text:
-                                    ADDCART_BUTTON_FROM_SELLER = (By.ID, '//*[@id=\'a-autoid-' + str (index - 1) + '\']')
-                                    if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
-                                        seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
-                                        if seller_name_element.text == seller_name:
-                                            if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
-                                                amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
-                                                amazonasinpage.random_sleep(1000, 2000)
-                                                status = True
-                                                break
-                                            else:
-                                                print("can't find the addart button in sellers page..", flush=True)
-                                                status = False
-                                                return status
-                                    else:
-                                        print("can't get the seller name..", flush=True)
-                                        status = False
-                                        return status
+                                if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
+                                    seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
+                                    if seller_name_element.text == seller_name:
+                                        if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
+                                            amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
+                                            amazonasinpage.random_sleep(1000, 2000)
+                                            status = True
+                                            break
+                                        else:
+                                            print("can't find the addart button in sellers page..", flush=True)
+                                            status = False
+                                            return status
                                 else:
-                                    print("zzzzzzzz", flush=True)
+                                    print("can't get the seller name..", flush=True)
+                                    status = False
+                                    return status
                             else:
                                 print("yyyy", flush=True)
-                                continue
                 input("xxxiii")
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
