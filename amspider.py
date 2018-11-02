@@ -39,6 +39,7 @@ SELLER_NAME_US = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 MULTI_SELLERS_DIV_US = (By.XPATH, '//*[@id=\'olpOfferList\']/div/div[position()=1]/div')
 # SELLER_IS_FBA_US = (By.ID, 'fulfilledByAmazonPopOver2')
 SELLER_IS_FBA_US = (By.CSS_SELECTOR, 'span[data-a-popover=\"{\"name\":\"fbaPopover\",\"activate\":\"onclick\"}\"]')
+PRIME_CHECKBOX_US = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_primeEligible\']')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
 VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
@@ -1136,6 +1137,11 @@ class AmazonSpider():
                 else:
                     amazonasinpage.click(*BUYER_COUNT)
                     amazonasinpage.random_sleep(1000, 2000)
+                    if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_US):
+                        print("ffffffffff", flush=True)
+                        amazonasinpage.click(*PRIME_CHECKBOX_US)
+                    else:
+                        print("gggg", flush=True)
                     maindiv_element_array = driver.find_elements(*MULTI_SELLERS_DIV_US)
                     index = 0
                     for maindiv_element in maindiv_element_array:
