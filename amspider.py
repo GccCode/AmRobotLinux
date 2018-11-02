@@ -1163,6 +1163,7 @@ class AmazonSpider():
                                 else:
                                     print("can't get the seller name..", flush=True)
                                     status = False
+                input("waiting...")
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
                         amazonasinpage.click(*NO_THANKS)
@@ -1191,7 +1192,7 @@ class AmazonSpider():
                             status = False
                             print("View Cart can't be found... + " + asin, flush=True)
                             amazonasinpage.window_capture(asin + '-noviewcart-')
-                    
+
                     if status == True:
                         if amazonasinpage.is_element_exsist(*ITEM_INPUT_US) == False:
                             print("Inventory Input can't be found... + " + asin, flush=True)
