@@ -1144,7 +1144,7 @@ class AmazonSpider():
             for td_element in size_weight_td_array:
                 if ' inches'in td_element.text:
                     print(td_element.text.strip(), flush=True)
-                elif 'ounces' in td_element.text:
+                elif 'ounces' in td_element.text and ' (' not in td_element.text:
                     print(td_element.text.strip(), flush=True)
 
             if is_sale:
