@@ -1192,6 +1192,7 @@ class AmazonSpider():
                             print("View Cart can't be found... + " + asin, flush=True)
                             amazonasinpage.window_capture(asin + '-noviewcart-')
                     input("wating...")
+                    return False
                     if status == True:
                         if amazonasinpage.is_element_exsist(*ITEM_INPUT_US) == False:
                             print("Inventory Input can't be found... + " + asin, flush=True)
