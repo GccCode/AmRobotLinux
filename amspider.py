@@ -1169,7 +1169,7 @@ class AmazonSpider():
                             else:
                                 print("yyyy", flush=True)
                                 continue
-
+                input("xxxiii")
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
                         amazonasinpage.click(*NO_THANKS)
