@@ -593,7 +593,10 @@ class AmazonSpider():
                 'inventory_date': date1,
                 'limited': 'no',
                 'img_url': None,
-                'status': 'no'
+                'status': 'no',
+                'seller_name': '',
+                'size': '',
+                'weight': 0
             }
             asin_info_array = []
             chrome_options = webdriver.ChromeOptions()
@@ -728,7 +731,7 @@ class AmazonSpider():
                     for i in range(0, len(asin_info_array)):
                         tmp_info = asin_info_array[i]
                         if tmp_info['status'] == 'no':
-                            result = self.get_inventory_us(False, tmp_info['asin'], ips_array, is_sale)
+                            result = self.get_inventory_us(False, tmp_info['asin'], ips_array, False, is_sale)
                             if result == False or result == -111:
                                 asin_info_remove_array.append(asin_info_array[i])
                                 tmp_info['status'] = 'err'
@@ -741,6 +744,9 @@ class AmazonSpider():
                                 tmp_info['qa'] = result['qa']
                                 tmp_info['limited'] = result['limited']
                                 tmp_info['status'] = 'ok'
+                                tmp_info['seller_name'] = result['seller_name']
+                                tmp_info['size'] = result['size']
+                                tmp_info['weight'] = result['weight']
 
                                 if is_sale == True:
                                     inventory_array.append(copy.deepcopy(result))
@@ -915,7 +921,7 @@ class AmazonSpider():
         try:
             for i in range(0, len(asin_info_array)):
                 tmp_info = asin_info_array[i]
-                result = self.get_inventory_us(False, tmp_info['asin'], ips_array, is_sale)
+                result = self.get_inventory_us(False, tmp_info['asin'], ips_array, False, is_sale)
                 if result == False or result == -111:
                     asin_info_remove_array.append(asin_info_array[i])
                     tmp_info['status'] = 'err'
@@ -1072,6 +1078,8 @@ class AmazonSpider():
             'shipping'  : 'FBM',
             'seller'    : 0,
             'seller_name': '',
+            'size': '',
+            'weight': 0,
             'qa'        : 0,
             'inventory' : 0,
             'limited'   : 'no'
@@ -1158,8 +1166,6 @@ class AmazonSpider():
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
                                     if seller_name_element.text == seller_name:
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
-                                            input("waiting...")
-                                            exit()
                                             amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
                                             amazonasinpage.random_sleep(1000, 2000)
                                             status = True
@@ -1557,7 +1563,7 @@ def amspider_test(country):
         exit(-1)
     amazonspider = AmazonSpider()
     try:
-        status = amazonspider.get_inventory_us(False, 'B0771NF799', ips_array, 'DELLAL DİNÇER1', True)
+        status = amazonspider.get_inventory_us(False, 'B0771NF799', ips_array, 'DELLAL DİNÇER', True)
     except Exception as e:
         print(str(e), flush=True)
 
