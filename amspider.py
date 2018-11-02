@@ -1144,6 +1144,7 @@ class AmazonSpider():
                             continue
                         else:
                             if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_IS_FBA_US):
+                                print("?????", flush=True)
                                 fba_element = maindiv_element.find_element(*SELLER_IS_FBA_US)
                                 if 'Fulfillment by Amazon' in fba_element.text:
                                     ADDCART_BUTTON_FROM_SELLER = (By.ID, '//*[@id=\'a-autoid-' + str (index - 1) + '\']')
