@@ -1139,6 +1139,7 @@ class AmazonSpider():
                     index = 0
                     for maindiv_element in maindiv_element_array:
                         index += 1
+                        print(index, flush=True)
                         if (index - 1) == 0:
                             continue
                         else:
@@ -1161,6 +1162,7 @@ class AmazonSpider():
                                     status = False
                                     return status
                             else:
+                                print("yyyy", flush=True)
                                 continue
 
                 if status == True:
