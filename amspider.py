@@ -1162,11 +1162,10 @@ class AmazonSpider():
                                         else:
                                             print("can't find the addart button in sellers page..", flush=True)
                                             status = False
-                                            return status
+                                            input(":sdfsd")
                                 else:
                                     print("can't get the seller name..", flush=True)
                                     status = False
-                                    return status
                             else:
                                 print("yyyy", flush=True)
                 input("xxxiii")
