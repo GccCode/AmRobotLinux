@@ -37,7 +37,8 @@ AB_FLAG_JP = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 AB_FLAG_US = (By.ID, 'merchant-info')
 SELLER_NAME_US = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 MULTI_SELLERS_DIV_US = (By.XPATH, '//*[@id=\'olpOfferList\']/div/div[position()=1]/div')
-SELLER_IS_FBA_US = (By.ID, 'fulfilledByAmazonPopOver2')
+SELLER_IS_FBA_FLAG1_US = (By.ID, 'fulfilledByAmazonPopOver2')
+SELLER_IS_FBA_FLAG2_US = (By.CSS_SELECTOR, 'div[class=\'olpBadge\']')
 PRIME_CHECKBOX_US = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_primeEligible\']')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
@@ -1148,11 +1149,15 @@ class AmazonSpider():
                         if (index - 1) == 0:
                             continue
                         else:
-                            if (amazonasinpage.is_element_exsist(*SELLER_IS_FBA_US) and prime_checkbox_flag == False) or prime_checkbox_flag:
+                            fba_flag = False
+                            if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG1_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG2_US):
+                                fba_flag = True
+                            if (fba_flag and prime_checkbox_flag == False) or prime_checkbox_flag:
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
                                     if seller_name_element.text == seller_name:
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
+                                            input("waiting...")
                                             amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
                                             amazonasinpage.random_sleep(1000, 2000)
                                             status = True
@@ -1163,7 +1168,6 @@ class AmazonSpider():
                                 else:
                                     print("can't get the seller name..", flush=True)
                                     status = False
-                input("waiting...")
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
                         amazonasinpage.click(*NO_THANKS)
