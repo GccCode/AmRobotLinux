@@ -35,6 +35,10 @@ FBA_FLAG = (By.ID, "SSOFpopoverLink")
 AB_FLAG_JP = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 # AB_FLAG_US = (By.XPATH, '//*[@id=\'merchant-info\']/text()[position()=1]')
 AB_FLAG_US = (By.ID, 'merchant-info')
+SELLER_NAME_US = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
+MULTI_SELLERS_DIV_US = (By.XPATH, '//*[@id=\'olpOfferList\']/div/div[position()=1]/div')
+SELLER_IS_FBA_US = (By.CLASS_NAME, '//*[@class=\'a-popover-trigger a-declarative olpFbaPopoverTrigger\']')
+SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
 VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
 VIEW_CART_BUTTON1 = (By.ID, 'hlb-view-cart')
@@ -1030,7 +1034,7 @@ class AmazonSpider():
 
         return status
 
-    def get_inventory_us(self, driver_upper, asin, ips_array, is_sale):
+    def get_inventory_us(self, driver_upper, asin, ips_array, seller_name, is_sale):
         if driver_upper == False:
             chrome_options = webdriver.ChromeOptions()
             prefs = {
@@ -1064,6 +1068,7 @@ class AmazonSpider():
         data = {
             'shipping'  : 'FBM',
             'seller'    : 0,
+            'seller_name': '',
             'qa'        : 0,
             'inventory' : 0,
             'limited'   : 'no'
@@ -1098,8 +1103,13 @@ class AmazonSpider():
             else:
                 data['shipping'] = 'FBM'
 
-            # print(data['shipping'], flush=True)
-            # input('xxxx')
+            if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
+                element = driver.find_element(*SELLER_NAME_US)
+                data['seller_name'] = element.text
+                print(data['seller_name'], flush=True)
+            else:
+                status = False
+                return status
 
             if amazonasinpage.is_element_exsist(*QA_COUNT):
                 element = driver.find_element(*QA_COUNT)
@@ -1116,10 +1126,41 @@ class AmazonSpider():
                 # print("seller is: " + str(data['seller']))
                 # print(element.text, flush=True)
             else:
-                data['seller'] = 0
+                status = False
+                return status
 
             if is_sale:
-                status = amazonasinpage.add_cart(5000, 8000)
+                if seller_name == False:
+                    status = amazonasinpage.add_cart(5000, 8000)
+                else:
+                    amazonasinpage.click(*BUYER_COUNT)
+                    amazonasinpage.random_sleep(1000, 2000)
+                    maindiv_element_array = driver.find_elements(*MULTI_SELLERS_DIV_US)
+                    index = 0
+                    for maindiv_element in maindiv_element_array:
+                        index += 1
+                        if (index - 1) == 0:
+                            continue
+                        else:
+                            if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_IS_FBA_US):
+                                ADDCART_BUTTON_FROM_SELLER = (By.ID, '//*[@id=\'a-autoid-' + str (index - 1) +'\']')
+                                if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
+                                    seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
+                                    if seller_name_element.text == seller_name:
+                                        if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
+                                            amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
+                                            amazonasinpage.random_sleep(1000, 2000)
+                                        else:
+                                            print("can't find the addart button in sellers page..", flush=True)
+                                            status = False
+                                            return status
+                                else:
+                                    print("can't get the seller name..", flush=True)
+                                    status = False
+                                    return status
+                            else:
+                                continue
+
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
                         amazonasinpage.click(*NO_THANKS)
@@ -1500,22 +1541,23 @@ def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
         print(traceback.format_exc(), flush=True)
         amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
 
-def amspider_test(country, node, node_name, type, filename):
+def amspider_test():
     ips_array = amazonwrapper.get_all_accessible_ip(country)
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
     amazonspider = AmazonSpider()
     try:
-        status = amazonspider.us_seller_gather('data_us', node, node_name, type, filename, ips_array, True)
+        status = amazonspider.get_inventory_us(False, 'B0771NF799', ips_array, 'DELLAL DİNÇER', True)
     except Exception as e:
         print(str(e), flush=True)
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-    # amspider_test('GWA', 'automotive', 'SL', '../ss.xls')
-    # exit()
+    amspider_test()
+    input("xxx")
+    exit()
     node_file = sys.argv[1]
     if node_file != '0':
         type = sys.argv[2]

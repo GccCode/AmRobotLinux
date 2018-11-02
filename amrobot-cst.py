@@ -165,11 +165,13 @@ def customized_broswer():
             proxy_socks_argument = '--proxy-server=socks5://' + host_port
             option.add_argument(proxy_socks_argument)
         elif host_type == '1':
+            proxy_username = cf.get("proxy", "username")
+            proxy_passwd = cf.get("proxy", "passwd")
             proxyauth_plugin_path = chrome_create_proxyauth_extension(
                 proxy_host=host_port.split(':')[0],
                 proxy_port=host_port.split(':')[1],
-                proxy_username='magiccode',
-                proxy_password='KBLUI0XT47FT5R0LTLH21609'
+                proxy_username=proxy_username,
+                proxy_password=proxy_passwd
             )
 
             option.add_extension(proxyauth_plugin_path)

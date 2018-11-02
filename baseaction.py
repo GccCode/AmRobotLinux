@@ -34,6 +34,15 @@ class BaseAction(object):
         finally:
             return status
 
+    def is_element_exsist_from_parent(self, parent, *locator):
+        status = True
+        try:
+            parent.find_element(*locator)
+        except NoSuchElementException as msg:
+            status = False
+        finally:
+            return status
+
     def wait_element_presence(self, timeout, locator):
         status = True
         wait = WebDriverWait(self.driver, timeout, 0.5)
