@@ -1135,7 +1135,7 @@ class AmazonSpider():
                     status = amazonasinpage.add_cart(5000, 8000)
                 else:
                     amazonasinpage.click(*BUYER_COUNT)
-                    amazonasinpage.random_sleep(1000, 2000)
+                    amazonasinpage.random_sleep(3000, 4000)
                     prime_checkbox_flag = False
                     if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_US):
                         amazonasinpage.click(*PRIME_CHECKBOX_US)
