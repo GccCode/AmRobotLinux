@@ -1143,7 +1143,7 @@ class AmazonSpider():
                         if (index - 1) == 0:
                             continue
                         else:
-                            if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_IS_FBA_US):
+                            if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_US):
                                 print("?????", flush=True)
                                 fba_element = maindiv_element.find_element(*SELLER_IS_FBA_US)
                                 if 'Fulfillment by Amazon' in fba_element.text:
