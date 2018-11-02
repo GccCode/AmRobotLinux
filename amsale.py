@@ -220,6 +220,23 @@ def get_asin_rows_from_node(ad, country, table):
 
     return status
 
+def get_seller_name(ad, country, table):
+    status = False
+    cur_date = date.today()
+    value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+    if country == 'us':
+        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>=19 and inventory_date <> ' + value
+    elif country == 'jp':
+        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value
+    cursor = ad.select_data(sql)
+    if cursor == False:
+        print("Get Asin_Rows From Node In Failure" + table, flush=True)
+        status = False
+    else:
+        status = cursor
+
+    return status
+
 def amsale_from_mysql(country, node_type):
     ips_array = amazonwrapper.get_all_accessible_ip(country)
     if ips_array == False:
@@ -274,18 +291,35 @@ def amsale_from_mysql(country, node_type):
                                         if country == 'jp':
                                             result = amazonspider.get_inventory_jp(False, asin, ips_array, True)
                                         elif country == 'us':
-                                            seller_name = ''
-                                            result = amazonspider.get_inventory_us(False, asin, ips_array, seller_name, True)
+                                            if asin_info[14] == '':
+                                                result = amazonspider.get_inventory_us(False, asin, ips_array, False, True)
+                                            else:
+                                                result = amazonspider.get_inventory_us(False, asin, ips_array, asin_info[14], True)
                                         if result != False and result != -111:
                                             cur_date = date.today()
                                             data = {
                                                 'date': cur_date,
                                                 'inventory': result['inventory']
                                             }
+                                            condition = 'asin=\'' + asin + '\''
                                             if result['limited'] == 'yes':
-                                                condition = 'asin=\'' + asin + '\''
                                                 status = amazondata.update_data(node_table, 'limited', '\'yes\'', condition)
                                             else:
+                                                if asin_info[14] == '':
+                                                    status = amazondata.update_data(node_table, 'seller_name', result['seller_name'], condition)
+                                                    if status == False:
+                                                        print("update seller_name in failure", flush=True)
+                                                        return status
+                                                if asin_info[15] == '':
+                                                    status = amazondata.update_data(node_table, 'size', result['size'], condition)
+                                                    if status == False:
+                                                        print("update size in failure", flush=True)
+                                                        return status
+                                                if asin_info[16] == 0:
+                                                    status = amazondata.update_data(node_table, 'weight', result['weight'], condition)
+                                                    if status == False:
+                                                        print("update weight in failure", flush=True)
+                                                        return status
                                                 inventory_table = 'INVENTORY_' + asin
                                                 if amazondata.is_table_exsist(inventory_table) == False:
                                                     status = amazondata.create_inventory_table(inventory_table)

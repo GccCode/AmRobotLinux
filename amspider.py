@@ -1156,11 +1156,11 @@ class AmazonSpider():
                         overweight_flag = True
                     size = str(int(length)) + 'x' + str(int(width)) + 'x' + str(int(height))
                     data['size'] = size
-                    print(size, flush=True)
+                    # print(size, flush=True)
                 elif 'ounces' in td_element.text and ' (' not in td_element.text:
                     weight = '%.3f' % (float(td_element.text.strip().split(' ')[0]) * 28.3495231 / 1000)
                     data['weight'] = weight
-                    print(weight, flush=True)
+                    # print(weight, flush=True)
 
             if is_sale and overweight_flag == False:
                 if seller_name == False:
@@ -1172,7 +1172,7 @@ class AmazonSpider():
                     if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_US):
                         amazonasinpage.click(*PRIME_CHECKBOX_US)
                         prime_checkbox_flag = True
-                        print("select the prime checkbox", flush=True)
+                        # print("select the prime checkbox", flush=True)
                     maindiv_element_array = driver.find_elements(*MULTI_SELLERS_DIV_US)
                     index = 0
                     for maindiv_element in maindiv_element_array:
