@@ -1140,7 +1140,7 @@ class AmazonSpider():
                     for maindiv_element in maindiv_element_array:
                         index += 1
                         print(index, flush=True)
-                        if (index - 1) == 0:
+                        if index < 0:#(index - 1) == 0:
                             continue
                         else:
                             if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_US):
