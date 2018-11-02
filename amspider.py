@@ -1143,7 +1143,11 @@ class AmazonSpider():
             size_weight_td_array = driver.find_elements(*SIZE_WEIGHT_TD_US)
             for td_element in size_weight_td_array:
                 if ' inches'in td_element.text:
-                    size = td_element.text.strip().split(' inches')[0].replace(' ', '')
+                    size_set = td_element.text.strip().split(' inches')[0].replace(' ', '').split('x')
+                    length = str(int(float(size_set[0]) * 2.54))
+                    width = str(int(float(size_set[1]) * 2.54))
+                    height = str(int(float(size_set[1]) * 2.54))
+                    size = length + 'x' + width + 'x' + height
                     print(size, flush=True)
                 elif 'ounces' in td_element.text and ' (' not in td_element.text:
                     weight = '%.3f' % (float(td_element.text.strip().split(' ')[0]) * 28.3495231 / 1000)
