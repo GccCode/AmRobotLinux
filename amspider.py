@@ -1140,20 +1140,29 @@ class AmazonSpider():
                 status = False
                 return status
 
+            overweight_flag = False
             size_weight_td_array = driver.find_elements(*SIZE_WEIGHT_TD_US)
             for td_element in size_weight_td_array:
                 if ' inches'in td_element.text:
                     size_set = td_element.text.strip().split(' inches')[0].replace(' ', '').split('x')
-                    length = str(int(float(size_set[0]) * 2.54))
-                    width = str(int(float(size_set[1]) * 2.54))
-                    height = str(int(float(size_set[1]) * 2.54))
-                    size = length + 'x' + width + 'x' + height
+                    length = float(size_set[0]) * 2.54
+                    if length > 30:
+                        overweight_flag = True
+                    width = float(size_set[1]) * 2.54
+                    if width > 20:
+                        overweight_flag = True
+                    height = float(size_set[1]) * 2.54
+                    if height > 20:
+                        overweight_flag = True
+                    size = str(int(length)) + 'x' + str(int(width)) + 'x' + str(int(height))
+                    data['size'] = size
                     print(size, flush=True)
                 elif 'ounces' in td_element.text and ' (' not in td_element.text:
                     weight = '%.3f' % (float(td_element.text.strip().split(' ')[0]) * 28.3495231 / 1000)
+                    data['weight'] = weight
                     print(weight, flush=True)
 
-            if is_sale:
+            if is_sale and overweight_flag == False:
                 if seller_name == False:
                     status = amazonasinpage.add_cart(5000, 8000)
                 else:
@@ -1277,6 +1286,8 @@ class AmazonSpider():
                         print("no buycart.. + " + asin, flush=True)
                         # amazonasinpage.window_capture(asin + '-nocart-')
             else:
+                if overweight_flag:
+                    data['limited'] = 'yes'
                 status = data
         except NoSuchElementException as msg:
             status = False
