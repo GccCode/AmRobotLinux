@@ -1143,9 +1143,11 @@ class AmazonSpider():
             size_weight_td_array = driver.find_elements(*SIZE_WEIGHT_TD_US)
             for td_element in size_weight_td_array:
                 if ' inches'in td_element.text:
-                    print(td_element.text.strip(), flush=True)
+                    size = td_element.text.strip.split(' inches')[0]
+                    print(size, flush=True)
                 elif 'ounces' in td_element.text and ' (' not in td_element.text:
-                    print(td_element.text.strip(), flush=True)
+                    weight = float(td_element.text.strip().split(' ')[0])
+                    print(weight, flush=True)
 
             if is_sale:
                 if seller_name == False:
