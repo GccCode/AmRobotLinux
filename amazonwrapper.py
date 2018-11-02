@@ -821,11 +821,15 @@ def add_new_column(db_name, condition, column_name, column):
         if status == False:
             print("connect in failure..", flush=True)
         else:
+            count = 0
             for table in table_array:
                 status = amazondata.add_column(db_name, table, column_name, column)
                 if status == False:
                     print("add column in failure..", flush=True)
                     return False
+                else:
+                    print(count, flush=True)
+                    count += 1
 
             amazondata.disconnect_database()
 
