@@ -1107,7 +1107,6 @@ class AmazonSpider():
             if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
                 element = driver.find_element(*SELLER_NAME_US)
                 data['seller_name'] = element.text
-                print(data['seller_name'], flush=True)
             else:
                 status = False
                 return status
@@ -1145,7 +1144,6 @@ class AmazonSpider():
                     for maindiv_element in maindiv_element_array:
                         index += 1
                         ADDCART_BUTTON_FROM_SELLER = (By.CSS_SELECTOR, 'input[name=\'submit.addToCart\']')
-                        print(index, flush=True)
                         if (index - 1) == 0:
                             continue
                         else:
@@ -1164,7 +1162,6 @@ class AmazonSpider():
                                 else:
                                     print("can't get the seller name..", flush=True)
                                     status = False
-                input("xxxiii")
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
                         amazonasinpage.click(*NO_THANKS)
@@ -1193,7 +1190,7 @@ class AmazonSpider():
                             status = False
                             print("View Cart can't be found... + " + asin, flush=True)
                             amazonasinpage.window_capture(asin + '-noviewcart-')
-
+                    input("wating...")
                     if status == True:
                         if amazonasinpage.is_element_exsist(*ITEM_INPUT_US) == False:
                             print("Inventory Input can't be found... + " + asin, flush=True)
@@ -1560,7 +1557,6 @@ if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
     amspider_test('us')
-    input("xxx")
     exit()
     node_file = sys.argv[1]
     if node_file != '0':
