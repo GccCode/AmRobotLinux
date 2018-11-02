@@ -1146,7 +1146,7 @@ class AmazonSpider():
                     size = td_element.text.strip().split(' inches')[0].replace(' ', '')
                     print(size, flush=True)
                 elif 'ounces' in td_element.text and ' (' not in td_element.text:
-                    weight = '%.3f' % float(td_element.text.strip().split(' ')[0]) * 28.3495231 / 1000
+                    weight = '%.3f' % (float(td_element.text.strip().split(' ')[0]) * 28.3495231 / 1000)
                     print(weight, flush=True)
 
             if is_sale:
