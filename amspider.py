@@ -37,7 +37,7 @@ AB_FLAG_JP = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 AB_FLAG_US = (By.ID, 'merchant-info')
 SELLER_NAME_US = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 MULTI_SELLERS_DIV_US = (By.XPATH, '//*[@id=\'olpOfferList\']/div/div[position()=1]/div')
-SELLER_IS_FBA_US = (By.CLASS_NAME, '//*[@class=\'a-popover-trigger a-declarative olpFbaPopoverTrigger\']')
+SELLER_IS_FBA_US = (By.CLASS_NAME, '//*[@class=\'olpFbaPopoverTrigger\']')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
 VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
@@ -1144,7 +1144,7 @@ class AmazonSpider():
                             continue
                         else:
                             if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_IS_FBA_US):
-                                ADDCART_BUTTON_FROM_SELLER = (By.ID, '//*[@id=\'a-autoid-' + str (index - 1) +'\']')
+                                ADDCART_BUTTON_FROM_SELLER = (By.ID, '//*[@id=\'a-autoid-' + str (index - 1) + '\']')
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
                                     if seller_name_element.text == seller_name:
