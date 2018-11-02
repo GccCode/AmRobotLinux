@@ -1101,7 +1101,7 @@ if __name__ == "__main__":
     #     pass
     # get_all_table('amazondata', '_BS')
     # get_all_data('amazondata', '2201158051_BS', False)
-    # update_asin_status_ok('amazondata', '2189296051')
+    update_asin_status_ok('data_us', '165795011')
     # update_all_task_date('amazontask', '2018-10-06')
     # insert_all_node_info()
     # insert_all_ip_info('../myproxy.txt')
@@ -1125,5 +1125,5 @@ if __name__ == "__main__":
     # add_new_column('data_us', '_BS', 'seller_name', 'seller_name CHAR(20) NOT NULL default \'\'')
     # add_new_column('data_us', '_BS', 'size', 'size CHAR(30) NOT NULL default \'\'')
     # add_new_column('data_us', '_BS', 'weight', 'weight FLOAT(10) NOT NULL default 0')
-    seller_name = get_one_data(amazonglobal.db_name_data_us, '9977442011_BS', 'asin=' + '\'' + 'B01EHSX28M' + '\'')
-    print(seller_name[16], flush=True)
+    # seller_name = get_one_data(amazonglobal.db_name_data_us, '9977442011_BS', 'asin=' + '\'' + 'B01EHSX28M' + '\'')
+    # print(seller_name[16], flush=True)

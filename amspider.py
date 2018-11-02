@@ -1161,6 +1161,10 @@ class AmazonSpider():
                     weight = '%.3f' % (float(td_element.text.strip().split(' ')[0]) * 28.3495231 / 1000)
                     data['weight'] = weight
                     # print(weight, flush=True)
+                elif 'pounds' in td_element.text and ' (' not in td_element.text:
+                    weight = '%.3f' % (float(td_element.text.strip().split(' ')[0]) * 28.3495231 / 1000)
+                    data['weight'] = weight
+                    # print(weight, flush=True)
 
             if is_sale and overweight_flag == False:
                 if seller_name == False:
@@ -1187,7 +1191,7 @@ class AmazonSpider():
                             if (fba_flag and prime_checkbox_flag == False) or prime_checkbox_flag:
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
-                                    if seller_name_element.text == seller_name:
+                                    if seller_name in seller_name_element.text:
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
                                             amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
                                             amazonasinpage.random_sleep(1000, 2000)
