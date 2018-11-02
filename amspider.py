@@ -42,6 +42,7 @@ SELLER_IS_FBA_FLAG2_US = (By.CSS_SELECTOR, 'div[class=\'olpBadge\']')
 SELLER_IS_FBA_FLAG3_US = (By.CSS_SELECTOR, 'div[id=\'a-popover-fbaPopover\']')
 PRIME_CHECKBOX_US = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_primeEligible\']')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
+SIZE_WEIGHT_TD_US = (By.CSS_SELECTOR, 'td[class=\'a-size-base\']')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
 VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
 VIEW_CART_BUTTON1 = (By.ID, 'hlb-view-cart')
@@ -1138,6 +1139,13 @@ class AmazonSpider():
             else:
                 status = False
                 return status
+
+            size_weight_td_array = driver.find_elements(*SIZE_WEIGHT_TD_US)
+            for td_element in size_weight_td_array:
+                if ' inches'in td_element.text:
+                    print(td_element.text.strip(), flush=True)
+                elif 'ounces' in td_element.text:
+                    print(td_element.text.strip(), flush=True)
 
             if is_sale:
                 if seller_name == False:
