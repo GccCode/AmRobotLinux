@@ -879,7 +879,7 @@ def get_all_table(db_name, condition):
 
         amazondata.disconnect_database()
         if len(table_array) != 0:
-            print(table_array)
+            # print(table_array)
             return table_array
 
     return False
