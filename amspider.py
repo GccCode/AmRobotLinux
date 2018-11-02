@@ -39,6 +39,7 @@ SELLER_NAME_US = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 MULTI_SELLERS_DIV_US = (By.XPATH, '//*[@id=\'olpOfferList\']/div/div[position()=1]/div')
 SELLER_IS_FBA_FLAG1_US = (By.ID, 'fulfilledByAmazonPopOver2')
 SELLER_IS_FBA_FLAG2_US = (By.CSS_SELECTOR, 'div[class=\'olpBadge\']')
+SELLER_IS_FBA_FLAG3_US = (By.CSS_SELECTOR, 'div[id=\'a-popover-fbaPopover\']')
 PRIME_CHECKBOX_US = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_primeEligible\']')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
@@ -1135,7 +1136,7 @@ class AmazonSpider():
                     status = amazonasinpage.add_cart(5000, 8000)
                 else:
                     amazonasinpage.click(*BUYER_COUNT)
-                    amazonasinpage.random_sleep(3000, 4000)
+                    amazonasinpage.random_sleep(1000, 2000)
                     prime_checkbox_flag = False
                     if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_US):
                         amazonasinpage.click(*PRIME_CHECKBOX_US)
@@ -1150,7 +1151,7 @@ class AmazonSpider():
                             continue
                         else:
                             fba_flag = False
-                            if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG1_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG2_US):
+                            if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG1_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG2_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG3_US):
                                 fba_flag = True
                             if (fba_flag and prime_checkbox_flag == False) or prime_checkbox_flag:
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
