@@ -1158,6 +1158,7 @@ class AmazonSpider():
                                     if seller_name_element.text == seller_name:
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
                                             input("waiting...")
+                                            exit()
                                             amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
                                             amazonasinpage.random_sleep(1000, 2000)
                                             status = True
