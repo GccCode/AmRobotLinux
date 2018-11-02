@@ -1144,18 +1144,15 @@ class AmazonSpider():
                     index = 0
                     for maindiv_element in maindiv_element_array:
                         index += 1
-                        # ADDCART_BUTTON_FROM_SELLER = (By.ID, '//*[@id=\'a-autoid-' + str(index - 1) + '\']')
                         ADDCART_BUTTON_FROM_SELLER = (By.CSS_SELECTOR, 'input[name=\'submit.addToCart\']')
                         print(index, flush=True)
                         if (index - 1) == 0:
                             continue
                         else:
                             if (amazonasinpage.is_element_exsist(*SELLER_IS_FBA_US) and prime_checkbox_flag == False) or prime_checkbox_flag:
-                                print("?????", flush=True)
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
                                     if seller_name_element.text == seller_name:
-                                        print("xxxxxxxxxx", flush=True)
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
                                             amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
                                             amazonasinpage.random_sleep(1000, 2000)
@@ -1164,12 +1161,9 @@ class AmazonSpider():
                                         else:
                                             print("can't find the addart button in sellers page..", flush=True)
                                             status = False
-                                            input(":sdfsd")
                                 else:
                                     print("can't get the seller name..", flush=True)
                                     status = False
-                            else:
-                                print("yyyy", flush=True)
                 input("xxxiii")
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
