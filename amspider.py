@@ -37,7 +37,7 @@ AB_FLAG_JP = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 AB_FLAG_US = (By.ID, 'merchant-info')
 SELLER_NAME_US = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 MULTI_SELLERS_DIV_US = (By.XPATH, '//*[@id=\'olpOfferList\']/div/div[position()=1]/div')
-SELLER_IS_FBA_US = (By.CLASS_NAME, '//*[@class=\'olpBadge\']')
+SELLER_IS_FBA_US = (By.CLASS_NAME, './/div[position()=3]/div[position()=1]/div/span/a')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
 VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
@@ -1144,23 +1144,27 @@ class AmazonSpider():
                             continue
                         else:
                             if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_IS_FBA_US):
-                                ADDCART_BUTTON_FROM_SELLER = (By.ID, '//*[@id=\'a-autoid-' + str (index - 1) + '\']')
-                                if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
-                                    seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
-                                    if seller_name_element.text == seller_name:
-                                        if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
-                                            amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
-                                            amazonasinpage.random_sleep(1000, 2000)
-                                            status = True
-                                            break
-                                        else:
-                                            print("can't find the addart button in sellers page..", flush=True)
-                                            status = False
-                                            return status
+                                fba_element = maindiv_element.find_element(*SELLER_IS_FBA_US)
+                                if 'Fulfillment by Amazon' in fba_element.text:
+                                    ADDCART_BUTTON_FROM_SELLER = (By.ID, '//*[@id=\'a-autoid-' + str (index - 1) + '\']')
+                                    if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
+                                        seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
+                                        if seller_name_element.text == seller_name:
+                                            if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
+                                                amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
+                                                amazonasinpage.random_sleep(1000, 2000)
+                                                status = True
+                                                break
+                                            else:
+                                                print("can't find the addart button in sellers page..", flush=True)
+                                                status = False
+                                                return status
+                                    else:
+                                        print("can't get the seller name..", flush=True)
+                                        status = False
+                                        return status
                                 else:
-                                    print("can't get the seller name..", flush=True)
-                                    status = False
-                                    return status
+                                    print("zzzzzzzz", flush=True)
                             else:
                                 print("yyyy", flush=True)
                                 continue
