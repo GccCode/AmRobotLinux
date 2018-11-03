@@ -1117,7 +1117,7 @@ class AmazonSpider():
 
             if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
                 element = driver.find_element(*SELLER_NAME_US)
-                data['seller_name'] = element.text
+                data['seller_name'] = element.text.strip().replace('\'', '')
             else:
                 status = False
                 return status
@@ -1144,7 +1144,10 @@ class AmazonSpider():
             size_weight_td_array = driver.find_elements(*SIZE_WEIGHT_TD_US)
             for td_element in size_weight_td_array:
                 if ' inches'in td_element.text:
-                    size_set = td_element.text.strip().split(' inches')[0].replace(' ', '').split('x')
+                    size_set = td_element.text.strip().split(' inches')[0].replace(' ', '').split('x').replace(',', '')
+                    if len(size_set) != 3:
+                        print("get size err", flush=True)
+                        continue
                     length = float(size_set[0]) * 2.54
                     if length > 30:
                         overweight_flag = True
