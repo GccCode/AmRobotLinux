@@ -733,12 +733,15 @@ class AmazonSpider():
                         tmp_info = asin_info_array[i]
                         if tmp_info['status'] == 'no':
                             result = self.get_inventory_us(False, tmp_info['asin'], ips_array, False, is_sale)
-                            if result == False or result == -111:
+                            if result == False:
                                 asin_info_remove_array.append(asin_info_array[i])
                                 tmp_info['status'] = 'err'
                             elif result == -111:
                                 print("ip problems...", flush=True)
                                 tmp_info['status'] = 'no'
+                            elif result == -222:
+                                print("overweight " + tmp_info['asin'], flush=True)
+                                tmp_info['limited'] = 'yes'
                             else:
                                 tmp_info['shipping'] = result['shipping']
                                 tmp_info['seller'] = result['seller']
@@ -748,6 +751,7 @@ class AmazonSpider():
                                 tmp_info['seller_name'] = result['seller_name']
                                 tmp_info['size'] = result['size']
                                 tmp_info['weight'] = result['weight']
+
 
                                 if is_sale == True:
                                     inventory_array.append(copy.deepcopy(result))
