@@ -1139,6 +1139,7 @@ class AmazonSpider():
                 # print("seller is: " + str(data['seller']))
                 # print(element.text, flush=True)
             else:
+                print("get seller name in failure..", flush=True)
                 status = False
                 return status
 
