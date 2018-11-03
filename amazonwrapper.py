@@ -835,23 +835,56 @@ def add_new_column(db_name, condition, column_name, column):
 
     return False
 
-def delete_tables(db_name, condition):
+def delete_tables(db_name, table_name_condition, condition):
     amazondata = AmazonData()
     status = amazondata.connect_database(db_name)
     if status == False:
         print("connect in failure..", flush=True)
     else:
-        sql = 'SHOW TABLES'
+        if condition == False:
+            sql = 'SHOW TABLES'
+        else:
+            sql = 'SHOW TABLES LIKE ' + condition
         cursor = amazondata.query(sql)
         if cursor != False:
             result = cursor.fetchall()
             for index in range(len(result)):
-                if condition in result[index][0]:
+                if table_name_condition in result[index][0]:
                     delete_sql = 'drop table ' + result[index][0]
                     print(delete_sql, flush=True)
                     cursor = amazondata.query(delete_sql)
                     # if cursor == False:
                     #     print("delete table in failure.. + " + db_name, flush=True)
+        else:
+            print("get all table in failure.. + " + db_name, flush=True)
+
+        amazondata.disconnect_database()
+
+    return False
+
+def delete_unused_tables(db_name, table_name_condition, condition):
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        if table_name_condition == False:
+            sql = 'SHOW TABLES'
+        else:
+            sql = 'SHOW TABLES LIKE ' + table_name_condition # '\'%\_BS\''
+        cursor = amazondata.query(sql)
+        if cursor != False:
+            result = cursor.fetchall()
+            for index in range(len(result)):
+                table_name = result[index][0]
+                data = get_all_data(db_name, table_name, False, condition)
+                if data == False:
+                    delete_sql = 'drop table ' + result[index][0]
+                    print(delete_sql, flush=True)
+                    cursor = amazondata.query(delete_sql)
+                    # if cursor == False:
+                    #     print("delete table in failure.. + " + db_name, flush=True)
+                    input("wating...")
         else:
             print("get all table in failure.. + " + db_name, flush=True)
 
@@ -1101,7 +1134,7 @@ if __name__ == "__main__":
     #     pass
     # get_all_table('amazondata', '_BS')
     # get_all_data('amazondata', '2201158051_BS', False)
-    update_asin_status_ok('data_us', '165795011')
+    # update_asin_status_ok('data_us', '165795011')
     # update_all_task_date('amazontask', '2018-10-06')
     # insert_all_node_info()
     # insert_all_ip_info('../myproxy.txt')
@@ -1121,9 +1154,10 @@ if __name__ == "__main__":
     # delete_sale_task('us', 'task_delete.txt')
     # print(get_days_array_of_day(7, -1), flush=True)
     # print(get_days_array_of_day(2, 1), flush=True)
-    delete_unused_node_task('us', 'avg_sale>5 and price>=15 and limited = \'no\'')
+    # delete_unused_node_task('us', 'avg_sale>5 and price>=15 and limited = \'no\'')
     # add_new_column('data_us', '_BS', 'seller_name', 'seller_name CHAR(20) NOT NULL default \'\'')
     # add_new_column('data_us', '_BS', 'size', 'size CHAR(30) NOT NULL default \'\'')
     # add_new_column('data_us', '_BS', 'weight', 'weight FLOAT(10) NOT NULL default 0')
     # seller_name = get_one_data(amazonglobal.db_name_data_us, '9977442011_BS', 'asin=' + '\'' + 'B01EHSX28M' + '\'')
     # print(seller_name[16], flush=True)
+    delete_unused_tables(amazonglobal.db_name_data_us, '\'%\_BS\'', 'avg_sale>5 and price>15 and limited=\'no\'')
