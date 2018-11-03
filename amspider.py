@@ -1150,17 +1150,18 @@ class AmazonSpider():
                     if len(size_set) != 3:
                         print("get size err", flush=True)
                         continue
-                    else:
-                        print("geting size..", flush=True)
                     length = float(size_set[0].replace(',', '')) * 2.54
                     if length > 30:
                         overweight_flag = True
+                        print("length over " + str(length), flush=True)
                     width = float(size_set[1].replace(',', '')) * 2.54
                     if width > 20:
                         overweight_flag = True
+                        print("width over " + str(width), flush=True)
                     height = float(size_set[1].replace(',', '')) * 2.54
                     if height > 20:
                         overweight_flag = True
+                        print("height over " + str(height), flush=True)
                     size = str(int(length)) + 'x' + str(int(width)) + 'x' + str(int(height))
                     data['size'] = size
                     # print(size, flush=True)
@@ -1174,7 +1175,7 @@ class AmazonSpider():
                     # print(weight, flush=True)
 
             if is_sale and overweight_flag == False:
-                if seller_name == False or data['seller_name'] == 'Amazon':
+                if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon':
                     status = amazonasinpage.add_cart(5000, 8000)
                 else:
                     amazonasinpage.click(*BUYER_COUNT)
