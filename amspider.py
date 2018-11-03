@@ -1163,7 +1163,10 @@ class AmazonSpider():
                 # print(element.text, flush=True)
             else:
                 print("get seller count in failure..", flush=True)
-                status = False
+                if overweight_flag == False:
+                    status = False
+                else:
+                    status = -222
                 return status
 
             if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
