@@ -132,7 +132,7 @@ class AmazonGUI():
         if check_err == '0':
             head_row << th('评分') + th('QA') + th('物流') + th('卖家数') + th('平均日销量') + th('限购')
         elif check_err == '1':
-            head_row << th('评分') + th('QA') + th('物流') + th('卖家数') + th('平均日销量') + th('校验')
+            head_row << th('评分') + th('QA') + th('物流') + th('卖家数') + th('平均日销量') + th('尺寸')
         tbody_row = tbody()
         info_table << tbody_row
         for index in range(len(data)):
@@ -157,11 +157,12 @@ class AmazonGUI():
             if check_err == '0':
                 limited = data[index][11]
             elif check_err == '1':
-                sale_data_array = get_all_data(db_name_sale, 'SALE_' + asin, 'sale', False)
-                err_value = self.get_unexpected_err(sale_data_array)
-                err_count = self.check_unexpected_err(sale_data_array, err_value)
-                check_status = str(((err_value[1] + err_value[0])/2)) + '_' + str(err_count)
-                limited = check_status
+                # sale_data_array = get_all_data(db_name_sale, 'SALE_' + asin, 'sale', False)
+                # err_value = self.get_unexpected_err(sale_data_array)
+                # err_count = self.check_unexpected_err(sale_data_array, err_value)
+                # check_status = str(((err_value[1] + err_value[0])/2)) + '_' + str(err_count)
+                # limited = check_status
+                limited = data[index][15]
             if country == 'jp':
                 tmp_data = [rank, asin, img_src, ('￥ ' + str(price)), review, rate, qa, shipping, seller, avg_sale, limited]
             elif country == 'us':
