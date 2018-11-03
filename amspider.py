@@ -1118,6 +1118,8 @@ class AmazonSpider():
             if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
                 element = driver.find_element(*SELLER_NAME_US)
                 data['seller_name'] = element.text.strip().replace('\'', '')
+            elif data['shipping'] == 'AB':
+                data['seller_name'] = 'Amazon'
             else:
                 status = False
                 return status
