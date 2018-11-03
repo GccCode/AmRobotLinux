@@ -291,6 +291,7 @@ def amsale_from_mysql(country, node_type):
                                         if country == 'jp':
                                             result = amazonspider.get_inventory_jp(False, asin, ips_array, True)
                                         elif country == 'us':
+                                            print("seller name is " + asin_info[14], flush=True)
                                             if asin_info[14] == '':
                                                 result = amazonspider.get_inventory_us(False, asin, ips_array, False, True)
                                             else:
@@ -314,8 +315,7 @@ def amsale_from_mysql(country, node_type):
                                                     print("update size in failure", flush=True)
                                                     return status
                                             if asin_info[16] == 0:
-                                                status = amazondata.update_data(node_table, 'weight', result['weight'],
-                                                                                condition)
+                                                status = amazondata.update_data(node_table, 'weight', result['weight'], condition)
                                                 if status == False:
                                                     print("update weight in failure", flush=True)
                                                     return status
@@ -383,8 +383,8 @@ def amsale_from_mysql(country, node_type):
                                 print("update task node failed.. + " + node, flush=True)
 
                             status = amazonwrapper.update_data(task_db, task_table, 'status', '\'ok\'', sql_condition)
-                            if status != False:
-                                print("amsale finish " + node, flush=True)
+                            if status == False:
+                                print("update status in failure " + node, flush=True)
 
                 t2 = time.time()
                 # print("总耗时：" + format(t2 - t1))
