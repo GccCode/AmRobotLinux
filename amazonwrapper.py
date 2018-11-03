@@ -881,10 +881,11 @@ def delete_unused_tables(db_name, table_name_condition, condition):
                 if data == False:
                     delete_sql = 'drop table ' + result[index][0]
                     print(delete_sql, flush=True)
+                    input("wating...")
                     cursor = amazondata.query(delete_sql)
                     # if cursor == False:
                     #     print("delete table in failure.. + " + db_name, flush=True)
-                    input("wating...")
+
         else:
             print("get all table in failure.. + " + db_name, flush=True)
 
