@@ -1123,17 +1123,6 @@ class AmazonSpider():
             else:
                 data['qa'] = 0
 
-            if amazonasinpage.is_element_exsist(*BUYER_COUNT):
-                element = driver.find_element(*BUYER_COUNT)
-                data['seller'] = int(getseller_us(element.text))
-
-                # print("seller is: " + str(data['seller']))
-                # print(element.text, flush=True)
-            else:
-                print("get seller count in failure..", flush=True)
-                status = False
-                return status
-
             overweight_flag = False
             size_weight_td_array = driver.find_elements(*SIZE_WEIGHT_TD_US)
             for td_element in size_weight_td_array:
@@ -1165,6 +1154,17 @@ class AmazonSpider():
                     weight = '%.3f' % (float(td_element.text.strip().split(' ')[0]) * 28.3495231 / 1000)
                     data['weight'] = weight
                     # print(weight, flush=True)
+
+            if amazonasinpage.is_element_exsist(*BUYER_COUNT):
+                element = driver.find_element(*BUYER_COUNT)
+                data['seller'] = int(getseller_us(element.text))
+
+                # print("seller is: " + str(data['seller']))
+                # print(element.text, flush=True)
+            else:
+                print("get seller count in failure..", flush=True)
+                status = False
+                return status
 
             if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
                 element = driver.find_element(*SELLER_NAME_US)
