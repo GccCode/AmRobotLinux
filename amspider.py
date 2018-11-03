@@ -1115,15 +1115,6 @@ class AmazonSpider():
             else:
                 data['shipping'] = 'FBM'
 
-            if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
-                element = driver.find_element(*SELLER_NAME_US)
-                data['seller_name'] = element.text.strip().replace('\'', '')
-            elif data['shipping'] == 'AB':
-                data['seller_name'] = 'Amazon'
-            else:
-                status = False
-                return status
-
             if amazonasinpage.is_element_exsist(*QA_COUNT):
                 element = driver.find_element(*QA_COUNT)
                 data['qa'] = int(getqa_us(element.text))
@@ -1139,7 +1130,7 @@ class AmazonSpider():
                 # print("seller is: " + str(data['seller']))
                 # print(element.text, flush=True)
             else:
-                print("get seller name in failure..", flush=True)
+                print("get seller count in failure..", flush=True)
                 status = False
                 return status
 
@@ -1174,6 +1165,18 @@ class AmazonSpider():
                     weight = '%.3f' % (float(td_element.text.strip().split(' ')[0]) * 28.3495231 / 1000)
                     data['weight'] = weight
                     # print(weight, flush=True)
+
+            if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
+                element = driver.find_element(*SELLER_NAME_US)
+                data['seller_name'] = element.text.strip().replace('\'', '')
+            elif data['shipping'] == 'AB':
+                data['seller_name'] = 'Amazon'
+            else:
+                if overweight_flag == False:
+                    status = False
+                else:
+                    status = -222
+                return status
 
             if is_sale and overweight_flag == False:
                 if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon':
@@ -1300,8 +1303,9 @@ class AmazonSpider():
                         # amazonasinpage.window_capture(asin + '-nocart-')
             else:
                 if overweight_flag:
-                    data['limited'] = 'yes'
-                status = data
+                    status = -222
+                else:
+                    status = data
         except NoSuchElementException as msg:
             status = False
             print("Except: NoSuchElementException", flush=True)

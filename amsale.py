@@ -296,7 +296,7 @@ def amsale_from_mysql(country, node_type):
                                                 result = amazonspider.get_inventory_us(False, asin, ips_array, False, True)
                                             else:
                                                 result = amazonspider.get_inventory_us(False, asin, ips_array, asin_info[14], True)
-                                        if result != False and result != -111:
+                                        if result != False and result != -111 and result != -222:
                                             cur_date = date.today()
                                             data = {
                                                 'date': cur_date,
@@ -372,7 +372,12 @@ def amsale_from_mysql(country, node_type):
                                                     exit(-1)
                                                 status = False
                                                 continue
-                                            print("Get Inventory In Failure.", flush=True)
+                                            elif result == -222:
+                                                status = amazondata.update_data(node_table, 'limited', '\'yes\'', condition)
+                                                if status == False:
+                                                    print("update data for limited in failure", flush=True)
+                                            else:
+                                                print("Get Inventory In Failure.", flush=True)
                                             status = update_asin_status_err(amazondata, node, asin)
                                             if status == False:
                                                 print("update asin status faild.. + " + node + ' ' + asin, flush=True)
