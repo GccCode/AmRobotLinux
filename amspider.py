@@ -1144,24 +1144,24 @@ class AmazonSpider():
             size_weight_td_array = driver.find_elements(*SIZE_WEIGHT_TD_US)
             for td_element in size_weight_td_array:
                 if ' inches'in td_element.text:
-                    size_set = td_element.text.strip().split(' inches')[0].replace(' ', '').split('x').replace(',', '')
+                    size_set = td_element.text.strip().split(' inches')[0].replace(' ', '').split('x')
                     if len(size_set) != 3:
                         print("get size err", flush=True)
                         continue
-                    length = float(size_set[0]) * 2.54
+                    length = float(size_set[0].replace(',', '')) * 2.54
                     if length > 30:
                         overweight_flag = True
-                    width = float(size_set[1]) * 2.54
+                    width = float(size_set[1].replace(',', '')) * 2.54
                     if width > 20:
                         overweight_flag = True
-                    height = float(size_set[1]) * 2.54
+                    height = float(size_set[1].replace(',', '')) * 2.54
                     if height > 20:
                         overweight_flag = True
                     size = str(int(length)) + 'x' + str(int(width)) + 'x' + str(int(height))
                     data['size'] = size
                     # print(size, flush=True)
                 elif 'ounces' in td_element.text and ' (' not in td_element.text:
-                    weight = '%.3f' % (float(td_element.text.strip().split(' ')[0]) * 28.3495231 / 1000)
+                    weight = '%.3f' % (float(td_element.text.strip().replace(',', '').split(' ')[0]) * 28.3495231 / 1000)
                     data['weight'] = weight
                     # print(weight, flush=True)
                 elif 'pounds' in td_element.text and ' (' not in td_element.text:
