@@ -373,6 +373,7 @@ def amsale_from_mysql(country, node_type):
                                                 status = False
                                                 continue
                                             elif result == -222:
+                                                print("overweight " + asin, flush=True)
                                                 status = amazondata.update_data(node_table, 'limited', '\'yes\'', condition)
                                                 if status == False:
                                                     print("update data for limited in failure", flush=True)
