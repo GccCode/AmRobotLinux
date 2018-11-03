@@ -1134,15 +1134,15 @@ class AmazonSpider():
                     length = float(size_set[0].replace(',', '')) * 2.54
                     if length > 30:
                         overweight_flag = True
-                        print("length over " + str(length), flush=True)
+                        # print("length over " + str(length), flush=True)
                     width = float(size_set[1].replace(',', '')) * 2.54
                     if width > 20:
                         overweight_flag = True
-                        print("width over " + str(width), flush=True)
+                        # print("width over " + str(width), flush=True)
                     height = float(size_set[1].replace(',', '')) * 2.54
                     if height > 20:
                         overweight_flag = True
-                        print("height over " + str(height), flush=True)
+                        # print("height over " + str(height), flush=True)
                     size = str(int(length)) + 'x' + str(int(width)) + 'x' + str(int(height))
                     data['size'] = size
                     # print(size, flush=True)
