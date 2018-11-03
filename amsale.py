@@ -208,7 +208,7 @@ def get_asin_rows_from_node(ad, country, table):
     cur_date = date.today()
     value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
     if country == 'us':
-        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>=19 and inventory_date <> ' + value
+        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>=10 and inventory_date <> ' + value
     elif country == 'jp':
         sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value
     cursor = ad.select_data(sql)
@@ -302,24 +302,26 @@ def amsale_from_mysql(country, node_type):
                                                 'inventory': result['inventory']
                                             }
                                             condition = 'asin=\'' + asin + '\''
+                                            if asin_info[14] == '':
+                                                status = amazondata.update_data(node_table, 'seller_name', '\'' + result['seller_name'] + '\'', condition)
+                                                if status == False:
+                                                    print("update seller_name in failure", flush=True)
+                                                    return status
+                                            if asin_info[15] == '':
+                                                status = amazondata.update_data(node_table, 'size',
+                                                                                '\'' + result['size'] + '\'', condition)
+                                                if status == False:
+                                                    print("update size in failure", flush=True)
+                                                    return status
+                                            if asin_info[16] == 0:
+                                                status = amazondata.update_data(node_table, 'weight', result['weight'],
+                                                                                condition)
+                                                if status == False:
+                                                    print("update weight in failure", flush=True)
+                                                    return status
                                             if result['limited'] == 'yes':
                                                 status = amazondata.update_data(node_table, 'limited', '\'yes\'', condition)
                                             else:
-                                                if asin_info[14] == '':
-                                                    status = amazondata.update_data(node_table, 'seller_name', '\''+ result['seller_name'] + '\'', condition)
-                                                    if status == False:
-                                                        print("update seller_name in failure", flush=True)
-                                                        return status
-                                                if asin_info[15] == '':
-                                                    status = amazondata.update_data(node_table, 'size', '\''+ result['size'] + '\'', condition)
-                                                    if status == False:
-                                                        print("update size in failure", flush=True)
-                                                        return status
-                                                if asin_info[16] == 0:
-                                                    status = amazondata.update_data(node_table, 'weight', result['weight'], condition)
-                                                    if status == False:
-                                                        print("update weight in failure", flush=True)
-                                                        return status
                                                 inventory_table = 'INVENTORY_' + asin
                                                 if amazondata.is_table_exsist(inventory_table) == False:
                                                     status = amazondata.create_inventory_table(inventory_table)

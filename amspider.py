@@ -666,7 +666,7 @@ class AmazonSpider():
                             element = driver.find_element_by_xpath(tmp_symbol)
                             # print("Price is : " + element.text.strip('$ ').replace(',', ''), flush=True)
                             asin_info_data['price'] = getprice_us(element.text)
-                            if asin_info_data['price'] < 19:
+                            if asin_info_data['price'] < 10:
                                 continue
                         else:
                             continue
@@ -779,7 +779,7 @@ class AmazonSpider():
                             status = amazondata.insert_node_data(node_table, asin_info_array[i])
                             if status == True:
                                 # print("node_data inserted sucessfully.. + " + node_table, flush=True)
-                                if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] > 0 and asin_info_array[i]['seller'] < 4 and asin_info_array[i]['price'] >= 19 and is_sale:
+                                if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] > 0 and asin_info_array[i]['seller'] < 4 and asin_info_array[i]['price'] >= 10 and is_sale:
                                     inventory_table = 'INVENTORY_' + asin
                                     status = amazondata.create_inventory_table(inventory_table)
                                     if status == True:

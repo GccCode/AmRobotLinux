@@ -683,7 +683,7 @@ def is_all_inventory_finish(country, node_table):
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         if country == 'us':
-            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>=19' + ' and inventory_date <> ' + value + ' limit 1'
+            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>=10' + ' and inventory_date <> ' + value + ' limit 1'
         elif country == 'jp':
             sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value + ' limit 1'
         status = amazondata.select_data(sql)
@@ -1151,7 +1151,7 @@ if __name__ == "__main__":
     # delete_column('node_info_us', 'automotive', 'status')
     # update_all_task_status('amazontask', 'sale_task_us', 'us')
     # get_one_data('node_info_us', 'automotive', False)
-    # delete_sale_task('us', 'task_delete.txt')
+    delete_sale_task('us', 'task_delete.txt')
     # print(get_days_array_of_day(7, -1), flush=True)
     # print(get_days_array_of_day(2, 1), flush=True)
     # delete_unused_node_task('us', 'avg_sale>5 and price>=15 and limited = \'no\'')
@@ -1160,4 +1160,4 @@ if __name__ == "__main__":
     # add_new_column('data_us', '_BS', 'weight', 'weight FLOAT(10) NOT NULL default 0')
     # seller_name = get_one_data(amazonglobal.db_name_data_us, '9977442011_BS', 'asin=' + '\'' + 'B01EHSX28M' + '\'')
     # print(seller_name[16], flush=True)
-    delete_unused_tables(amazonglobal.db_name_data_us, '\'%\_BS\'', 'avg_sale>5 and price>10 and limited=\'no\'')
+    # delete_unused_tables(amazonglobal.db_name_data_us, '\'%\_BS\'', 'avg_sale>5 and price>10 and limited=\'no\'')
