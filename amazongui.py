@@ -211,7 +211,7 @@ class AmazonGUI():
         for node in table_array:
             if is_in_task_delete_data(country, node[0]) == False:
                 table_name = node[0] + '_BS'
-                condition = 'limited=\'no\'avg_sale>=' + avg_sale + ' and price>=' + price
+                condition = 'limited=\'no\' and avg_sale>=' + avg_sale + ' and price>=' + price
                 data = get_all_data(db_name_data, table_name, False, condition)
                 if data != False:
                     if isDigit(node[0]):
@@ -344,7 +344,7 @@ if __name__ == "__main__":
         for node in table_array:
             print(node[0], flush=True)
             table_name = node[0] + '_BS'
-            condition = 'avg_sale>' + avg_sale + ' and price>=' + price
+            condition = 'limited=\'no\' and avg_sale>' + avg_sale + ' and price>=' + price
             data = get_all_data(db_name_data, table_name, False, condition)
             if data != False:
                 if isDigit(node[0]):
