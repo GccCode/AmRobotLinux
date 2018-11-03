@@ -306,12 +306,12 @@ def amsale_from_mysql(country, node_type):
                                                 status = amazondata.update_data(node_table, 'limited', '\'yes\'', condition)
                                             else:
                                                 if asin_info[14] == '':
-                                                    status = amazondata.update_data(node_table, 'seller_name', result['seller_name'], condition)
+                                                    status = amazondata.update_data(node_table, 'seller_name', '\''+ result['seller_name'] + '\'', condition)
                                                     if status == False:
                                                         print("update seller_name in failure", flush=True)
                                                         return status
                                                 if asin_info[15] == '':
-                                                    status = amazondata.update_data(node_table, 'size', result['size'], condition)
+                                                    status = amazondata.update_data(node_table, 'size', '\''+ result['size'] + '\'', condition)
                                                     if status == False:
                                                         print("update size in failure", flush=True)
                                                         return status
