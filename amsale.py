@@ -309,8 +309,7 @@ def amsale_from_mysql(country, node_type):
                                                     print("update seller_name in failure", flush=True)
                                                     return status
                                             if asin_info[15] == '':
-                                                status = amazondata.update_data(node_table, 'size',
-                                                                                '\'' + result['size'] + '\'', condition)
+                                                status = amazondata.update_data(node_table, 'size', '\'' + result['size'] + '\'', condition)
                                                 if status == False:
                                                     print("update size in failure", flush=True)
                                                     return status
@@ -331,8 +330,7 @@ def amsale_from_mysql(country, node_type):
                                                 if status == True:
                                                     condition = 'asin=\'' + asin + '\''
                                                     value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-                                                    status = amazondata.update_data(node_table, 'inventory_date',
-                                                                                    value, condition)
+                                                    status = amazondata.update_data(node_table, 'inventory_date', value, condition)
                                                     if status == True:
                                                         status = amazondata.get_yesterday_sale(inventory_table)
                                                         if status != -999:
@@ -374,6 +372,7 @@ def amsale_from_mysql(country, node_type):
                                                 continue
                                             elif result == -222:
                                                 print("overweight " + asin, flush=True)
+                                                condition = 'asin=\'' + asin + '\''
                                                 status = amazondata.update_data(node_table, 'limited', '\'yes\'', condition)
                                                 if status == False:
                                                     print("update data for limited in failure", flush=True)
