@@ -1161,4 +1161,4 @@ if __name__ == "__main__":
     # add_new_column('data_us', '_BS', 'weight', 'weight FLOAT(10) NOT NULL default 0')
     # seller_name = get_one_data(amazonglobal.db_name_data_us, '9977442011_BS', 'asin=' + '\'' + 'B01EHSX28M' + '\'')
     # print(seller_name[16], flush=True)
-    delete_unused_tables(amazonglobal.db_name_data_us, '\'%\_BS\'', 'avg_sale>0 and price>15 and limited=\'no\'')
+    delete_unused_tables(amazonglobal.db_name_data_us, '\'%\_BS\'', 'avg_sale>0 and price>9 and limited=\'no\'')
