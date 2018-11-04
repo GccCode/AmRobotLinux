@@ -1214,7 +1214,7 @@ class AmazonSpider():
                                     if seller_name in seller_name_element.text:
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
                                             amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
-                                            print("click addcart from seller..", flush=True)
+                                            # print("click addcart from seller..", flush=True)
                                             amazonasinpage.random_sleep(1000, 2000)
                                             status = True
                                             break
@@ -1222,7 +1222,7 @@ class AmazonSpider():
                                             print("can't find the addart button in sellers page..", flush=True)
                                             status = False
                                 else:
-                                    print("can't get the seller name..", flush=True)
+                                    # print("can't get the seller name..", flush=True)
                                     status = False
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
@@ -1621,8 +1621,8 @@ def amspider_test(country):
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-    amspider_test('us')
-    exit()
+    # amspider_test('us')
+    # exit()
     node_file = sys.argv[1]
     if node_file != '0':
         type = sys.argv[2]
