@@ -1640,7 +1640,7 @@ def amspider_test(country):
         exit(-1)
     amazonspider = AmazonSpider()
     try:
-        status = amazonspider.get_inventory_us(False, 'B005LJQPE0', ips_array, 'MNJWS-BlueRigger', True)
+        status = amazonspider.get_inventory_us(False, 'B005LJQPE0', ips_array, 'BlueRigger', True)
     except Exception as e:
         print(str(e), flush=True)
 
