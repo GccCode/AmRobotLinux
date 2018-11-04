@@ -329,43 +329,45 @@ def amsale_from_mysql(country, node_type):
                                                 yesterday_inventory = amazondata.get_yesterday_inventory(inventory_table)
                                                 if (yesterday_inventory / data['inventory']) > 10:
                                                     print("get inventory may error..", flush=True)
-                                                    status = False
-                                                    continue
-                                                status = amazondata.insert_inventory_data(inventory_table, data)
-                                                if status == True:
-                                                    condition = 'asin=\'' + asin + '\''
-                                                    value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-                                                    status = amazondata.update_data(node_table, 'inventory_date', value, condition)
-                                                    if status == True:
-                                                        status = amazondata.get_yesterday_sale(inventory_table)
-                                                        if status != -999:
-                                                            yesterday = date.today() + timedelta(days=-1)
-                                                            data = {
-                                                                'date': yesterday,
-                                                                'sale': copy.deepcopy(status)
-                                                            }
-                                                            sale_table = 'SALE_' + asin
-                                                            status = amazondata.create_sale_table(sale_table)
-                                                            if status == True:
-                                                                status = amazondata.insert_sale_data(sale_table,
-                                                                                                     data)
-                                                                if status == True:
-                                                                    avg_sale = amazondata.get_column_avg(sale_table, 'sale')
-                                                                    if avg_sale != -999:
-                                                                        status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
-                                                                        if status == False:
-                                                                            print("avg_sale update fail.. + " + node_table, flush=True)
-                                                                    else:
-                                                                        print(" get avg_sale fail.. + " + node_table, flush=True)
-                                                                else:
-                                                                    print(
-                                                                        "sale_data insert fail... + " + sale_table, flush=True)
-                                                            else:
-                                                                print("sale_table create fail.. + " + sale_table, flush=True)
-                                                    else:
-                                                        print("invetory_date update fail.. + " + node_table, flush=True)
+                                                    status = update_asin_status_err(amazondata, node, asin)
+                                                    if status == False:
+                                                        print("update asin status faild.. + " + node + ' ' + asin, flush=True)
                                                 else:
-                                                    print("inventory data insert fail.. + " + inventory_table, flush=True)
+                                                    status = amazondata.insert_inventory_data(inventory_table, data)
+                                                    if status == True:
+                                                        condition = 'asin=\'' + asin + '\''
+                                                        value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+                                                        status = amazondata.update_data(node_table, 'inventory_date', value, condition)
+                                                        if status == True:
+                                                            status = amazondata.get_yesterday_sale(inventory_table)
+                                                            if status != -999:
+                                                                yesterday = date.today() + timedelta(days=-1)
+                                                                data = {
+                                                                    'date': yesterday,
+                                                                    'sale': copy.deepcopy(status)
+                                                                }
+                                                                sale_table = 'SALE_' + asin
+                                                                status = amazondata.create_sale_table(sale_table)
+                                                                if status == True:
+                                                                    status = amazondata.insert_sale_data(sale_table,
+                                                                                                         data)
+                                                                    if status == True:
+                                                                        avg_sale = amazondata.get_column_avg(sale_table, 'sale')
+                                                                        if avg_sale != -999:
+                                                                            status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
+                                                                            if status == False:
+                                                                                print("avg_sale update fail.. + " + node_table, flush=True)
+                                                                        else:
+                                                                            print(" get avg_sale fail.. + " + node_table, flush=True)
+                                                                    else:
+                                                                        print(
+                                                                            "sale_data insert fail... + " + sale_table, flush=True)
+                                                                else:
+                                                                    print("sale_table create fail.. + " + sale_table, flush=True)
+                                                        else:
+                                                            print("invetory_date update fail.. + " + node_table, flush=True)
+                                                    else:
+                                                        print("inventory data insert fail.. + " + inventory_table, flush=True)
                                         else:
                                             if result == -111:
                                                 print("Ip blocking..", flush=True)
