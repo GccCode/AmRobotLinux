@@ -1222,12 +1222,13 @@ class AmazonSpider():
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
                                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *USED_US):
-                                        break
+                                        print("used_us?", flush=True)
+                                        continue
                                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *LIKE_NEW_US):
                                         element = driver.find_element(*LIKE_NEW_US)
                                         if 'like' in element.text:
                                             print(element.text.strip(), flush=True)
-                                            break
+                                            continue
                                     if seller_name in seller_name_element.text:
                                         # print(seller_name, flush=True)
                                         # print(seller_name_element.text, flush=True)
