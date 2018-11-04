@@ -683,7 +683,7 @@ def is_all_inventory_finish(country, node_table):
         cur_date = date.today()
         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
         if country == 'us':
-            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>=10' + ' and inventory_date <> ' + value + ' limit 1'
+            sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>=12' + ' and inventory_date <> ' + value + ' limit 1'
         elif country == 'jp':
             sql = 'select status from ' + node_table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value + ' limit 1'
         status = amazondata.select_data(sql)
@@ -1097,7 +1097,7 @@ def fix_asin_sale(db_name, node):
         if asin_array != False:
             for index in range(len(asin_array)):
                 sale_table_name = 'SALE_' + asin_array[index][0]
-                amazondata.update_data(sale_table_name, 'sale', 0, 'sale>300')
+                amazondata.update_data(sale_table_name, 'sale', 0, 'sale>200')
         amazondata.disconnect_database()
 
 def update_all_task_status(db_name, table, country):

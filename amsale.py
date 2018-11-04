@@ -208,7 +208,7 @@ def get_asin_rows_from_node(ad, country, table):
     cur_date = date.today()
     value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
     if country == 'us':
-        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>=10 and inventory_date <> ' + value
+        sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>=12 and inventory_date <> ' + value
     elif country == 'jp':
         sql = 'select * from ' + table + ' where limited=\'no\' and status=\'ok\' and seller>0 and seller<4 and shipping<>\'FBM\' and price>800' + ' and inventory_date <> ' + value
     cursor = ad.select_data(sql)
@@ -282,7 +282,7 @@ def amsale_from_mysql(country, node_type):
                                     asin = asin_info[1]
                                     status = False
                                     if country == 'us':
-                                        if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] > 0  and asin_info[8] < 4 and asin_info[7] != 'FBM' and float(asin_info[3]) > 10:
+                                        if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] > 0  and asin_info[8] < 4 and asin_info[7] != 'FBM' and float(asin_info[3]) > 12:
                                             status = True
                                     elif country == 'jp':
                                         if asin_info[11] == 'no' and asin_info[13] == 'ok' and str(asin_info[10]) != str(date.today().strftime("%Y-%m-%d")) and asin_info[8] > 0  and asin_info[8] < 4 and asin_info[7] != 'FBM' and float(asin_info[3]) > 800:
@@ -416,38 +416,36 @@ if __name__ == "__main__":
     if task == 'run':
         country = sys.argv[2]
         type = sys.argv[3]
-        while True:
-            while is_task_running():
-                while is_token_runout() == False:
-                    status = desc_token_count()
-                    if status == False:
-                        print('desc token count in failure...', flush=True)
-                        exit(-1)
-                    amsale_from_mysql(country, type)
+        while is_task_running():
+            while is_token_runout() == False:
+                status = desc_token_count()
+                if status == False:
+                    print('desc token count in failure...', flush=True)
+                    exit(-1)
+                amsale_from_mysql(country, type)
 
-            time.sleep(300)
-            print("task is not running...", flush=True)
+        time.sleep(300)
+        print("task is not running...", flush=True)
 
     elif task == 'fix':
-        while True:
-            country = sys.argv[2]
-            today = date.today()
-            yesterday = date.today() + timedelta(days=-1)
-            if country == 'us':
-                amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)
-            elif country == 'jp':
-                # amazonwrapper.update_all_task_status(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, country)
-                amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)
-            if is_token_runout():
-                status = update_token_count()
-                if status == False:
-                    print('update token count in failure...', flush=True)
-                else:
-                    print("update token count ok...", flush=True)
+        country = sys.argv[2]
+        today = date.today()
+        yesterday = date.today() + timedelta(days=-1)
+        if country == 'us':
+            amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)
+        elif country == 'jp':
+            # amazonwrapper.update_all_task_status(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, country)
+            amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)
+        if is_token_runout():
+            status = update_token_count()
+            if status == False:
+                print('update token count in failure...', flush=True)
             else:
-                print('token not runout now...', flush=True)
+                print("update token count ok...", flush=True)
+        else:
+            print('token not runout now...', flush=True)
 
-            time.sleep(60)
+        time.sleep(60)
     # task_id = sys.argv[1]   # 1
     # node_type = sys.argv[2] # BS - NR
     # country = sys.argv[3] # us/jp
