@@ -326,6 +326,11 @@ def amsale_from_mysql(country, node_type):
                                                     status = amazondata.create_inventory_table(inventory_table)
                                                     if status == False:
                                                         print("create invetory table in failure...", flush=True)
+                                                yesterday_inventory = amazondata.get_yesterday_inventory(inventory_table)
+                                                if (yesterday_inventory / data['inventory']) > 10:
+                                                    print("get inventory may error..", flush=True)
+                                                    status = False
+                                                    continue
                                                 status = amazondata.insert_inventory_data(inventory_table, data)
                                                 if status == True:
                                                     condition = 'asin=\'' + asin + '\''
@@ -377,7 +382,7 @@ def amsale_from_mysql(country, node_type):
                                                 if status == False:
                                                     print("update data for limited in failure", flush=True)
                                             else:
-                                                print("Get Inventory In Failure.", flush=True)
+                                                print("Get Inventory In Failure " + asin, flush=True)
                                             status = update_asin_status_err(amazondata, node, asin)
                                             if status == False:
                                                 print("update asin status faild.. + " + node + ' ' + asin, flush=True)

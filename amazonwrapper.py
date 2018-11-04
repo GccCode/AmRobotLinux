@@ -1046,6 +1046,26 @@ def update_asin_status_ok(db_name, node):
                 amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
         amazondata.disconnect_database()
 
+def update_asin_date(db_name, node):
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        asin_array = get_all_data(db_name, (node + '_BS'), 'asin', False)
+        if asin_array != False:
+            for index in range(len(asin_array)):
+                inventory_table_name = 'INVENTORY_' + asin_array[index][0]
+                yesterday_inventory = amazondata.get_yesterday_inventory(inventory_table_name)
+                today_inventory = amazondata.get_today_inventory(inventory_table_name)
+                if today_inventory != 0:
+                    if (yesterday_inventory - today_inventory) > 10:
+                        print("today inventory may error + " + asin_array[index][0], flush=True)
+                        yesterday = date.today() + timedelta(days=-1)
+                        condition = 'asin=\'' + asin_array[index][0] + '\''
+                        amazondata.update_data(node + '_BS', 'last_date', '\'' + yesterday.strftime("%Y-%m-%d") + '\'', condition)
+        amazondata.disconnect_database()
+
 def update_all_task_status(db_name, table, country):
     amazondata = AmazonData()
     status = amazondata.connect_database(db_name)
@@ -1101,6 +1121,7 @@ def update_all_task_date_status(db_name, date, country):
             amazondata.update_data(task_table, 'last_date', '\'' + date + '\'', condition)
             amazondata.update_data(task_table, 'status', '\'' + 'ok' + '\'', condition)
             update_asin_status_ok(data_db, node_array[index][0])
+            update_asin_date(data_db, node_array[index][0])
         amazondata.disconnect_database()
 
 def update_all_rank_task_date_status(date, country):

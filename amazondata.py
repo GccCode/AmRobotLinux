@@ -231,6 +231,32 @@ class AmazonData():
     def query(self, sql):
         return self.amsql.query(self.db, sql)
 
+    def get_yesterday_inventory(self, table):
+        yesterday = date.today() + timedelta(days = -1)
+        sql = 'select * from ' + table + ' where date=\'' + yesterday.strftime("%Y-%m-%d") + '\''
+        status = self.amsql.select_data(self.db, sql)
+        if status == False:
+            # print("Get yesterday sale fail...", flush=True)
+            return 0
+
+        inventory = status.fetchall()
+        yesterday_inventory = inventory[0][1]
+
+        return yesterday_inventory
+
+    def get_today_inventory(self, table):
+        today = date.today()
+        sql = 'select * from ' + table + ' where date=\'' + today.strftime("%Y-%m-%d") + '\''
+        status = self.amsql.select_data(self.db, sql)
+        if status == False:
+            # print("Get yesterday sale fail...", flush=True)
+            return 0
+
+        inventory = status.fetchall()
+        today_inventory = inventory[0][1]
+
+        return today_inventory
+
     def get_yesterday_sale(self, table):
         today = date.today()
         yesterday = date.today() + timedelta(days = -1)
