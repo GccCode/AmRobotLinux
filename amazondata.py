@@ -312,8 +312,8 @@ class AmazonData():
                     if sale[0] != 0:
                         total += sale[0]
                         count += 1
-
-                status = int(total / count)
+                if count > 0:
+                    status = int(total / count)
         return status
 
 
