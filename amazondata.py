@@ -299,18 +299,6 @@ class AmazonData():
         else:
             return False
 
-    # def get_column_avg(self, table, column):
-    #     status = -999
-    #     sql = 'select avg(' + column + ') from ' + table
-    #     cursor = self.amsql.query(self.db, sql)
-    #     if cursor != False:
-    #         avg_rows = cursor.fetchall()
-    #         status = avg_rows[0][0]
-    #         if status < 0:
-    #             status = 0
-    #
-    #     return status
-
     def get_column_avg(self, table, column):
         status = -999
         sql = 'select ' + column + ' from ' + table
@@ -318,11 +306,14 @@ class AmazonData():
         if cursor != False:
             avg_rows = cursor.fetchall()
             total = 0
+            count = 0
             if len(avg_rows) > 1:
                 for sale in avg_rows:
-                    total += sale[0]
+                    if sale[0] != 0:
+                        total += sale[0]
+                        count += 1
 
-                status = int(total / (len(avg_rows) - 1))
+                status = int(total / count)
         return status
 
 

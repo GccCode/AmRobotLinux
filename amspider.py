@@ -1217,7 +1217,7 @@ class AmazonSpider():
                             continue
                         else:
                             fba_flag = False
-                            if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG1_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG3_US): # or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG2_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG3_US):
+                            if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG1_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG3_US):
                                 fba_flag = True
                             if (fba_flag and prime_checkbox_flag == False) or prime_checkbox_flag:
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
@@ -1230,13 +1230,10 @@ class AmazonSpider():
                                             print(element.text.strip(), flush=True)
                                             continue
                                     if seller_name in seller_name_element.text:
-                                        # print(seller_name, flush=True)
-                                        # print(seller_name_element.text, flush=True)
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *NEW_US) == False and amazonasinpage.is_element_exsist_from_parent(maindiv_element, *REFURBISHED_US) == False:
                                             print("why??????", flush=True)
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
                                             maindiv_element.find_element(*ADDCART_BUTTON_FROM_SELLER).click()
-                                            # print("click addcart from seller..", flush=True)
                                             amazonasinpage.random_sleep(1000, 2000)
                                             status = True
                                             break
@@ -1244,7 +1241,6 @@ class AmazonSpider():
                                             print("can't find the addart button in sellers page..", flush=True)
                                             status = False
                                 else:
-                                    # print("can't get the seller name..", flush=True)
                                     status = False
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
