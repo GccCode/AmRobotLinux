@@ -1620,8 +1620,8 @@ def amspider_test(country):
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-    amspider_test('us')
-    exit()
+    # amspider_test('us')
+    # exit()
     node_file = sys.argv[1]
     if node_file != '0':
         type = sys.argv[2]
