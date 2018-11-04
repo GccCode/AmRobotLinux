@@ -1206,7 +1206,7 @@ class AmazonSpider():
                             continue
                         else:
                             fba_flag = False
-                            if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG1_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG2_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG3_US):
+                            if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG1_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG3_US): # or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG2_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG3_US):
                                 fba_flag = True
                             if (fba_flag and prime_checkbox_flag == False) or prime_checkbox_flag:
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
