@@ -1235,7 +1235,6 @@ class AmazonSpider():
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *NEW_US) == False and amazonasinpage.is_element_exsist_from_parent(maindiv_element, *REFURBISHED_US) == False:
                                             print("why??????", flush=True)
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
-                                            input("wating0")
                                             maindiv_element.find_element(*ADDCART_BUTTON_FROM_SELLER).click()
                                             # print("click addcart from seller..", flush=True)
                                             amazonasinpage.random_sleep(1000, 2000)
@@ -1308,10 +1307,10 @@ class AmazonSpider():
                                         data['inventory'] = int(getsale_us(element.text))
                                         # print("inventory is: " + str(data['inventory']), flush=True)
 
-                                        inventory_table = 'INVENTORY_' + asin
-                                        yesterday_inventory = amazonwrapper.get_yesterday_inventory(amazonglobal.db_name_data_us, inventory_table)
-                                        if (yesterday_inventory / data['inventory']) > 10:
-                                            input("waiting")
+                                        # inventory_table = 'INVENTORY_' + asin
+                                        # yesterday_inventory = amazonwrapper.get_yesterday_inventory(amazonglobal.db_name_data_us, inventory_table)
+                                        # if (yesterday_inventory / data['inventory']) > 10:
+                                        #     input("waiting")
 
                         if amazonasinpage.is_element_exsist(*ITEM_DELETE_US) == False:
                             print("Inventory Delete can't be found... + " + asin, flush=True)
@@ -1649,8 +1648,8 @@ def amspider_test(country):
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-    amspider_test('us')
-    exit()
+    # amspider_test('us')
+    # exit()
     node_file = sys.argv[1]
     if node_file != '0':
         type = sys.argv[2]
