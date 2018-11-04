@@ -1052,7 +1052,9 @@ def update_asin_date(db_name, node):
     if status == False:
         print("connect in failure..", flush=True)
     else:
-        asin_array = get_all_data(db_name, (node + '_BS'), 'asin', False)
+        today = date.today()
+        condition = 'last_date=\'' + today.strftime("%Y-%m-%d") + '\''
+        asin_array = get_all_data(db_name, (node + '_BS'), 'asin', condition)
         if asin_array != False:
             for index in range(len(asin_array)):
                 inventory_table_name = 'INVENTORY_' + asin_array[index][0]
