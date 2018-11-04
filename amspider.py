@@ -42,6 +42,9 @@ SELLER_IS_FBA_FLAG2_US = (By.CSS_SELECTOR, 'div[class=\'olpBadge\']')
 SELLER_IS_FBA_FLAG3_US = (By.CSS_SELECTOR, 'div[id=\'a-popover-fbaPopover\']')
 PRIME_CHECKBOX_US = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_primeEligible\']')
 NEW_CHECKBOX_US = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_new\']')
+NEW_US = (By.CSS_SELECTOR, 'span[id=\'olpNew\']')
+USED_US = (By.CSS_SELECTOR, 'span[id=\'olpUsed\']')
+LIKE_NEW_US = (By.CSS_SELECTOR, 'span[id=\'offerSubCondition\']')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
 SIZE_WEIGHT_TD_US = (By.CSS_SELECTOR, 'td[class=\'a-size-base\']')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
@@ -1218,9 +1221,18 @@ class AmazonSpider():
                             if (fba_flag and prime_checkbox_flag == False) or prime_checkbox_flag:
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
+                                    if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *USED_US):
+                                        break
+                                    if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *LIKE_NEW_US):
+                                        element = driver.find_element(*LIKE_NEW_US)
+                                        if 'like' in element.text:
+                                            print(element.text.strip(), flush=True)
+                                            break
                                     if seller_name in seller_name_element.text:
                                         # print(seller_name, flush=True)
                                         # print(seller_name_element.text, flush=True)
+                                        if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *NEW_US) == False:
+                                            print("why??????", flush=True)
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
                                             amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
                                             # print("click addcart from seller..", flush=True)
@@ -1628,15 +1640,15 @@ def amspider_test(country):
         exit(-1)
     amazonspider = AmazonSpider()
     try:
-        status = amazonspider.get_inventory_us(False, 'B074KDKM7Z', ips_array, 'MNJWS-Fullautoparts', True)
+        status = amazonspider.get_inventory_us(False, 'B005LJQPE0', ips_array, 'MNJWS-BlueRigger', True)
     except Exception as e:
         print(str(e), flush=True)
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-    # amspider_test('us')
-    # exit()
+    amspider_test('us')
+    exit()
     node_file = sys.argv[1]
     if node_file != '0':
         type = sys.argv[2]
