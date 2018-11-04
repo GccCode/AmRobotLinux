@@ -1214,6 +1214,7 @@ class AmazonSpider():
                                     if seller_name in seller_name_element.text:
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
                                             amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
+                                            print("click addcart from seller..", flush=True)
                                             amazonasinpage.random_sleep(1000, 2000)
                                             status = True
                                             break
