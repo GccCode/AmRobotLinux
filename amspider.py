@@ -1194,13 +1194,13 @@ class AmazonSpider():
                     amazonasinpage.click(*BUYER_COUNT)
                     amazonasinpage.random_sleep(1000, 2000)
                     prime_checkbox_flag = False
-                    if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_US):
+                    if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_US) and driver.find_element(*PRIME_CHECKBOX_US).is_selected() == False:
                         amazonasinpage.click(*PRIME_CHECKBOX_US)
                         prime_checkbox_flag = True
                         amazonasinpage.random_sleep(1000, 2000)
                         # print("select the prime checkbox", flush=True)
 
-                    if amazonasinpage.is_element_exsist(*NEW_CHECKBOX_US):
+                    if amazonasinpage.is_element_exsist(*NEW_CHECKBOX_US) and driver.find_element(*NEW_CHECKBOX_US).is_selected() == False:
                         amazonasinpage.click(*NEW_CHECKBOX_US)
                         amazonasinpage.random_sleep(1000, 2000)
 
