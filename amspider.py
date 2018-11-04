@@ -745,9 +745,10 @@ class AmazonSpider():
                                 print("ip problems...", flush=True)
                                 tmp_info['status'] = 'no'
                             elif result == -222:
-                                print("overweight " + tmp_info['asin'], flush=True)
+                                # print("overweight " + tmp_info['asin'], flush=True)
                                 tmp_info['limited'] = 'yes'
                                 tmp_info['status'] = 'err'
+                                asin_info_remove_array.append(asin_info_array[i])
                             else:
                                 tmp_info['shipping'] = result['shipping']
                                 tmp_info['seller'] = result['seller']
@@ -936,6 +937,10 @@ class AmazonSpider():
                 if result == False or result == -111:
                     asin_info_remove_array.append(asin_info_array[i])
                     tmp_info['status'] = 'err'
+                elif result == -222:
+                    asin_info_remove_array.append(asin_info_array[i])
+                    tmp_info['status'] = 'err'
+                    tmp_info['limited'] = 'yes'
                 else:
                     tmp_info['shipping'] = result['shipping']
                     tmp_info['seller'] = result['seller']
