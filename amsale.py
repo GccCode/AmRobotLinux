@@ -291,7 +291,7 @@ def amsale_from_mysql(country, node_type):
                                         if country == 'jp':
                                             result = amazonspider.get_inventory_jp(False, asin, ips_array, True)
                                         elif country == 'us':
-                                            print("seller name is " + asin_info[14], flush=True)
+                                            # print("seller name is " + asin_info[14], flush=True)
                                             if asin_info[14] == '':
                                                 result = amazonspider.get_inventory_us(False, asin, ips_array, False, True)
                                             else:

@@ -1189,6 +1189,7 @@ class AmazonSpider():
                 if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon':
                     status = amazonasinpage.add_cart(5000, 8000)
                 else:
+                    print("add cart from seller name", flush=True)
                     amazonasinpage.click(*BUYER_COUNT)
                     amazonasinpage.random_sleep(1000, 2000)
                     prime_checkbox_flag = False
