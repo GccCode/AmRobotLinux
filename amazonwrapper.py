@@ -1046,6 +1046,24 @@ def update_asin_status_ok(db_name, node):
                 amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
         amazondata.disconnect_database()
 
+def get_yesterday_inventory(db_name, table):
+    amazondata = AmazonData()
+    status = amazondata.connect_database(db_name)
+    if status == False:
+        print("connect in failure..", flush=True)
+    else:
+        yesterday = date.today() + timedelta(days = -1)
+        sql = 'select * from ' + table + ' where date=\'' + yesterday.strftime("%Y-%m-%d") + '\''
+        status = amazondata.amsql.select_data(amazondata.db, sql)
+        if status == False:
+            # print("Get yesterday sale fail...", flush=True)
+            return 0
+
+        inventory = status.fetchall()
+        yesterday_inventory = inventory[0][1]
+
+    return yesterday_inventory
+
 def update_asin_date(db_name, node):
     amazondata = AmazonData()
     status = amazondata.connect_database(db_name)

@@ -1294,6 +1294,11 @@ class AmazonSpider():
                                         data['inventory'] = int(getsale_us(element.text))
                                         # print("inventory is: " + str(data['inventory']), flush=True)
 
+                                        inventory_table = 'INVENTORY_' + asin
+                                        yesterday_inventory = amazonwrapper.get_yesterday_inventory(amazonglobal.db_name_data_us, inventory_table)
+                                        if (yesterday_inventory / data['inventory']) > 10:
+                                            input("waiting")
+
                         if amazonasinpage.is_element_exsist(*ITEM_DELETE_US) == False:
                             print("Inventory Delete can't be found... + " + asin, flush=True)
                             status = False
