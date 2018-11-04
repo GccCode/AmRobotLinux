@@ -747,6 +747,7 @@ class AmazonSpider():
                             elif result == -222:
                                 print("overweight " + tmp_info['asin'], flush=True)
                                 tmp_info['limited'] = 'yes'
+                                tmp_info['status'] = 'err'
                             else:
                                 tmp_info['shipping'] = result['shipping']
                                 tmp_info['seller'] = result['seller']
