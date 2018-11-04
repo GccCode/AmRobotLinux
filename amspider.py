@@ -1189,7 +1189,7 @@ class AmazonSpider():
                 if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon':
                     status = amazonasinpage.add_cart(5000, 8000)
                 else:
-                    print("add cart from seller name", flush=True)
+                    # print("add cart from seller name", flush=True)
                     amazonasinpage.click(*BUYER_COUNT)
                     amazonasinpage.random_sleep(1000, 2000)
                     prime_checkbox_flag = False
@@ -1613,15 +1613,15 @@ def amspider_test(country):
         exit(-1)
     amazonspider = AmazonSpider()
     try:
-        status = amazonspider.get_inventory_us(False, 'B0771NF799', ips_array, 'DELLAL DİNÇER', True)
+        status = amazonspider.get_inventory_us(False, 'B074KDKM7Z', ips_array, 'MNJWS-Fullautoparts', True)
     except Exception as e:
         print(str(e), flush=True)
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-    # amspider_test('us')
-    # exit()
+    amspider_test('us')
+    exit()
     node_file = sys.argv[1]
     if node_file != '0':
         type = sys.argv[2]
