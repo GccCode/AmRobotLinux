@@ -43,6 +43,7 @@ SELLER_IS_FBA_FLAG3_US = (By.CSS_SELECTOR, 'div[id=\'a-popover-fbaPopover\']')
 PRIME_CHECKBOX_US = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_primeEligible\']')
 NEW_CHECKBOX_US = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_new\']')
 NEW_US = (By.CSS_SELECTOR, 'span[id=\'olpNew\']')
+REFURBISHED_US = (By.CSS_SELECTOR, 'span[id=\'olpRefurbished\']')
 USED_US = (By.CSS_SELECTOR, 'span[id=\'olpUsed\']')
 LIKE_NEW_US = (By.CSS_SELECTOR, 'span[id=\'offerSubCondition\']')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
@@ -1231,7 +1232,7 @@ class AmazonSpider():
                                     if seller_name in seller_name_element.text:
                                         # print(seller_name, flush=True)
                                         # print(seller_name_element.text, flush=True)
-                                        if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *NEW_US) == False:
+                                        if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *NEW_US) == False and amazonasinpage.is_element_exsist_from_parent(maindiv_element, *REFURBISHED_US) == False:
                                             print("why??????", flush=True)
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
                                             input("wating0")
