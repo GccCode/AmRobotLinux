@@ -1079,7 +1079,7 @@ def update_asin_date(db_name, node):
                 yesterday_inventory = amazondata.get_yesterday_inventory(inventory_table_name)
                 today_inventory = amazondata.get_today_inventory(inventory_table_name)
                 if today_inventory != 0:
-                    if (yesterday_inventory - today_inventory) > 10:
+                    if (yesterday_inventory / today_inventory) > 10:
                         print("today inventory may error + " + asin_array[index][0], flush=True)
                         yesterday = date.today() + timedelta(days=-1)
                         condition = 'asin=\'' + asin_array[index][0] + '\''

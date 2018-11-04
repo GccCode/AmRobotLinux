@@ -1234,6 +1234,7 @@ class AmazonSpider():
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *NEW_US) == False:
                                             print("why??????", flush=True)
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
+                                            input("wating0")
                                             maindiv_element.find_element(*ADDCART_BUTTON_FROM_SELLER).click()
                                             # print("click addcart from seller..", flush=True)
                                             amazonasinpage.random_sleep(1000, 2000)
