@@ -1641,7 +1641,7 @@ def amspider_test(country):
         exit(-1)
     amazonspider = AmazonSpider()
     try:
-        status = amazonspider.get_inventory_us(False, 'B018800TR2', ips_array, 'TOPTIERPRO', True)
+        status = amazonspider.get_inventory_us(False, 'B07F1M6HWC', ips_array, 'Iridescent Store', True)
     except Exception as e:
         print(str(e), flush=True)
 
