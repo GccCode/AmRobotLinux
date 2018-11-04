@@ -1219,8 +1219,8 @@ class AmazonSpider():
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
                                     if seller_name in seller_name_element.text:
-                                        print(seller_name, flush=True)
-                                        print(seller_name_element.text, flush=True)
+                                        # print(seller_name, flush=True)
+                                        # print(seller_name_element.text, flush=True)
                                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
                                             amazonasinpage.click(*ADDCART_BUTTON_FROM_SELLER)
                                             # print("click addcart from seller..", flush=True)
