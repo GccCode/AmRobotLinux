@@ -41,6 +41,7 @@ SELLER_IS_FBA_FLAG1_US = (By.ID, 'fulfilledByAmazonPopOver2')
 SELLER_IS_FBA_FLAG2_US = (By.CSS_SELECTOR, 'div[class=\'olpBadge\']')
 SELLER_IS_FBA_FLAG3_US = (By.CSS_SELECTOR, 'div[id=\'a-popover-fbaPopover\']')
 PRIME_CHECKBOX_US = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_primeEligible\']')
+NEW_CHECKBOX_US = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_new\']')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
 SIZE_WEIGHT_TD_US = (By.CSS_SELECTOR, 'td[class=\'a-size-base\']')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
@@ -1196,7 +1197,13 @@ class AmazonSpider():
                     if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_US):
                         amazonasinpage.click(*PRIME_CHECKBOX_US)
                         prime_checkbox_flag = True
+                        amazonasinpage.random_sleep(1000, 2000)
                         # print("select the prime checkbox", flush=True)
+
+                    if amazonasinpage.is_element_exsist(*NEW_CHECKBOX_US):
+                        amazonasinpage.click(*NEW_CHECKBOX_US)
+                        amazonasinpage.random_sleep(1000, 2000)
+
                     maindiv_element_array = driver.find_elements(*MULTI_SELLERS_DIV_US)
                     index = 0
                     for maindiv_element in maindiv_element_array:
