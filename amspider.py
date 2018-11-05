@@ -581,6 +581,7 @@ class AmazonSpider():
 
     def us_node_gather(self, db_name, node, node_name, type, pages, ips_array, is_sale):
         status = True
+        total_count = 0
         t1 = time.time()
         for page in range(0, pages):
             datetime1 = datetime.strptime('1990-01-28','%Y-%m-%d')
@@ -758,6 +759,7 @@ class AmazonSpider():
                                 tmp_info['seller_name'] = result['seller_name']
                                 tmp_info['size'] = result['size']
                                 tmp_info['weight'] = result['weight']
+                                total_count += 1
 
 
                                 if is_sale == True:
@@ -864,7 +866,7 @@ class AmazonSpider():
                     print("connect_database fail..", flush=True)
 
         t2 = time.time()
-        print("总耗时：" + format(t2 - t1))
+        print("Asin_Count-Time_Consumed：" + str(total_count) + '-'+ str(int(format(t2 - t1))), flush=True)
 
         return status
 

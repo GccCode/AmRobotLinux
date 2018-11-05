@@ -41,8 +41,8 @@ xls_file_array_us = ['automotive',
                   'home_kitchen',
                   'office_products',
                   'sporting_goods',
-                  'toys_games'
-                  ]
+                  'toys_games',
+                  'health']
 
 
 '''获取当前日期前后N天或N月的日期'''
