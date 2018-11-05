@@ -1195,6 +1195,10 @@ class AmazonSpider():
                     status = -222
                 return status
 
+            if data['shipping'] == 'FBM' and seller_name == False:
+                status = -222
+                return status
+
             if is_sale and overweight_flag == False:
                 if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon':
                     status = amazonasinpage.add_cart(5000, 8000)
