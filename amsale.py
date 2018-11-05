@@ -431,13 +431,15 @@ if __name__ == "__main__":
 
     elif task == 'fix':
         country = sys.argv[2]
+        only_token = sys.argv[3]
         today = date.today()
         yesterday = date.today() + timedelta(days=-1)
-        if country == 'us':
-            amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)
-        elif country == 'jp':
-            # amazonwrapper.update_all_task_status(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, country)
-            amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)
+        if only_token == '0':
+            if country == 'us':
+                amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)
+            elif country == 'jp':
+                # amazonwrapper.update_all_task_status(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, country)
+                amazonwrapper.update_all_task_date_status(amazonglobal.db_name_task, yesterday.strftime("%Y-%m-%d"), country)
         if is_token_runout():
             status = update_token_count()
             if status == False:
