@@ -269,6 +269,7 @@ def amsale_from_mysql(country, node_type):
                 status = amazonwrapper.update_data(task_db, task_table, 'status', '\'no\'', sql_condition)
                 if status != False:
                     while amazonwrapper.is_task_finish(task_db, task_table, node) == False:
+                        total_count = 0
                         while amazonwrapper.is_all_inventory_finish(country, node_table) == False:
                             asin_cursor = get_asin_rows_from_node(amazondata, country, node_table)
                             if asin_cursor != False:
@@ -335,6 +336,7 @@ def amsale_from_mysql(country, node_type):
                                                 else:
                                                     status = amazondata.insert_inventory_data(inventory_table, data)
                                                     if status == True:
+                                                        total_count += 1
                                                         condition = 'asin=\'' + asin + '\''
                                                         value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
                                                         status = amazondata.update_data(node_table, 'inventory_date', value, condition)
@@ -398,8 +400,8 @@ def amsale_from_mysql(country, node_type):
                             if status == False:
                                 print("update status in failure " + node, flush=True)
 
-                t2 = time.time()
-                # print("总耗时：" + format(t2 - t1))
+                        t2 = time.time()
+                        print("Asin_Count-Time_Consumed：" + str(total_count) + '-' + str(int(format(t2 - t1))), flush=True)
                 node_task = amazonwrapper.get_one_data(task_db, task_table, status_condition)
         except Exception as e:
             print(traceback.format_exc(), flush=True)
