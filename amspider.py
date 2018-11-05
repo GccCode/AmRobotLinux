@@ -866,7 +866,7 @@ class AmazonSpider():
                     print("connect_database fail..", flush=True)
 
         t2 = time.time()
-        print("Asin_Count-Time_Consumed：" + str(total_count) + '-'+ str(int(format(t2 - t1))), flush=True)
+        print("Asin_Count-Time_Consumed：" + str(total_count) + '-'+ format(t2 - t1), flush=True)
 
         return status
 

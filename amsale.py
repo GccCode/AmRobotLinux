@@ -401,7 +401,7 @@ def amsale_from_mysql(country, node_type):
                                 print("update status in failure " + node, flush=True)
 
                         t2 = time.time()
-                        print("Asin_Count-Time_Consumed：" + str(total_count) + '-' + str(int(format(t2 - t1))), flush=True)
+                        print("Asin_Count-Time_Consumed：" + str(total_count) + '-' + format(t2 - t1), flush=True)
                 node_task = amazonwrapper.get_one_data(task_db, task_table, status_condition)
         except Exception as e:
             print(traceback.format_exc(), flush=True)
