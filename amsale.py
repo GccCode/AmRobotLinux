@@ -359,8 +359,8 @@ def amsale_from_mysql(country, node_type):
                                                                             status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
                                                                             if status == False:
                                                                                 print("avg_sale update fail.. + " + node_table, flush=True)
-                                                                        else:
-                                                                            print(" get avg_sale fail.. + " + node_table, flush=True)
+                                                                        # else:
+                                                                        #     print(" get avg_sale fail.. + " + node_table, flush=True)
                                                                     else:
                                                                         print(
                                                                             "sale_data insert fail... + " + sale_table, flush=True)
