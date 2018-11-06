@@ -286,17 +286,13 @@ if __name__ == "__main__":
 
     if task == 'run':
         type = sys.argv[3]
-        while is_task_running(sqlmgr.ad_sale_task):
-            while is_token_runout(sqlmgr.ad_token) == False:
-                status = desc_token_count(sqlmgr.ad_token)
-                if status == False:
-                    print('desc token count in failure...', flush=True)
-                    exit(-1)
-                amsale_from_mysql(sqlmgr, type)
-
-        time.sleep(300)
-        print("task is not running...", flush=True)
-
+        # while is_task_running(sqlmgr.ad_sale_task):
+        while is_token_runout(sqlmgr.ad_token) == False:
+            status = desc_token_count(sqlmgr.ad_token)
+            if status == False:
+                print('desc token count in failure...', flush=True)
+                exit(-1)
+            amsale_from_mysql(sqlmgr, type)
     elif task == 'fix':
         only_token = sys.argv[3]
         err_sale_value = sys.argv[4]
@@ -312,7 +308,6 @@ if __name__ == "__main__":
                 print("update token count ok...", flush=True)
         else:
             print('token not runout now...', flush=True)
-
         time.sleep(60)
 
     sqlmgr.stop()
