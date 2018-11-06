@@ -7,6 +7,7 @@ import sys
 import amazonglobal
 import pandas as pd
 from pyecharts import Overlap, Bar, Line, Grid
+from sqlmgr import SqlMgr
 
 class AmazonGUI():
     def __init__(self):
@@ -37,76 +38,64 @@ class AmazonGUI():
         # print(count, flush=True)
         return count
 
-    def create_sale_inventory_page(self, country, asin):
+    def create_sale_inventory_page(self, sqlmgr, asin):
         days_data_array = get_days_array_of_day(14, -1)
         sale_data_array = []
         inventory_data_array = []
-        amazondata = AmazonData()
-        if country == 'us':
-            db_name_data = amazonglobal.db_name_data_us
-        elif country == 'jp':
-            db_name_data = amazonglobal.db_name_data_jp
-        status = amazondata.connect_database(db_name_data)
-        if status == False:
-            print("connect in failure..", flush=True)
+
+        table_sale = 'SALE_' + asin
+        table_inventory = 'INVENTORY_' + asin
+        sale_array = get_all_data(sqlmgr.ad_sale_data, table_sale, False, False)
+        if sale_array == False:
+            print("get all data in failure", flush=True)
         else:
-            table_sale = 'SALE_' + asin
-            table_inventory = 'INVENTORY_' + asin
-            sale_array = get_all_data(db_name_data, table_sale, False, False)
-            if sale_array == False:
-                print("get all data in failure", flush=True)
-            else:
-                for index in range(15):
-                    flag = False
-                    for i in range(len(sale_array)):
-                        if sale_array[i][0].strftime('%Y-%m-%d') == days_data_array[index]:
-                            sale_data_array.append(int(sale_array[i][1]))
-                            flag = True
-                            break
-                    if flag == False:
-                        sale_data_array.append(0)
-            inventory_array = get_all_data(db_name_data, table_inventory, False, False)
-            if inventory_array == False:
-                print("get all data in failure", flush=True)
-            else:
-                for index in range(15):
-                    flag = False
-                    for i in range(len(inventory_array)):
-                        if inventory_array[i][0].strftime('%Y-%m-%d') == days_data_array[index]:
-                            inventory_data_array.append(int(inventory_array[i][1]))
-                            flag = True
-                            break
-                    if flag == False:
-                        inventory_data_array.append(0)
+            for index in range(15):
+                flag = False
+                for i in range(len(sale_array)):
+                    if sale_array[i][0].strftime('%Y-%m-%d') == days_data_array[index]:
+                        sale_data_array.append(int(sale_array[i][1]))
+                        flag = True
+                        break
+                if flag == False:
+                    sale_data_array.append(0)
+        inventory_array = get_all_data(sqlmgr.ad_sale_data, table_inventory, False, False)
+        if inventory_array == False:
+            print("get all data in failure", flush=True)
+        else:
+            for index in range(15):
+                flag = False
+                for i in range(len(inventory_array)):
+                    if inventory_array[i][0].strftime('%Y-%m-%d') == days_data_array[index]:
+                        inventory_data_array.append(int(inventory_array[i][1]))
+                        flag = True
+                        break
+                if flag == False:
+                    inventory_data_array.append(0)
 
-            # print(sale_data_array, flush=True)
-            # print(inventory_data_array, flush=True)
+        grid = Grid()
 
-            grid = Grid()
+        bar = Bar(title="过去15天历史销量与库存", title_pos="30%")
+        bar.add(
+            "库存",
+            days_data_array,
+            inventory_data_array,
+            yaxis_max=1200,
+            legend_pos="85%",
+            legend_orient="vertical",
+            legend_top="45%",
+        )
+        line = Line()
+        line.add("销量", days_data_array, sale_data_array, mark_point=["max"], mark_line=["average"], yaxis_max=500)
+        overlap = Overlap(width=1200, height=600)
+        overlap.add(bar)
+        overlap.add(line, is_add_yaxis=True, yaxis_index=1)
 
-            bar = Bar(title="过去15天历史销量与库存", title_pos="30%")
-            bar.add(
-                "库存",
-                days_data_array,
-                inventory_data_array,
-                yaxis_max=1200,
-                legend_pos="85%",
-                legend_orient="vertical",
-                legend_top="45%",
-            )
-            line = Line()
-            line.add("销量", days_data_array, sale_data_array, mark_point=["max"], mark_line=["average"], yaxis_max=500)
-            overlap = Overlap(width=1200, height=600)
-            overlap.add(bar)
-            overlap.add(line, is_add_yaxis=True, yaxis_index=1)
+        grid.add(overlap, grid_right="20%")
+        filename = '../html_page/daily_sale/' + asin + '.html'
+        grid.render(filename)
 
-            grid.add(overlap, grid_right="20%")
-            filename = '../html_page/daily_sale/' + asin + '.html'
-            grid.render(filename)
 
-            amazondata.disconnect_database()
-
-    def collect_page_together(self, country, node, node_name, type, data, check_err):
+    def collect_page_together(self, sqlmgr, node, node_name, type, data, check_err):
         maindiv = div()
         if country == 'jp':
             if type == 'BS':
@@ -148,7 +137,7 @@ class AmazonGUI():
             seller = data[index][8]
             avg_sale = data[index][9]
 
-            self.create_sale_inventory_page(country, asin)
+            self.create_sale_inventory_page(sqlmgr, asin)
 
             if country == 'jp':
                 db_name_sale = amazonglobal.db_name_data_jp
@@ -204,24 +193,24 @@ class AmazonGUI():
 
         return maindiv
 
-    def create_page_together(self, table_array, country, avg_sale, price, type, css_file, output, check_err):
+    def create_page_together(self, sqlmgr, table_array, country, avg_sale, price, type, css_file, output, check_err):
         page_name = "Potential Product"
         mainpage = PyH(page_name)
         mainpage.addCSS(css_file)
         for node in table_array:
-            if is_in_task_delete_data(country, node[0]) == False:
+            if is_in_task_delete_data(sqlmgr.ad_sale_task, node[0]) == False:
                 table_name = node[0] + '_BS'
                 condition = 'limited=\'no\' and avg_sale>=' + avg_sale + ' and price>=' + price
-                data = get_all_data(db_name_data, table_name, False, condition)
+                data = get_all_data(sqlmgr.ad_sale_data, table_name, False, condition)
                 if data != False:
                     if isDigit(node[0]):
-                        node_name = get_node_name_from_all(db_name_node, node[0], country)
+                        node_name = get_node_name_from_all(sqlmgr.ad_node_info, node[0])
                         if node_name == False:
                             print("get node name in failure.", flush=True)
                     else:
                         node_name = node[0]
 
-                    maindiv = self.collect_page_together(country, node[0], node_name, type, data, check_err)
+                    maindiv = self.collect_page_together(sqlmgr, node[0], node_name, type, data, check_err)
                     mainpage << maindiv
             else:
                 continue
@@ -332,23 +321,26 @@ if __name__ == "__main__":
     avg_sale = sys.argv[3]
     price = sys.argv[4]
     check_err = sys.argv[5]
+
+    sqlmgr = SqlMgr(country)
+    if sqlmgr.start() == False:
+        print("SqlMgr initialized in failure", flush=True)
+        exit()
+
     if country == 'us':
-        table_array = get_all_data(amazonglobal.db_name_task, amazonglobal.table_sale_task_us, 'node', False)
-        db_name_data = amazonglobal.db_name_data_us
-        db_name_node = amazonglobal.db_name_node_info_us
+        table_array = get_all_data(sqlmgr.ad_sale_task, amazonglobal.table_sale_task_us, 'node', False)
     elif country == 'jp':
-        table_array = get_all_data(amazonglobal.db_name_task, amazonglobal.table_sale_task_jp, 'node', False)
-        db_name_data = amazonglobal.db_name_data_jp
-        db_name_node = amazonglobal.db_name_node_info_jp
+        table_array = get_all_data(sqlmgr.ad_sale_task, amazonglobal.table_sale_task_jp, 'node', False)
+
     if task_type == 'single':
         for node in table_array:
             print(node[0], flush=True)
             table_name = node[0] + '_BS'
             condition = 'limited=\'no\' and avg_sale>' + avg_sale + ' and price>=' + price
-            data = get_all_data(db_name_data, table_name, False, condition)
+            data = get_all_data(sqlmgr.ad_sale_data, table_name, False, condition)
             if data != False:
                 if isDigit(node[0]):
-                    node_name = get_node_name_from_all(db_name_node, node[0], country)
+                    node_name = get_node_name_from_all(sqlmgr.ad_node_info, node[0], country)
                     if node_name != False:
                         print(node_name.replace(' & ', '_'), flush=True)
                         if country == 'us':
@@ -363,7 +355,9 @@ if __name__ == "__main__":
                         amazongui.create_page(country, node[0], node[0], 'BS', 'amazongui.css', data, '../html_page_jp/', check_err)
     elif task_type == 'total':
         if country == 'us':
-            amazongui.create_page_together(table_array, country, avg_sale, price, 'BS', 'amazongui.css', '../html_page/', check_err)
+            amazongui.create_page_together(sqlmgr, table_array, country, avg_sale, price, 'BS', 'amazongui.css', '../html_page/', check_err)
         elif country == 'jp':
-            amazongui.create_page_together(table_array, country, avg_sale, price, 'BS', 'amazongui.css', '../html_page_jp/', check_err)
+            amazongui.create_page_together(sqlmgr, table_array, country, avg_sale, price, 'BS', 'amazongui.css', '../html_page_jp/', check_err)
 
+
+    sqlmgr.stop()

@@ -17,6 +17,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 import utils
 import amazonwrapper
+from sqlmgr import SqlMgr
 
 
 if __name__ == "__main__":
@@ -28,11 +29,15 @@ if __name__ == "__main__":
     max_time = cf.get("search", "view_time_max")
     page = cf.get("search", "page")
     country = sys.argv[1]
-    ips_array = amazonwrapper.get_all_accessible_ip(country)
+    sqlmgr = SqlMgr(country)
+    if sqlmgr.start() == False:
+        print("SqlMgr initialized in failure", flush=True)
+        exit()
+    ips_array = amazonwrapper.get_all_accessible_ip(sqlmgr.ad_ip_info)
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
-    admin = utils.Administrator(amtaskfile)
+    admin = utils.Administrator(amtaskfile, False)
 
     while admin.is_all_over() == False:
         utils.generate_info_file(ips_array)
@@ -146,5 +151,6 @@ if __name__ == "__main__":
             print("总耗时：" + format(t2 - t1))
             driver.quit()
 
+    sqlmgr.stop()
     print("* 任务全部完成！！！！")
 

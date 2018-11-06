@@ -2,6 +2,8 @@
 # -*- coding:utf-8 -*-
 
 db_name_token = 'amazontoken'
+db_name_amkiller_us = 'amkiller_us'
+db_name_amkiller_jp = 'amkiller_jp'
 table_token = 'token'
 db_name_task = 'amazontask'
 table_sale_task_us = 'sale_task_us'
@@ -13,7 +15,7 @@ db_name_data_us = 'data_us'
 db_name_data_jp = 'data_jp'
 db_name_node_info_jp = 'node_info'
 db_name_node_info_us = 'node_info_us'
-db_name_ip_info_jp = 'ip_info'
+db_name_ip_info_jp = 'ip_info_jp'
 db_name_ip_info_us = 'ip_info_us'
 table_ip_pool = 'ip_pool'
 db_name_rank_task = 'rank_task'

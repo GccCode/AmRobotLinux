@@ -138,7 +138,6 @@ class AmazonSearchPage(AmazonPage):
             page += 1
 
 
-
     def enter_random_product(self, asin, count, begin, end):
         t1 = tm.time()
         index = 0

@@ -17,6 +17,7 @@ from selenium.common.exceptions import TimeoutException
 import utils
 import pyautogui
 import amazonwrapper
+from sqlmgr import SqlMgr
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -27,10 +28,15 @@ if __name__ == "__main__":
     min_time = cf.get("search", "view_time_min")
     max_time = cf.get("search", "view_time_max")
 
-    admin = utils.Administrator(amkillerfile)
+    sqlmgr = SqlMgr(country)
+    if sqlmgr.start() == False:
+        print("SqlMgr initialized in failure", flush=True)
+        exit()
+
+    admin = utils.Administrator(amkillerfile, sqlmgr)
     count = 0
     print("* Resolution：" + str(pyautogui.size()))
-    ips_array = amazonwrapper.get_all_accessible_ip(country)
+    ips_array = amazonwrapper.get_all_accessible_ip(sqlmgr.ad_ip_info)
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
@@ -74,8 +80,6 @@ if __name__ == "__main__":
                         accountpage.enter_payment_page(3000, 5000)
                         paymentpage = AmazonPaymentPage(driver)
                         paymentpage.add_new_payment(5000, 10000)
-            input("xxxx")
-            exit()
             amazonpage.enter_amazon_page(30, 50)
             amazonpage.wait_searchbox_exsist()
             searchpage = AmazonSearchPage(driver)
@@ -97,3 +101,4 @@ if __name__ == "__main__":
 
         count += 1
 
+    sqlmgr.stop()

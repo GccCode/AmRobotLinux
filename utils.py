@@ -490,7 +490,7 @@ def change_random_resolution():
         time.sleep(5)
 
 class Administrator():
-    def __init__(self, taskfile):
+    def __init__(self, taskfile, sqlmgr):
         self.cf = configparser.ConfigParser()
         self.cf.read("task.txt")
         outputdir = self.cf.get("output","dir")
@@ -506,6 +506,7 @@ class Administrator():
             file = open(self.recordfile, 'w')
             file.close()
         self.record_cf.read(self.recordfile)
+        self.sqlmgr = sqlmgr
 
     def record_tasks(self, keyword, asins):
         if len(asins) != 0:
@@ -519,11 +520,10 @@ class Administrator():
                     count = int(self.record_cf.get(keyword, asins[i]))
                     count += 1
                     self.record_cf.set(keyword, asins[i], str(count))
-                status = amazonwrapper.update_click_data('amkiller', keyword, asins[i])
+                status = amazonwrapper.update_click_data(self.sqlmgr.ad_amkiller, keyword, asins[i])
                 if status == False:
                     print("update click data in failure..", flush=True)
-            # print(asins, flush=True)
-            # print("* Recording Task: ", flush=True)
+
             self.record_cf.write(open(self.recordfile, 'w'))
 
     def get_tasks(self):

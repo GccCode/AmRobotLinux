@@ -16,12 +16,11 @@ import copy
 from datetime import date
 from datetime import datetime
 from datetime import timedelta
-from amazondata import AmazonData
 import amazonwrapper
 import utils
 import traceback
-import xlrd
 import amazonglobal
+from sqlmgr import SqlMgr
 
 
 LOGO = (By.ID, 'nav-logo')
@@ -215,25 +214,13 @@ def getprice_us(price):
     else:
         return float(price.strip('$ ').replace(',', ''))
 
-def insert_task_node(table, data):
-    amazontask_db_name = amazonglobal.db_name_task
-    amazondata = AmazonData()
-    status = amazondata.create_database(amazontask_db_name)
-    if status == False:
-        print("Create Database In Failure + " + amazontask_db_name, flush=True)
-    else:
-        status = amazondata.connect_database(amazontask_db_name)
-        if status == False:
-            print("Connect Database In Failure + " + amazontask_db_name, flush=True)
-            status = False
-        else:
-            status = amazondata.create_task_table(table)
-            if status != False:
-                status = amazondata.insert_task_data(table, data)
-
-            amazondata.disconnect_database()
+def insert_task_node(amazondata, table, data):
+    status = amazondata.create_task_table(table)
+    if status != False:
+        status = amazondata.insert_task_data(table, data)
 
     return status
+
 
 class AmazonSpider():
     def __init__(self):
@@ -246,7 +233,7 @@ class AmazonSpider():
                 return False
         return True
 
-    def jp_node_gather(self, db_name, node, node_name, type, pages, ips_array, is_sale):
+    def jp_node_gather(self, sqlmgr, node, node_name, type, pages, ips_array, is_sale):
         status = True
         t1 = time.time()
         for page in range(0, pages):
@@ -453,7 +440,7 @@ class AmazonSpider():
                     for i in range(0, len(asin_info_array)):
                         tmp_info = asin_info_array[i]
                         if tmp_info['status'] == 'no':
-                            result = self.get_inventory_jp(False, tmp_info['asin'], ips_array, is_sale)
+                            result = self.get_inventory_jp(sqlmgr, False, tmp_info['asin'], ips_array, is_sale)
                             if result == False:
                                 asin_info_remove_array.append(asin_info_array[i])
                                 tmp_info['status'] = 'err'
@@ -487,99 +474,75 @@ class AmazonSpider():
                     print(len(asin_info_array), flush=True)
                     print(len(inventory_array), flush=True)
 
-                amazondata = AmazonData()
-                status = amazondata.create_database(db_name)
-                if status == True:
-                    status = amazondata.connect_database(db_name)
+                for i in range(0, len(asin_info_array)):
+                    asin = asin_info_array[i]['asin']
+                    node_table = node + '_' + type
+                    status = sqlmgr.ad_sale_data.create_node_table(node_table)
                     if status == True:
-                        for i in range(0, len(asin_info_array)):
-                            asin = asin_info_array[i]['asin']
-                            node_table = node + '_' + type
-                            status = amazondata.create_node_table(node_table)
-                            if status == True:
-                                # print("node_table create sucessfully + " + node_table, flush=True)
-                                status = amazondata.insert_node_data(node_table, asin_info_array[i])
+                        status = sqlmgr.ad_sale_data.insert_node_data(node_table, asin_info_array[i])
+                        if status == True:
+                            if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['shipping'] != 'FBM' and float(asin_info_array[i]['price']) > 800:
+                                inventory_table = 'INVENTORY_' + asin
+                                status = sqlmgr.ad_sale_data.create_inventory_table(inventory_table)
                                 if status == True:
-                                    # print("node_data inserted sucessfully.. + " + node_table, flush=True)
-                                    if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['shipping'] != 'FBM' and float(asin_info_array[i]['price']) > 800:
-                                        inventory_table = 'INVENTORY_' + asin
-                                        status = amazondata.create_inventory_table(inventory_table)
+                                    cur_date = date.today()
+                                    data = {
+                                        'date': cur_date,
+                                        'inventory': inventory_array[i]['inventory']
+                                    }
+                                    status = sqlmgr.ad_sale_data.insert_inventory_data(inventory_table, data)
+                                    if status == True:
+                                        condition = 'asin=\'' + asin + '\''
+                                        value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+                                        status = sqlmgr.ad_sale_data.update_data(node_table, 'inventory_date', value, condition)
                                         if status == True:
-                                            # print("inventory_table create sucessfully + " + inventory_table, flush=True)
-                                            cur_date = date.today()
-                                            data = {
-                                                'date' : cur_date,
-                                                'inventory' : inventory_array[i]['inventory']
+                                            task_data = {
+                                                'node': node,
+                                                'status': 'ok',
+                                                'last_date': cur_date,
+                                                'node_name': node_name
                                             }
-                                            status = amazondata.insert_inventory_data(inventory_table, data)
-                                            if status == True:
-                                                # print("inventory data insert sucessfully.. + " + inventory_table, flush=True)
-                                                condition = 'asin=\'' + asin + '\''
-                                                value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-                                                status = amazondata.update_data(node_table, 'inventory_date', value, condition)
+                                            status = insert_task_node(sqlmgr.ad_sale_data, amazonglobal.table_sale_task_jp, task_data)
+                                            if status == False:
+                                                print("insert task node in failure... + " +  node, flush=True)
+                                            status = sqlmgr.ad_sale_data.get_yesterday_sale(inventory_table)
+                                            if status != -999:
+                                                yesterday = date.today() + timedelta(days=-1)
+                                                data = {
+                                                    'date': yesterday,
+                                                    'sale': copy.deepcopy(status)
+                                                }
+                                                sale_table = 'SALE_' + asin
+                                                status = sqlmgr.ad_sale_data.create_sale_table(sale_table)
                                                 if status == True:
-                                                    # print("invetory_date update sucessfully.. + " + node_table, flush=True)
-                                                    task_data = {
-                                                        'node': node,
-                                                        'status': 'ok',
-                                                        'last_date': cur_date,
-                                                        'node_name': node_name
-                                                    }
-                                                    status = insert_task_node(amazonglobal.table_sale_task_jp, task_data)
-                                                    if status == False:
-                                                        print("insert task node in failure... + " +  node, flush=True)
-                                                    status = amazondata.get_yesterday_sale(inventory_table)
-                                                    if status != -999:
-                                                        # print("get_yesterday_sale sucessfully.. + " + inventory_table, flush=True)
-                                                        yesterday = date.today() + timedelta(days=-1)
-                                                        data = {
-                                                            'date' : yesterday,
-                                                            'sale' : copy.deepcopy(status)
-                                                        }
-                                                        sale_table = 'SALE_' + asin
-                                                        status = amazondata.create_sale_table(sale_table)
-                                                        if status == True:
-                                                            # print("sale_table create sucessfully.. + " + sale_table, flush=True)
-                                                            status = amazondata.insert_sale_data(sale_table, data)
-                                                            if status == True:
-                                                                # print("sale_data insert sucessfully... + " + sale_table, flush=True)
-                                                                avg_sale = amazondata.get_column_avg(sale_table, 'sale')
-                                                                if avg_sale != -999:
-                                                                    status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
-                                                                    if status == False:
-                                                                        print("avg_sale update fail.. + " + node_table, flush=True)
-                                                                    # else:
-                                                                    #     print("avg_sale update successfully.. + " + node_table, flush=True)
-                                                                # else:
-                                                                #     print(" get avg_sale fail.. + " + node_table, flush=True)
-                                                            else:
-                                                                print("sale_data insert fail... + " + sale_table, flush=True)
-                                                        else:
-                                                            print("sale_table create fail.. + " + sale_table, flush=True)
+                                                    status = sqlmgr.ad_sale_data.insert_sale_data(sale_table, data)
+                                                    if status == True:
+                                                        avg_sale = sqlmgr.ad_sale_data.get_column_avg(sale_table, 'sale')
+                                                        if avg_sale != -999:
+                                                            status = sqlmgr.ad_sale_data.update_data(node_table, 'avg_sale', avg_sale, condition)
+                                                            if status == False:
+                                                                print("avg_sale update fail.. + " + node_table, flush=True)
+                                                    else:
+                                                        print("sale_data insert fail... + " + sale_table, flush=True)
                                                 else:
-                                                    print("invetory_date update fail.. + " + node_table, flush=True)
-                                            else:
-                                                print("inventory data insert fail.. + " + inventory_table, flush=True)
+                                                    print("sale_table create fail.. + " + sale_table, flush=True)
                                         else:
-                                            print("inventory_table create fail + " + inventory_table, flush=True)
+                                            print("invetory_date update fail.. + " + node_table, flush=True)
                                     else:
-                                        pass
-                                        # print('Inventory Limited, no need to record...', flush=True)
+                                        print("inventory data insert fail.. + " + inventory_table, flush=True)
                                 else:
-                                    print("asin_info_data inserted fail.. + " + node_table, flush=True)
-                            else:
-                                print("node_table create fail + " + node_table, flush=True)
-
-                        amazondata.disconnect_database()
+                                    print("inventory_table create fail + " + inventory_table, flush=True)
+                        else:
+                            print("asin_info_data inserted fail.. + " + node_table, flush=True)
                     else:
-                        print("connect_database fail..", flush=True)
+                        print("node_table create fail + " + node_table, flush=True)
 
         t2 = time.time()
         print("总耗时：" + format(t2 - t1))
 
         return status
 
-    def us_node_gather(self, db_name, node, node_name, type, pages, ips_array, is_sale):
+    def us_node_gather(self, sqlmgr, node, node_name, type, pages, ips_array, is_sale):
         status = True
         total_count = 0
         t1 = time.time()
@@ -625,7 +588,6 @@ class AmazonSpider():
                 print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
 
                 for i in range(0, 50):
-                    unavailable = False
                     tmp_symbol = CRITICAL_TITLE_PREFIX_US + str(i + 1) + CRITICAL_TITLE_POSTFIX_US
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
@@ -681,13 +643,11 @@ class AmazonSpider():
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             asin_info_data['shipping'] = 'FBA'
                             # print("FBA", flush=True)
-                            tmp_symbol = CRITICAL_NO_REVIEW_FBA_PRICE_PREFIX + str(
-                                i + 1) + CRITICAL_NO_REVIEW_FBA_PRICE_POSTFIX
+                            tmp_symbol = CRITICAL_NO_REVIEW_FBA_PRICE_PREFIX + str(i + 1) + CRITICAL_NO_REVIEW_FBA_PRICE_POSTFIX
                         else:
                             asin_info_data['shipping'] = 'FBM'
                             # print("FBM", flush=True)
-                            tmp_symbol = CRITICAL_NO_REVIEW_FBM_PRICE_PREFIX + str(
-                                i + 1) + CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
+                            tmp_symbol = CRITICAL_NO_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
                             # print("Price is : " + element.text.strip('$ ').replace(',', ''), flush=True)
@@ -732,13 +692,12 @@ class AmazonSpider():
             status = True
             inventory_array = []
             asin_info_remove_array = []
-            amazondata = AmazonData()
             try:
                 while self.is_all_asin_ok(asin_info_array) == False:
                     for i in range(0, len(asin_info_array)):
                         tmp_info = asin_info_array[i]
                         if tmp_info['status'] == 'no':
-                            result = self.get_inventory_us(False, tmp_info['asin'], ips_array, False, is_sale)
+                            result = self.get_inventory_us(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale)
                             if result == False:
                                 asin_info_remove_array.append(asin_info_array[i])
                                 tmp_info['status'] = 'err'
@@ -779,289 +738,75 @@ class AmazonSpider():
                     print(len(asin_info_array), flush=True)
                     print(len(inventory_array), flush=True)
 
-            status = amazondata.create_database(db_name)
-            if status == True:
-                status = amazondata.connect_database(db_name)
+            for i in range(0, len(asin_info_array)):
+                asin = asin_info_array[i]['asin']
+                node_table = node + '_' + type
+                status = sqlmgr.ad_sale_data.create_node_table(node_table)
                 if status == True:
-                    for i in range(0, len(asin_info_array)):
-                        asin = asin_info_array[i]['asin']
-                        node_table = node + '_' + type
-                        status = amazondata.create_node_table(node_table)
-                        if status == True:
-                            # print("node_table create sucessfully + " + node_table, flush=True)
-                            status = amazondata.insert_node_data(node_table, asin_info_array[i])
+                    status = sqlmgr.ad_sale_data.insert_node_data(node_table, asin_info_array[i])
+                    if status == True:
+                        if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] > 0 and asin_info_array[i]['seller'] < 4 and asin_info_array[i]['price'] >= 12 and is_sale:
+                            inventory_table = 'INVENTORY_' + asin
+                            status = sqlmgr.ad_sale_data.create_inventory_table(inventory_table)
                             if status == True:
-                                # print("node_data inserted sucessfully.. + " + node_table, flush=True)
-                                if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] > 0 and asin_info_array[i]['seller'] < 4 and asin_info_array[i]['price'] >= 12 and is_sale:
-                                    inventory_table = 'INVENTORY_' + asin
-                                    status = amazondata.create_inventory_table(inventory_table)
+                                cur_date = date.today()
+                                data = {
+                                    'date': cur_date,
+                                    'inventory': inventory_array[i]['inventory']
+                                }
+                                status = sqlmgr.ad_sale_data.insert_inventory_data(inventory_table, data)
+                                if status == True:
+                                    condition = 'asin=\'' + asin + '\''
+                                    value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+                                    status = sqlmgr.ad_sale_data.update_data(node_table, 'inventory_date', value, condition)
                                     if status == True:
-                                        # print("inventory_table create sucessfully + " + inventory_table, flush=True)
-                                        cur_date = date.today()
-                                        data = {
-                                            'date' : cur_date,
-                                            'inventory' : inventory_array[i]['inventory']
+                                        task_data = {
+                                            'node': node,
+                                            'status': 'ok',
+                                            'last_date': cur_date,
+                                            'node_name': node_name
                                         }
-                                        status = amazondata.insert_inventory_data(inventory_table, data)
-                                        if status == True:
-                                            # print("inventory data insert sucessfully.. + " + inventory_table, flush=True)
-                                            condition = 'asin=\'' + asin + '\''
-                                            value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-                                            status = amazondata.update_data(node_table, 'inventory_date', value, condition)
+                                        status = insert_task_node(sqlmgr.ad_sale_data, amazonglobal.table_sale_task_us, task_data)
+                                        if status == False:
+                                            print("insert task node in failure... + " + node, flush=True)
+                                        status = sqlmgr.ad_sale_data.get_yesterday_sale(inventory_table)
+                                        if status != -999:
+                                            yesterday = date.today() + timedelta(days=-1)
+                                            data = {
+                                                'date': yesterday,
+                                                'sale': copy.deepcopy(status)
+                                            }
+                                            sale_table = 'SALE_' + asin
+                                            status = sqlmgr.ad_sale_data.create_sale_table(sale_table)
                                             if status == True:
-                                                # print("invetory_date update sucessfully.. + " + node_table, flush=True)
-                                                task_data = {
-                                                    'node': node,
-                                                    'status': 'ok',
-                                                    'last_date': cur_date,
-                                                    'node_name': node_name
-                                                }
-                                                status = insert_task_node(amazonglobal.table_sale_task_us, task_data)
-                                                if status == False:
-                                                    print("insert task node in failure... + " +  node, flush=True)
-                                                status = amazondata.get_yesterday_sale(inventory_table)
-                                                if status != -999:
-                                                    # print("get_yesterday_sale sucessfully.. + " + inventory_table, flush=True)
-                                                    yesterday = date.today() + timedelta(days=-1)
-                                                    data = {
-                                                        'date' : yesterday,
-                                                        'sale' : copy.deepcopy(status)
-                                                    }
-                                                    sale_table = 'SALE_' + asin
-                                                    status = amazondata.create_sale_table(sale_table)
-                                                    if status == True:
-                                                        # print("sale_table create sucessfully.. + " + sale_table, flush=True)
-                                                        status = amazondata.insert_sale_data(sale_table, data)
-                                                        if status == True:
-                                                            # print("sale_data insert sucessfully... + " + sale_table, flush=True)
-                                                            avg_sale = amazondata.get_column_avg(sale_table, 'sale')
-                                                            if avg_sale != -999:
-                                                                status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
-                                                                if status == False:
-                                                                    print("avg_sale update fail.. + " + node_table, flush=True)
-                                                                # else:
-                                                                #     print("avg_sale update successfully.. + " + node_table, flush=True)
-                                                            # else:
-                                                            #     print(" get avg_sale fail.. + " + node_table, flush=True)
-                                                        else:
-                                                            print("sale_data insert fail... + " + sale_table, flush=True)
-                                                    else:
-                                                        print("sale_table create fail.. + " + sale_table, flush=True)
+                                                status = sqlmgr.ad_sale_data.insert_sale_data(sale_table, data)
+                                                if status == True:
+                                                    avg_sale = sqlmgr.ad_sale_data.get_column_avg(sale_table, 'sale')
+                                                    if avg_sale != -999:
+                                                        status = sqlmgr.ad_sale_data.update_data(node_table, 'avg_sale', avg_sale, condition)
+                                                        if status == False:
+                                                            print("avg_sale update fail.. + " + node_table, flush=True)
+                                                else:
+                                                    print("sale_data insert fail... + " + sale_table, flush=True)
                                             else:
-                                                print("invetory_date update fail.. + " + node_table, flush=True)
-                                        else:
-                                            print("inventory data insert fail.. + " + inventory_table, flush=True)
+                                                print("sale_table create fail.. + " + sale_table, flush=True)
                                     else:
-                                        print("inventory_table create fail + " + inventory_table, flush=True)
+                                        print("invetory_date update fail.. + " + node_table, flush=True)
                                 else:
-                                    pass
-                                    # print('Inventory Limited, no need to record...', flush=True)
+                                    print("inventory data insert fail.. + " + inventory_table, flush=True)
                             else:
-                                print("asin_info_data inserted fail.. + " + node_table, flush=True)
-                        else:
-                            print("node_table create fail + " + node_table, flush=True)
-
-                    amazondata.disconnect_database()
+                                print("inventory_table create fail + " + inventory_table, flush=True)
+                    else:
+                        print("asin_info_data inserted fail.. + " + node_table, flush=True)
                 else:
-                    print("connect_database fail..", flush=True)
+                    print("node_table create fail + " + node_table, flush=True)
 
         t2 = time.time()
         print("Asin_Count-Time_Consumed：" + str(total_count) + '-'+ format(t2 - t1), flush=True)
 
         return status
 
-    def us_seller_gather(self, db_name, node, node_name, type, filename, ips_array, is_sale):
-        status = True
-        t1 = time.time()
-
-        datetime1 = datetime.strptime('1990-01-28','%Y-%m-%d')
-        date1 = datetime1.date()
-        asin_info_data = {
-            'rank': 0,
-            'asin': None,
-            'node': node,
-            'price': 0,
-            'review': 0,
-            'rate': 0,
-            'qa': 0,
-            'shipping': None,
-            'seller': 0,
-            'avg_sale': 0,
-            'inventory_date': date1,
-            'limited': 'no',
-            'img_url': 'none',
-            'status': 'ok'
-        }
-        asin_info_array = []
-        # chrome_options = webdriver.ChromeOptions()
-        # prefs = {
-        #     'profile.default_content_setting_values': {
-        #         'images': 2,
-        #         # 'javascript': 2
-        #     }
-        # }
-        # chrome_options.add_experimental_option("prefs", prefs)
-        # driver = webdriver.Chrome(chrome_options=chrome_options)
-        # driver.set_page_load_timeout(60)
-        # driver.set_script_timeout(60)
-        try:
-            # amazonpage = AmazonPage(driver) # /ref=zg_bs_pg_1?_encoding=UTF8&pg=2
-
-            workbook = xlrd.open_workbook(filename)
-            worksheet1 = workbook.sheet_by_index(0)
-            num_rows = worksheet1.nrows
-            for curr_row in range(1, num_rows):
-                row = worksheet1.row_values(curr_row)
-                asin_info_data['asin'] = row[1].strip(' ')
-                asin_info_data['review'] = int(row[5])
-                asin_info_data['rate'] = float(row[6])
-                asin_info_data['price'] = float(row[3])
-                asin_info_data['rank'] = int(row[0])
-
-                asin_info_array.append(copy.deepcopy(asin_info_data))
-                print(asin_info_data, flush=True)
-                print("** ------------------- **", flush=True)
-        except Exception as e:
-            status = False
-            print(traceback.format_exc(), flush=True)
-        finally:
-            if status == False:
-                return False
-
-        status = True
-        inventory_array = []
-        asin_info_remove_array = []
-        amazondata = AmazonData()
-        try:
-            for i in range(0, len(asin_info_array)):
-                tmp_info = asin_info_array[i]
-                result = self.get_inventory_us(False, tmp_info['asin'], ips_array, False, is_sale)
-                if result == False or result == -111:
-                    asin_info_remove_array.append(asin_info_array[i])
-                    tmp_info['status'] = 'err'
-                elif result == -222:
-                    asin_info_remove_array.append(asin_info_array[i])
-                    tmp_info['status'] = 'err'
-                    tmp_info['limited'] = 'yes'
-                else:
-                    tmp_info['shipping'] = result['shipping']
-                    tmp_info['seller'] = result['seller']
-                    tmp_info['qa'] = result['qa']
-                    tmp_info['limited'] = result['limited']
-                    # if result['seller'] == 1:
-                    if is_sale == True:
-                        inventory_array.append(copy.deepcopy(result))
-                    # else:
-                    #     asin_info_remove_array.append(asin_info_array[i])
-
-        except Exception as e:
-            status = False
-            print(traceback.format_exc(), flush=True)
-            # print(str(e), flush=True)
-        finally:
-            if status == False:
-                return False
-
-        if is_sale == True:
-            for i in range(0, len(asin_info_remove_array)):
-                asin_info_array.remove(asin_info_remove_array[i])
-
-            if len(asin_info_array) != len(inventory_array):
-                print(len(asin_info_array), flush=True)
-                print(len(inventory_array), flush=True)
-
-        status = amazondata.create_database(db_name)
-        if status == True:
-            status = amazondata.connect_database(db_name)
-            if status == True:
-                for i in range(0, len(asin_info_array)):
-                    asin = asin_info_array[i]['asin']
-                    node_table = node + '_' + type
-                    status = amazondata.create_node_table(node_table)
-                    if status == True:
-                        # print("node_table create sucessfully + " + node_table, flush=True)
-                        status = amazondata.insert_node_data(node_table, asin_info_array[i])
-                        if status == True:
-                            # print("node_data inserted sucessfully.. + " + node_table, flush=True)
-                            if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] == 1 and is_sale:
-                                inventory_table = 'INVENTORY_' + asin
-                                status = amazondata.create_inventory_table(inventory_table)
-                                if status == True:
-                                    # print("inventory_table create sucessfully + " + inventory_table, flush=True)
-                                    cur_date = date.today()
-                                    data = {
-                                        'date' : cur_date,
-                                        'inventory' : inventory_array[i]['inventory']
-                                    }
-                                    status = amazondata.insert_inventory_data(inventory_table, data)
-                                    if status == True:
-                                        # print("inventory data insert sucessfully.. + " + inventory_table, flush=True)
-                                        condition = 'asin=\'' + asin + '\''
-                                        value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-                                        status = amazondata.update_data(node_table, 'inventory_date', value, condition)
-                                        if status == True:
-                                            # print("invetory_date update sucessfully.. + " + node_table, flush=True)
-                                            task_data = {
-                                                'node': node,
-                                                'status': 'ok',
-                                                'last_date': cur_date,
-                                                'node_name': node_name
-                                            }
-                                            status = insert_task_node('sale_task_us', task_data)
-                                            if status == False:
-                                                print("insert task node in failure... + " +  node, flush=True)
-                                            status = amazondata.get_yesterday_sale(inventory_table)
-                                            if status != -999:
-                                                # print("get_yesterday_sale sucessfully.. + " + inventory_table, flush=True)
-                                                yesterday = date.today() + timedelta(days=-1)
-                                                data = {
-                                                    'date' : yesterday,
-                                                    'sale' : copy.deepcopy(status)
-                                                }
-                                                sale_table = 'SALE_' + asin
-                                                status = amazondata.create_sale_table(sale_table)
-                                                if status == True:
-                                                    # print("sale_table create sucessfully.. + " + sale_table, flush=True)
-                                                    status = amazondata.insert_sale_data(sale_table, data)
-                                                    if status == True:
-                                                        # print("sale_data insert sucessfully... + " + sale_table, flush=True)
-                                                        avg_sale = amazondata.get_column_avg(sale_table, 'sale')
-                                                        if avg_sale != -999:
-                                                            status = amazondata.update_data(node_table, 'avg_sale', avg_sale, condition)
-                                                            if status == False:
-                                                                print("avg_sale update fail.. + " + node_table, flush=True)
-                                                            # else:
-                                                            #     print("avg_sale update successfully.. + " + node_table, flush=True)
-                                                        # else:
-                                                        #     print(" get avg_sale fail.. + " + node_table, flush=True)
-                                                    else:
-                                                        print("sale_data insert fail... + " + sale_table, flush=True)
-                                                else:
-                                                    print("sale_table create fail.. + " + sale_table, flush=True)
-                                        else:
-                                            print("invetory_date update fail.. + " + node_table, flush=True)
-                                    else:
-                                        print("inventory data insert fail.. + " + inventory_table, flush=True)
-                                else:
-                                    print("inventory_table create fail + " + inventory_table, flush=True)
-                            else:
-                                pass
-                                # print('Inventory Limited, no need to record...', flush=True)
-                        else:
-                            print("asin_info_data inserted fail.. + " + node_table, flush=True)
-                    else:
-                        print("node_table create fail + " + node_table, flush=True)
-
-                amazondata.disconnect_database()
-            else:
-                print("connect_database fail..", flush=True)
-
-        t2 = time.time()
-        print("总耗时：" + format(t2 - t1))
-
-        return status
-
-    def get_inventory_us(self, driver_upper, asin, ips_array, seller_name, is_sale):
+    def get_inventory_us(self, sqlmgr, driver_upper, asin, ips_array, seller_name, is_sale):
         if driver_upper == False:
             chrome_options = webdriver.ChromeOptions()
             prefs = {
@@ -1093,14 +838,14 @@ class AmazonSpider():
             driver = driver_upper
         status = False
         data = {
-            'shipping'  : 'FBM',
-            'seller'    : 0,
+            'shipping': 'FBM',
+            'seller': 0,
             'seller_name': '',
             'size': '',
             'weight': 0,
-            'qa'        : 0,
-            'inventory' : 0,
-            'limited'   : 'no'
+            'qa': 0,
+            'inventory': 0,
+            'limited': 'no'
         }
         try:
             url = 'https://www.amazon.com/dp/' + asin
@@ -1114,7 +859,7 @@ class AmazonSpider():
                 return False
 
             if driver.title == "Amazon CAPTCHA" or amazonasinpage.is_element_exsist(*LOGO) == False:
-                amazonwrapper.mark_unaccessible_ip('us', ip)
+                amazonwrapper.mark_unaccessible_ip(sqlmgr.ad_ip_info, ip)
                 status = -111
                 return -111
 
@@ -1355,7 +1100,7 @@ class AmazonSpider():
             print("Except: NoSuchElementException", flush=True)
         except TimeoutException as msg:
             print("Except: TimeoutException", flush=True)
-            amazonwrapper.mark_unaccessible_ip(country, ip)
+            amazonwrapper.mark_unaccessible_ip(sqlmgr.ad_ip_info, ip)
             status = -111
         except Exception as e:
             status = False
@@ -1367,7 +1112,7 @@ class AmazonSpider():
                 driver.quit()
             return status
 
-    def get_inventory_jp(self, driver_upper, asin, ips_array, is_sale):
+    def get_inventory_jp(self, sqlmgr, driver_upper, asin, ips_array, is_sale):
         if driver_upper == False:
             chrome_options = webdriver.ChromeOptions()
             prefs = {
@@ -1424,7 +1169,7 @@ class AmazonSpider():
                 return False
 
             if driver.title == "Amazon CAPTCHA" or amazonasinpage.is_element_exsist(*LOGO) == False:
-                amazonwrapper.mark_unaccessible_ip('jp', ip)
+                amazonwrapper.mark_unaccessible_ip(sqlmgr.ad_ip_info, ip)
                 status = -111
                 amazonasinpage.window_capture(asin + '-ip-block')
                 return -111
@@ -1553,7 +1298,7 @@ class AmazonSpider():
             print("Except: NoSuchElementException", flush=True)
         except TimeoutException as msg:
             print("Except: TimeoutException", flush=True)
-            amazonwrapper.mark_unaccessible_ip(country, ip)
+            amazonwrapper.mark_unaccessible_ip(sqlmgr.ad_ip_info, ip)
             status = -111
         except Exception as e:
             status = False
@@ -1565,8 +1310,8 @@ class AmazonSpider():
                 driver.quit()
             return status
 
-def amspider_from_file(node_file, type, country, is_sale, db_name):
-    ips_array = amazonwrapper.get_all_accessible_ip(country)
+def amspider_from_file(node_file, type, sqlmgr, is_sale, db_name):
+    ips_array = amazonwrapper.get_all_accessible_ip(sqlmgr.ad_ip_info)
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
@@ -1579,19 +1324,15 @@ def amspider_from_file(node_file, type, country, is_sale, db_name):
             if len(line.strip('\n')) > 0:
                 node = line.strip('\n')
                 print(node, flush=True)
-                node_name = False
-                if country == 'us':
-                    node_name = amazonwrapper.get_node_name_from_all('node_info_us', node, country)
-                elif country == 'jp':
-                    node_name = amazonwrapper.get_node_name_from_all('node_info', node, country)
+                node_name = amazonwrapper.get_node_name_from_all(sqlmgr.ad_node_info, node)
 
                 if node_name == False:
                     print("get node name in failure..", flush=True)
                     exit(-1)
-                if country == 'jp':
-                    amazonspider.jp_node_gather(db_name, node, node_name, type, 3, ips_array, is_sale)
-                elif country == 'us':
-                    amazonspider.us_node_gather(db_name, node, node_name, type, 2, ips_array, is_sale)
+                if sqlmgr.country == 'jp':
+                    amazonspider.jp_node_gather(sqlmgr, node, node_name, type, 3, ips_array, is_sale)
+                elif sqlmgr.country == 'us':
+                    amazonspider.us_node_gather(sqlmgr, node, node_name, type, 2, ips_array, is_sale)
 
                 t2 = time.time()
                 print("Total Time：" + format(t2 - t1), flush=True)
@@ -1605,51 +1346,50 @@ def amspider_from_file(node_file, type, country, is_sale, db_name):
     except Exception as e:
         print(str(e), flush=True)
 
-def amspider_from_mysql(db_name, table, condition, type, country, is_sale):
-    ips_array = amazonwrapper.get_all_accessible_ip(country)
+def amspider_from_mysql(sqlmgr, table, condition, type, is_sale):
+    ips_array = amazonwrapper.get_all_accessible_ip(sqlmgr.ad_ip_info)
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
+
     amazonspider = AmazonSpider()
+
     try:
         condition = condition + ' and status<>\'ok\' and status<>\'err\' and status<>\'run\''
-        node_info = amazonwrapper.get_one_data(db_name, table, condition)
+        node_info = amazonwrapper.get_one_data(sqlmgr.ad_sale_task, table, condition)
         while node_info != False:
-            t1 = time.time()
             node = node_info[0]
             node_name = node_info[1]
             sql_condition = 'node=' + '\'' + node + '\''
-            status = amazonwrapper.update_data(db_name, table, 'status', '\'run\'', sql_condition)
+            status = amazonwrapper.update_data(sqlmgr.ad_sale_task, table, 'status', '\'run\'', sql_condition)
             if status != False:
-                if amazonwrapper.is_in_task_delete_data(country, node) == False:
-                    if country == 'jp':
-                        status = amazonspider.jp_node_gather(amazonglobal.db_name_data_jp, node, node_name, type, 1, ips_array, is_sale)
-                    elif country == 'us':
-                        status = amazonspider.us_node_gather(amazonglobal.db_name_data_us, node, node_name, type, 2, ips_array, is_sale)
+                if amazonwrapper.is_in_task_delete_data(sqlmgr.ad_sale_task, node) == False:
+                    if sqlmgr.country == 'jp':
+                        status = amazonspider.jp_node_gather(sqlmgr, node, node_name, type, 1, ips_array, is_sale)
+                    elif sqlmgr.country == 'us':
+                        status = amazonspider.us_node_gather(sqlmgr, node, node_name, type, 2, ips_array, is_sale)
                     if status != False and status != -111:
-                        status = amazonwrapper.update_data(db_name, table, 'status', '\'ok\'', sql_condition)
+                        status = amazonwrapper.update_data(sqlmgr.ad_sale_task, table, 'status', '\'ok\'', sql_condition)
                         if status != False:
                             print("amspider finish " + node, flush=True)
                     elif status == False:
-                        status = amazonwrapper.update_data(db_name, table, 'status', '\'err\'', sql_condition)
+                        status = amazonwrapper.update_data(sqlmgr.ad_sale_task, table, 'status', '\'err\'', sql_condition)
                     elif status == -111:
-                        status = amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
+                        status = amazonwrapper.update_data(sqlmgr.ad_sale_task, table, 'status', '\'no\'', sql_condition)
 
-            node_info = amazonwrapper.get_one_data(db_name, table, condition)
-            # t2 = time.time()
-            # print("Total Time：" + format(t2 - t1), flush=True)
-    except Exception as e:
+            node_info = amazonwrapper.get_one_data(sqlmgr.ad_sale_task, table, condition)
+    except Exception:
         print(traceback.format_exc(), flush=True)
-        amazonwrapper.update_data(db_name, table, 'status', '\'no\'', sql_condition)
+        amazonwrapper.update_data(sqlmgr.ad_sale_task, table, 'status', '\'no\'', sql_condition)
 
-def amspider_test(country):
-    ips_array = amazonwrapper.get_all_accessible_ip(country)
+def amspider_test(sqlmgr):
+    ips_array = amazonwrapper.get_all_accessible_ip(sqlmgr.ad_ip_info)
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
     amazonspider = AmazonSpider()
     try:
-        status = amazonspider.get_inventory_us(False, 'B01MDUQRSO', ips_array, 'Nekteck Direct', True)
+        status = amazonspider.get_inventory_us(sqlmgr, False, 'B01MDUQRSO', ips_array, 'Nekteck Direct', True)
     except Exception as e:
         print(str(e), flush=True)
 
@@ -1659,18 +1399,23 @@ if __name__ == "__main__":
     # amspider_test('us')
     # exit()
     node_file = sys.argv[1]
+    type = sys.argv[2]
+    country = sys.argv[3]
+
+    sqlmgr = SqlMgr(country)
+    if sqlmgr.start() == False:
+        print("SqlMgr initialized in failure", flush=True)
+        exit()
+
     if node_file != '0':
-        type = sys.argv[2]
-        country = sys.argv[3]
         if sys.argv[4] == '1':
             is_sale = True
         elif sys.argv[4] == '0':
             is_sale = False
         db_name = sys.argv[5]
-        amspider_from_file(node_file, type, country, is_sale, db_name)
+        amspider_from_file(node_file, type, sqlmgr, is_sale, db_name)
     else: # python3.6 amspider.py 0 BS us 1 node_info_us automotive node=\'10350150011\'
-        type = sys.argv[2]
-        country = sys.argv[3]
+
         if sys.argv[4] == '1':
             is_sale = True
         elif sys.argv[4] == '0':
@@ -1678,6 +1423,8 @@ if __name__ == "__main__":
         db_name = sys.argv[5]
         table = sys.argv[6]
         condition = sys.argv[7]
-        # print(condition, flush=True)
-        amspider_from_mysql(db_name, table, condition, type, country, is_sale)
+
+        amspider_from_mysql(sqlmgr, table, condition, type, is_sale)
+
+        sqlmgr.stop()
 

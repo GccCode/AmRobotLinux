@@ -6,9 +6,11 @@ from datetime import *
 
 
 class AmazonData():
-    def __init__(self):
+    def __init__(self, country):
         self.amsql = AmazonSql("login.info")
         self.db = None
+        self.country = country
+        self.db_name = ''
 
     def create_database(self, db_name):
         status = True
@@ -30,6 +32,7 @@ class AmazonData():
             status = False
         else:
             self.db = db
+            self.db_name = db_name
 
         return status
 
