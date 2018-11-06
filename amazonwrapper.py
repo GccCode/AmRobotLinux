@@ -30,22 +30,20 @@ xls_file_array_jp = ['apparel',
                   'toys',
                   'health']
 
-# xls_file_array_us = ['automotive',
-#                   'baby',
-#                   'beauty',
-#                   'cell_phones',
-#                   'electronics',
-#                   'fashion',
-#                   'garden',
-#                   'home_improvement',
-#                   'pet_supplies',
-#                   'home_kitchen',
-#                   'office_products',
-#                   'sporting_goods',
-#                   'toys_games',
-#                   'health']
-
-xls_file_array_us = ['health']
+xls_file_array_us = ['automotive',
+                  'baby',
+                  'beauty',
+                  'cell_phones',
+                  'electronics',
+                  'fashion',
+                  'garden',
+                  'home_improvement',
+                  'pet_supplies',
+                  'home_kitchen',
+                  'office_products',
+                  'sporting_goods',
+                  'toys_games',
+                  'health']
 
 
 '''获取当前日期前后N天或N月的日期'''
