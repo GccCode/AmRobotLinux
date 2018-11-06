@@ -139,10 +139,6 @@ class AmazonGUI():
 
             self.create_sale_inventory_page(sqlmgr, asin)
 
-            if country == 'jp':
-                db_name_sale = amazonglobal.db_name_data_jp
-            elif country == 'us':
-                db_name_sale = amazonglobal.db_name_data_us
             if check_err == '0':
                 limited = data[index][11]
             elif check_err == '1':
@@ -193,7 +189,7 @@ class AmazonGUI():
 
         return maindiv
 
-    def create_page_together(self, sqlmgr, table_array, country, avg_sale, price, type, css_file, output, check_err):
+    def create_page_together(self, sqlmgr, table_array, avg_sale, price, type, css_file, output, check_err):
         page_name = "Potential Product"
         mainpage = PyH(page_name)
         mainpage.addCSS(css_file)
@@ -351,9 +347,9 @@ if __name__ == "__main__":
                         amazongui.create_page(sqlmgr, node[0], node[0], 'BS', 'amazongui.css', data, '../html_page_jp/', check_err)
     elif task_type == 'total':
         if country == 'us':
-            amazongui.create_page_together(sqlmgr, table_array, country, avg_sale, price, 'BS', 'amazongui.css', '../html_page/', check_err)
+            amazongui.create_page_together(sqlmgr, table_array, avg_sale, price, 'BS', 'amazongui.css', '../html_page/', check_err)
         elif country == 'jp':
-            amazongui.create_page_together(sqlmgr, table_array, country, avg_sale, price, 'BS', 'amazongui.css', '../html_page_jp/', check_err)
+            amazongui.create_page_together(sqlmgr, table_array, avg_sale, price, 'BS', 'amazongui.css', '../html_page_jp/', check_err)
 
 
     sqlmgr.stop()
