@@ -809,6 +809,28 @@ def update_all_rank_task_date_status(date, sqlmgr):
         sqlmgr.ad_rank_task.update_data(task_table, 'last_date', '\'' + date + '\'', condition)
         sqlmgr.ad_rank_task.update_data(task_table, 'status', '\'' + 'ok' + '\'', condition)
 
+def count_pending_asin(sqlmgr, top_tpye):
+    count = 0
+    if sqlmgr.country == 'us':
+        table_sale_task = amazonglobal.table_sale_task_us
+    elif sqlmgr.country == 'jp':
+        table_sale_task = amazonglobal.table_sale_task_jp
+    sale_task_array = get_all_data(sqlmgr.ad_sale_task, table_sale_task, 'node', False)
+    if sale_task_array is False:
+        print("get all data in failure " + table_sale_task, flush=True)
+    else:
+        for index in range(len(sale_task_array)):
+            node = sale_task_array[index][0]
+            node_table_name = node + '_' + top_tpye
+            condition = 'limited<>\'yes\' and status=\'ok\''
+            pending_asin_array = get_all_data(sqlmgr.ad_sale_data, node_table_name, 'asin', condition)
+            if pending_asin_array is False:
+                print("get all data in failure " + node_table_name, flush=True)
+            else:
+                count += len(pending_asin_array)
+
+    print("Total Pending Asins is " + str(count), flush=True)
+
 
 # SELECT CREATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='amazondata' AND TABLE_NAME='INVENTORY_B07GYTTF8B';
 if __name__ == "__main__":
@@ -844,12 +866,14 @@ if __name__ == "__main__":
     # delete_sale_task('us', 'task_delete.txt')
     # print(get_days_array_of_day(7, -1), flush=True)
     # print(get_days_array_of_day(2, 1), flush=True)
-    delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=15 and limited = \'no\'')
+
     # add_new_column('data_us', '_BS', 'seller_name', 'seller_name CHAR(20) NOT NULL default \'\'')
     # add_new_column('data_us', '_BS', 'size', 'size CHAR(30) NOT NULL default \'\'')
     # add_new_column('data_us', '_BS', 'weight', 'weight FLOAT(10) NOT NULL default 0')
     # seller_name = get_one_data(amazonglobal.db_name_data_us, '9977442011_BS', 'asin=' + '\'' + 'B01EHSX28M' + '\'')
     # print(seller_name[16], flush=True)
-    delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>10 and limited=\'no\'')
+    # delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=15 and limited = \'no\'')
+    # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>10 and limited=\'no\'')
+    count_pending_asin(sqlmgr, 'BS')
 
     sqlmgr.stop()

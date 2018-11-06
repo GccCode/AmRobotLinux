@@ -217,8 +217,8 @@ class AmazonGUI():
         filename = output + page_name + '.html'
         mainpage.printOut(filename)
 
-    def create_page(self, country, node, node_name, type, css_file, data, output, check_err):
-        page_name =  node_name.split('/')[len(node_name.split('/')) - 1]
+    def create_page(self, sqlmgr, node, node_name, type, css_file, data, output, check_err):
+        page_name = node_name.split('/')[len(node_name.split('/')) - 1]
         mainpage = PyH(page_name)
         mainpage.addCSS(css_file)
         maindiv = div()
@@ -239,7 +239,7 @@ class AmazonGUI():
         maindiv << maintitle
         info_table = table(cellspacing='1')
         maindiv << info_table
-        head_row =  tr()
+        head_row = tr()
         thead_row = thead()
         thead_row << head_row
         info_table << thead_row
@@ -263,14 +263,10 @@ class AmazonGUI():
             seller = data[index][8]
             avg_sale = data[index][9]
 
-            if country == 'jp':
-                db_name_sale = amazonglobal.db_name_data_jp
-            elif country == 'us':
-                db_name_sale = amazonglobal.db_name_data_us
             if check_err == '0':
                 limited = data[index][11]
             elif check_err == '1':
-                sale_data_array = get_all_data(db_name_sale, 'SALE_' + asin, 'sale', False)
+                sale_data_array = get_all_data(sqlmgr.ad_sale_data, 'SALE_' + asin, 'sale', False)
                 err_value = self.get_unexpected_err(sale_data_array)
                 err_count = self.check_unexpected_err(sale_data_array, err_value)
                 check_status = str(((err_value[1] + err_value[0])/2)) + '_' + str(err_count)
@@ -344,15 +340,15 @@ if __name__ == "__main__":
                     if node_name != False:
                         print(node_name.replace(' & ', '_'), flush=True)
                         if country == 'us':
-                            amazongui.create_page(country, node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page/', check_err)
+                            amazongui.create_page(sqlmgr, node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page/', check_err)
                         elif country == 'jp':
-                            amazongui.create_page(country, node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page_jp/', check_err)
+                            amazongui.create_page(sqlmgr, node[0], node_name.replace(' & ', '_'), 'BS', 'amazongui.css', data, '../html_page_jp/', check_err)
 
                 else:
                     if country == 'us':
-                        amazongui.create_page(country, node[0], node[0], 'BS', 'amazongui.css', data, '../html_page/', check_err)
+                        amazongui.create_page(sqlmgr, node[0], node[0], 'BS', 'amazongui.css', data, '../html_page/', check_err)
                     elif country == 'jp':
-                        amazongui.create_page(country, node[0], node[0], 'BS', 'amazongui.css', data, '../html_page_jp/', check_err)
+                        amazongui.create_page(sqlmgr, node[0], node[0], 'BS', 'amazongui.css', data, '../html_page_jp/', check_err)
     elif task_type == 'total':
         if country == 'us':
             amazongui.create_page_together(sqlmgr, table_array, country, avg_sale, price, 'BS', 'amazongui.css', '../html_page/', check_err)
