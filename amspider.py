@@ -502,7 +502,7 @@ class AmazonSpider():
                                                 'last_date': cur_date,
                                                 'node_name': node_name
                                             }
-                                            status = insert_task_node(sqlmgr.ad_sale_data, amazonglobal.table_sale_task_jp, task_data)
+                                            status = insert_task_node(sqlmgr.ad_sale_task, amazonglobal.table_sale_task_jp, task_data)
                                             if status == False:
                                                 print("insert task node in failure... + " +  node, flush=True)
                                             status = sqlmgr.ad_sale_data.get_yesterday_sale(inventory_table)
@@ -766,7 +766,7 @@ class AmazonSpider():
                                             'last_date': cur_date,
                                             'node_name': node_name
                                         }
-                                        status = insert_task_node(sqlmgr.ad_sale_data, amazonglobal.table_sale_task_us, task_data)
+                                        status = insert_task_node(sqlmgr.ad_sale_task, amazonglobal.table_sale_task_us, task_data)
                                         if status == False:
                                             print("insert task node in failure... + " + node, flush=True)
                                         status = sqlmgr.ad_sale_data.get_yesterday_sale(inventory_table)
@@ -1376,6 +1376,8 @@ def amspider_from_mysql(sqlmgr, table, condition, type, is_sale):
                         status = amazonwrapper.update_data(sqlmgr.ad_node_info, table, 'status', '\'err\'', sql_condition)
                     elif status == -111:
                         status = amazonwrapper.update_data(sqlmgr.ad_node_info, table, 'status', '\'no\'', sql_condition)
+                else:
+                    status = amazonwrapper.update_data(sqlmgr.ad_node_info, table, 'status', '\'ok\'', sql_condition)
 
             node_info = amazonwrapper.get_one_data(sqlmgr.ad_node_info, table, condition)
     except Exception:
