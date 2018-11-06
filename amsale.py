@@ -299,10 +299,11 @@ if __name__ == "__main__":
 
     elif task == 'fix':
         only_token = sys.argv[3]
+        err_sale_value = sys.argv[4]
         today = date.today()
         yesterday = date.today() + timedelta(days=-1)
         if only_token == '0':
-            amazonwrapper.update_all_task_date_status(sqlmgr, yesterday.strftime("%Y-%m-%d"))
+            amazonwrapper.update_all_task_date_status(sqlmgr, yesterday.strftime("%Y-%m-%d"), err_sale_value)
         if is_token_runout(sqlmgr.ad_token):
             status = update_token_count(sqlmgr.ad_token)
             if status == False:

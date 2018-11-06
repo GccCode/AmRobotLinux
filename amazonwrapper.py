@@ -30,20 +30,22 @@ xls_file_array_jp = ['apparel',
                   'toys',
                   'health']
 
-xls_file_array_us = ['automotive',
-                  'baby',
-                  'beauty',
-                  'cell_phones',
-                  'electronics',
-                  'fashion',
-                  'garden',
-                  'home_improvement',
-                  'pet_supplies',
-                  'home_kitchen',
-                  'office_products',
-                  'sporting_goods',
-                  'toys_games',
-                  'health']
+# xls_file_array_us = ['automotive',
+#                   'baby',
+#                   'beauty',
+#                   'cell_phones',
+#                   'electronics',
+#                   'fashion',
+#                   'garden',
+#                   'home_improvement',
+#                   'pet_supplies',
+#                   'home_kitchen',
+#                   'office_products',
+#                   'sporting_goods',
+#                   'toys_games',
+#                   'health']
+
+xls_file_array_us = ['health']
 
 
 '''获取当前日期前后N天或N月的日期'''
@@ -760,13 +762,19 @@ def update_asin_date(amazondata, node):
                     amazondata.update_data(node + '_BS', 'inventory_date', '\'' + yesterday.strftime("%Y-%m-%d") + '\'', condition)
 
 
-def fix_asin_sale(amazondata, node):
+def fix_asin_sale(amazondata, node, err_sale_value):
     condition = 'avg_sale>0'
     asin_array = get_all_data(amazondata, (node + '_BS'), 'asin', condition)
     if asin_array != False:
         for index in range(len(asin_array)):
             sale_table_name = 'SALE_' + asin_array[index][0]
-            amazondata.update_data(sale_table_name, 'sale', 0, 'sale>200')
+            amazondata.update_data(sale_table_name, 'sale', 0, 'sale>' + err_sale_value)
+            avg_sale = amazondata.get_column_avg(sale_table_name, 'sale')
+            if avg_sale is False:
+                print("get column avg in failure..", flush=True)
+            else:
+                condition = 'asin=\'' + asin_array[index][0] + '\''
+                amazondata.update_data(node + '_BS', 'avg_sale', int(avg_sale), condition)
 
 
 def update_all_task_status(amazondata, table, country):
@@ -779,7 +787,7 @@ def update_all_task_status(amazondata, table, country):
             update_asin_status_ok(amazondata, node_array[index][0])
 
 
-def update_all_task_date_status(sqlmgr, date):
+def update_all_task_date_status(sqlmgr, date, err_sale_value):
     if sqlmgr.country == 'jp':
         task_table = amazonglobal.table_sale_task_jp
     elif sqlmgr.country == 'us':
@@ -793,7 +801,7 @@ def update_all_task_date_status(sqlmgr, date):
         sqlmgr.ad_sale_task.update_data(task_table, 'status', '\'' + 'ok' + '\'', condition)
         update_asin_status_ok(sqlmgr.ad_sale_data, node_array[index][0])
         update_asin_date(sqlmgr.ad_sale_data, node_array[index][0])
-        fix_asin_sale(sqlmgr.ad_sale_data, node_array[index][0])
+        fix_asin_sale(sqlmgr.ad_sale_data, node_array[index][0], err_sale_value)
 
 
 def update_all_rank_task_date_status(date, sqlmgr):
@@ -822,7 +830,7 @@ def count_pending_asin(sqlmgr, top_tpye):
         for index in range(len(sale_task_array)):
             node = sale_task_array[index][0]
             node_table_name = node + '_' + top_tpye
-            condition = 'limited<>\'yes\' and status<>\'no\' and seller<=4'
+            condition = 'limited<>\'yes\' and status<>\'no\' and seller<=4 and price > 12'
             pending_asin_array = get_all_data(sqlmgr.ad_sale_data, node_table_name, 'asin', condition)
             if pending_asin_array is False:
                 print("get all data in failure " + node_table_name, flush=True)
@@ -851,13 +859,9 @@ if __name__ == "__main__":
     # insert_all_node_info()
     # insert_all_ip_info('../myproxy.txt')
     # update_all_task_status()
-    # print(get_ramdon_accessible_ip()) 196.16.109.149:8000
-    # mark_unaccessible_ip('196.16.109.149:8000')
-    # fix_all_unaccessible_ip('../fix_ip.txt')
-    # average_all_task()
     # get_all_node_name()
     # update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
-    # insert_all_node_info(xls_file_array_us)
+    # insert_all_node_info(sqlmgr.ad_node_info, xls_file_array_us)
     # delete_column('node_info_us', 'sporting_goods', 'status')
     # add_new_column('node_info_us', 'sporting_goods', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
     # delete_column('node_info_us', 'automotive', 'status')
