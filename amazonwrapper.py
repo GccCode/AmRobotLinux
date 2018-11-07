@@ -891,7 +891,7 @@ if __name__ == "__main__":
     # print(seller_name[16], flush=True)
     # delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=15 and limited = \'no\'')
     # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>10 and limited=\'no\'')
-    # count_pending_asin(sqlmgr, 'BS')
-    copy_table_data(sqlmgr.ad_sale_data, sqlmgr.ad_sale_task)
+    count_pending_asin(sqlmgr, 'BS')
+    # copy_table_data(sqlmgr.ad_sale_data, sqlmgr.ad_sale_task)
 
     sqlmgr.stop()
