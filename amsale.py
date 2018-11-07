@@ -199,7 +199,7 @@ def amsale_from_mysql(sqlmgr, node_type):
                                             if data['inventory'] == 0:
                                                 inventory_value = 1
                                             else:
-                                                inventory_table = data['inventory']
+                                                inventory_value = data['inventory']
                                             if (yesterday_inventory / inventory_value) > 10:
                                                 print("get inventory may error.. yesterday " + str(yesterday_inventory) + ' today ' + str(data['inventory']), flush=True)
                                                 status = update_asin_status_err(sqlmgr.ad_sale_data, node, asin)
