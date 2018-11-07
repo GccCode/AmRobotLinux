@@ -215,18 +215,17 @@ class AmazonGUI():
             head_row << th('评分') + th('QA') + th('物流') + th('卖家数') + th('平均日销量') + th('尺寸')
         tbody_row = tbody()
         info_table << tbody_row
+        count = 0
         for index in range(len(data)):
             tmp_tr = tr()
             rank = data[index][0]
             asin = data[index][1]
             if asin_maps.get(asin) is not False:
                 asin_maps.add_repeat_find()
-                if len(data) == 1:
-                    break
-                else:
-                    continue
+                continue
             else:
                 asin_maps.add(asin, asin_maps.num)
+                count += 1
             img_src = data[index][12]
             price = data[index][3]
             review  = data[index][4]
@@ -286,6 +285,8 @@ class AmazonGUI():
 
             tbody_row << tmp_tr
 
+        if count == 0:
+            maindiv = False
         return maindiv
 
     def create_page_together(self, sqlmgr, table_array, avg_sale, price, type, css_file, output, check_err):
@@ -308,7 +309,8 @@ class AmazonGUI():
                         node_name = node[0]
 
                     maindiv = self.collect_page_together(sqlmgr, asin_maps, node[0], node_name, type, data, check_err)
-                    mainpage << maindiv
+                    if maindiv is not False:
+                        mainpage << maindiv
                     count += len(data)
             else:
                 continue
