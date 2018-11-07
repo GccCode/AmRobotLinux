@@ -221,7 +221,10 @@ class AmazonGUI():
             asin = data[index][1]
             if asin_maps.get(asin) is not False:
                 asin_maps.add_repeat_find()
-                continue
+                if len(data) == 1:
+                    break
+                else:
+                    continue
             else:
                 asin_maps.add(asin, asin_maps.num)
             img_src = data[index][12]
