@@ -590,7 +590,7 @@ def update_data(amazondata, table, key, value, condition):
 
 def add_new_column(amazondata, condition, column_name, column):
     table_array = get_all_table(amazondata, condition)
-    if table_array is False:
+    if table_array is not False:
         count = 0
         for table in table_array:
             status = amazondata.add_column(amazondata.db_name, table, column_name, column)
@@ -838,6 +838,15 @@ def count_pending_asin(sqlmgr, top_tpye):
     print("Total Pending Asins is " + str(count), flush=True)
 
 
+def copy_table_data(from_amazondata, to_amazondata):
+    data_array = get_all_data(from_amazondata, 'sale_task_us', False, False)
+    if data_array is not False:
+        for data in data_array:
+            status = to_amazondata.insert_task_data('sale_task_test', data)
+            if status is False:
+                print("xxx")
+
+
 # SELECT CREATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='amazondata' AND TABLE_NAME='INVENTORY_B07GYTTF8B';
 if __name__ == "__main__":
     sqlmgr = SqlMgr('us')
@@ -861,7 +870,7 @@ if __name__ == "__main__":
     # update_click_data('amkiller', 'tree swing', 'B0746QS8T2')
     # insert_all_node_info(sqlmgr.ad_node_info, xls_file_array_us)
     # delete_column('node_info_us', 'sporting_goods', 'status')
-    # add_new_column('node_info_us', 'sporting_goods', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
+    # add_new_column(sqlmgr.ad_node_info, 'health', 'status', 'status VARCHAR(5) default \'no\' check(status in(\'no\', \'run\', \'yes\', \'err\'))')
     # delete_column('node_info_us', 'automotive', 'status')
     # update_all_task_status('amazontask', 'sale_task_us', 'us')
     # get_one_data('node_info_us', 'automotive', False)
@@ -876,6 +885,7 @@ if __name__ == "__main__":
     # print(seller_name[16], flush=True)
     # delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=15 and limited = \'no\'')
     # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>10 and limited=\'no\'')
-    count_pending_asin(sqlmgr, 'BS')
+    # count_pending_asin(sqlmgr, 'BS')
+    copy_table_data(sqlmgr.ad_sale_data, sqlmgr.ad_sale_task)
 
     sqlmgr.stop()
