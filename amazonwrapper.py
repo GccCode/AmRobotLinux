@@ -848,7 +848,7 @@ def copy_table_data(from_amazondata, to_amazondata):
                 'last_date': data[2],
                 'node_name':data[3]
             }
-            status = to_amazondata.insert_task_data('sale_task_test', data)
+            status = to_amazondata.insert_task_data('sale_task_test', task_data)
             if status is False:
                 print("xxx")
 
