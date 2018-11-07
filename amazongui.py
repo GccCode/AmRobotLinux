@@ -70,9 +70,13 @@ class HashMap(object):
         # 初始化总表为，容量为2的表格（含两个子表）
         self.maps = BetterMap(2)
         self.num = 0  # 表中数据个数
+        self.repeat_find = 0
 
     def get(self, k):
         return self.maps.get(k)
+
+    def add_repeat_find(self):
+        self.repeat_find += 1
 
     def add(self, k, v):
         # 若当前元素数量达到临界值（子表总数）时，进行重排操作
@@ -216,7 +220,6 @@ class AmazonGUI():
             rank = data[index][0]
             asin = data[index][1]
             if asin_maps.get(asin) is not False:
-                print("repeat " + asin, flush=True)
                 continue
             else:
                 asin_maps.add(asin, asin_maps.num)
@@ -286,7 +289,7 @@ class AmazonGUI():
         mainpage = PyH(page_name)
         mainpage.addCSS(css_file)
         asin_maps = HashMap()
-        start_index = 0
+        count = 0
         for node in table_array:
             if is_in_task_delete_data(sqlmgr.ad_sale_task, node[0]) == False:
                 table_name = node[0] + '_BS'
@@ -302,11 +305,12 @@ class AmazonGUI():
 
                     maindiv = self.collect_page_together(sqlmgr, asin_maps, node[0], node_name, type, data, check_err)
                     mainpage << maindiv
-                    start_index += len(data)
+                    count += len(data)
             else:
                 continue
         filename = output + page_name + '.html'
         mainpage.printOut(filename)
+        print("Total - Repeat: " + str(count) + ' - ' + str(asin_maps.repeat_find), flush=True)
 
     def create_page(self, sqlmgr, node, node_name, type, css_file, data, output, check_err):
         page_name = node_name.split('/')[len(node_name.split('/')) - 1]
