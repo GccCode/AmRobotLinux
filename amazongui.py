@@ -220,6 +220,7 @@ class AmazonGUI():
             rank = data[index][0]
             asin = data[index][1]
             if asin_maps.get(asin) is not False:
+                asin_maps.add_repeat_find()
                 continue
             else:
                 asin_maps.add(asin, asin_maps.num)
