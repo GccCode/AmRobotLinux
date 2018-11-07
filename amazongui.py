@@ -9,6 +9,93 @@ import pandas as pd
 from pyecharts import Overlap, Bar, Line, Grid
 from sqlmgr import SqlMgr
 
+""" 
+线性表结构
+"""
+
+
+class LinearMap(object):
+
+    def __init__(self):
+        self.items = []
+
+    # 往表中添加元素
+    def add(self, k, v):
+        self.items.append((k, v))
+
+    # 线性方式查找元素
+    def get(self, k):
+        for key, value in self.items:
+            if key == k:  # 键存在，返回值，否则抛出异常
+                return value
+        return False
+
+
+'''
+我们可以在使用add添加元素时让items列表保持有序，而在使用get时采取二分查找方式，时间复杂度为O(log n)。 
+然而往列表中插入一个新元素实际上是一个线性操作，所以这种方法并非最好的方法。
+同时，我们仍然没有达到常数查找时间的要求。
+'''
+
+'''
+将总查询表分割为若干段较小的列表，比如100个子段。
+通过hash函数求出某个键的哈希值，再通过计算，得到往哪个子段中添加或查找。
+相对于从头开始搜索列表，时间会极大的缩短。
+'''
+
+
+class BetterMap(object):
+    # 利用LinearMap对象作为子表，建立更快的查询表
+    def __init__(self, n=100):
+        self.maps = []  # 总表格
+        for i in range(n):  # 根据n的大小建立n个空的子表
+            self.maps.append(LinearMap())
+
+    def find_map(self, k):  # 通过hash函数计算索引值
+        index = hash(k) % len(self.maps)
+        return self.maps[index]  # 返回索引子表的引用
+
+    # 寻找合适的子表（linearMap对象）,进行添加和查找
+    def add(self, k, v):
+        m = self.find_map(k)
+        m.add(k, v)
+
+    def get(self, k):
+        m = self.find_map(k)
+        return m.get(k)
+
+
+class HashMap(object):
+    def __init__(self):
+        # 初始化总表为，容量为2的表格（含两个子表）
+        self.maps = BetterMap(2)
+        self.num = 0  # 表中数据个数
+
+    def get(self, k):
+        return self.maps.get(k)
+
+    def add(self, k, v):
+        # 若当前元素数量达到临界值（子表总数）时，进行重排操作
+        # 对总表进行扩张，增加子表的个数为当前元素个数的两倍！
+        if self.num == len(self.maps.maps):
+            self.resize()
+
+        # 往重排过后的 self.map 添加新的元素
+        self.maps.add(k, v)
+        self.num += 1
+
+    def resize(self):
+        # 重排操作，添加新表, 注意重排需要线性的时间
+        # 先建立一个新的表,子表数 = 2 * 元素个数
+        new_maps = BetterMap(self.num * 2)
+
+        for m in self.maps.maps:  # 检索每个旧的子表
+            for k, v in m.items:  # 将子表的元素复制到新子表
+                new_maps.add(k, v)
+
+        self.maps = new_maps  # 令当前的表为新表
+
+
 class AmazonGUI():
     def __init__(self):
         pass
@@ -95,7 +182,7 @@ class AmazonGUI():
         grid.render(filename)
 
 
-    def collect_page_together(self, sqlmgr, node, node_name, type, data, check_err):
+    def collect_page_together(self, sqlmgr, asin_maps, node, node_name, type, data, check_err):
         maindiv = div()
         if country == 'jp':
             if type == 'BS':
@@ -128,6 +215,10 @@ class AmazonGUI():
             tmp_tr = tr()
             rank = data[index][0]
             asin = data[index][1]
+            if asin_maps.get(asin) is not False:
+                continue
+            else:
+                asin_maps.add(asin, asin_maps.num)
             img_src = data[index][12]
             price = data[index][3]
             review  = data[index][4]
@@ -193,6 +284,8 @@ class AmazonGUI():
         page_name = "Potential Product"
         mainpage = PyH(page_name)
         mainpage.addCSS(css_file)
+        asin_maps = HashMap()
+        start_index = 0
         for node in table_array:
             if is_in_task_delete_data(sqlmgr.ad_sale_task, node[0]) == False:
                 table_name = node[0] + '_BS'
@@ -206,8 +299,9 @@ class AmazonGUI():
                     else:
                         node_name = node[0]
 
-                    maindiv = self.collect_page_together(sqlmgr, node[0], node_name, type, data, check_err)
+                    maindiv = self.collect_page_together(sqlmgr, asin_maps, node[0], node_name, type, data, check_err)
                     mainpage << maindiv
+                    start_index += len(data)
             else:
                 continue
         filename = output + page_name + '.html'
