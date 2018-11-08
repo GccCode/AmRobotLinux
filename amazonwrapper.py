@@ -651,6 +651,7 @@ def delete_unused_tables(amazondata, table_name_condition, condition):
         sql = 'SHOW TABLES'
     else:
         sql = 'SHOW TABLES LIKE ' + table_name_condition # '\'%\_BS\''
+    count = 0
     cursor = amazondata.query(sql)
     if cursor != False:
         result = cursor.fetchall()
@@ -668,13 +669,16 @@ def delete_unused_tables(amazondata, table_name_condition, condition):
                             sql = 'drop table ' + 'INVENTORY_' + asin_array[i][0]
                             print(sql, flush=True)
                             # amazondata.query(sql)
+                            count += 2
 
                     delete_sql = 'drop table ' + result[index][0]
                     print(delete_sql, flush=True)
+                    count += 1
                     # amazondata.query(delete_sql)
     else:
         print("get all table in failure.. + " + amazondata.db_name, flush=True)
 
+    print(count, flush=True)
     return False
 
 
