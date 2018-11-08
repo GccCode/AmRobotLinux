@@ -298,8 +298,7 @@ class AmazonGUI():
         for node in table_array:
             if is_in_task_delete_data(sqlmgr.ad_sale_task, node[0]) == False:
                 table_name = node[0] + '_BS'
-                print(table_name, flush=True)
-                condition = 'limited=\'no\' and avg_sale>=' + avg_sale + ' and price>=' + price
+                condition = 'limited=\'no\' and avg_sale>' + avg_sale + ' and price>=' + price
                 data = get_all_data(sqlmgr.ad_sale_data, table_name, False, condition)
                 if data != False:
                     if isDigit(node[0]):
@@ -308,6 +307,10 @@ class AmazonGUI():
                             print("get node name in failure.", flush=True)
                     else:
                         node_name = node[0]
+
+                    if table_name == '':
+                        print(table_name, flush=True)
+                        print(condition, flush=True)
 
                     maindiv = self.collect_page_together(sqlmgr, asin_maps, node[0], node_name, type, data, check_err)
                     if maindiv is not False:
