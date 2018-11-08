@@ -298,6 +298,7 @@ class AmazonGUI():
         for node in table_array:
             if is_in_task_delete_data(sqlmgr.ad_sale_task, node[0]) == False:
                 table_name = node[0] + '_BS'
+                print(table_name, flush=True)
                 condition = 'limited=\'no\' and avg_sale>=' + avg_sale + ' and price>=' + price
                 data = get_all_data(sqlmgr.ad_sale_data, table_name, False, condition)
                 if data != False:
