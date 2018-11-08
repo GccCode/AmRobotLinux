@@ -827,10 +827,10 @@ def gather_sale_asin(sqlmgr):
 
 def is_sale_asin(sqlmgr, asin):
     if sqlmgr.country == 'us':
-        table_sale_task = amazonglobal.table_sale_task_us
+        table_sale_asin = amazonglobal.table_sale_asin_us
     elif sqlmgr.country == 'jp':
-        table_sale_task = amazonglobal.table_sale_task_jp
-    sql = 'select * from ' + table_sale_task + ' where asin=\'' + asin + '\''
+        table_sale_asin = amazonglobal.table_sale_asin_jp
+    sql = 'select * from ' + table_sale_asin + ' where asin=\'' + asin + '\''
     cursor = sqlmgr.ad_sale_task.query(sql)
     if cursor != False:
         if cursor.rowcount > 0:
