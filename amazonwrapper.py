@@ -659,7 +659,7 @@ def delete_unused_tables(amazondata, table_name_condition, condition):
             if is_table_expired(amazondata, table_name, 4):
                 data = get_all_data(amazondata, table_name, False, condition)
                 if data == False:
-                    asin_array = get_all_data(amazondata, table_name, 'asin', False)
+                    asin_array = get_all_data(amazondata, table_name, 'asin', 'limited=\'no\'')
                     if asin_array is not False:
                         for i in range(len(asin_array)):
                             sql = 'drop table ' + 'SALE_' + asin_array[i][0]
@@ -918,8 +918,8 @@ if __name__ == "__main__":
     # add_new_column('data_us', '_BS', 'weight', 'weight FLOAT(10) NOT NULL default 0')
     # seller_name = get_one_data(amazonglobal.db_name_data_us, '9977442011_BS', 'asin=' + '\'' + 'B01EHSX28M' + '\'')
     # print(seller_name[16], flush=True)
-    delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
     # delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
+    delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
     # count_pending_asin(sqlmgr, 'BS')
     # copy_table_data(sqlmgr.ad_sale_data, sqlmgr.ad_sale_task)
     # get_table_existed_time(sqlmgr.ad_sale_data, 'GWA_BS')
