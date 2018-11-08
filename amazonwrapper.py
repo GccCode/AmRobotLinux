@@ -697,16 +697,16 @@ def delete_unused_tables(amazondata, table_name_condition, condition):
                         for i in range(len(asin_array)):
                             sql = 'drop table ' + 'SALE_' + asin_array[i][0]
                             # print(sql, flush=True)
-                            amazondata.query(sql)
+                            # amazondata.query(sql)
                             sql = 'drop table ' + 'INVENTORY_' + asin_array[i][0]
                             # print(sql, flush=True)
-                            amazondata.query(sql)
+                            # amazondata.query(sql)
                             count += 2
 
                     delete_sql = 'drop table ' + result[index][0]
                     # print(delete_sql, flush=True)
                     count += 1
-                    amazondata.query(delete_sql)
+                    # amazondata.query(delete_sql)
     else:
         print("get all table in failure.. + " + amazondata.db_name, flush=True)
 
@@ -797,7 +797,10 @@ def delete_unused_node_task(sqlmgr, condition):
             data = get_all_data(sqlmgr.ad_sale_data, table_name, False, condition)
             if data == False:
                 sql = 'delete from ' + task_table + ' where node=\'' + node_array[index][0] + '\''
-                status = sqlmgr.ad_sale_task.query(sql)
+                # status = sqlmgr.ad_sale_task.query(sql)
+                # if status is False:
+                #     print(" delete node in failure", flush=True)
+                # else:
                 count += 1
 
     print("delete_unused_node_task + " + str(count), flush=True)
@@ -824,7 +827,7 @@ def gather_sale_asin(sqlmgr):
                         }
                         status = sqlmgr.ad_sale_task.insert_sale_asin_data(amazonglobal.table_sale_asin_us, asin_data)
                         if status is False:
-                            print("create table in failure", flush=True)
+                            print("insert sale asin data in failure", flush=True)
                         else:
                             count += 1
 
@@ -1004,8 +1007,8 @@ if __name__ == "__main__":
 
 
     gather_sale_asin(sqlmgr)
-    # delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
-    # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
+    delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
+    delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
     delete_zombie_tables(sqlmgr)
 
     sqlmgr.stop()
