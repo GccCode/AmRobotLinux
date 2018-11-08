@@ -659,7 +659,7 @@ def delete_zombie_tables(sqlmgr):
                 sql = 'drop table ' + 'SALE_' + asin
                 # print(sql, flush=True)
                 sale_count += 1
-                # sqlmgr.ad_sale_data.query(sql)
+                sqlmgr.ad_sale_data.query(sql)
 
     inventory_count = 0
     sql = 'SHOW TABLES LIKE \'INVENTORY\_%\''
@@ -673,7 +673,7 @@ def delete_zombie_tables(sqlmgr):
                 sql = 'drop table ' + 'INVENTORY_' + asin
                 # print(sql, flush=True)
                 inventory_count += 1
-                # sqlmgr.ad_sale_data.query(sql)
+                sqlmgr.ad_sale_data.query(sql)
 
     sql = 'SHOW TABLES'
     cursor = sqlmgr.ad_sale_data.query(sql)
@@ -703,16 +703,16 @@ def delete_unused_tables(amazondata, table_name_condition, condition):
                         for i in range(len(asin_array)):
                             sql = 'drop table ' + 'SALE_' + asin_array[i][0]
                             # print(sql, flush=True)
-                            # amazondata.query(sql)
+                            amazondata.query(sql)
                             sql = 'drop table ' + 'INVENTORY_' + asin_array[i][0]
                             # print(sql, flush=True)
-                            # amazondata.query(sql)
+                            amazondata.query(sql)
                             count += 2
 
                     delete_sql = 'drop table ' + result[index][0]
                     # print(delete_sql, flush=True)
                     count += 1
-                    # amazondata.query(delete_sql)
+                    amazondata.query(delete_sql)
     else:
         print("get all table in failure.. + " + amazondata.db_name, flush=True)
 
@@ -803,11 +803,11 @@ def delete_unused_node_task(sqlmgr, condition):
             data = get_all_data(sqlmgr.ad_sale_data, table_name, False, condition)
             if data == False:
                 sql = 'delete from ' + task_table + ' where node=\'' + node_array[index][0] + '\''
-                # status = sqlmgr.ad_sale_task.query(sql)
-                # if status is False:
-                #     print(" delete node in failure", flush=True)
-                # else:
-                count += 1
+                status = sqlmgr.ad_sale_task.query(sql)
+                if status is False:
+                    print(" delete node in failure", flush=True)
+                else:
+                    count += 1
 
     print("delete_unused_node_task + " + str(count), flush=True)
 
