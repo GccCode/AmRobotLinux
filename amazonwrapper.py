@@ -675,6 +675,12 @@ def delete_zombie_tables(sqlmgr):
                 inventory_count += 1
                 # sqlmgr.ad_sale_data.query(sql)
 
+    sql = 'SHOW TABLES'
+    cursor = sqlmgr.ad_sale_data.query(sql)
+    if cursor is not False:
+        table_name_array = cursor.fetchall()
+        print("total tables + " + str(len(table_name_array)), flush=True)
+
     print("delete zombie sale table + " + str(sale_count), flush=True)
     print("delete zombie inventory table + " + str(inventory_count), flush=True)
 
