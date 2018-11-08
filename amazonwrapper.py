@@ -811,7 +811,7 @@ def gather_sale_asin(sqlmgr):
     if node_array is not False:
         for index in range(len(node_array)):
             table_name = node_array[index][0] + '_BS'
-            data = get_all_data(sqlmgr.ad_sale_data, table_name, 'asin', 'price>=12 and limited<>\'yes\' and seller < 4')
+            data = get_all_data(sqlmgr.ad_sale_data, table_name, 'asin', 'price>=12 and limited<>\'yes\' and seller<4')
             if data is not False:
                 for i in range(len(data)):
                     status = sqlmgr.ad_sale_task.create_sale_asin_table(amazonglobal.table_sale_asin_us)
@@ -998,10 +998,9 @@ if __name__ == "__main__":
     # get_table_existed_time(sqlmgr.ad_sale_data, 'GWA_BS')
 
 
-    # gather_sale_asin(sqlmgr)
+    gather_sale_asin(sqlmgr)
     # delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
     # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
-
     delete_zombie_tables(sqlmgr)
 
     sqlmgr.stop()
