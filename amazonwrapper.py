@@ -657,7 +657,7 @@ def delete_zombie_tables(sqlmgr):
             asin = table_name.split('_')[1]
             if is_sale_asin(sqlmgr, asin) is False:
                 sql = 'drop table ' + 'SALE_' + asin
-                print(sql, flush=True)
+                # print(sql, flush=True)
                 sale_count += 1
                 # sqlmgr.ad_sale_data.query(sql)
 
@@ -671,7 +671,7 @@ def delete_zombie_tables(sqlmgr):
             asin = table_name.split('_')[1]
             if is_sale_asin(sqlmgr, asin) is False:
                 sql = 'drop table ' + 'INVENTORY_' + asin
-                print(sql, flush=True)
+                # print(sql, flush=True)
                 inventory_count += 1
                 # sqlmgr.ad_sale_data.query(sql)
 
@@ -803,6 +803,7 @@ def delete_unused_node_task(sqlmgr, condition):
     print("delete_unused_node_task + " + str(count), flush=True)
 
 def gather_sale_asin(sqlmgr):
+    count = 0
     if sqlmgr.country == 'us':
         table_sale_task = amazonglobal.table_sale_task_us
     elif sqlmgr.country == 'jp':
@@ -824,6 +825,10 @@ def gather_sale_asin(sqlmgr):
                         status = sqlmgr.ad_sale_task.insert_sale_asin_data(amazonglobal.table_sale_asin_us, asin_data)
                         if status is False:
                             print("create table in failure", flush=True)
+                        else:
+                            count += 1
+
+    print("gather_sale_asin + " + str(count), flush=True)
 
 def is_sale_asin(sqlmgr, asin):
     if sqlmgr.country == 'us':
