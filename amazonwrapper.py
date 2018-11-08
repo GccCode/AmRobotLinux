@@ -646,6 +646,38 @@ def is_table_expired(amazondata, table_name, valid_days):
 
     return False
 
+def delete_zombie_tables(sqlmgr):
+    sale_count = 0
+    sql = 'SHOW TABLES LIKE \'SALE\_%\''
+    cursor = sqlmgr.ad_sale_data.query(sql)
+    if cursor is not False:
+        table_name_array = cursor.fetchall()
+        for index in range(len(table_name_array)):
+            table_name = table_name_array[index][0]
+            asin = table_name.split('_')[1]
+            if is_sale_asin(sqlmgr, asin) is False:
+                sql = 'drop table ' + 'SALE_' + asin
+                print(sql, flush=True)
+                sale_count += 1
+                # sqlmgr.ad_sale_data.query(sql)
+
+    inventory_count = 0
+    sql = 'SHOW TABLES LIKE \'INVENTORY\_%\''
+    cursor = sqlmgr.ad_sale_data.query(sql)
+    if cursor is not False:
+        table_name_array = cursor.fetchall()
+        for index in range(len(table_name_array)):
+            table_name = table_name_array[index][0]
+            asin = table_name.split('_')[1]
+            if is_sale_asin(sqlmgr, asin) is False:
+                sql = 'drop table ' + 'INVENTORY_' + asin
+                print(sql, flush=True)
+                inventory_count += 0
+                # sqlmgr.ad_sale_data.query(sql)
+
+    print("delete zombie sale table + " + str(sale_count), flush=True)
+    print("delete zombie inventory table + " + str(inventory_count), flush=True)
+
 def delete_unused_tables(amazondata, table_name_condition, condition):
     if table_name_condition == False:
         sql = 'SHOW TABLES'
@@ -765,11 +797,46 @@ def delete_unused_node_task(sqlmgr, condition):
             data = get_all_data(sqlmgr.ad_sale_data, table_name, False, condition)
             if data == False:
                 sql = 'delete from ' + task_table + ' where node=\'' + node_array[index][0] + '\''
-                # status = sqlmgr.ad_sale_task.query(sql)
+                status = sqlmgr.ad_sale_task.query(sql)
                 count += 1
 
     print("delete_unused_node_task + " + str(count), flush=True)
 
+def gather_sale_asin(sqlmgr):
+    if sqlmgr.country == 'us':
+        table_sale_task = amazonglobal.table_sale_task_us
+    elif sqlmgr.country == 'jp':
+        table_sale_task = amazonglobal.table_sale_task_jp
+    node_array = get_all_data(sqlmgr.ad_sale_task, table_sale_task, 'node', False)
+    if node_array is not False:
+        for index in range(len(node_array)):
+            table_name = node_array[index][0] + '_BS'
+            data = get_all_data(sqlmgr.ad_sale_data, table_name, 'asin', 'price>=12 and limited<>\'yes\' and seller < 4')
+            if data is not False:
+                for i in range(len(data)):
+                    status = sqlmgr.ad_sale_task.create_sale_asin_table(amazonglobal.table_sale_asin_us)
+                    if status is False:
+                        print("create table in failure", flush=True)
+                    else:
+                        asin_data = {
+                            'asin': data[i][0]
+                        }
+                        status = sqlmgr.ad_sale_task.insert_sale_asin_data(amazonglobal.table_sale_asin_us, asin_data)
+                        if status is False:
+                            print("create table in failure", flush=True)
+
+def is_sale_asin(sqlmgr, asin):
+    if sqlmgr.country == 'us':
+        table_sale_task = amazonglobal.table_sale_task_us
+    elif sqlmgr.country == 'jp':
+        table_sale_task = amazonglobal.table_sale_task_jp
+    sql = 'select * from ' + table_sale_task + ' where asin=\'' + asin + '\''
+    cursor = sqlmgr.ad_sale_task.query(sql)
+    if cursor != False:
+        if cursor.rowcount > 0:
+            return True
+
+    return False
 
 def update_asin_status_ok(amazondata, node):
     asin_array = get_all_data(amazondata, (node + '_BS'), 'asin', False)
@@ -864,7 +931,7 @@ def count_pending_asin(sqlmgr, top_tpye):
         for index in range(len(sale_task_array)):
             node = sale_task_array[index][0]
             node_table_name = node + '_' + top_tpye
-            condition = 'limited<>\'yes\' and seller<=4 and price >= 12'
+            condition = 'limited<>\'yes\' and seller<4 and price >= 12'
             pending_asin_array = get_all_data(sqlmgr.ad_sale_data, node_table_name, 'asin', condition)
             if pending_asin_array is False:
                 print("get all data in failure " + node_table_name, flush=True)
@@ -886,7 +953,7 @@ def copy_table_data(from_amazondata, to_amazondata):
             }
             status = to_amazondata.insert_task_data('sale_task_us', task_data)
             if status is False:
-                print("xxx")
+                print("insert task data in failure.", flush=True)
 
 
 # SELECT CREATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='amazondata' AND TABLE_NAME='INVENTORY_B07GYTTF8B';
@@ -925,9 +992,16 @@ if __name__ == "__main__":
     # add_new_column('data_us', '_BS', 'weight', 'weight FLOAT(10) NOT NULL default 0')
     # seller_name = get_one_data(amazonglobal.db_name_data_us, '9977442011_BS', 'asin=' + '\'' + 'B01EHSX28M' + '\'')
     # print(seller_name[16], flush=True)
-    delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
     # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
     # count_pending_asin(sqlmgr, 'BS')
     # copy_table_data(sqlmgr.ad_sale_data, sqlmgr.ad_sale_task)
     # get_table_existed_time(sqlmgr.ad_sale_data, 'GWA_BS')
+
+
+    # gather_sale_asin(sqlmgr)
+    # delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
+    # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
+
+    delete_zombie_tables(sqlmgr)
+
     sqlmgr.stop()

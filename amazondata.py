@@ -129,6 +129,17 @@ class AmazonData():
 
         return status
 
+    def create_sale_asin_table(self, table):
+        columns = 'asin char(10) not null, PRIMARY KEY (asin)'
+        status = True
+        if self.amsql.is_mysql_table_exsist(self.db, table) == False:
+            status = self.amsql.create_table(self.db, table, columns)
+
+        return status
+
+    def insert_sale_asin_data(self, table, data):
+        return self.amsql.insert_data(self.db, table, data)
+
     def insert_node_info_data(self, table, data):
         return self.amsql.insert_data(self.db, table, data)
 
