@@ -672,7 +672,7 @@ def delete_zombie_tables(sqlmgr):
             if is_sale_asin(sqlmgr, asin) is False:
                 sql = 'drop table ' + 'INVENTORY_' + asin
                 print(sql, flush=True)
-                inventory_count += 0
+                inventory_count += 1
                 # sqlmgr.ad_sale_data.query(sql)
 
     print("delete zombie sale table + " + str(sale_count), flush=True)
