@@ -933,11 +933,11 @@ class AmazonSpider():
                     # print(size, flush=True)
                 elif 'ounces' in td_element.text and ' (' not in td_element.text:
                     weight = '%.3f' % (float(td_element.text.strip().replace(',', '').split(' ')[0]) * 28.3495231 / 1000)
-                    data['weight'] = weight
+                    data['weight'] = float(weight)
                     # print(weight, flush=True)
                 elif 'pounds' in td_element.text and ' (' not in td_element.text:
                     weight = '%.3f' % (float(td_element.text.strip().split(' ')[0]) * 453.59237 / 1000)
-                    data['weight'] = weight
+                    data['weight'] = float(weight)
                     # print(weight, flush=True)
 
             size_weight_li_array = driver.find_elements(*SIZE_WEIGHT_LI_US)
@@ -950,8 +950,7 @@ class AmazonSpider():
                             weight_str = weight_str.split('(')[0].strip()
                             weight_str = weight_str.split(' ')[0].strip()
                             weight = '%.3f' % (float(weight_str.strip().split(' ')[0]) * 28.3495231 / 1000)
-                            data['weight'] = weight
-                            print("weight is " + str(weight), flush=True)
+                            data['weight'] = float(weight)
                 elif ' prouds' in li_element.text:
                     print(li_element.text, flush=True) # Shipping Weight: 0.5 ounces (View shipping rates and policies)
                     if 'Shipping Weight: ' in li_element.text:
@@ -960,8 +959,7 @@ class AmazonSpider():
                             weight_str = weight_str.split('(')[0].strip() # 0.5 ounces
                             weight_str = weight_str.split(' ')[0].strip() # 0.5
                             weight = '%.3f' % (float(weight_str.strip().split(' ')[0]) * 453.59237 / 1000)
-                            data['weight'] = weight
-                            print("weight is " + str(weight), flush=True)
+                            data['weight'] = float(weight)
                 # Product Dimensions: 22.4 x 14.6 x 4.5 inches ; 2 pounds
                 elif ' inches' in li_element.text:
                     if 'Product Dimensions: ' in li_element.text:
@@ -969,13 +967,11 @@ class AmazonSpider():
                         if ' ounces' in size_str:
                             weight_str = size_str.split(';')[1].strip() # 2 ounces
                             weight = '%.3f' % (float(weight_str.strip().split(' ')[0]) * 28.3495231 / 1000)
-                            data['weight'] = weight
-                            print("weight is " + str(weight), flush=True)
+                            data['weight'] = float(weight)
                         elif ' prouds' in li_element.text:
                             weight_str = size_str.split(';')[1].strip() # 2 pounds
                             weight = '%.3f' % (float(weight_str.strip().split(' ')[0]) * 453.59237 / 1000)
-                            data['weight'] = weight
-                            print("weight is " + str(weight), flush=True)
+                            data['weight'] = float(weight)
                         size_str = size_str.split(';')[0].strip()  # 22.4 x 14.6 x 4.5 inches
                         size_str = size_str.split(' inches')[0].replace(' ', '') # 22.4x14.6x4.5
                         size_set = size_str.split('x')
