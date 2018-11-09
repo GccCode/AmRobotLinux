@@ -945,6 +945,7 @@ class AmazonSpider():
                         weight_str = li_element.text.split(':')[1].strip()
                         if '(' in weight_str:
                             weight_str = weight_str.split('(')[0].strip()
+                            weight_str = weight_str.split(' ')[0].strip()
                             print(weight_str, flush=True)
                 elif ' prouds' in li_element.text:
 
@@ -952,6 +953,7 @@ class AmazonSpider():
                         weight_str = li_element.text.split(':')[1].strip()
                         if '(' in weight_str:
                             weight_str = weight_str.split('(')[0].strip()
+                            weight_str = weight_str.split(' ')[0].strip()
                             print(weight_str, flush=True)
 
             input("wati...")
