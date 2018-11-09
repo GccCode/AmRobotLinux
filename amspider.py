@@ -742,6 +742,9 @@ class AmazonSpider():
                     print(len(asin_info_array), flush=True)
                     print(len(inventory_array), flush=True)
 
+            input("wait")
+            exit()
+
             # for i in range(0, len(asin_info_array)):
             #     asin = asin_info_array[i]['asin']
             #     node_table = node + '_' + type
@@ -873,7 +876,7 @@ class AmazonSpider():
             if amazonasinpage.is_element_exsist(*BIG_IMG_DIV_US):
                 element = driver.find_element(*BIG_IMG_DIV_US)
                 big_img_div_position_y = element.location['y']
-                print(big_img_div_position_y, flush=True)
+                # print(big_img_div_position_y, flush=True)
 
             shipping_element_position_y = 0
             if amazonasinpage.is_element_exsist(*FBA_FLAG):
@@ -884,7 +887,7 @@ class AmazonSpider():
             elif amazonasinpage.is_element_exsist(*AB_FLAG_US):
                 element = driver.find_element(*AB_FLAG_US)
                 shipping_element_position_y = element.location['y']
-                print(shipping_element_position_y, flush=True)
+                # print(shipping_element_position_y, flush=True)
                 # print(element.text, flush=True)
                 if 'Ships from and sold by Amazon.com' in element.text:
                     # print("sold by Amazon Basic..", flush=True)
@@ -895,7 +898,7 @@ class AmazonSpider():
             new_page_version_flag = False
             if big_img_div_position_y > shipping_element_position_y and data['shipping'] != 'FBM':
                 new_page_version_flag = True
-                print("new page version like health", flush=True)
+                # print("new page version like health", flush=True)
 
             if amazonasinpage.is_element_exsist(*QA_COUNT):
                 element = driver.find_element(*QA_COUNT)
@@ -906,6 +909,8 @@ class AmazonSpider():
                 data['qa'] = 0
 
             overweight_flag = False
+            weight = 0
+            size = ''
             size_weight_td_array = driver.find_elements(*SIZE_WEIGHT_TD_US)
             for td_element in size_weight_td_array:
                 if ' inches'in td_element.text and 'x' in td_element.text:
@@ -933,7 +938,7 @@ class AmazonSpider():
                     data['weight'] = weight
                     # print(weight, flush=True)
                 elif 'pounds' in td_element.text and ' (' not in td_element.text:
-                    weight = '%.3f' % (float(td_element.text.strip().split(' ')[0]) * 28.3495231 / 1000)
+                    weight = '%.3f' % (float(td_element.text.strip().split(' ')[0]) * 453.59237 / 1000)
                     data['weight'] = weight
                     # print(weight, flush=True)
 
@@ -946,19 +951,62 @@ class AmazonSpider():
                         if '(' in weight_str:
                             weight_str = weight_str.split('(')[0].strip()
                             weight_str = weight_str.split(' ')[0].strip()
+                            weight = '%.3f' % (float(weight_str.strip().split(' ')[0]) * 28.3495231 / 1000)
+                            data['weight'] = weight
                             print(weight_str, flush=True)
                 elif ' prouds' in li_element.text:
-                    print(li_element.text, flush=True)
+                    print(li_element.text, flush=True) # Shipping Weight: 0.5 ounces (View shipping rates and policies)
                     if 'Shipping Weight: ' in li_element.text:
-                        weight_str = li_element.text.split(':')[1].strip()
+                        weight_str = li_element.text.split(':')[1].strip() # 0.5 ounces (View shipping rates and policies)
                         if '(' in weight_str:
-                            weight_str = weight_str.split('(')[0].strip()
-                            weight_str = weight_str.split(' ')[0].strip()
+                            weight_str = weight_str.split('(')[0].strip() # 0.5 ounces
+                            weight_str = weight_str.split(' ')[0].strip() # 0.5
+                            weight = '%.3f' % (float(weight_str.strip().split(' ')[0]) * 453.59237 / 1000)
+                            data['weight'] = weight
                             print(weight_str, flush=True)
-
+                # Product Dimensions: 22.4 x 14.6 x 4.5 inches ; 2 pounds
                 elif ' inches' in li_element.text:
+                    if 'Product Dimensions: ' in li_element.text:
+                        size_str = li_element.text.split(':')[1].strip() #22.4 x 14.6 x 4.5 inches ; 2 pounds
+                        if ' ounces' in size_str:
+                            weight_str = size_str.split(';')[1].strip() # 2 ounces
+                            weight = '%.3f' % (float(weight_str.strip().split(' ')[0]) * 28.3495231 / 1000)
+                            data['weight'] = weight
+                        elif ' prouds' in li_element.text:
+                            weight_str = size_str.split(';')[1].strip() # 2 pounds
+                            weight = '%.3f' % (float(weight_str.strip().split(' ')[0]) * 453.59237 / 1000)
+                            data['weight'] = weight
+                        size_str = size_str.split(';')[0].strip()  # 22.4 x 14.6 x 4.5 inches
+                        size_str = size_str.split(' inches')[0].replace(' ', '') # 22.4x14.6x4.5
+                        size_set = size_str.split('x')
+                        if len(size_set) != 3:
+                            print("get size err", flush=True)
+                            continue
+                        length = float(size_set[0].replace(',', '')) * 2.54
+                        if length > 30:
+                            overweight_flag = True
+                            # print("length over " + str(length), flush=True)
+                        width = float(size_set[1].replace(',', '')) * 2.54
+                        if width > 20:
+                            overweight_flag = True
+                            # print("width over " + str(width), flush=True)
+                        height = float(size_set[1].replace(',', '')) * 2.54
+                        if height > 20:
+                            overweight_flag = True
+                            # print("height over " + str(height), flush=True)
+                        size = str(int(length)) + 'x' + str(int(width)) + 'x' + str(int(height))
+                        data['size'] = size
+                        # print(size, flush=True)
+
+                        break
+
                     print(li_element.text, flush=True)
 
+            if overweight_flag is False:
+                if weight > 5:
+                    overweight_flag = True
+
+            print("overweight: " + str(overweight_flag), flush=True)
 
             if amazonasinpage.is_element_exsist(*BUYER_COUNT):
                 element = driver.find_element(*BUYER_COUNT)
@@ -1164,6 +1212,7 @@ class AmazonSpider():
                 driver.quit()
 
             print(status, flush=True)
+            print("=============", flush=True)
             return status
 
     def get_inventory_jp(self, sqlmgr, driver_upper, asin, ips_array, is_sale):
