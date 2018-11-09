@@ -938,6 +938,7 @@ class AmazonSpider():
                     # print(weight, flush=True)
 
             if amazonasinpage.is_element_exsist(*PRODUCT_DETAILS_UL_US):
+                print("hahah", flush=True)
                 element = driver.find_element(*PRODUCT_DETAILS_UL_US)
                 size_weight_li_array = element.find_elements(*SIZE_WEIGHT_LI_US)
                 for li_element in size_weight_li_array:
@@ -945,6 +946,8 @@ class AmazonSpider():
                         print(li_element.text, flush=True)
                     elif ' prouds' in li_element.text:
                         print(li_element.text, flush=True)
+
+            exit()
 
             if amazonasinpage.is_element_exsist(*BUYER_COUNT):
                 element = driver.find_element(*BUYER_COUNT)
