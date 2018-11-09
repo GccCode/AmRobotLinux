@@ -866,24 +866,31 @@ class AmazonSpider():
 
             amazonasinpage.select_size(asin, 1000, 2000)
 
-
+            big_img_div_position_y = 0
             if amazonasinpage.is_element_exsist(*BIG_IMG_DIV_US):
                 element = driver.find_element(*BIG_IMG_DIV_US)
-                print(element.location, flush=True)
+                big_img_div_position_y = element.location['y']
+                print(big_img_div_position_y, flush=True)
 
+            shipping_element_position_y = 0
             if amazonasinpage.is_element_exsist(*FBA_FLAG):
                 element = driver.find_element(*FBA_FLAG)
-                print(element.location, flush=True)
+                shipping_element_position_y = element.location['y']
+                print(shipping_element_position_y, flush=True)
                 data['shipping'] = 'FBA'
             elif amazonasinpage.is_element_exsist(*AB_FLAG_US):
                 element = driver.find_element(*AB_FLAG_US)
-                print(element.location, flush=True)
+                shipping_element_position_y = element.location['y']
+                print(shipping_element_position_y, flush=True)
                 # print(element.text, flush=True)
                 if 'Ships from and sold by Amazon.com' in element.text:
                     # print("sold by Amazon Basic..", flush=True)
                     data['shipping'] = 'AB'
             else:
                 data['shipping'] = 'FBM'
+
+            if big_img_div_position_y > shipping_element_position_y and data['shipping'] != 'FBM':
+                print("new page version like health", flush=True)
 
             if amazonasinpage.is_element_exsist(*QA_COUNT):
                 element = driver.find_element(*QA_COUNT)
