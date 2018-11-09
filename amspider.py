@@ -882,7 +882,7 @@ class AmazonSpider():
             if amazonasinpage.is_element_exsist(*FBA_FLAG):
                 element = driver.find_element(*FBA_FLAG)
                 shipping_element_position_y = element.location['y']
-                print(shipping_element_position_y, flush=True)
+                # print(shipping_element_position_y, flush=True)
                 data['shipping'] = 'FBA'
             elif amazonasinpage.is_element_exsist(*AB_FLAG_US):
                 element = driver.find_element(*AB_FLAG_US)
@@ -1003,6 +1003,7 @@ class AmazonSpider():
                     print(li_element.text, flush=True)
 
             if overweight_flag is False:
+                print(data['weight'], flush=True)
                 if data['weight'] > 4:
                     overweight_flag = True
 
