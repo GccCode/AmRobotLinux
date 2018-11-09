@@ -889,7 +889,9 @@ class AmazonSpider():
             else:
                 data['shipping'] = 'FBM'
 
+            new_page_version_flag = False
             if big_img_div_position_y > shipping_element_position_y and data['shipping'] != 'FBM':
+                new_page_version_flag = True
                 print("new page version like health", flush=True)
 
             if amazonasinpage.is_element_exsist(*QA_COUNT):
@@ -938,6 +940,8 @@ class AmazonSpider():
 
                 # print("seller is: " + str(data['seller']))
                 # print(element.text, flush=True)
+            elif new_page_version_flag:
+                data['seller'] = 1
             else:
                 print("get seller count in failure..", flush=True)
                 if overweight_flag == False:
@@ -963,7 +967,7 @@ class AmazonSpider():
                 return status
 
             if is_sale and overweight_flag == False:
-                if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon':
+                if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon' or new_page_version_flag:
                     status = amazonasinpage.add_cart(5000, 8000)
                     print("get_inventory_us + " + asin, flush=True)
                 else:
@@ -1126,6 +1130,8 @@ class AmazonSpider():
         finally:
             if driver_upper == False:
                 driver.quit()
+
+            print(status, flush=True)
             return status
 
     def get_inventory_jp(self, sqlmgr, driver_upper, asin, ips_array, is_sale):
