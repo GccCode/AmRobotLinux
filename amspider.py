@@ -973,7 +973,9 @@ class AmazonSpider():
                             data['weight'] = float(weight)
                         size_str = size_str.split(';')[0].strip()  # 22.4 x 14.6 x 4.5 inches
                         size_str = size_str.split(' inches')[0].replace(' ', '') # 22.4x14.6x4.5
+                        print("size_str is " + size_str, flush=True)
                         size_set = size_str.split('x')
+                        print("size_set is " + size_set, flush=True)
                         if len(size_set) != 3:
                             print("get size err", flush=True)
                             continue
@@ -991,7 +993,7 @@ class AmazonSpider():
                             # print("height over " + str(height), flush=True)
                         size = str(int(length)) + 'x' + str(int(width)) + 'x' + str(int(height))
                         data['size'] = size
-                        # print(size, flush=True)
+                        print(size, flush=True)
 
                         break
 
