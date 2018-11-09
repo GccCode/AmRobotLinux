@@ -940,7 +940,7 @@ class AmazonSpider():
 
             size_weight_li_array = driver.find_elements(*SIZE_WEIGHT_LI_US)
             for li_element in size_weight_li_array:
-                if ' ounces' in li_element.text:
+                if ' ounces' in li_element.text and ' inches' not in li_element.text:
                     print(li_element.text, flush=True)
                     if 'Shipping Weight: ' in li_element.text:
                         weight_str = li_element.text.split(':')[1].strip()
@@ -949,7 +949,7 @@ class AmazonSpider():
                             weight_str = weight_str.split(' ')[0].strip()
                             weight = '%.3f' % (float(weight_str.strip().split(' ')[0]) * 28.3495231 / 1000)
                             data['weight'] = float(weight)
-                elif ' prouds' in li_element.text:
+                elif ' prouds' in li_element.text  and ' inches' not in li_element.text:
                     print(li_element.text, flush=True) # Shipping Weight: 0.5 ounces (View shipping rates and policies)
                     if 'Shipping Weight: ' in li_element.text:
                         weight_str = li_element.text.split(':')[1].strip() # 0.5 ounces (View shipping rates and policies)
@@ -962,6 +962,7 @@ class AmazonSpider():
                 elif ' inches' in li_element.text:
                     print(li_element.text, flush=True)  # Shipping Weight: 0.5 ounces (View shipping rates and policies)
                     if 'Product Dimensions: ' in li_element.text:
+                        print("????", flush=True)
                         size_str = li_element.text.split(':')[1].strip() #22.4 x 14.6 x 4.5 inches ; 2 pounds
                         if ' ounces' in size_str:
                             weight_str = size_str.split(';')[1].strip() # 2 ounces
