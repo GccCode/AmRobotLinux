@@ -941,7 +941,7 @@ class AmazonSpider():
             size_weight_li_array = driver.find_elements(*SIZE_WEIGHT_LI_US)
             for li_element in size_weight_li_array:
                 if ' ounces' in li_element.text:
-                    # print(li_element.text, flush=True)
+                    print(li_element.text, flush=True)
                     if 'Shipping Weight: ' in li_element.text:
                         weight_str = li_element.text.split(':')[1].strip()
                         if '(' in weight_str:
@@ -950,7 +950,7 @@ class AmazonSpider():
                             weight = '%.3f' % (float(weight_str.strip().split(' ')[0]) * 28.3495231 / 1000)
                             data['weight'] = float(weight)
                 elif ' prouds' in li_element.text:
-                    # print(li_element.text, flush=True) # Shipping Weight: 0.5 ounces (View shipping rates and policies)
+                    print(li_element.text, flush=True) # Shipping Weight: 0.5 ounces (View shipping rates and policies)
                     if 'Shipping Weight: ' in li_element.text:
                         weight_str = li_element.text.split(':')[1].strip() # 0.5 ounces (View shipping rates and policies)
                         if '(' in weight_str:
@@ -960,6 +960,7 @@ class AmazonSpider():
                             data['weight'] = float(weight)
                 # Product Dimensions: 22.4 x 14.6 x 4.5 inches ; 2 pounds
                 elif ' inches' in li_element.text:
+                    print(li_element.text, flush=True)  # Shipping Weight: 0.5 ounces (View shipping rates and policies)
                     if 'Product Dimensions: ' in li_element.text:
                         size_str = li_element.text.split(':')[1].strip() #22.4 x 14.6 x 4.5 inches ; 2 pounds
                         if ' ounces' in size_str:
@@ -999,8 +1000,6 @@ class AmazonSpider():
             if overweight_flag is False:
                 if data['weight'] > 4:
                     overweight_flag = True
-
-            # print("overweight: " + str(overweight_flag), flush=True)
 
             if amazonasinpage.is_element_exsist(*BUYER_COUNT):
                 element = driver.find_element(*BUYER_COUNT)
@@ -1201,6 +1200,9 @@ class AmazonSpider():
         finally:
             if driver_upper == False:
                 driver.quit()
+
+            print(status, flush=True)
+            print("==========", flush=True)
 
             return status
 
@@ -1500,8 +1502,8 @@ if __name__ == "__main__":
         print("SqlMgr initialized in failure", flush=True)
         exit()
 
-    # amspider_test(sqlmgr)
-    # exit()
+    amspider_test(sqlmgr)
+    exit()
 
     if node_file != '0':
         if sys.argv[4] == '1':
