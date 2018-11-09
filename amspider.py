@@ -48,11 +48,14 @@ USED_US = (By.CSS_SELECTOR, 'span[id=\'olpUsed\']')
 LIKE_NEW_US = (By.CSS_SELECTOR, 'span[id=\'offerSubCondition\']')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
 SIZE_WEIGHT_TD_US = (By.CSS_SELECTOR, 'td[class=\'a-size-base\']')
+PRODUCT_DETAILS_UL_US = (By.XPATH, '//*[@class=\'content\']/ul')
+SIZE_WEIGHT_LI_US = (By.XPATH, './/li')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
 VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
 VIEW_CART_BUTTON1 = (By.ID, 'hlb-view-cart')
 VIEW_CART_BUTTON2 = (By.CSS_SELECTOR, 'input[name=\'editCart\']')
 VIEW_CART_BUTTON3 = (By.CLASS_NAME, 'hlb-cart-button')
+CONTINUE_BUTTON = (By.ID, 'smartShelfAddToCartContinue')
 DEAL_SYMBOL = (By.XPATH, '//div[contains(@id, \'deal_status_progress_\')]')
 DEAL_STATUS = (By.ID, 'goldboxDealStatus')
 ITEM_SELECT_US = (By.XPATH,
@@ -934,6 +937,15 @@ class AmazonSpider():
                     data['weight'] = weight
                     # print(weight, flush=True)
 
+            if amazonasinpage.is_element_exsist(*PRODUCT_DETAILS_UL_US):
+                element = driver.find_element(*PRODUCT_DETAILS_UL_US)
+                size_weight_li_array = element.find_elements(*SIZE_WEIGHT_LI_US)
+                for li_element in size_weight_li_array:
+                    if ' ounces' in li_element.text:
+                        print(li_element.text, flush=True)
+                    elif ' prouds' in li_element.text:
+                        print(li_element.text, flush=True)
+
             if amazonasinpage.is_element_exsist(*BUYER_COUNT):
                 element = driver.find_element(*BUYER_COUNT)
                 data['seller'] = int(getseller_us(element.text))
@@ -1035,6 +1047,9 @@ class AmazonSpider():
                         amazonasinpage.random_sleep(3000, 5000)
                     elif amazonasinpage.is_element_exsist(*VIEW_CART_BUTTON3):
                         amazonasinpage.click(*VIEW_CART_BUTTON3)
+                        amazonasinpage.random_sleep(3000, 5000)
+                    elif amazonasinpage.is_element_exsist(*CONTINUE_BUTTON):
+                        amazonasinpage.click(*CONTINUE_BUTTON)
                         amazonasinpage.random_sleep(3000, 5000)
                     else:
                         if amazonasinpage.is_element_exsist(*DEAL_SYMBOL) or amazonasinpage.is_element_exsist(*DEAL_STATUS):
