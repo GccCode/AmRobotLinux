@@ -866,15 +866,18 @@ class AmazonSpider():
 
             amazonasinpage.select_size(asin, 1000, 2000)
 
+
             if amazonasinpage.is_element_exsist(*BIG_IMG_DIV_US):
                 element = driver.find_element(*BIG_IMG_DIV_US)
-                print(element.size, flush=True)
                 print(element.location, flush=True)
 
             if amazonasinpage.is_element_exsist(*FBA_FLAG):
+                element = driver.find_element(*FBA_FLAG)
+                print(element.location, flush=True)
                 data['shipping'] = 'FBA'
             elif amazonasinpage.is_element_exsist(*AB_FLAG_US):
                 element = driver.find_element(*AB_FLAG_US)
+                print(element.location, flush=True)
                 # print(element.text, flush=True)
                 if 'Ships from and sold by Amazon.com' in element.text:
                     # print("sold by Amazon Basic..", flush=True)
