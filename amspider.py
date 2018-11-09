@@ -49,7 +49,7 @@ LIKE_NEW_US = (By.CSS_SELECTOR, 'span[id=\'offerSubCondition\']')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
 SIZE_WEIGHT_TD_US = (By.CSS_SELECTOR, 'td[class=\'a-size-base\']')
 PRODUCT_DETAILS_UL_US = (By.XPATH, '//*[@class=\'content\']/ul')
-SIZE_WEIGHT_LI_US = (By.XPATH, './/li')
+SIZE_WEIGHT_LI_US = (By.XPATH, '//*[@class=\'content\']/ul/li')
 NO_THANKS = (By.ID, 'attachSiNoCoverage')
 VIEW_CART_BUTTON = (By.ID, 'attach-sidesheet-view-cart-button')
 VIEW_CART_BUTTON1 = (By.ID, 'hlb-view-cart')
@@ -937,15 +937,12 @@ class AmazonSpider():
                     data['weight'] = weight
                     # print(weight, flush=True)
 
-            if amazonasinpage.is_element_exsist(*PRODUCT_DETAILS_UL_US):
-                print("hahah", flush=True)
-                element = driver.find_element(*PRODUCT_DETAILS_UL_US)
-                size_weight_li_array = element.find_elements(*SIZE_WEIGHT_LI_US)
-                for li_element in size_weight_li_array:
-                    if ' ounces' in li_element.text:
-                        print(li_element.text, flush=True)
-                    elif ' prouds' in li_element.text:
-                        print(li_element.text, flush=True)
+            size_weight_li_array = driver.find_elements(*SIZE_WEIGHT_LI_US)
+            for li_element in size_weight_li_array:
+                if ' ounces' in li_element.text:
+                    print(li_element.text, flush=True)
+                elif ' prouds' in li_element.text:
+                    print(li_element.text, flush=True)
 
             input("wati...")
             exit()
