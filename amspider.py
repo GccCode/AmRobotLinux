@@ -940,7 +940,7 @@ class AmazonSpider():
 
                 # print("seller is: " + str(data['seller']))
                 # print(element.text, flush=True)
-            elif new_page_version_flag:
+            elif new_page_version_flag == True:
                 data['seller'] = 1
             else:
                 print("get seller count in failure..", flush=True)
