@@ -947,6 +947,7 @@ class AmazonSpider():
                     elif ' prouds' in li_element.text:
                         print(li_element.text, flush=True)
 
+            input("wati...")
             exit()
 
             if amazonasinpage.is_element_exsist(*BUYER_COUNT):
