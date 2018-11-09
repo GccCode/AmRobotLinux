@@ -857,7 +857,8 @@ def update_asin_status_ok(amazondata, node):
     if asin_array != False:
         for index in range(len(asin_array)):
             condition = 'asin=\'' + asin_array[index][0] + '\'' + ' and status=\'err\''
-            amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
+            if amazondata.is_table_exsist(node + '_BS'):
+                amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
 
 
 def update_asin_date(amazondata, node):
@@ -867,14 +868,15 @@ def update_asin_date(amazondata, node):
     if asin_array != False:
         for index in range(len(asin_array)):
             inventory_table_name = 'INVENTORY_' + asin_array[index][0]
-            yesterday_inventory = amazondata.get_yesterday_inventory(inventory_table_name)
-            today_inventory = amazondata.get_today_inventory(inventory_table_name)
-            if today_inventory != 0:
-                if (yesterday_inventory / today_inventory) > 10:
-                    print("today inventory may error + " + asin_array[index][0], flush=True)
-                    yesterday = date.today() + timedelta(days=-1)
-                    condition = 'asin=\'' + asin_array[index][0] + '\''
-                    amazondata.update_data(node + '_BS', 'inventory_date', '\'' + yesterday.strftime("%Y-%m-%d") + '\'', condition)
+            if amazondata.is_table_exsist(inventory_table_name):
+                yesterday_inventory = amazondata.get_yesterday_inventory(inventory_table_name)
+                today_inventory = amazondata.get_today_inventory(inventory_table_name)
+                if today_inventory != 0:
+                    if (yesterday_inventory / today_inventory) > 10:
+                        print("today inventory may error + " + asin_array[index][0], flush=True)
+                        yesterday = date.today() + timedelta(days=-1)
+                        condition = 'asin=\'' + asin_array[index][0] + '\''
+                        amazondata.update_data(node + '_BS', 'inventory_date', '\'' + yesterday.strftime("%Y-%m-%d") + '\'', condition)
 
 
 def fix_asin_sale(amazondata, node, err_sale_value):
@@ -883,13 +885,14 @@ def fix_asin_sale(amazondata, node, err_sale_value):
     if asin_array != False:
         for index in range(len(asin_array)):
             sale_table_name = 'SALE_' + asin_array[index][0]
-            amazondata.update_data(sale_table_name, 'sale', 0, 'sale>' + err_sale_value)
-            avg_sale = amazondata.get_column_avg(sale_table_name, 'sale')
-            if avg_sale is False:
-                print("get column avg in failure..", flush=True)
-            else:
-                condition = 'asin=\'' + asin_array[index][0] + '\''
-                amazondata.update_data(node + '_BS', 'avg_sale', int(avg_sale), condition)
+            if amazondata.is_table_exsist(sale_table_name):
+                amazondata.update_data(sale_table_name, 'sale', 0, 'sale>' + err_sale_value)
+                avg_sale = amazondata.get_column_avg(sale_table_name, 'sale')
+                if avg_sale is False:
+                    print("get column avg in failure..", flush=True)
+                else:
+                    condition = 'asin=\'' + asin_array[index][0] + '\''
+                    amazondata.update_data(node + '_BS', 'avg_sale', int(avg_sale), condition)
 
 
 def update_all_task_status(amazondata, table, country):
@@ -1007,14 +1010,14 @@ if __name__ == "__main__":
     # seller_name = get_one_data(amazonglobal.db_name_data_us, '9977442011_BS', 'asin=' + '\'' + 'B01EHSX28M' + '\'')
     # print(seller_name[16], flush=True)
     # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
-    # count_pending_asin(sqlmgr, 'BS')
+    count_pending_asin(sqlmgr, 'BS')
     # copy_table_data(sqlmgr.ad_sale_data, sqlmgr.ad_sale_task)
     # get_table_existed_time(sqlmgr.ad_sale_data, 'GWA_BS')
 
 
-    gather_sale_asin(sqlmgr)
-    delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
-    delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
-    delete_zombie_tables(sqlmgr)
+    # gather_sale_asin(sqlmgr)
+    # delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
+    # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
+    # delete_zombie_tables(sqlmgr)
 
     sqlmgr.stop()

@@ -28,6 +28,7 @@ INEXSISTED_FLAG_JP = (By.CSS_SELECTOR, 'img[alt=\'Amazon\']')
 INEXSISTED_FLAG_US = (By.CSS_SELECTOR, 'img[alt=\'Dogs of Amazon\']')
 UNKNOWN_NODE_US = (By.XPATH, '//*[@id=\'zg-center-div\']/h4')
 
+BIG_IMG_DIV_US = (By.XPATH, '//*[@id=\'imgTagWrapperId\']')
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
 FBA_FLAG = (By.ID, "SSOFpopoverLink")
@@ -865,6 +866,11 @@ class AmazonSpider():
 
             amazonasinpage.select_size(asin, 1000, 2000)
 
+            if amazonasinpage.is_element_exsist(*BIG_IMG_DIV_US):
+                element = driver.find_element(*BIG_IMG_DIV_US)
+                print(element.size, flush=True)
+                print(element.location, flush=True)
+
             if amazonasinpage.is_element_exsist(*FBA_FLAG):
                 data['shipping'] = 'FBA'
             elif amazonasinpage.is_element_exsist(*AB_FLAG_US):
@@ -1391,7 +1397,7 @@ def amspider_test(sqlmgr):
         exit(-1)
     amazonspider = AmazonSpider()
     try:
-        status = amazonspider.get_inventory_us(sqlmgr, False, 'B01MDUQRSO', ips_array, 'Nekteck Direct', True)
+        status = amazonspider.get_inventory_us(sqlmgr, False, 'B07HM43149', ips_array, 'ricong-us', True)
     except Exception as e:
         print(str(e), flush=True)
 
