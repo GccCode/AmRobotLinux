@@ -941,8 +941,18 @@ class AmazonSpider():
             for li_element in size_weight_li_array:
                 if ' ounces' in li_element.text:
                     print(li_element.text, flush=True)
+                    if 'Shipping Weight: ' in li_element.text:
+                        weight_str = li_element.text.split(':').strip()
+                        if '(' in weight_str:
+                            weight_str = weight_str.split('(').strip()
+                            print(weight_str, flush=True)
                 elif ' prouds' in li_element.text:
-                    print(li_element.text, flush=True)
+
+                    if 'Shipping Weight: ' in li_element.text:
+                        weight_str = li_element.text.split(':').strip()
+                        if '(' in weight_str:
+                            weight_str = weight_str.split('(').strip()
+                            print(weight_str, flush=True)
 
             input("wati...")
             exit()
