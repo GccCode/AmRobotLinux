@@ -1200,9 +1200,6 @@ class AmazonSpider():
             if driver_upper == False:
                 driver.quit()
 
-            print(status, flush=True)
-            print("==========", flush=True)
-
             return status
 
     def get_inventory_jp(self, sqlmgr, driver_upper, asin, ips_array, is_sale):
@@ -1501,8 +1498,8 @@ if __name__ == "__main__":
         print("SqlMgr initialized in failure", flush=True)
         exit()
 
-    amspider_test(sqlmgr)
-    exit()
+    # amspider_test(sqlmgr)
+    # exit()
 
     if node_file != '0':
         if sys.argv[4] == '1':
