@@ -941,7 +941,7 @@ class AmazonSpider():
             size_weight_li_array = driver.find_elements(*SIZE_WEIGHT_LI_US)
             for li_element in size_weight_li_array:
                 if ' ounces' in li_element.text and ' inches' not in li_element.text:
-                    print(li_element.text, flush=True)
+                    # print(li_element.text, flush=True)
                     if 'Shipping Weight: ' in li_element.text:
                         weight_str = li_element.text.split(':')[1].strip()
                         if '(' in weight_str:
@@ -950,7 +950,7 @@ class AmazonSpider():
                             weight = '%.3f' % (float(weight_str.strip().split(' ')[0]) * 28.3495231 / 1000)
                             data['weight'] = float(weight)
                 elif ' prouds' in li_element.text  and ' inches' not in li_element.text:
-                    print(li_element.text, flush=True) # Shipping Weight: 0.5 ounces (View shipping rates and policies)
+                    # print(li_element.text, flush=True) # Shipping Weight: 0.5 ounces (View shipping rates and policies)
                     if 'Shipping Weight: ' in li_element.text:
                         weight_str = li_element.text.split(':')[1].strip() # 0.5 ounces (View shipping rates and policies)
                         if '(' in weight_str:
@@ -960,9 +960,8 @@ class AmazonSpider():
                             data['weight'] = float(weight)
                 # Product Dimensions: 22.4 x 14.6 x 4.5 inches ; 2 pounds
                 elif ' inches' in li_element.text:
-                    print(li_element.text, flush=True)  # Shipping Weight: 0.5 ounces (View shipping rates and policies)
+                    # print(li_element.text, flush=True)  # Shipping Weight: 0.5 ounces (View shipping rates and policies)
                     if 'Product Dimensions: ' in li_element.text:
-                        print("????", flush=True)
                         size_str = li_element.text.split(':')[1].strip() #22.4 x 14.6 x 4.5 inches ; 2 pounds
                         if ' ounces' in size_str:
                             weight_str = size_str.split(';')[1].strip() # 2 ounces
@@ -974,9 +973,7 @@ class AmazonSpider():
                             data['weight'] = float(weight)
                         size_str = size_str.split(';')[0].strip()  # 22.4 x 14.6 x 4.5 inches
                         size_str = size_str.split(' inches')[0].replace(' ', '') # 22.4x14.6x4.5
-                        print("size_str is " + size_str, flush=True)
                         size_set = size_str.split('x')
-                        print("size_set is " + size_set, flush=True)
                         if len(size_set) != 3:
                             print("get size err", flush=True)
                             continue
@@ -994,7 +991,6 @@ class AmazonSpider():
                             # print("height over " + str(height), flush=True)
                         size = str(int(length)) + 'x' + str(int(width)) + 'x' + str(int(height))
                         data['size'] = size
-                        print(size, flush=True)
 
                         break
 
