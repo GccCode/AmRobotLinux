@@ -1404,8 +1404,8 @@ def amspider_test(sqlmgr):
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-    # amspider_test('us')
-    # exit()
+    amspider_test('us')
+    exit()
     node_file = sys.argv[1]
     type = sys.argv[2]
     country = sys.argv[3]
