@@ -843,7 +843,6 @@ class AmazonSpider():
             rank = int(cursor.fetchone()[0])
         try:
             for i in range(len(asin_array)):
-                rank += i
                 tmp_info = {
                     'rank': rank,
                     'asin': asin_array[i],
@@ -863,6 +862,7 @@ class AmazonSpider():
                     'size': '',
                     'weight': 0
                 }
+                rank += 1
                 result = self.get_inventory_us(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale)
                 if result == False:
                     tmp_info['status'] = 'err'
