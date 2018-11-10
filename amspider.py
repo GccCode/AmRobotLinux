@@ -827,7 +827,7 @@ class AmazonSpider():
         return status
 
 
-    def us_asin_gather(self, sqlmgr, node, node_name, type, asin_info_array, ips_array, is_sale):
+    def us_asin_gather(self, sqlmgr, node, node_name, type, asin_array, ips_array, is_sale):
         status = True
         total_count = 0
         t1 = time.time()
@@ -846,12 +846,13 @@ class AmazonSpider():
         driver.set_script_timeout(60)
 
         status = True
+        asin_info_array = []
         inventory_array = []
         try:
-            for i in range(0, len(asin_info_array)):
+            for i in range(0, len(asin_array)):
                 tmp_info = {
                     'rank': 0,
-                    'asin': asin_info_array[i],
+                    'asin': asin_array[i],
                     'node': node,
                     'price': 0,
                     'review': 0,
@@ -868,34 +869,31 @@ class AmazonSpider():
                     'size': '',
                     'weight': 0
                 }
-                sql = 'select * from ' + node + '_BS where asin=\'' + tmp_info['asin'] + '\''
-                status = True
-                cursor = sqlmgr.ad_sale_data.select_data(sql)
-                if cursor is False:
-                    result = self.get_inventory_us(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale)
-                    if result == False:
-                        tmp_info['status'] = 'err'
-                    elif result == -111:
-                        print("ip problems...", flush=True)
-                        tmp_info['status'] = 'no'
-                    elif result == -222:
-                        # print("overweight " + tmp_info['asin'], flush=True)
-                        tmp_info['limited'] = 'yes'
-                        tmp_info['status'] = 'err'
-                    else:
-                        tmp_info['review'] = result['review']
-                        tmp_info['price'] = result['price']
-                        tmp_info['img_url'] = result['imgsrc']
-                        tmp_info['shipping'] = result['shipping']
-                        tmp_info['seller'] = result['seller']
-                        tmp_info['qa'] = result['qa']
-                        tmp_info['limited'] = result['limited']
-                        tmp_info['status'] = 'ok'
-                        tmp_info['seller_name'] = result['seller_name']
-                        tmp_info['size'] = result['size']
-                        tmp_info['weight'] = result['weight']
-                        total_count += 1
-                        inventory_array.append(copy.deepcopy(result))
+                result = self.get_inventory_us(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale)
+                if result == False:
+                    tmp_info['status'] = 'err'
+                elif result == -111:
+                    print("ip problems...", flush=True)
+                    tmp_info['status'] = 'no'
+                elif result == -222:
+                    # print("overweight " + tmp_info['asin'], flush=True)
+                    tmp_info['limited'] = 'yes'
+                    tmp_info['status'] = 'err'
+                else:
+                    tmp_info['review'] = result['review']
+                    tmp_info['price'] = result['price']
+                    tmp_info['img_url'] = result['imgsrc']
+                    tmp_info['shipping'] = result['shipping']
+                    tmp_info['seller'] = result['seller']
+                    tmp_info['qa'] = result['qa']
+                    tmp_info['limited'] = result['limited']
+                    tmp_info['status'] = 'ok'
+                    tmp_info['seller_name'] = result['seller_name']
+                    tmp_info['size'] = result['size']
+                    tmp_info['weight'] = result['weight']
+                    total_count += 1
+                    asin_info_array.append(copy.deepcopy(tmp_info))
+                    inventory_array.append(copy.deepcopy(result))
         except Exception as e:
             status = False
             print(traceback.format_exc(), flush=True)
@@ -1686,9 +1684,16 @@ def manage_my_sale_track(sqlmgr):
                     if asin == '0':
                         status_child = False
                     else:
-                        asin_added_array.append(asin)
+                        sql = 'select * from MYSALE_BS where asin=\'' + asin + '\''
+                        status = True
+                        cursor = sqlmgr.ad_sale_data.select_data(sql)
+                        if cursor is False:
+                            asin_added_array.append(asin)
+                        else:
+                            print("ASIN已存在", flush=True)
                 print(asin_added_array, flush=True)
-                amazonspider.us_asin_gather(sqlmgr, 'MYSALE', 'MYSALE', 'BS', asin_added_array, ips_array, True)
+                if len(asin_added_array) != 0:
+                    amazonspider.us_asin_gather(sqlmgr, 'MYSALE', 'MYSALE', 'BS', asin_added_array, ips_array, True)
             elif action == '1':
                 asin_delete_array = []
                 while status_child:
@@ -1697,21 +1702,22 @@ def manage_my_sale_track(sqlmgr):
                         status_child = False
                     else:
                         asin_delete_array.append(asin)
-                for index in range(len(asin_delete_array)):
-                    sql = 'delete from MYSALE where asin=\'' + asin_delete_array[index] + '\''
-                    status = sqlmgr.ad_sale_data.query(sql)
-                    if status is False:
-                        print(sql + " in failure", flush=True)
+                if len(asin_delete_array) != 0:
+                    for index in range(len(asin_delete_array)):
+                        sql = 'delete from MYSALE where asin=\'' + asin_delete_array[index] + '\''
+                        status = sqlmgr.ad_sale_data.query(sql)
+                        if status is False:
+                            print(sql + " in failure", flush=True)
 
-                    sql = 'drop table SALE_' + asin_delete_array[index]
-                    status = sqlmgr.ad_sale_data.query(sql)
-                    if status is False:
-                        print(sql + " in failure", flush=True)
+                        sql = 'drop table SALE_' + asin_delete_array[index]
+                        status = sqlmgr.ad_sale_data.query(sql)
+                        if status is False:
+                            print(sql + " in failure", flush=True)
 
-                    sql = 'drop table INVENTORY_' + asin_delete_array[index]
-                    status = sqlmgr.ad_sale_data.query(sql)
-                    if status is False:
-                        print(sql + " in failure", flush=True)
+                        sql = 'drop table INVENTORY_' + asin_delete_array[index]
+                        status = sqlmgr.ad_sale_data.query(sql)
+                        if status is False:
+                            print(sql + " in failure", flush=True)
 
 
 
