@@ -1678,7 +1678,7 @@ def manage_my_sale_track(sqlmgr):
                                     print("ASIN已存在", flush=True)
                     except:
                         pass
-                print(asin_added_array, flush=True)
+                # print(asin_added_array, flush=True)
                 if len(asin_added_array) != 0:
                     amazonspider.us_asin_gather(sqlmgr, 'MYSALE', 'MYSALE', 'BS', asin_added_array, ips_array, True)
             elif action == '1':
