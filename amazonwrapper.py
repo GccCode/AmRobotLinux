@@ -853,7 +853,7 @@ def is_sale_asin(sqlmgr, asin):
     return False
 
 def update_asin_status_ok(amazondata, node):
-    print("update_asin_status_ok + " + node, flush=True)
+    # print("update_asin_status_ok + " + node, flush=True)
     # asin_array = get_all_data(amazondata, (node + '_BS'), 'asin', False)
     # if asin_array != False:
     #     for index in range(len(asin_array)):
@@ -866,7 +866,7 @@ def update_asin_status_ok(amazondata, node):
 
 
 def update_asin_date(amazondata, node):
-    print("update_asin_date + " + node, flush=True)
+    # print("update_asin_date + " + node, flush=True)
     # today = date.today()
     # condition = 'inventory_date=\'' + today.strftime("%Y-%m-%d") + '\''
     # asin_array = get_all_data(amazondata, (node + '_BS'), 'asin', condition)
@@ -889,7 +889,7 @@ def update_asin_date(amazondata, node):
 
 
 def fix_asin_sale(amazondata, node, err_sale_value):
-    print("fix_asin_sale + " + node, flush=True)
+    # print("fix_asin_sale + " + node, flush=True)
     condition = 'avg_sale>0 and limited=\'no\''
     asin_array = get_all_data(amazondata, (node + '_BS'), 'asin', condition)
     if asin_array != False:
@@ -920,9 +920,10 @@ def update_all_task_date_status(sqlmgr, date, err_sale_value):
         task_table = amazonglobal.table_sale_task_jp
     elif sqlmgr.country == 'us':
         task_table = amazonglobal.table_sale_task_us
-
+    count = 0
     node_array = get_all_data(sqlmgr.ad_sale_task, task_table, 'node', False)
     for index in range(len(node_array)):
+        count += 1
         # print(asin_array[index])
         condition = 'node=\'' + node_array[index][0] + '\''
         sqlmgr.ad_sale_task.update_data(task_table, 'last_date', '\'' + date + '\'', condition)
@@ -930,7 +931,7 @@ def update_all_task_date_status(sqlmgr, date, err_sale_value):
         update_asin_status_ok(sqlmgr.ad_sale_data, node_array[index][0])
         update_asin_date(sqlmgr.ad_sale_data, node_array[index][0])
         fix_asin_sale(sqlmgr.ad_sale_data, node_array[index][0], err_sale_value)
-
+        print("total-index: " + str(len(node_array)) + '-' + str(count), flush=True)
 
 def update_all_rank_task_date_status(date, sqlmgr):
     if sqlmgr.country == 'jp':
