@@ -832,17 +832,6 @@ class AmazonSpider():
         t1 = time.time()
         datetime1 = datetime.strptime('1990-01-28','%Y-%m-%d')
         date1 = datetime1.date()
-        chrome_options = webdriver.ChromeOptions()
-        prefs = {
-            'profile.default_content_setting_values': {
-                'images': 2,
-                # 'javascript': 2
-            }
-        }
-        chrome_options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Chrome(chrome_options=chrome_options)
-        driver.set_page_load_timeout(60)
-        driver.set_script_timeout(60)
 
         status = True
         asin_info_array = []
@@ -897,8 +886,6 @@ class AmazonSpider():
             status = False
             print(traceback.format_exc(), flush=True)
         finally:
-            if driver is not False:
-                driver.quit()
             if status == False:
                 return False
 
