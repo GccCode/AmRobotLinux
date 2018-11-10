@@ -853,15 +853,20 @@ def is_sale_asin(sqlmgr, asin):
     return False
 
 def update_asin_status_ok(amazondata, node):
-    asin_array = get_all_data(amazondata, (node + '_BS'), 'asin', False)
-    if asin_array != False:
-        for index in range(len(asin_array)):
-            condition = 'asin=\'' + asin_array[index][0] + '\'' + ' and status=\'err\''
-            if amazondata.is_table_exsist(node + '_BS'):
-                amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
+    print("update_asin_status_ok", flush=True)
+    # asin_array = get_all_data(amazondata, (node + '_BS'), 'asin', False)
+    # if asin_array != False:
+    #     for index in range(len(asin_array)):
+    #         condition = 'asin=\'' + asin_array[index][0] + '\'' + ' and status=\'err\''
+    #         if amazondata.is_table_exsist(node + '_BS'):
+    #             amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
+    condition = 'status=\'err\''
+    if amazondata.is_table_exsist(node + '_BS'):
+        amazondata.update_data(node + '_BS', 'status', '\'ok\'', condition)
 
 
 def update_asin_date(amazondata, node):
+    print("update_asin_date", flush=True)
     today = date.today()
     condition = 'inventory_date=\'' + today.strftime("%Y-%m-%d") + '\''
     asin_array = get_all_data(amazondata, (node + '_BS'), 'asin', condition)
@@ -877,10 +882,15 @@ def update_asin_date(amazondata, node):
                         yesterday = date.today() + timedelta(days=-1)
                         condition = 'asin=\'' + asin_array[index][0] + '\''
                         amazondata.update_data(node + '_BS', 'inventory_date', '\'' + yesterday.strftime("%Y-%m-%d") + '\'', condition)
+    # today = date.today()
+    # condition = 'inventory_date=\'' + today.strftime("%Y-%m-%d") + '\''
+    # yesterday = date.today() + timedelta(days=-1)
+    # amazondata.update_data(node + '_BS', 'inventory_date', '\'' + yesterday.strftime("%Y-%m-%d") + '\'', condition)
 
 
 def fix_asin_sale(amazondata, node, err_sale_value):
-    condition = 'avg_sale>0'
+    print("fix_asin_sale", flush=True)
+    condition = 'avg_sale>0 and limited=\'no\''
     asin_array = get_all_data(amazondata, (node + '_BS'), 'asin', condition)
     if asin_array != False:
         for index in range(len(asin_array)):
