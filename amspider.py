@@ -894,6 +894,9 @@ class AmazonSpider():
             if status == False:
                 return False
 
+        print(len(asin_info_array), flush=True)
+        print(len(inventory_array), flush=True)
+
         for i in range(len(asin_info_array)):
             asin = asin_info_array[i]['asin']
             node_table = node + '_' + type
