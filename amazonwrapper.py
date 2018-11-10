@@ -866,30 +866,28 @@ def update_asin_status_ok(amazondata, node):
 
 
 def update_asin_date(amazondata, node):
-    # print("update_asin_date + " + node, flush=True)
-    # today = date.today()
-    # condition = 'inventory_date=\'' + today.strftime("%Y-%m-%d") + '\''
-    # asin_array = get_all_data(amazondata, (node + '_BS'), 'asin', condition)
-    # if asin_array != False:
-    #     for index in range(len(asin_array)):
-    #         inventory_table_name = 'INVENTORY_' + asin_array[index][0]
-    #         if amazondata.is_table_exsist(inventory_table_name):
-    #             yesterday_inventory = amazondata.get_yesterday_inventory(inventory_table_name)
-    #             today_inventory = amazondata.get_today_inventory(inventory_table_name)
-    #             if today_inventory != 0:
-    #                 if (yesterday_inventory / today_inventory) > 10:
-    #                     print("today inventory may error + " + asin_array[index][0], flush=True)
-    #                     yesterday = date.today() + timedelta(days=-1)
-    #                     condition = 'asin=\'' + asin_array[index][0] + '\''
-    #                     amazondata.update_data(node + '_BS', 'inventory_date', '\'' + yesterday.strftime("%Y-%m-%d") + '\'', condition)
     today = date.today()
     condition = 'inventory_date=\'' + today.strftime("%Y-%m-%d") + '\''
-    yesterday = date.today() + timedelta(days=-1)
-    amazondata.update_data(node + '_BS', 'inventory_date', '\'' + yesterday.strftime("%Y-%m-%d") + '\'', condition)
+    asin_array = get_all_data(amazondata, (node + '_BS'), 'asin', condition)
+    if asin_array != False:
+        for index in range(len(asin_array)):
+            inventory_table_name = 'INVENTORY_' + asin_array[index][0]
+            if amazondata.is_table_exsist(inventory_table_name):
+                yesterday_inventory = amazondata.get_yesterday_inventory(inventory_table_name)
+                today_inventory = amazondata.get_today_inventory(inventory_table_name)
+                if today_inventory != 0:
+                    if (yesterday_inventory / today_inventory) > 10:
+                        print("today inventory may error + " + asin_array[index][0], flush=True)
+                        yesterday = date.today() + timedelta(days=-1)
+                        condition = 'asin=\'' + asin_array[index][0] + '\''
+                        amazondata.update_data(node + '_BS', 'inventory_date', '\'' + yesterday.strftime("%Y-%m-%d") + '\'', condition)
+    # today = date.today()
+    # condition = 'inventory_date=\'' + today.strftime("%Y-%m-%d") + '\''
+    # yesterday = date.today() + timedelta(days=-1)
+    # amazondata.update_data(node + '_BS', 'inventory_date', '\'' + yesterday.strftime("%Y-%m-%d") + '\'', condition)
 
 
 def fix_asin_sale(amazondata, node, err_sale_value):
-    # print("fix_asin_sale + " + node, flush=True)
     condition = 'avg_sale>0 and limited=\'no\''
     asin_array = get_all_data(amazondata, (node + '_BS'), 'asin', condition)
     if asin_array != False:
