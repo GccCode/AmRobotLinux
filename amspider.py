@@ -1680,20 +1680,19 @@ def manage_my_sale_track(sqlmgr):
                 asin_added_array = []
                 while status_child:
                     try:
-                    asin = input("* 输入asin(退出输入0）：")
-                    if asin == '0':
-                        status_child = False
-                    else:
-                        try:
-                            sql = 'select * from MYSALE_BS where asin=\'' + asin + '\''
-                            status = True
-                            cursor = sqlmgr.ad_sale_data.select_data(sql)
-                            if cursor is False:
-                                asin_added_array.append(asin)
-                            else:
-                                print("ASIN已存在", flush=True)
-                        except:
-                            pass
+                        asin = input("* 输入asin(退出输入0）：")
+                        if asin == '0':
+                            status_child = False
+                        else:
+                                sql = 'select * from MYSALE_BS where asin=\'' + asin + '\''
+                                status = True
+                                cursor = sqlmgr.ad_sale_data.select_data(sql)
+                                if cursor is False:
+                                    asin_added_array.append(asin)
+                                else:
+                                    print("ASIN已存在", flush=True)
+                    except:
+                        pass
                 print(asin_added_array, flush=True)
                 if len(asin_added_array) != 0:
                     amazonspider.us_asin_gather(sqlmgr, 'MYSALE', 'MYSALE', 'BS', asin_added_array, ips_array, True)
