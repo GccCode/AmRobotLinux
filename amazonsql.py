@@ -102,7 +102,6 @@ class AmazonSql():
         try:
             cursor = db.cursor()
             cursor.execute(sql)
-            print(cursor.rowcount, flush=True)
             if 'delete from' in sql or 'update' in sql:
                 db.commit()
                 status = True

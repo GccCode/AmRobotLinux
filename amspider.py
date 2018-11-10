@@ -897,6 +897,8 @@ class AmazonSpider():
             status = False
             print(traceback.format_exc(), flush=True)
         finally:
+            if driver is not False:
+                driver.quit()
             if status == False:
                 return False
 
