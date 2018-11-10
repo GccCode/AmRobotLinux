@@ -107,7 +107,7 @@ class AmazonSql():
                 db.commit()
                 status = True
             else:
-                if cursor.rowcount > 0 and cursor is not False:
+                if cursor.rowcount >= 0:
                     status = cursor
                 else:
                     status = False
