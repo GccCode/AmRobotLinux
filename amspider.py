@@ -842,13 +842,9 @@ class AmazonSpider():
                 sql = 'select count(*) from MYSALE_BS'
                 cursor = sqlmgr.ad_sale_data.select_data(sql)
                 if cursor is not False:
-                    rank = cursor.fetchone()[0]
-                    print(rank, flush=True)
-
-                input("waiting..")
-                exit()
+                    rank = int(cursor.fetchone()[0])
                 tmp_info = {
-                    'rank': 0,
+                    'rank': rank,
                     'asin': asin_array[i],
                     'node': node,
                     'price': 0,
