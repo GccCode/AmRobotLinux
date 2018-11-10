@@ -837,7 +837,7 @@ class AmazonSpider():
         asin_info_array = []
         inventory_array = []
         try:
-            for i in range(0, len(asin_array)):
+            for i in range(len(asin_array)):
                 rank = 0
                 sql = 'select count(*) from MYSALE_BS'
                 cursor = sqlmgr.ad_sale_data.select_data(sql)
