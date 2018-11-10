@@ -843,6 +843,7 @@ class AmazonSpider():
                 cursor = sqlmgr.ad_sale_data.select_data(sql)
                 if cursor is not False:
                     rank = int(cursor.fetchone()[0])
+                    rank += 1
                 tmp_info = {
                     'rank': rank,
                     'asin': asin_array[i],
