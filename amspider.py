@@ -170,7 +170,6 @@ def getsale_jp(template):
         print(traceback.format_exc(), flush=True)
 
 def getsale_us(template):
-    print(template, flush=True)
     rule = r'the (.*?) available'
     slotList = re.findall(rule, template)
     if len(slotList) < 1:
@@ -1671,7 +1670,7 @@ def manage_my_sale_track(sqlmgr):
     status = True
     while status is True:
         print("========= 程序功能选择 ========")
-        action = input("* 退出-0, 配置-1")
+        action = input("* 退出-0, 配置-1：")
         if action == "0":
             status = False
         elif action == '1':
