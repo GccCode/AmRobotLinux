@@ -1703,7 +1703,7 @@ def manage_my_sale_track(sqlmgr):
                         asin_delete_array.append(asin)
                 if len(asin_delete_array) != 0:
                     for index in range(len(asin_delete_array)):
-                        sql = 'delete from MYSALE where asin=\'' + asin_delete_array[index] + '\''
+                        sql = 'delete from MYSALE_BS where asin=\'' + asin_delete_array[index] + '\''
                         status = sqlmgr.ad_sale_data.query(sql)
                         if status is False:
                             print(sql + " in failure", flush=True)
