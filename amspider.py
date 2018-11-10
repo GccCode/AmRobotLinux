@@ -1673,7 +1673,7 @@ def manage_my_sale_track(sqlmgr):
     status = True
     while status is True:
         print("========= 程序功能选择 ========")
-        action = input("* 退出-0, 配置-1，执行-2：")
+        action = input("* 退出-0, 配置-1")
         if action == "0":
             status = False
         elif action == '1':
