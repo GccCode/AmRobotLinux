@@ -218,6 +218,7 @@ def get_price_us(template):
 
 def get_imgsrc_us(element):
     url = element.get_attribute('src')
+    print(url, flush=True)
     return url.split('I/')[1].split('.j')[0]
 
 
