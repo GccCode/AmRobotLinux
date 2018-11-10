@@ -896,9 +896,11 @@ class AmazonSpider():
 
         print(len(asin_info_array), flush=True)
         print(len(inventory_array), flush=True)
+        print(range(len(asin_info_array)), flush=True)
 
         for i in range(len(asin_info_array)):
             asin = asin_info_array[i]['asin']
+            print(asin, flush=True)
             node_table = node + '_' + type
             status = sqlmgr.ad_sale_data.create_node_table(node_table)
             if status == True:
