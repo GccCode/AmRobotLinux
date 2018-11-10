@@ -862,7 +862,6 @@ class AmazonSpider():
                     'size': '',
                     'weight': 0
                 }
-                rank += 1
                 result = self.get_inventory_us(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale)
                 if result == False:
                     tmp_info['status'] = 'err'
@@ -886,6 +885,7 @@ class AmazonSpider():
                     tmp_info['size'] = result['size']
                     tmp_info['weight'] = result['weight']
                     total_count += 1
+                    rank += 1
                     asin_info_array.append(copy.deepcopy(tmp_info))
                     inventory_array.append(copy.deepcopy(result))
         except Exception as e:
