@@ -217,7 +217,7 @@ def get_price_us(template):
     return template.replace('$', '').replace(',', '')
 
 def get_imgsrc_us(element):
-    url = element.get_attribute('src')
+    url = element.get_attribute('data-a-dynamic-image')
     print(url, flush=True)
     return url.split('I/')[1].split('.j')[0]
 
