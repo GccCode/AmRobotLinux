@@ -33,7 +33,7 @@ BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a'
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
 REVIEW_COUNT_US = (By.ID, 'acrCustomerReviewText')
 PRICE_US = (By.ID, 'priceblock_ourprice')
-IMGSRC_US = (By.CLASS_NAME, 'img[id=\'landingImage\']')
+IMGSRC_US = (By.CSS_SELECTOR, 'img[id=\'landingImage\']')
 FBA_FLAG = (By.ID, "SSOFpopoverLink")
 AB_FLAG_JP = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 # AB_FLAG_US = (By.XPATH, '//*[@id=\'merchant-info\']/text()[position()=1]')
@@ -170,6 +170,7 @@ def getsale_jp(template):
         print(traceback.format_exc(), flush=True)
 
 def getsale_us(template):
+    print(template, flush=True)
     rule = r'the (.*?) available'
     slotList = re.findall(rule, template)
     if len(slotList) < 1:
