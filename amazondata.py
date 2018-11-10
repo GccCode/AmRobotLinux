@@ -193,7 +193,7 @@ class AmazonData():
         return status
 
     def select_data(self, sql):
-        return  self.amsql.select_data(self.db, sql)
+        return self.amsql.select_data(self.db, sql)
 
     def insert_node_data(self, table, data):
         return self.amsql.insert_data(self.db, table, data)

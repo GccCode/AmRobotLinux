@@ -826,6 +826,150 @@ class AmazonSpider():
 
         return status
 
+
+    def us_asin_gather(self, sqlmgr, node, node_name, type, asin_info_array, ips_array, is_sale):
+        status = True
+        total_count = 0
+        t1 = time.time()
+        datetime1 = datetime.strptime('1990-01-28','%Y-%m-%d')
+        date1 = datetime1.date()
+        chrome_options = webdriver.ChromeOptions()
+        prefs = {
+            'profile.default_content_setting_values': {
+                'images': 2,
+                # 'javascript': 2
+            }
+        }
+        chrome_options.add_experimental_option("prefs", prefs)
+        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver.set_page_load_timeout(60)
+        driver.set_script_timeout(60)
+
+        status = True
+        inventory_array = []
+        try:
+            for i in range(0, len(asin_info_array)):
+                tmp_info = {
+                    'rank': 0,
+                    'asin': asin_info_array[i],
+                    'node': node,
+                    'price': 0,
+                    'review': 0,
+                    'rate': 0,
+                    'qa': 0,
+                    'shipping': None,
+                    'seller': 0,
+                    'avg_sale': 0,
+                    'inventory_date': date1,
+                    'limited': 'no',
+                    'img_url': None,
+                    'status': 'no',
+                    'seller_name': '',
+                    'size': '',
+                    'weight': 0
+                }
+                sql = 'select * from ' + node + '_BS where asin=\'' + tmp_info['asin'] + '\''
+                status = True
+                cursor = sqlmgr.ad_sale_data.select_data(sql)
+                if cursor is False:
+                    result = self.get_inventory_us(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale)
+                    if result == False:
+                        tmp_info['status'] = 'err'
+                    elif result == -111:
+                        print("ip problems...", flush=True)
+                        tmp_info['status'] = 'no'
+                    elif result == -222:
+                        # print("overweight " + tmp_info['asin'], flush=True)
+                        tmp_info['limited'] = 'yes'
+                        tmp_info['status'] = 'err'
+                    else:
+                        tmp_info['review'] = result['review']
+                        tmp_info['price'] = result['price']
+                        tmp_info['img_url'] = result['imgsrc']
+                        tmp_info['shipping'] = result['shipping']
+                        tmp_info['seller'] = result['seller']
+                        tmp_info['qa'] = result['qa']
+                        tmp_info['limited'] = result['limited']
+                        tmp_info['status'] = 'ok'
+                        tmp_info['seller_name'] = result['seller_name']
+                        tmp_info['size'] = result['size']
+                        tmp_info['weight'] = result['weight']
+                        total_count += 1
+                        inventory_array.append(copy.deepcopy(result))
+        except Exception as e:
+            status = False
+            print(traceback.format_exc(), flush=True)
+        finally:
+            if status == False:
+                return False
+
+        for i in range(0, len(asin_info_array)):
+            asin = asin_info_array[i]['asin']
+            node_table = node + '_' + type
+            status = sqlmgr.ad_sale_data.create_node_table(node_table)
+            if status == True:
+                status = sqlmgr.ad_sale_data.insert_node_data(node_table, asin_info_array[i])
+                if status == True:
+                    inventory_table = 'INVENTORY_' + asin
+                    status = sqlmgr.ad_sale_data.create_inventory_table(inventory_table)
+                    if status == True:
+                        cur_date = date.today()
+                        data = {
+                            'date': cur_date,
+                            'inventory': inventory_array[i]['inventory']
+                        }
+                        status = sqlmgr.ad_sale_data.insert_inventory_data(inventory_table, data)
+                        if status == True:
+                            condition = 'asin=\'' + asin + '\''
+                            value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+                            status = sqlmgr.ad_sale_data.update_data(node_table, 'inventory_date', value, condition)
+                            if status == True:
+                                task_data = {
+                                    'node': node,
+                                    'status': 'ok',
+                                    'last_date': cur_date,
+                                    'node_name': node_name
+                                }
+                                status = insert_task_node(sqlmgr.ad_sale_task, amazonglobal.table_sale_task_us, task_data)
+                                if status == False:
+                                    print("insert task node in failure... + " + node, flush=True)
+                                status = sqlmgr.ad_sale_data.get_yesterday_sale(inventory_table)
+                                if status != -999:
+                                    yesterday = date.today() + timedelta(days=-1)
+                                    data = {
+                                        'date': yesterday,
+                                        'sale': copy.deepcopy(status)
+                                    }
+                                    sale_table = 'SALE_' + asin
+                                    status = sqlmgr.ad_sale_data.create_sale_table(sale_table)
+                                    if status == True:
+                                        status = sqlmgr.ad_sale_data.insert_sale_data(sale_table, data)
+                                        if status == True:
+                                            avg_sale = sqlmgr.ad_sale_data.get_column_avg(sale_table, 'sale')
+                                            if avg_sale != -999:
+                                                status = sqlmgr.ad_sale_data.update_data(node_table, 'avg_sale', avg_sale, condition)
+                                                if status == False:
+                                                    print("avg_sale update fail.. + " + node_table, flush=True)
+                                        else:
+                                            print("sale_data insert fail... + " + sale_table, flush=True)
+                                    else:
+                                        print("sale_table create fail.. + " + sale_table, flush=True)
+                            else:
+                                print("invetory_date update fail.. + " + node_table, flush=True)
+                        else:
+                            print("inventory data insert fail.. + " + inventory_table, flush=True)
+                    else:
+                        print("inventory_table create fail + " + inventory_table, flush=True)
+                else:
+                    print("asin_info_data inserted fail.. + " + node_table, flush=True)
+            else:
+                print("node_table create fail + " + node_table, flush=True)
+
+        t2 = time.time()
+        print("Asin_Count-Time_Consumed：" + str(total_count) + '-'+ format(t2 - t1), flush=True)
+
+        return status
+
     def get_inventory_us(self, sqlmgr, driver_upper, asin, ips_array, seller_name, is_sale):
         if driver_upper == False:
             chrome_options = webdriver.ChromeOptions()
@@ -1231,7 +1375,7 @@ class AmazonSpider():
             if driver_upper == False:
                 driver.quit()
 
-            print(status, flush=True)
+            # print(status, flush=True)
 
             return status
 
@@ -1519,6 +1663,58 @@ def amspider_test(sqlmgr):
     except Exception as e:
         print(str(e), flush=True)
 
+
+def manage_my_sale_track(sqlmgr):
+    amazonspider = AmazonSpider()
+    ips_array = amazonwrapper.get_all_accessible_ip(sqlmgr.ad_ip_info)
+    if ips_array == False:
+        print("no accessible ip", flush=True)
+        exit(-1)
+    status = True
+    while status is True:
+        print("========= 程序功能选择 ========")
+        action = input("* 退出-0, 配置-1，执行-2：")
+        if action == "0":
+            status = False
+        elif action == '1':
+            action = input("* 添加-0, 删除-1：")
+            status_child = True
+            if action == '0':
+                asin_added_array = []
+                while status_child:
+                    asin = input("* 输入asin(退出输入0）：")
+                    if asin == '0':
+                        status_child = False
+                    else:
+                        asin_added_array.append(asin)
+                print(asin_added_array, flush=True)
+                amazonspider.us_asin_gather(sqlmgr, 'MYSALE', 'MYSALE', 'BS', asin_added_array, ips_array, True)
+            elif action == '1':
+                asin_delete_array = []
+                while status_child:
+                    asin = input("* 输入asin(退出输入0）：")
+                    if asin == '0':
+                        status_child = False
+                    else:
+                        asin_delete_array.append(asin)
+                for index in range(len(asin_delete_array)):
+                    sql = 'delete from MYSALE where asin=\'' + asin_delete_array[index] + '\''
+                    status = sqlmgr.ad_sale_data.query(sql)
+                    if status is False:
+                        print(sql + " in failure", flush=True)
+
+                    sql = 'drop table SALE_' + asin_delete_array[index]
+                    status = sqlmgr.ad_sale_data.query(sql)
+                    if status is False:
+                        print(sql + " in failure", flush=True)
+
+                    sql = 'drop table INVENTORY_' + asin_delete_array[index]
+                    status = sqlmgr.ad_sale_data.query(sql)
+                    if status is False:
+                        print(sql + " in failure", flush=True)
+
+
+
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -1531,16 +1727,18 @@ if __name__ == "__main__":
         print("SqlMgr initialized in failure", flush=True)
         exit()
 
-    amspider_test(sqlmgr)
-    exit()
+    # amspider_test(sqlmgr)
+    # exit()
 
-    if node_file != '0':
+    if node_file != '0' and node_file != '1':
         if sys.argv[4] == '1':
             is_sale = True
         elif sys.argv[4] == '0':
             is_sale = False
         db_name = sys.argv[5]
         amspider_from_file(node_file, type, sqlmgr, is_sale, db_name)
+    elif node_file == '1':
+        manage_my_sale_track(sqlmgr)
     else: # python3.6 amspider.py 0 BS us 1 node_info_us automotive node=\'10350150011\'
 
         if sys.argv[4] == '1':

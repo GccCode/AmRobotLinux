@@ -982,17 +982,6 @@ def copy_table_data(from_amazondata, to_amazondata):
                 print("insert task data in failure.", flush=True)
 
 
-def manage_my_sale_track(sqlmgr):
-    status = True
-    while status is True:
-        print("========= 程序功能选择 ========")
-        action = input("* 退出-0, 配置-1，执行-2：")
-        if action == "0":
-            status = False
-        elif action == '1':
-            action = input("* 添加-0, 删除-1：")
-
-
 
 # SELECT CREATE_TIME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='amazondata' AND TABLE_NAME='INVENTORY_B07GYTTF8B';
 if __name__ == "__main__":
