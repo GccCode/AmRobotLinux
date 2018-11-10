@@ -838,6 +838,15 @@ class AmazonSpider():
         inventory_array = []
         try:
             for i in range(0, len(asin_array)):
+                rank = 0
+                sql = 'select count(*) from MYSALE_BS'
+                cursor = sqlmgr.ad_sale_data.select_data(sql)
+                if cursor is not False:
+                    rank = cursor.fetchone()[0]
+                    print(rank, flush=True)
+
+                input("waiting..")
+                exit()
                 tmp_info = {
                     'rank': 0,
                     'asin': asin_array[i],
