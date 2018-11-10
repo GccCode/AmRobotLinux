@@ -1669,12 +1669,12 @@ def manage_my_sale_track(sqlmgr):
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
-    status = True
-    while status is True:
+    parent_status = True
+    while parent_status is True:
         print("========= 程序功能选择 ========")
         action = input("* 退出-0, 配置-1：")
         if action == "0":
-            status = False
+            parent_status = False
         elif action == '1':
             action = input("* 添加-0, 删除-1：")
             status_child = True
@@ -1687,7 +1687,6 @@ def manage_my_sale_track(sqlmgr):
                             status_child = False
                         else:
                                 sql = 'select * from MYSALE_BS where asin=\'' + asin + '\''
-                                status = True
                                 cursor = sqlmgr.ad_sale_data.select_data(sql)
                                 if cursor is False:
                                     asin_added_array.append(asin)
