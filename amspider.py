@@ -31,6 +31,9 @@ UNKNOWN_NODE_US = (By.XPATH, '//*[@id=\'zg-center-div\']/h4')
 BIG_IMG_DIV_US = (By.XPATH, '//*[@id=\'imgTagWrapperId\']')
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
+REVIEW_COUNT_US = (By.ID, 'acrCustomerReviewText')
+PRICE_US = (By.ID, 'priceblock_ourprice')
+IMGSRC_US = (By.CLASS_NAME, 'img[id=\'landingImage\']')
 FBA_FLAG = (By.ID, "SSOFpopoverLink")
 AB_FLAG_JP = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 # AB_FLAG_US = (By.XPATH, '//*[@id=\'merchant-info\']/text()[position()=1]')
@@ -205,6 +208,17 @@ def getqa_jp(template):
 
 def getqa_us(template):
     return template.split(' ')[0].strip('+')
+
+def get_review_us(template):
+    return template.split(' ')[0].strip('+')
+
+def get_price_us(template):
+    return template.replace('$', '').replace(',', '')
+
+def get_imgsrc_us(element):
+    url = element.get_attribute('src')
+    return url.split('I/')[1].split('.j')[0]
+
 
 def getprice_jp(price):
     if '-' in price:
@@ -843,6 +857,9 @@ class AmazonSpider():
             driver = driver_upper
         status = False
         data = {
+            'price': 0,
+            'review': 0,
+            'imgsrc': '',
             'shipping': 'FBM',
             'seller': 0,
             'seller_name': '',
@@ -896,15 +913,28 @@ class AmazonSpider():
             new_page_version_flag = False
             if big_img_div_position_y > shipping_element_position_y and data['shipping'] != 'FBM':
                 new_page_version_flag = True
-                # print("new page version like health", flush=True)
 
             if amazonasinpage.is_element_exsist(*QA_COUNT):
                 element = driver.find_element(*QA_COUNT)
                 data['qa'] = int(getqa_us(element.text))
-                # print("qa is:")
-                # print(getqa_us(element.text), flush=True)
             else:
                 data['qa'] = 0
+
+            if amazonasinpage.is_element_exsist(*REVIEW_COUNT_US):
+                element = driver.find_element(*REVIEW_COUNT_US)
+                data['review'] = int(get_review_us(element.text))
+            else:
+                data['review'] = 0
+
+            if amazonasinpage.is_element_exsist(*PRICE_US):
+                element = driver.find_element(*PRICE_US)
+                data['price'] = float(get_price_us(element.text))
+            else:
+                data['price'] = 0
+
+            if amazonasinpage.is_element_exsist(*IMGSRC_US):
+                element = driver.find_element(*IMGSRC_US)
+                data['imgsrc'] = get_imgsrc_us(element)
 
             overweight_flag = False
             size_weight_td_array = driver.find_elements(*SIZE_WEIGHT_TD_US)
@@ -1200,6 +1230,8 @@ class AmazonSpider():
             if driver_upper == False:
                 driver.quit()
 
+            print(status, flush=True)
+
             return status
 
     def get_inventory_jp(self, sqlmgr, driver_upper, asin, ips_array, is_sale):
@@ -1400,7 +1432,7 @@ class AmazonSpider():
                 driver.quit()
             return status
 
-def amspider_from_file(node_file, type, sqlmgr, is_sale, db_name):
+def amspider_from_file(node_file, type, sqlmgr, is_sale):
     ips_array = amazonwrapper.get_all_accessible_ip(sqlmgr.ad_ip_info)
     if ips_array == False:
         print("no accessible ip", flush=True)
@@ -1498,8 +1530,8 @@ if __name__ == "__main__":
         print("SqlMgr initialized in failure", flush=True)
         exit()
 
-    # amspider_test(sqlmgr)
-    # exit()
+    amspider_test(sqlmgr)
+    exit()
 
     if node_file != '0':
         if sys.argv[4] == '1':
