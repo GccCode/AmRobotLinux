@@ -1176,10 +1176,7 @@ class AmazonSpider():
                 data['seller'] = 1
             else:
                 print("get seller count in failure..", flush=True)
-                if overweight_flag == False:
-                    status = False
-                else:
-                    status = -222
+                status = -222
                 return status
 
             if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
@@ -1188,17 +1185,14 @@ class AmazonSpider():
             elif data['shipping'] == 'AB':
                 data['seller_name'] = 'Amazon'
             else:
-                if overweight_flag == False:
-                    status = False
-                else:
-                    status = -222
+                status = -222
                 return status
 
             if data['shipping'] == 'FBM' and seller_name == False:
                 status = -222
                 return status
 
-            if is_sale and overweight_flag == False:
+            if is_sale:
                 if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon' or new_page_version_flag:
                     status = amazonasinpage.add_cart(5000, 8000)
                     print("get_inventory_us + " + asin, flush=True)
@@ -1346,9 +1340,6 @@ class AmazonSpider():
                         print("no buycart.. + " + asin, flush=True)
                         # amazonasinpage.window_capture(asin + '-nocart-')
             else:
-                if overweight_flag:
-                    status = -222
-                else:
                     status = data
         except NoSuchElementException as msg:
             status = False
