@@ -162,9 +162,9 @@ def amsale_from_mysql(sqlmgr, node_type):
                                         result = amazonspider.get_inventory_jp(sqlmgr, False, asin, ips_array, True)
                                     elif country == 'us':
                                         if asin_info[14] == '':
-                                            result = amazonspider.get_inventory_us(sqlmgr, False, asin, ips_array, False, True)
+                                            result = amazonspider.get_inventory_us(sqlmgr, False, asin, ips_array, False, True, False)
                                         else:
-                                            result = amazonspider.get_inventory_us(sqlmgr, False, asin, ips_array, asin_info[14], True)
+                                            result = amazonspider.get_inventory_us(sqlmgr, False, asin, ips_array, asin_info[14], True, False)
                                     if result != False and result != -111 and result != -222:
                                         cur_date = date.today()
                                         data = {

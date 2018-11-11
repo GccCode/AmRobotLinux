@@ -715,7 +715,7 @@ class AmazonSpider():
                     for i in range(0, len(asin_info_array)):
                         tmp_info = asin_info_array[i]
                         if tmp_info['status'] == 'no':
-                            result = self.get_inventory_us(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale)
+                            result = self.get_inventory_us(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale, False)
                             if result == False:
                                 asin_info_remove_array.append(asin_info_array[i])
                                 tmp_info['status'] = 'err'
@@ -862,7 +862,7 @@ class AmazonSpider():
                     'size': '',
                     'weight': 0
                 }
-                result = self.get_inventory_us(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale)
+                result = self.get_inventory_us(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale, True)
                 if result == False:
                     tmp_info['status'] = 'err'
                 elif result == -111:
@@ -962,7 +962,7 @@ class AmazonSpider():
 
         return status
 
-    def get_inventory_us(self, sqlmgr, driver_upper, asin, ips_array, seller_name, is_sale):
+    def get_inventory_us(self, sqlmgr, driver_upper, asin, ips_array, seller_name, is_sale, enhance):
         if driver_upper == False:
             chrome_options = webdriver.ChromeOptions()
             prefs = {
@@ -1057,21 +1057,22 @@ class AmazonSpider():
             else:
                 data['qa'] = 0
 
-            if amazonasinpage.is_element_exsist(*REVIEW_COUNT_US):
-                element = driver.find_element(*REVIEW_COUNT_US)
-                data['review'] = int(get_review_us(element.text))
-            else:
-                data['review'] = 0
+            if enhance is True:
+                if amazonasinpage.is_element_exsist(*REVIEW_COUNT_US):
+                    element = driver.find_element(*REVIEW_COUNT_US)
+                    data['review'] = int(get_review_us(element.text))
+                else:
+                    data['review'] = 0
 
-            if amazonasinpage.is_element_exsist(*PRICE_US):
-                element = driver.find_element(*PRICE_US)
-                data['price'] = float(get_price_us(element.text))
-            else:
-                data['price'] = 0
+                if amazonasinpage.is_element_exsist(*PRICE_US):
+                    element = driver.find_element(*PRICE_US)
+                    data['price'] = float(get_price_us(element.text))
+                else:
+                    data['price'] = 0
 
-            if amazonasinpage.is_element_exsist(*IMGSRC_US):
-                element = driver.find_element(*IMGSRC_US)
-                data['imgsrc'] = get_imgsrc_us(element)
+                if amazonasinpage.is_element_exsist(*IMGSRC_US):
+                    element = driver.find_element(*IMGSRC_US)
+                    data['imgsrc'] = get_imgsrc_us(element)
 
             overweight_flag = False
             size_weight_td_array = driver.find_elements(*SIZE_WEIGHT_TD_US)
@@ -1641,7 +1642,7 @@ def amspider_test(sqlmgr):
         exit(-1)
     amazonspider = AmazonSpider()
     try:
-        status = amazonspider.get_inventory_us(sqlmgr, False, 'B07H2V7637', ips_array, 'Solid-Inc', True)
+        status = amazonspider.get_inventory_us(sqlmgr, False, 'B07H2V7637', ips_array, 'Solid-Inc', True, False)
         # status = amazonspider.get_inventory_us(sqlmgr, False, 'B07D6M8VRH', ips_array, 'winecup', True)
     except Exception as e:
         print(str(e), flush=True)
