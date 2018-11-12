@@ -320,6 +320,7 @@ class AmazonGUI():
                             mainpage << maindiv
                         count += len(data)
                 else:
+                    count += 1
                     continue
             filename = output + page_name + '.html'
             mainpage.printOut(filename)
