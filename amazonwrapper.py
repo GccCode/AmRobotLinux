@@ -342,8 +342,8 @@ def is_in_task_delete_data(amazondata, node):
         try:
             sql = 'select * from ' + task_delete_table + ' where node=\'' + node + '\''
             cursor = amazondata.query(sql)
-            if cursor == False:
-                status = cursor
+            if cursor == False or cursor.rowcount == 0:
+                status = False
             else:
                 status = True
         except Exception:

@@ -187,7 +187,6 @@ class AmazonGUI():
 
 
     def collect_page_together(self, sqlmgr, asin_maps, node, node_name, type, data, check_err):
-        print("collect_page_together + " + node_name, flush=True)
         maindiv = div()
         if country == 'jp':
             if type == 'BS':
@@ -300,8 +299,10 @@ class AmazonGUI():
             for node in table_array:
                 if is_in_task_delete_data(sqlmgr.ad_sale_task, node[0]) == False:
                     table_name = node[0] + '_BS'
-                    print(table_name, flush=True)
-                    condition = 'limited=\'no\' and avg_sale>' + avg_sale + ' and price>=' + price
+                    if table_name == 'MYSALE_BS':
+                        condition = False
+                    else:
+                        condition = 'limited=\'no\' and avg_sale>' + avg_sale + ' and price>=' + price
                     data = get_all_data(sqlmgr.ad_sale_data, table_name, False, condition)
                     if data != False:
                         if isDigit(node[0]):
@@ -320,7 +321,6 @@ class AmazonGUI():
                             mainpage << maindiv
                         count += len(data)
                 else:
-                    count += 1
                     continue
             filename = output + page_name + '.html'
             mainpage.printOut(filename)
