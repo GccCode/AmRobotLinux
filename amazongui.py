@@ -130,7 +130,7 @@ class AmazonGUI():
         return count
 
     def create_sale_inventory_page(self, sqlmgr, asin):
-        days_data_array = get_days_array_of_day(29, -1)
+        days_data_array = get_days_array_of_day(14, -1)
         sale_data_array = []
         inventory_data_array = []
 
@@ -140,7 +140,7 @@ class AmazonGUI():
         if sale_array == False:
             print("get all data in failure", flush=True)
         else:
-            for index in range(30):
+            for index in range(15):
                 flag = False
                 for i in range(len(sale_array)):
                     if sale_array[i][0].strftime('%Y-%m-%d') == days_data_array[index]:
@@ -153,7 +153,7 @@ class AmazonGUI():
         if inventory_array == False:
             print("get all data in failure", flush=True)
         else:
-            for index in range(30):
+            for index in range(15):
                 flag = False
                 for i in range(len(inventory_array)):
                     if inventory_array[i][0].strftime('%Y-%m-%d') == days_data_array[index]:
