@@ -187,6 +187,7 @@ class AmazonGUI():
 
 
     def collect_page_together(self, sqlmgr, asin_maps, node, node_name, type, data, check_err):
+        print("collect_page_together + " + node_name, flush=True)
         maindiv = div()
         if country == 'jp':
             if type == 'BS':
@@ -295,31 +296,35 @@ class AmazonGUI():
         mainpage.addCSS(css_file)
         asin_maps = HashMap()
         count = 0
-        for node in table_array:
-            if is_in_task_delete_data(sqlmgr.ad_sale_task, node[0]) == False:
-                table_name = node[0] + '_BS'
-                condition = 'limited=\'no\' and avg_sale>' + avg_sale + ' and price>=' + price
-                data = get_all_data(sqlmgr.ad_sale_data, table_name, False, condition)
-                if data != False:
-                    if isDigit(node[0]):
-                        node_name = get_node_name_from_all(sqlmgr.ad_node_info, node[0])
-                        if node_name == False:
-                            print("get node name in failure.", flush=True)
-                    else:
-                        node_name = node[0]
+        try:
+            for node in table_array:
+                if is_in_task_delete_data(sqlmgr.ad_sale_task, node[0]) == False:
+                    table_name = node[0] + '_BS'
+                    print(table_name, flush=True)
+                    condition = 'limited=\'no\' and avg_sale>' + avg_sale + ' and price>=' + price
+                    data = get_all_data(sqlmgr.ad_sale_data, table_name, False, condition)
+                    if data != False:
+                        if isDigit(node[0]):
+                            node_name = get_node_name_from_all(sqlmgr.ad_node_info, node[0])
+                            if node_name == False:
+                                print("get node name in failure.", flush=True)
+                        else:
+                            node_name = node[0]
 
-                    if table_name == '':
-                        print(table_name, flush=True)
-                        print(condition, flush=True)
+                        if table_name == '':
+                            print(table_name, flush=True)
+                            print(condition, flush=True)
 
-                    maindiv = self.collect_page_together(sqlmgr, asin_maps, node[0], node_name, type, data, check_err)
-                    if maindiv is not False:
-                        mainpage << maindiv
-                    count += len(data)
-            else:
-                continue
-        filename = output + page_name + '.html'
-        mainpage.printOut(filename)
+                        maindiv = self.collect_page_together(sqlmgr, asin_maps, node[0], node_name, type, data, check_err)
+                        if maindiv is not False:
+                            mainpage << maindiv
+                        count += len(data)
+                else:
+                    continue
+            filename = output + page_name + '.html'
+            mainpage.printOut(filename)
+        except Exception:
+            print(traceback.format_exc(), flush=True)
         print("Total - Repeat: " + str(count) + ' - ' + str(asin_maps.repeat_find), flush=True)
 
     def create_page(self, sqlmgr, node, node_name, type, css_file, data, output, check_err):
