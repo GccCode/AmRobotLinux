@@ -18,6 +18,7 @@ from selenium import webdriver
 
 
 def get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type):
+    status = True
     try:
         chrome_options = webdriver.ChromeOptions()
         prefs = {
@@ -88,17 +89,21 @@ def get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type):
                     if status == False:
                         print("update rank task date in failure..", flush=True)
     except NoSuchElementException as msg:
+        status = False
         print(("can't find the element"), flush=True)
     except TimeoutException as msg:
+        status = False
         print(("page loaded timeout"), flush=True)
     except:
+        status = False
         print(("unknown error"), flush=True)
     finally:
         if driver != False:
             driver.quit()
-        status = amazonwrapper.update_rank_task_run_status(sqlmgr.ad_rank_task, keyword, entry_type, 'ok')
-        if status == False:
-            print("update rank task status in failure..", flush=True)
+        if status is not False:
+            status = amazonwrapper.update_rank_task_run_status(sqlmgr.ad_rank_task, keyword, entry_type, 'ok')
+            if status == False:
+                print("update rank task status in failure..", flush=True)
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -128,8 +133,10 @@ if __name__ == "__main__":
             rank_file = sys.argv[3]
             amazonwrapper.insert_all_keyword_into_task(rank_file, sqlmgr)
         elif task_type == 'run':
-            yesterday = date.today() + timedelta(days=-1)
-            amazonwrapper.update_all_rank_task_date_status(yesterday.strftime("%Y-%m-%d"), sqlmgr)
+            is_flush = sys.argv[3]
+            if is_flush == '1':
+                yesterday = date.today() + timedelta(days=-1)
+                amazonwrapper.update_all_rank_task_date_status(yesterday.strftime("%Y-%m-%d"), sqlmgr)
             status_condition = 'status<>\'no\' and last_date<>' + value
             rank_task = amazonwrapper.get_one_data(sqlmgr.ad_rank_task, task_table, status_condition)
             while rank_task != False:
