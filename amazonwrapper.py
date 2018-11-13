@@ -290,6 +290,17 @@ def delete_sale_task(sqlmgr, task_delete_file):
         line = f.readline()  # 调用文件的 readline()方法
         while line: # name:asin:keyword:type
             tmp_line = line.strip('\n')
+            table_name = tmp_line + '_BS'
+            asin_array = get_all_data(sqlmgr.ad_sale_data, table_name, 'asin', 'limited=\'no\'')
+            if asin_array is not False:
+                for i in range(len(asin_array)):
+                    sql = 'drop table ' + 'SALE_' + asin_array[i][0]
+                    # print(sql, flush=True)
+                    sqlmgr.ad_sale_data.query(sql)
+                    sql = 'drop table ' + 'INVENTORY_' + asin_array[i][0]
+                    # print(sql, flush=True)
+                    sqlmgr.ad_sale_data.query(sql)
+
             sql = 'delete from ' + sale_task_table + ' where node=\'' + tmp_line + '\''
             status = sqlmgr.ad_sale_task.query(sql)
             if status == False:
