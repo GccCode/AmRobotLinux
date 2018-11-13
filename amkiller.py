@@ -43,7 +43,11 @@ if __name__ == "__main__":
     if ips_array == False:
         print("no accessible ip", flush=True)
         exit(-1)
-    while count < 1:
+    if task_type == '0':
+        loop_status = (count < 1)
+    else:
+        loop_status = admin.is_all_over()
+    while loop_status:
     # while admin.is_all_over() == False:
         ret = utils.generate_info_file(ips_array)
         if ret == False:
@@ -168,5 +172,10 @@ if __name__ == "__main__":
             driver.quit()
 
         count += 1
+    
+        if task_type == '0':
+            loop_status = (count < 1)
+        else:
+            loop_status = admin.is_all_over()
 
     sqlmgr.stop()
