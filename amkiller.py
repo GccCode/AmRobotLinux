@@ -57,6 +57,7 @@ if __name__ == "__main__":
         driver = utils.customized_broswer_with_luminati(ips_array)
         t1 = time.time()
         amazonpage = AmazonPage(driver)
+        asinresult = False
         try:
             register_flag = False
             tmp = random.randint(1, 100)
@@ -152,7 +153,8 @@ if __name__ == "__main__":
                     if (random_status % 2) == 1:
                         print(("* 随意浏览并等待退出"), flush=True)
                         amazonpage.random_walk(random.randint(2, 7))
-            admin.finish_task(keyword)
+            if (asinresult != False and task_type != '0') or task_type == '0':
+                admin.finish_task(keyword)
             t2 = time.time()
             print("Total Time：" + format(t2 - t1), flush=True)
             time.sleep(random.randint(int(min_time), int(max_time)))
