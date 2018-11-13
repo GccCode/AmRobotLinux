@@ -18,6 +18,8 @@ import utils
 import pyautogui
 import amazonwrapper
 from sqlmgr import SqlMgr
+from selenium import webdriver
+
 
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -50,7 +52,35 @@ if __name__ == "__main__":
             exit(-1)
         whiteasin = admin.get_whiteasin(keyword)
         blackasin = admin.get_blackasin(keyword)
-        driver = utils.customized_broswer_with_luminati(ips_array)
+
+        chrome_options = webdriver.ChromeOptions()
+        prefs = {
+            'profile.default_content_setting_values': {
+                'images': 2,
+                'javascript': 2
+            }
+        }
+        chrome_options.add_experimental_option("prefs", prefs)
+        user_prefix = 'lum-customer-hl_ecee3b35-zone-shared_test_api-ip-'
+        ip = amazonwrapper.get_ramdon_accessible_ip(ips_array)
+        if ip == False:
+            print("can't get accessible ip", flush=True)
+            exit(-1)
+        proxyauth_plugin_path = utils.create_proxyauth_extension(
+            proxy_host='zproxy.lum-superproxy.io',
+            proxy_port=22225,
+            proxy_username=user_prefix + ip,
+            proxy_password='o9dagiaeighm'
+        )
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--disable-dev-shm-usage')
+        chrome_options.add_extension(proxyauth_plugin_path)
+        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver.set_page_load_timeout(60)
+        driver.set_script_timeout(60)
+
+        # driver = utils.customized_broswer_with_luminati(ips_array)
         t1 = time.time()
         amazonpage = AmazonPage(driver)
         try:

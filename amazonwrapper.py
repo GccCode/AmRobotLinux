@@ -772,6 +772,8 @@ def get_node_name_from_all(amazondata, node):
     return False
 
 def get_all_data(amazondata, table_name, column, condition):
+    if amazondata.is_table_exsist(table_name) == False:
+        return False
     if column == False:
         if condition == False:
             sql = 'select * from ' + table_name

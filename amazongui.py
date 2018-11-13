@@ -138,7 +138,8 @@ class AmazonGUI():
         table_inventory = 'INVENTORY_' + asin
         sale_array = get_all_data(sqlmgr.ad_sale_data, table_sale, False, False)
         if sale_array == False:
-            print("get all data in failure", flush=True)
+            print("get all data in failure + " + table_sale, flush=True)
+            return False
         else:
             for index in range(15):
                 flag = False
@@ -151,7 +152,8 @@ class AmazonGUI():
                     sale_data_array.append(0)
         inventory_array = get_all_data(sqlmgr.ad_sale_data, table_inventory, False, False)
         if inventory_array == False:
-            print("get all data in failure", flush=True)
+            print("get all data in failure + " + table_inventory, flush=True)
+            return False
         else:
             for index in range(15):
                 flag = False
@@ -235,7 +237,9 @@ class AmazonGUI():
             seller = data[index][8]
             avg_sale = data[index][9]
 
-            self.create_sale_inventory_page(sqlmgr, asin)
+            status = self.create_sale_inventory_page(sqlmgr, asin)
+            if status is False:
+                return  False
 
             if check_err == '0':
                 limited = data[index][11]
