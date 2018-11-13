@@ -17,7 +17,7 @@ from sqlmgr import SqlMgr
 from selenium import webdriver
 
 
-def get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type):
+def get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type, page):
     status = True
     try:
         chrome_options = webdriver.ChromeOptions()
@@ -69,7 +69,7 @@ def get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type):
             elif sqlmgr.country == 'jp':
                 table_rank_data = amazonglobal.table_rank_data_jp
 
-            asinresult = searchpage.find_target_product_rank(asin, entry_type, int(5))
+            asinresult = searchpage.find_target_product_rank(asin, entry_type, page)
             if asinresult != False:
                 status = amazonwrapper.update_rank_data(sqlmgr.ad_rank_data, table_rank_data, keyword, entry_type, asinresult)
                 if status == False:
@@ -143,10 +143,14 @@ if __name__ == "__main__":
                 asin = rank_task[2]
                 keyword = rank_task[3]
                 entry_type = rank_task[4]
+                if rank_task[5] == 0:
+                    page = 5
+                else:
+                    page = rank_task[5]
                 # print(asin, flush=True)
                 print(keyword, flush=True)
                 # print(entry_type, flush=True)
-                get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type)
+                get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type, page)
                 rank_task = amazonwrapper.get_one_data(sqlmgr.ad_rank_task, task_table, status_condition)
     except:
         print(traceback.format_exc(), flush=True)

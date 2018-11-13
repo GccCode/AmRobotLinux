@@ -54,7 +54,7 @@ class AmazonData():
         return status
 
     def create_rank_task_table(self, table):
-        columns = 'id int(8) not null primary key auto_increment, name varchar(30) not null, asin char(10) not null, keyword varchar(50) not null, type char(10) not null, last_date date not null, status char(3) not null'
+        columns = 'id int(8) not null primary key auto_increment, name varchar(30) not null, asin char(10) not null, keyword varchar(50) not null, type char(10) not null, page int not null, last_date date not null, status char(3) not null'
         status = True
         if self.amsql.is_mysql_table_exsist(self.db, table) == False:
             status = self.amsql.create_table(self.db, table, columns)

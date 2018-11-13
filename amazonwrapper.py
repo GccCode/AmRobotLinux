@@ -373,6 +373,7 @@ def insert_all_keyword_into_task(rank_file, sqlmgr):
                         'asin': asin_info[1],
                         'keyword': asin_info[2],
                         'type': asin_info[3],
+                        'page': int(asin_info[4]),
                         'last_date': yesterday.strftime("%Y-%m-%d"),
                         'status': 'ok'
                     }
@@ -1019,7 +1020,7 @@ if __name__ == "__main__":
     # print(get_days_array_of_day(7, -1), flush=True)
     # print(get_days_array_of_day(2, 1), flush=True)
 
-    # add_new_column('data_us', '_BS', 'seller_name', 'seller_name CHAR(20) NOT NULL default \'\'')
+    add_new_column(sqlmgr.ad_rank_task, 'task_us', 'page', 'page int NOT NULL default 0 after type')
     # add_new_column('data_us', '_BS', 'size', 'size CHAR(30) NOT NULL default \'\'')
     # add_new_column('data_us', '_BS', 'weight', 'weight FLOAT(10) NOT NULL default 0')
     # seller_name = get_one_data(amazonglobal.db_name_data_us, '9977442011_BS', 'asin=' + '\'' + 'B01EHSX28M' + '\'')
@@ -1030,9 +1031,9 @@ if __name__ == "__main__":
     # get_table_existed_time(sqlmgr.ad_sale_data, 'GWA_BS')
 
 
-    gather_sale_asin(sqlmgr)
-    delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
-    delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
-    delete_zombie_tables(sqlmgr)
+    # gather_sale_asin(sqlmgr)
+    # delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
+    # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
+    # delete_zombie_tables(sqlmgr)
 
     sqlmgr.stop()
