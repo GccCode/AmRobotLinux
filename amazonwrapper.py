@@ -988,7 +988,7 @@ def count_pending_asin(sqlmgr, top_tpye):
         for index in range(len(sale_task_array)):
             node = sale_task_array[index][0]
             node_table_name = node + '_' + top_tpye
-            condition = 'limited<>\'yes\' and seller<4 and price >= 12'
+            condition = 'limited<>\'yes\' and seller<4 and price >= 12 and avg_sale>5'
             pending_asin_array = get_all_data(sqlmgr.ad_sale_data, node_table_name, 'asin', condition)
             if pending_asin_array is False:
                 print("get all data in failure " + node_table_name, flush=True)
@@ -1041,7 +1041,7 @@ if __name__ == "__main__":
     # delete_column('node_info_us', 'automotive', 'status')
     # update_all_task_status('amazontask', 'sale_task_us', 'us')
     # get_one_data('node_info_us', 'automotive', False)
-    delete_sale_task(sqlmgr, 'task_delete.txt')
+    # delete_sale_task(sqlmgr, 'task_delete.txt')
     # print(get_days_array_of_day(7, -1), flush=True)
     # print(get_days_array_of_day(2, 1), flush=True)
 
