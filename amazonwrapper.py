@@ -293,6 +293,7 @@ def delete_sale_task(sqlmgr, task_delete_file):
         while line: # name:asin:keyword:type
             tmp_line = line.strip('\n')
             table_name = tmp_line + '_BS'
+            print(table_name, flush=True)
             asin_array = get_all_data(sqlmgr.ad_sale_data, table_name, 'asin', 'limited=\'no\'')
             if asin_array is not False:
                 for i in range(len(asin_array)):
@@ -305,6 +306,11 @@ def delete_sale_task(sqlmgr, task_delete_file):
                     # print(sql, flush=True)
                     if sqlmgr.ad_sale_data.is_table_exsist('INVENTORY_' + asin_array[i][0]):
                         sqlmgr.ad_sale_data.query(sql)
+
+            sql = 'drop table ' + table_name
+            # print(sql, flush=True)
+            if sqlmgr.ad_sale_data.is_table_exsist(table_name):
+                sqlmgr.ad_sale_data.query(sql)
 
             sql = 'delete from ' + sale_task_table + ' where node=\'' + tmp_line + '\''
             status = sqlmgr.ad_sale_task.query(sql)
