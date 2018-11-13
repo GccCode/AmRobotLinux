@@ -445,7 +445,7 @@ def update_rank_data(amazondata, table, keyword, type, rank_info):
             print("keyword insert in failure..", flush=True)
         else:
             rank = int(rank_info[0]) * 100 + int(rank_info[1])
-            column = cur_date.strftime("%Y_%m_%d") + ' int not null default 9999'
+            column = cur_date.strftime("%Y_%m_%d") + ' int not null default 2050'
             status = amazondata.add_rank_column(amazondata.db_name, table, cur_date.strftime("%Y_%m_%d"), column)
             if status == False:
                 print("keyword add column in failure..", flush=True)
@@ -1020,7 +1020,7 @@ if __name__ == "__main__":
     # print(get_days_array_of_day(7, -1), flush=True)
     # print(get_days_array_of_day(2, 1), flush=True)
 
-    add_new_column(sqlmgr.ad_rank_task, 'task_us', 'page', 'page int NOT NULL default 0 after type')
+    # add_new_column(sqlmgr.ad_rank_task, 'task_us', 'page', 'page int NOT NULL default 0 after type')
     # add_new_column('data_us', '_BS', 'size', 'size CHAR(30) NOT NULL default \'\'')
     # add_new_column('data_us', '_BS', 'weight', 'weight FLOAT(10) NOT NULL default 0')
     # seller_name = get_one_data(amazonglobal.db_name_data_us, '9977442011_BS', 'asin=' + '\'' + 'B01EHSX28M' + '\'')
@@ -1031,9 +1031,9 @@ if __name__ == "__main__":
     # get_table_existed_time(sqlmgr.ad_sale_data, 'GWA_BS')
 
 
-    # gather_sale_asin(sqlmgr)
-    # delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
-    # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
+    gather_sale_asin(sqlmgr)
+    delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
+    delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
     # delete_zombie_tables(sqlmgr)
 
     sqlmgr.stop()

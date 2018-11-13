@@ -188,6 +188,44 @@ class AmazonGUI():
         grid.render(filename)
 
 
+    def create_daily_rank_page(self, sqlmgr, asin, type):
+        days_data_array = get_days_array_of_day(14, -1)
+        rank_data_array = []
+
+        if sqlmgr.country == 'us':
+            table_name = amazonglobal.table_rank_data_us
+        elif sqlmgr.country == 'jp':
+            table_name = amazonglobal.table_rank_data_jp
+
+        condition = 'asin=\'' + asin + '\' and type=\'' + type + '\''
+
+        rank_value_array = get_one_data(sqlmgr.ad_rank_data, table_name, False, condition)
+        if rank_value_array == False:
+            print("get all data in failure + " + table_name, flush=True)
+            return False
+        else:
+            for index in range(15):
+                flag = False
+                for i in range(len(rank_value_array)):
+                    if rank_value_array[i][0].strftime('%Y-%m-%d') == days_data_array[index]:
+                        rank_data_array.append(int(rank_value_array[i][1]))
+                        flag = True
+                        break
+                if flag == False:
+                    rank_data_array.append(2050)
+
+        grid = Grid()
+
+        line = Line(title="过去15天历史排名", title_pos="30%")
+        line.add("排名", rank_data_array)
+        overlap = Overlap(width=1200, height=600)
+        overlap.add(line, is_add_yaxis=True, yaxis_index=1)
+
+        grid.add(overlap, grid_right="20%")
+        filename = '../html_page/daily_sale/' + asin + '.html'
+        grid.render(filename)
+
+
     def collect_page_together(self, sqlmgr, asin_maps, node, node_name, type, data, check_err):
         maindiv = div()
         if country == 'jp':
@@ -292,6 +330,76 @@ class AmazonGUI():
         if count == 0:
             maindiv = False
         return maindiv
+
+
+    def collect_rank_page_together(self, sqlmgr, data):
+        maindiv = div()
+        info_table = table(cellspacing='1')
+        maindiv << info_table
+        head_row = tr()
+        thead_row = thead()
+        thead_row << head_row
+        info_table << thead_row
+        head_row << th('产品') + th('ASIN') + th('关键词') +th('类型') + th('最近排名')
+        tbody_row = tbody()
+        info_table << tbody_row
+        count = 0
+        for index in range(len(data)):
+            tmp_tr = tr()
+            name = data[index][0]
+            asin = data[index][1]
+            keyword = data[index][2]
+            type = data[index][3]
+            rank = data[index][4]
+
+            status = self.create_daily_rank_page(sqlmgr, asin, type)
+            if status is False:
+                return False
+
+
+            tmp_data = [name, asin, keyword, type, rank]
+
+            for i in range(0, 5):
+                if i == 1:
+                    if country == 'jp':
+                        asin_link = 'https://www.amazon.co.jp/dp/' + tmp_data[1]
+                    elif country == 'us':
+                        asin_link = 'https://www.amazon.com/dp/' + tmp_data[1]
+                    asin_a = a(asin,  href=asin_link, target ="_blank")
+                    tmp_td = td()
+                    tmp_td << asin_a
+                else:
+                    tmp_td = td(str(tmp_data[i]))
+
+                tmp_tr << tmp_td
+
+            tbody_row << tmp_tr
+
+        if count == 0:
+            maindiv = False
+        return maindiv
+
+
+    def create_rank_page_together(self, sqlmgr, css_file, output):
+        page_name = "Keyword Monitor"
+        mainpage = PyH(page_name)
+        mainpage.addCSS(css_file)
+        try:
+            if sqlmgr.country == 'us':
+                table_name = amazonglobal.table_rank_task_us
+            elif sqlmgr.country == 'jp':
+                table_name = amazonglobal.table_rank_task_us
+            data = get_all_data(sqlmgr.ad_rank_task, table_name, False, False)
+            if data != False:
+                maindiv = self.collect_rank_page_together(sqlmgr, data)
+                if maindiv is not False:
+                    mainpage << maindiv
+
+                filename = output + page_name + '.html'
+                mainpage.printOut(filename)
+        except Exception:
+            print(traceback.format_exc(), flush=True)
+
 
     def create_page_together(self, sqlmgr, table_array, avg_sale, price, type, css_file, output, check_err):
         page_name = "Potential Product"

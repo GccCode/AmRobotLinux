@@ -81,7 +81,7 @@ def get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type, page):
 
             else:
                 print(("can't find the asin"), flush=True)
-                status = amazonwrapper.update_rank_data(sqlmgr.ad_rank_data, table_rank_data, keyword, entry_type, [99, 99])
+                status = amazonwrapper.update_rank_data(sqlmgr.ad_rank_data, table_rank_data, keyword, entry_type, [20, 50])
                 if status == False:
                     print("update rank data in failure..", flush=True)
                 else:
