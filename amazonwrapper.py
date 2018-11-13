@@ -299,10 +299,12 @@ def delete_sale_task(sqlmgr, task_delete_file):
                     asin_count += 1
                     sql = 'drop table ' + 'SALE_' + asin_array[i][0]
                     # print(sql, flush=True)
-                    sqlmgr.ad_sale_data.query(sql)
+                    if sqlmgr.ad_sale_data.is_table_exsist('SALE_' + asin_array[i][0]):
+                        sqlmgr.ad_sale_data.query(sql)
                     sql = 'drop table ' + 'INVENTORY_' + asin_array[i][0]
                     # print(sql, flush=True)
-                    sqlmgr.ad_sale_data.query(sql)
+                    if sqlmgr.ad_sale_data.is_table_exsist('INVENTORY_' + asin_array[i][0]):
+                        sqlmgr.ad_sale_data.query(sql)
 
             sql = 'delete from ' + sale_task_table + ' where node=\'' + tmp_line + '\''
             status = sqlmgr.ad_sale_task.query(sql)
@@ -324,7 +326,7 @@ def delete_sale_task(sqlmgr, task_delete_file):
         status = False
 
     print("asin_count-node_count: " + str(asin_count) + '-' + str(node_count), flush=True)
-    
+
     return status
 
 def insert_task_delete_data(amazondata, node):
