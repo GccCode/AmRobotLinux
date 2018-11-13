@@ -571,7 +571,7 @@ def get_one_data(amazondata, table, condition):
     else:
         sql = 'select * from ' + table
     cursor = amazondata.query(sql)
-    if cursor != False:
+    if cursor != False and cursor.rowcount > 0:
         result = cursor.fetchone()
         print(result, flush=True)
         return result
