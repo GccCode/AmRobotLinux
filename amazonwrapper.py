@@ -284,8 +284,10 @@ def delete_sale_task(sqlmgr, task_delete_file):
         sale_task_table = amazonglobal.table_sale_task_us
     elif sqlmgr.country == 'jp':
         sale_task_table = amazonglobal.table_sale_task_jp
-
+    asin_count = 0
+    node_count = 0
     try:
+
         f = open(task_delete_file)  # 返回一个文件对象
         line = f.readline()  # 调用文件的 readline()方法
         while line: # name:asin:keyword:type
@@ -294,6 +296,7 @@ def delete_sale_task(sqlmgr, task_delete_file):
             asin_array = get_all_data(sqlmgr.ad_sale_data, table_name, 'asin', 'limited=\'no\'')
             if asin_array is not False:
                 for i in range(len(asin_array)):
+                    asin_count += 1
                     sql = 'drop table ' + 'SALE_' + asin_array[i][0]
                     # print(sql, flush=True)
                     sqlmgr.ad_sale_data.query(sql)
@@ -313,12 +316,15 @@ def delete_sale_task(sqlmgr, task_delete_file):
                     break
             line = f.readline()
             time.sleep(0.5)
+            node_count += 1
 
         f.close()
     except Exception:
         print(traceback.format_exc(), flush=True)
         status = False
 
+    print("asin_count-node_count: " + str(asin_count) + '-' + str(node_count), flush=True)
+    
     return status
 
 def insert_task_delete_data(amazondata, node):
