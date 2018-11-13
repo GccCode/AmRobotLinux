@@ -10,6 +10,7 @@ from amazonregisterpage import AmazonRegisterPage
 from amazonaccountpage import AmazonAccountPage
 from amazonaddresspage import AmazonAddressPage
 from amazonpaymentpage import AmazonPaymentPage
+from amazonasinpage import AmazonAsinPage
 from amazonsearchpage import  AmazonSearchPage
 import io
 from selenium.common.exceptions import NoSuchElementException
@@ -18,7 +19,6 @@ import utils
 import pyautogui
 import amazonwrapper
 from sqlmgr import SqlMgr
-from selenium import webdriver
 
 
 if __name__ == "__main__":
@@ -27,6 +27,7 @@ if __name__ == "__main__":
     cf.read("task.txt")
     amkillerfile = sys.argv[1]
     country = sys.argv[2]
+    task_type = sys.argv[3] # 0: cpc clicker 1: fake traffic
     min_time = cf.get("search", "view_time_min")
     max_time = cf.get("search", "view_time_max")
 
@@ -53,47 +54,22 @@ if __name__ == "__main__":
         whiteasin = admin.get_whiteasin(keyword)
         blackasin = admin.get_blackasin(keyword)
 
-        chrome_options = webdriver.ChromeOptions()
-        prefs = {
-            'profile.default_content_setting_values': {
-                'images': 2,
-                'javascript': 2
-            }
-        }
-        chrome_options.add_experimental_option("prefs", prefs)
-        user_prefix = 'lum-customer-hl_ecee3b35-zone-shared_test_api-ip-'
-        ip = amazonwrapper.get_ramdon_accessible_ip(ips_array)
-        if ip == False:
-            print("can't get accessible ip", flush=True)
-            exit(-1)
-        proxyauth_plugin_path = utils.create_proxyauth_extension(
-            proxy_host='zproxy.lum-superproxy.io',
-            proxy_port=22225,
-            proxy_username=user_prefix + ip,
-            proxy_password='o9dagiaeighm'
-        )
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-        chrome_options.add_extension(proxyauth_plugin_path)
-        driver = webdriver.Chrome(chrome_options=chrome_options)
-        driver.set_page_load_timeout(60)
-        driver.set_script_timeout(60)
-
-        # driver = utils.customized_broswer_with_luminati(ips_array)
+        driver = utils.customized_broswer_with_luminati(ips_array)
         t1 = time.time()
         amazonpage = AmazonPage(driver)
         try:
+            register_flag = False
             tmp = random.randint(1, 100)
-            if tmp < 200: #30:
+            if tmp < 30: #30:
                 ## registeration
                 print(("* Registeration..."), flush=True)
                 amazonpage.enter_amazon_page(3000, 5000)
                 amazonpage.enter_register_page(3000, 5000)
                 registerpage = AmazonRegisterPage(driver)
                 registerpage.register(5000, 10000)
+                register_flag = True
                 tmp = random.randint(1, 100)
-                if tmp < 200: #10:
+                if tmp < 10: #10:
                     ## add bill address
                     print(("* Add Bill Address..."), flush=True)
                     amazonpage.enter_account_page(3000, 5000)
@@ -102,7 +78,7 @@ if __name__ == "__main__":
                     addresspage = AmazonAddressPage(driver)
                     addresspage.add_address("bill", 5000, 10000)
                     tmp = random.randint(1, 100)
-                    if tmp < 200: #10:
+                    if tmp < 10: #10:
                         ## add payment
                         print(("* Add Card..."), flush=True)
                         amazonpage.enter_account_page(3000, 5000)
@@ -115,7 +91,67 @@ if __name__ == "__main__":
             searchpage = AmazonSearchPage(driver)
             print(("* Start Search Keyword.... + " + keyword), flush=True)
             amazonpage.search_asin(keyword, 3000, 5000)
-            searchpage.click_random_products(admin, keyword, blackasin, whiteasin)
+            if task_type == '0':
+                searchpage.click_random_products(admin, keyword, blackasin, whiteasin)
+            else:
+                searchpage_handle = amazonpage.get_currenthandle()
+                condition_setup = cf.get("search", "condition_setup")
+                if condition_setup == "1":
+                    input("请进行手动卡位，完成后按回车键继续自动搜索产品！！！")
+                page = cf.get("search", "page")
+                asin = cf.get("search", "asin")
+                type = cf.get("search", "type")
+                if type == "0":
+                    entry_type = "sponsored"
+                elif type == "1":
+                    entry_type = "normal"
+
+                asinresult = searchpage.find_target_product(asin, entry_type, (int(page) + 1))
+                if asinresult != False:
+                    fakeview = cf.get("search", "fakeview")
+                    if fakeview == "1":
+                        min_time = int(cf.get("search", "view_time_min"))
+                        max_time = int(cf.get("search", "view_time_max"))
+                        searchpage.enter_random_products(asin, random.randint(2, 3), min_time, max_time, 5000, 8000)
+                    asinresult = searchpage.find_target_product(asin, entry_type, int(page))
+                    if asinresult != False:
+                        searchpage.enter_asin_page(asinresult, asin, 3000, 5000)
+                    else:
+                        print(("找不到产品！！！！"), flush=True)
+                else:
+                    print(("找不到产品！！！！"), flush=True)
+
+                if asinresult != False:
+                    variation_setup = cf.get("search", "variation_setup")
+                    if variation_setup == "1":
+                        input("请进行手动选择目标变体，完成后按回车键继续自动化！！！：")
+                    mainview = cf.get("search", "mainview")
+                    if mainview == "1":
+                        print(("* 开始随意浏览产品页。。。"), flush=True)
+                        min_time = int(cf.get("search", "mainview_time_min"))
+                        max_time = int(cf.get("search", "mainview_time_max"))
+                        amazonpage.random_walk(random.randint(min_time, max_time))
+                        asinpage = AmazonAsinPage(driver)
+                        searchpage.switch_to_new_page(searchpage_handle)  # 切换到产品页handle
+
+                        tmp = random.randint(1, 100)
+                        if tmp < 10 and register_flag is True:  # 10:
+                            print(("* 开始添加wishlist。。。。"), flush=True)
+                            asinpage.add_wishlist(5000, 8000, asin)
+
+                        tmp = random.randint(1, 100)
+                        if tmp < 20:
+                            print(("* 开始加购物车。。。"), flush=True)
+                            status = asinpage.add_cart(3000, 5000)
+                            if status == False:
+                                print("* 加购物车失败。。。", flush=True)
+
+                        searchpage.back_prev_page_by_country(searchpage_handle, 3000, 5000)
+
+                    random_status = random.randint(1, 200)
+                    if (random_status % 2) == 1:
+                        print(("* 随意浏览并等待退出"), flush=True)
+                        amazonpage.random_walk(random.randint(2, 7))
             admin.finish_task(keyword)
             t2 = time.time()
             print("Total Time：" + format(t2 - t1), flush=True)

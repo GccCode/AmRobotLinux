@@ -14,11 +14,38 @@ from datetime import date
 from datetime import timedelta
 import traceback
 from sqlmgr import SqlMgr
+from selenium import webdriver
 
 
 def get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type):
     try:
-        driver = utils.customized_broswer_with_luminati(ips_array)
+        chrome_options = webdriver.ChromeOptions()
+        prefs = {
+            'profile.default_content_setting_values': {
+                'images': 2,
+                'javascript': 2
+            }
+        }
+        chrome_options.add_experimental_option("prefs", prefs)
+        user_prefix = 'lum-customer-hl_ecee3b35-zone-shared_test_api-ip-'
+        ip = amazonwrapper.get_ramdon_accessible_ip(ips_array)
+        if ip == False:
+            print("can't get accessible ip", flush=True)
+            exit(-1)
+        proxyauth_plugin_path = utils.create_proxyauth_extension(
+            proxy_host='zproxy.lum-superproxy.io',
+            proxy_port=22225,
+            proxy_username=user_prefix + ip,
+            proxy_password='o9dagiaeighm'
+        )
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--disable-dev-shm-usage')
+        chrome_options.add_extension(proxyauth_plugin_path)
+        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver.set_page_load_timeout(60)
+        driver.set_script_timeout(60)
+        # driver = utils.customized_broswer_with_luminati(ips_array)
         status = amazonwrapper.update_rank_task_run_status(sqlmgr.ad_rank_task, keyword, entry_type, 'no')
         if status == False:
             print("update rank task status in failure..", flush=True)
