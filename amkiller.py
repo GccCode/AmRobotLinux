@@ -46,7 +46,7 @@ if __name__ == "__main__":
     if task_type == '0':
         loop_status = (count < 1)
     else:
-        loop_status = admin.is_all_over()
+        loop_status = (admin.is_all_over() == False)
     while loop_status:
     # while admin.is_all_over() == False:
         ret = utils.generate_info_file(ips_array)
@@ -172,10 +172,10 @@ if __name__ == "__main__":
             driver.quit()
 
         count += 1
-    
+
         if task_type == '0':
             loop_status = (count < 1)
         else:
-            loop_status = admin.is_all_over()
+            loop_status = (admin.is_all_over() == False)
 
     sqlmgr.stop()
