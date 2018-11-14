@@ -990,9 +990,7 @@ def count_pending_asin(sqlmgr, top_tpye):
             node_table_name = node + '_' + top_tpye
             condition = 'limited<>\'yes\' and seller<4 and price >= 12 and avg_sale<=5'
             pending_asin_array = get_all_data(sqlmgr.ad_sale_data, node_table_name, 'asin', condition)
-            if pending_asin_array is False:
-                print("get all data in failure " + node_table_name, flush=True)
-            else:
+            if pending_asin_array is not False:
                 count += len(pending_asin_array)
 
     print("Total Pending Asins is " + str(count), flush=True)
