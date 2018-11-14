@@ -260,12 +260,13 @@ class AmazonGUI():
             tmp_tr = tr()
             rank = data[index][0]
             asin = data[index][1]
-            if asin_maps.get(asin) is not False:
-                asin_maps.add_repeat_find()
-                continue
-            else:
-                asin_maps.add(asin, asin_maps.num)
-                count += 1
+            if node not in 'MYSALE_BS':
+                if asin_maps.get(asin) is not False:
+                    asin_maps.add_repeat_find()
+                    continue
+                else:
+                    asin_maps.add(asin, asin_maps.num)
+                    count += 1
             img_src = data[index][12]
             price = data[index][3]
             review  = data[index][4]

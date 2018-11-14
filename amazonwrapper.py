@@ -1051,14 +1051,14 @@ if __name__ == "__main__":
     # seller_name = get_one_data(amazonglobal.db_name_data_us, '9977442011_BS', 'asin=' + '\'' + 'B01EHSX28M' + '\'')
     # print(seller_name[16], flush=True)
     # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
-    count_pending_asin(sqlmgr, 'BS')
+    # count_pending_asin(sqlmgr, 'BS')
     # copy_table_data(sqlmgr.ad_sale_data, sqlmgr.ad_sale_task)
     # get_table_existed_time(sqlmgr.ad_sale_data, 'GWA_BS')
 
 
-    # gather_sale_asin(sqlmgr)
-    # delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
-    # delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
+    gather_sale_asin(sqlmgr)
+    delete_unused_node_task(sqlmgr, 'avg_sale>5 and price>=12 and limited = \'no\'')
+    delete_unused_tables(sqlmgr.ad_sale_data, '\'%\_BS\'', 'avg_sale>5 and price>=12 and limited=\'no\'')
     # delete_zombie_tables(sqlmgr)
 
     sqlmgr.stop()
