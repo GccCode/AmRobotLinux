@@ -163,7 +163,7 @@ if __name__ == "__main__":
                 admin.finish_task(keyword)
             t2 = time.time()
             print("Total Time：" + format(t2 - t1), flush=True)
-            time.sleep(random.randint(int(min_time), int(max_time)))
+            time.sleep(random.randint(60, 800))
         except NoSuchElementException as msg:
             print(("* NoSuchElementException...."), flush=True)
         except TimeoutException as msg:
