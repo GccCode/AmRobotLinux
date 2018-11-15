@@ -174,19 +174,24 @@ class AmazonSearchPage(AmazonPage):
             # print("random_mouse_move-总耗时：" + format(t2 - t1))
 
     def find_target_asin(self, asin, type):
+        print("find_target_asin + " + asin, flush=True)
+        flag = ''
         asinresults = self.driver.find_elements(*self.locator.ASINRESULTS)
         for asinresult in asinresults:
             if asinresult.get_attribute('data-asin') == asin:
                 if type == "normal":
                     if self.is_asin_sponsored(asinresult, asin) != True:
                         print("** Target found - Normal...", flush=True)
+                        flag = 'normal'
                 elif type == "sponsored":
                     if self.is_asin_sponsored(asinresult, asin):
                         print("** Target found - Sponsored...", flush=True)
+                        flag = 'sponsored'
                 else:
                     print("** Unknown found...", flush=True)
 
-                return asinresult
+                if flag == type:
+                    return asinresult
 
         return False
 
