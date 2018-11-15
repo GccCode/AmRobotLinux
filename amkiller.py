@@ -146,12 +146,10 @@ if __name__ == "__main__":
                             print(("* 开始添加wishlist。。。。"), flush=True)
                             asinpage.add_wishlist(5000, 8000, asin)
 
-                        tmp = random.randint(1, 100)
-                        if tmp < 20:
-                            print(("* 开始加购物车。。。"), flush=True)
-                            status = asinpage.add_cart(3000, 5000)
-                            if status == False:
-                                print("* 加购物车失败。。。", flush=True)
+                        print(("* 开始加购物车。。。"), flush=True)
+                        status = asinpage.add_cart(3000, 5000)
+                        if status == False:
+                            print("* 加购物车失败。。。", flush=True)
 
                         searchpage.back_prev_page_by_country(searchpage_handle, 3000, 5000)
 
