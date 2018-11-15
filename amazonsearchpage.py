@@ -183,6 +183,8 @@ class AmazonSearchPage(AmazonPage):
                 elif type == "sponsored":
                     if self.is_asin_sponsored(asinresult, asin):
                         print("** Target found - Sponsored...", flush=True)
+                else:
+                    print("** Unknown found...", flush=True)
 
                 return asinresult
 
