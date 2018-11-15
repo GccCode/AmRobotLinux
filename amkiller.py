@@ -117,9 +117,7 @@ if __name__ == "__main__":
                     if fakeview == "1":
                         min_time = int(cf.get("search", "view_time_min"))
                         max_time = int(cf.get("search", "view_time_max"))
-                        tmp = random.randint(1, 100)
-                        if tmp < 10:  # 10:
-                            searchpage.enter_random_products(asin, random.randint(2, 3), min_time, max_time, 5000, 8000)
+                        searchpage.enter_random_products(asin, random.randint(2, 3), min_time, max_time, 5000, 8000)
                     asinresult = searchpage.find_target_product(asin, entry_type, int(page))
                     if asinresult != False:
                         searchpage.enter_asin_page(asinresult, asin, 3000, 5000)
