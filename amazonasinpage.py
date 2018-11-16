@@ -86,6 +86,7 @@ class AmazonAsinPage(AmazonPage):
         if self.is_element_exsist(*self.locator.QAPOSTBUTTON):
             print(("**** QA post button is ready!"), flush=True)
             self.click(*self.locator.QAPOSTBUTTON)
+        input("waiting")
         self.random_sleep(begin, end)
         print(("**** 提交QA： " + content), flush=True)
 
