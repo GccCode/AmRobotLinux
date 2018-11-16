@@ -134,6 +134,7 @@ def amsale_from_mysql(sqlmgr, node_type):
             t1 = time.time()
             node = node_task[0]
             node_table = node + '_' + node_type
+            sqlmgr.set_current_table(node_table)
             sql_condition = 'node=' + '\'' + node + '\''
             status = amazonwrapper.update_data(sqlmgr.ad_sale_task, task_table, 'status', '\'no\'', sql_condition)
             if status != False:

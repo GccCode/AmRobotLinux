@@ -187,10 +187,12 @@ def customized_broswer():
     userdataid = cf.get("broswer", "userdataid")
     if userdataid != '0':
         userdatadir = 'user-data-dir=C:\\Users\\Administrator\\AppData\\Local\\Google\\Chrome\\User Data\\Profile ' + userdataid
-        option.add_argument(userdatadir)
+    else:
+        userdatadir = 'user-data-dir=C:\\Users\\biller\\AppData\\Local\\Google\\Chrome\\User Data'
+    option.add_argument(userdatadir)
     # option.add_argument(
     #     r"user-data-dir=C:\Users\Administrator\AppData\Local\Google\Chrome\User Data\Profile 6")
-    driver =  webdriver.Chrome(chrome_options=option)
+    driver = webdriver.Chrome(chrome_options=option)
     driver.set_page_load_timeout(60)
     driver.set_script_timeout(60)
     return driver

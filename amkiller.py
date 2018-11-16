@@ -64,8 +64,9 @@ if __name__ == "__main__":
         asinresult = False
         try:
             register_flag = False
+            qa_submit = cf.get("qa_submit", "status")
             tmp = random.randint(1, 100)
-            if tmp < 30: #30:
+            if tmp < 30 or qa_submit == '1': #30:
                 ## registeration
                 print(("* Registeration..."), flush=True)
                 amazonpage.enter_amazon_page(3000, 5000)
@@ -138,6 +139,12 @@ if __name__ == "__main__":
                         amazonpage.random_walk(random.randint(min_time, max_time))
                         asinpage = AmazonAsinPage(driver)
                         searchpage.switch_to_new_page(searchpage_handle)  # 切换到产品页handle
+
+                        if qa_submit == "1":
+                            print(("* 开始提交QA。。。。"), flush=True)
+                            content = cf.get("qa_submit", "content")
+                            asinpage.ask_qa(content, 3000, 5000)
+                            amazonpage.navigation_back(3000, 5000)
 
                         tmp = random.randint(1, 100)
                         if tmp < 10 and register_flag is True:  # 10:

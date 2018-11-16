@@ -26,6 +26,8 @@ class SqlMgr():
         self.db_name_ip_info = ''
         self.db_name_amkiller = ''
 
+        self.node_table = ''
+
         if self.country == 'us':
             self.db_name_sale_task = amazonglobal.db_name_task
             self.db_name_token = amazonglobal.db_name_token
@@ -44,6 +46,9 @@ class SqlMgr():
             self.db_name_node_info = amazonglobal.db_name_node_info_jp
             self.db_name_ip_info = amazonglobal.db_name_ip_info_jp
             self.db_name_amkiller = amazonglobal.db_name_amkiller_jp
+
+    def set_current_table(self, node_table):
+        self.node_table = node_table
 
     def start(self):
         status = self.ad_sale_task.create_database(self.db_name_sale_task)
