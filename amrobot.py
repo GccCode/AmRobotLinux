@@ -175,6 +175,8 @@ def customized_broswer():
         elif host_type == '2':
             proxy_socks_argument = '--proxy-server=https://' + host_port
             option.add_argument(proxy_socks_argument)
+        elif host_type == '3':
+            pass
         else:
             print("代理IP设置出错。", flush=True)
             exit(-1)
