@@ -90,6 +90,9 @@ class AmazonSearchPage(AmazonPage):
         sponsored_selected_asin = []
         for index in range(0, len(sponsored_selected)):
             sponsored_selected_asin.append(sponsored_selected[index].get_attribute('data-asin'))
+
+        print(len(normal_selected_asin), flush=True)
+        print(len(sponsored_selected_asin), flush=True)
         normal_lens = len(normal_selected_asin)
         if normal_lens != 0:
             if normal_lens > 1:
