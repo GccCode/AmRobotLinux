@@ -91,8 +91,6 @@ class AmazonSearchPage(AmazonPage):
         for index in range(0, len(sponsored_selected)):
             sponsored_selected_asin.append(sponsored_selected[index].get_attribute('data-asin'))
 
-        print(len(normal_selected_asin), flush=True)
-        print(len(sponsored_selected_asin), flush=True)
         normal_lens = len(normal_selected_asin)
         if normal_lens != 0:
             if normal_lens > 1:
@@ -177,7 +175,7 @@ class AmazonSearchPage(AmazonPage):
             # print("random_mouse_move-总耗时：" + format(t2 - t1))
 
     def find_target_asin(self, asin, type):
-        print("find_target_asin + " + asin, flush=True)
+        # print("find_target_asin + " + asin, flush=True)
         flag = ''
         asinresults = self.driver.find_elements(*self.locator.ASINRESULTS)
         for asinresult in asinresults:
