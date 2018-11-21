@@ -182,11 +182,11 @@ class AmazonSearchPage(AmazonPage):
             if asinresult.get_attribute('data-asin') == asin:
                 if type == "normal":
                     if self.is_asin_sponsored(asinresult, asin) != True:
-                        print("** Target found - Normal...", flush=True)
+                        print("** Target found - Normal... + " + asin, flush=True)
                         flag = 'normal'
                 elif type == "sponsored":
                     if self.is_asin_sponsored(asinresult, asin):
-                        print("** Target found - Sponsored...", flush=True)
+                        print("** Target found - Sponsored... + " + asin, flush=True)
                         flag = 'sponsored'
                 else:
                     print("** Unknown found...", flush=True)
