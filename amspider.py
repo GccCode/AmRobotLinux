@@ -266,6 +266,12 @@ def getprice_us(price):
     else:
         return float(price.strip('$ ').replace(',', ''))
 
+def getprice_uk(price):
+    if '-' in price:
+        return float(price.split('-')[0].strip('£ ').replace(',', ''))
+    else:
+        return float(price.strip('£ ').replace(',', ''))
+
 def insert_task_node(amazondata, table, data):
     status = amazondata.create_task_table(table)
     if status != False:
@@ -950,7 +956,7 @@ class AmazonSpider():
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
                             # print("Price is : " + element.text.strip('$ ').replace(',', ''), flush=True)
-                            asin_info_data['price'] = getprice_us(element.text)
+                            asin_info_data['price'] = getprice_uk(element.text)
                             if asin_info_data['price'] < 12:
                                 continue
                         else:
@@ -968,7 +974,7 @@ class AmazonSpider():
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
                             # print("Price is : " + element.text.strip('$ ').replace(',', ''), flush=True)
-                            asin_info_data['price'] = getprice_us(element.text)
+                            asin_info_data['price'] = getprice_uk(element.text)
                             if int(asin_info_data['price']) < 12:
                                 continue
                         else:
