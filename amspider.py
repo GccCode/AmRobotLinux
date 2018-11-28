@@ -2111,15 +2111,13 @@ class AmazonSpider():
                 element = driver.find_element(*BUYER_COUNT_UK)
                 data['seller'] = int(getseller_uk(element.text))
 
-                print("seller is: " + str(data['seller']))
-                print(element.text, flush=True)
+                # print("seller is: " + str(data['seller']))
+                # print(element.text, flush=True)
             elif new_page_version_flag == True:
                 data['seller'] = 1
             else:
                 print("get seller count in failure..", flush=True)
                 status = -222
-                input("wait")
-                exit()
                 return status
 
             if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
@@ -2937,7 +2935,7 @@ def amspider_test(sqlmgr):
     amazonspider = AmazonSpider()
     try:
         # status = amazonspider.get_inventory_us(sqlmgr, False, 'B07H2V7637', ips_array, 'Solid-Inc', True, False)
-        status = amazonspider.get_inventory_uk(sqlmgr, False, 'B01GCEY2IS', ips_array, 'Wigoo', True, False) # B07JJ6M78W
+        status = amazonspider.get_inventory_uk(sqlmgr, False, 'B07JJ6M78W', ips_array, 'Wigoo', True, True) #  B01GCEY2IS
     except Exception as e:
         print(str(e), flush=True)
 
