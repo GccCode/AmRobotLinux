@@ -1012,6 +1012,7 @@ class AmazonSpider():
                 if status == False:
                     return False
 
+            input("wait")
             return False
 
             status = True
