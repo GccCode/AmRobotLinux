@@ -2232,6 +2232,8 @@ class AmazonSpider():
                                 else:
                                     status = False
 
+                input("wait")
+
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
                         amazonasinpage.click(*NO_THANKS)
