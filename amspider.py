@@ -2138,7 +2138,9 @@ class AmazonSpider():
             elif data['shipping'] == 'AB':
                 data['seller_name'] = 'Amazon'
             else:
-                status = -222
+                # status = -222
+                status = -111
+                input("wait")
                 return status
 
             if data['shipping'] == 'FBM' and seller_name == False:
