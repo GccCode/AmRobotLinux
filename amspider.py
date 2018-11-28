@@ -1016,123 +1016,122 @@ class AmazonSpider():
                 if status == False:
                     return False
 
-            return False
 
-            status = True
-            inventory_array = []
-            asin_info_remove_array = []
-            try:
-                while self.is_all_asin_ok(asin_info_array) == False:
-                    for i in range(0, len(asin_info_array)):
-                        tmp_info = asin_info_array[i]
-                        if tmp_info['status'] == 'no':
-                            result = self.get_inventory_uk(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale, False)
-                            if result == False:
-                                asin_info_remove_array.append(asin_info_array[i])
-                                tmp_info['status'] = 'err'
-                            elif result == -111:
-                                print("ip problems...", flush=True)
-                                tmp_info['status'] = 'no'
-                            elif result == -222:
-                                # print("overweight " + tmp_info['asin'], flush=True)
-                                tmp_info['limited'] = 'yes'
-                                tmp_info['status'] = 'err'
-                                asin_info_remove_array.append(asin_info_array[i])
-                            else:
-                                tmp_info['shipping'] = result['shipping']
-                                tmp_info['seller'] = result['seller']
-                                tmp_info['qa'] = result['qa']
-                                tmp_info['limited'] = result['limited']
-                                tmp_info['status'] = 'ok'
-                                tmp_info['seller_name'] = result['seller_name']
-                                tmp_info['size'] = result['size']
-                                tmp_info['weight'] = result['weight']
-                                total_count += 1
-
-
-                                if is_sale == True:
-                                    inventory_array.append(copy.deepcopy(result))
-            except Exception as e:
-                status = False
-                print(traceback.format_exc(), flush=True)
-            finally:
-                if status == False:
-                    return False
-
-            if is_sale == True:
-                for i in range(0, len(asin_info_remove_array)):
-                    asin_info_array.remove(asin_info_remove_array[i])
-
-                if len(asin_info_array) != len(inventory_array):
-                    print(len(asin_info_array), flush=True)
-                    print(len(inventory_array), flush=True)
-
-
-            for i in range(0, len(asin_info_array)):
-                asin = asin_info_array[i]['asin']
-                node_table = node + '_' + type
-                status = sqlmgr.ad_sale_data.create_node_table(node_table)
-                if status == True:
-                    status = sqlmgr.ad_sale_data.insert_node_data(node_table, asin_info_array[i])
-                    if status == True:
-                        if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] > 0 and asin_info_array[i]['seller'] < 4 and asin_info_array[i]['price'] >= 12 and is_sale:
-                            inventory_table = 'INVENTORY_' + asin
-                            status = sqlmgr.ad_sale_data.create_inventory_table(inventory_table)
-                            if status == True:
-                                cur_date = date.today()
-                                data = {
-                                    'date': cur_date,
-                                    'inventory': inventory_array[i]['inventory']
-                                }
-                                status = sqlmgr.ad_sale_data.insert_inventory_data(inventory_table, data)
-                                if status == True:
-                                    condition = 'asin=\'' + asin + '\''
-                                    value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-                                    status = sqlmgr.ad_sale_data.update_data(node_table, 'inventory_date', value, condition)
-                                    if status == True:
-                                        task_data = {
-                                            'node': node,
-                                            'status': 'ok',
-                                            'last_date': cur_date,
-                                            'node_name': node_name
-                                        }
-                                        status = insert_task_node(sqlmgr.ad_sale_task, amazonglobal.table_sale_task_us, task_data)
-                                        if status == False:
-                                            print("insert task node in failure... + " + node, flush=True)
-                                        status = sqlmgr.ad_sale_data.get_yesterday_sale(inventory_table)
-                                        if status != -999:
-                                            yesterday = date.today() + timedelta(days=-1)
-                                            data = {
-                                                'date': yesterday,
-                                                'sale': copy.deepcopy(status)
-                                            }
-                                            sale_table = 'SALE_' + asin
-                                            status = sqlmgr.ad_sale_data.create_sale_table(sale_table)
-                                            if status == True:
-                                                status = sqlmgr.ad_sale_data.insert_sale_data(sale_table, data)
-                                                if status == True:
-                                                    avg_sale = sqlmgr.ad_sale_data.get_column_avg(sale_table, 'sale')
-                                                    if avg_sale != -999:
-                                                        status = sqlmgr.ad_sale_data.update_data(node_table, 'avg_sale', avg_sale, condition)
-                                                        if status == False:
-                                                            print("avg_sale update fail.. + " + node_table, flush=True)
-                                                else:
-                                                    print("sale_data insert fail... + " + sale_table, flush=True)
-                                            else:
-                                                print("sale_table create fail.. + " + sale_table, flush=True)
-                                    else:
-                                        print("invetory_date update fail.. + " + node_table, flush=True)
-                                else:
-                                    print("inventory data insert fail.. + " + inventory_table, flush=True)
-                            else:
-                                print("inventory_table create fail + " + inventory_table, flush=True)
-                    else:
-                        print("asin_info_data inserted fail.. + " + node_table, flush=True)
-                else:
-                    print("node_table create fail + " + node_table, flush=True)
-
-        t2 = time.time()
-        print("Asin_Count-Time_Consumed：" + str(total_count) + '-'+ format(t2 - t1), flush=True)
+        #     status = True
+        #     inventory_array = []
+        #     asin_info_remove_array = []
+        #     try:
+        #         while self.is_all_asin_ok(asin_info_array) == False:
+        #             for i in range(0, len(asin_info_array)):
+        #                 tmp_info = asin_info_array[i]
+        #                 if tmp_info['status'] == 'no':
+        #                     result = self.get_inventory_uk(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale, False)
+        #                     if result == False:
+        #                         asin_info_remove_array.append(asin_info_array[i])
+        #                         tmp_info['status'] = 'err'
+        #                     elif result == -111:
+        #                         print("ip problems...", flush=True)
+        #                         tmp_info['status'] = 'no'
+        #                     elif result == -222:
+        #                         # print("overweight " + tmp_info['asin'], flush=True)
+        #                         tmp_info['limited'] = 'yes'
+        #                         tmp_info['status'] = 'err'
+        #                         asin_info_remove_array.append(asin_info_array[i])
+        #                     else:
+        #                         tmp_info['shipping'] = result['shipping']
+        #                         tmp_info['seller'] = result['seller']
+        #                         tmp_info['qa'] = result['qa']
+        #                         tmp_info['limited'] = result['limited']
+        #                         tmp_info['status'] = 'ok'
+        #                         tmp_info['seller_name'] = result['seller_name']
+        #                         tmp_info['size'] = result['size']
+        #                         tmp_info['weight'] = result['weight']
+        #                         total_count += 1
+        #
+        #
+        #                         if is_sale == True:
+        #                             inventory_array.append(copy.deepcopy(result))
+        #     except Exception as e:
+        #         status = False
+        #         print(traceback.format_exc(), flush=True)
+        #     finally:
+        #         if status == False:
+        #             return False
+        #
+        #     if is_sale == True:
+        #         for i in range(0, len(asin_info_remove_array)):
+        #             asin_info_array.remove(asin_info_remove_array[i])
+        #
+        #         if len(asin_info_array) != len(inventory_array):
+        #             print(len(asin_info_array), flush=True)
+        #             print(len(inventory_array), flush=True)
+        #
+        #
+        #     for i in range(0, len(asin_info_array)):
+        #         asin = asin_info_array[i]['asin']
+        #         node_table = node + '_' + type
+        #         status = sqlmgr.ad_sale_data.create_node_table(node_table)
+        #         if status == True:
+        #             status = sqlmgr.ad_sale_data.insert_node_data(node_table, asin_info_array[i])
+        #             if status == True:
+        #                 if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] > 0 and asin_info_array[i]['seller'] < 4 and asin_info_array[i]['price'] >= 12 and is_sale:
+        #                     inventory_table = 'INVENTORY_' + asin
+        #                     status = sqlmgr.ad_sale_data.create_inventory_table(inventory_table)
+        #                     if status == True:
+        #                         cur_date = date.today()
+        #                         data = {
+        #                             'date': cur_date,
+        #                             'inventory': inventory_array[i]['inventory']
+        #                         }
+        #                         status = sqlmgr.ad_sale_data.insert_inventory_data(inventory_table, data)
+        #                         if status == True:
+        #                             condition = 'asin=\'' + asin + '\''
+        #                             value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+        #                             status = sqlmgr.ad_sale_data.update_data(node_table, 'inventory_date', value, condition)
+        #                             if status == True:
+        #                                 task_data = {
+        #                                     'node': node,
+        #                                     'status': 'ok',
+        #                                     'last_date': cur_date,
+        #                                     'node_name': node_name
+        #                                 }
+        #                                 status = insert_task_node(sqlmgr.ad_sale_task, amazonglobal.table_sale_task_us, task_data)
+        #                                 if status == False:
+        #                                     print("insert task node in failure... + " + node, flush=True)
+        #                                 status = sqlmgr.ad_sale_data.get_yesterday_sale(inventory_table)
+        #                                 if status != -999:
+        #                                     yesterday = date.today() + timedelta(days=-1)
+        #                                     data = {
+        #                                         'date': yesterday,
+        #                                         'sale': copy.deepcopy(status)
+        #                                     }
+        #                                     sale_table = 'SALE_' + asin
+        #                                     status = sqlmgr.ad_sale_data.create_sale_table(sale_table)
+        #                                     if status == True:
+        #                                         status = sqlmgr.ad_sale_data.insert_sale_data(sale_table, data)
+        #                                         if status == True:
+        #                                             avg_sale = sqlmgr.ad_sale_data.get_column_avg(sale_table, 'sale')
+        #                                             if avg_sale != -999:
+        #                                                 status = sqlmgr.ad_sale_data.update_data(node_table, 'avg_sale', avg_sale, condition)
+        #                                                 if status == False:
+        #                                                     print("avg_sale update fail.. + " + node_table, flush=True)
+        #                                         else:
+        #                                             print("sale_data insert fail... + " + sale_table, flush=True)
+        #                                     else:
+        #                                         print("sale_table create fail.. + " + sale_table, flush=True)
+        #                             else:
+        #                                 print("invetory_date update fail.. + " + node_table, flush=True)
+        #                         else:
+        #                             print("inventory data insert fail.. + " + inventory_table, flush=True)
+        #                     else:
+        #                         print("inventory_table create fail + " + inventory_table, flush=True)
+        #             else:
+        #                 print("asin_info_data inserted fail.. + " + node_table, flush=True)
+        #         else:
+        #             print("node_table create fail + " + node_table, flush=True)
+        #
+        # t2 = time.time()
+        # print("Asin_Count-Time_Consumed：" + str(total_count) + '-'+ format(t2 - t1), flush=True)
 
         return status
 
