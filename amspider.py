@@ -957,8 +957,8 @@ class AmazonSpider():
                             element = driver.find_element_by_xpath(tmp_symbol)
                             print("Price is : " + element.text.strip('$ ').replace(',', ''), flush=True)
                             asin_info_data['price'] = getprice_uk(element.text)
-                            if asin_info_data['price'] < 12:
-                                continue
+                            # if asin_info_data['price'] < 12:
+                            #     continue
                         else:
                             continue
                     else:
@@ -975,8 +975,8 @@ class AmazonSpider():
                             element = driver.find_element_by_xpath(tmp_symbol)
                             print("Price is : " + element.text.strip('$ ').replace(',', ''), flush=True)
                             asin_info_data['price'] = getprice_uk(element.text)
-                            if int(asin_info_data['price']) < 12:
-                                continue
+                            # if int(asin_info_data['price']) < 12:
+                            #     continue
                         else:
                             continue
 
