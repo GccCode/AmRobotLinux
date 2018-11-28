@@ -899,7 +899,7 @@ class AmazonSpider():
             driver.set_script_timeout(60)
             try:
                 amazonpage = AmazonPage(driver) # /ref=zg_bs_pg_1?_encoding=UTF8&pg=2
-                url = "https://www.amazon.com/gp/bestsellers/electronics/" + node + "/ref=zg_bs_pg_1?_encoding=UTF8&pg=" + str(page + 1)
+                url = "https://www.amazon.co.uk/gp/bestsellers/electronics/" + node + "/ref=zg_bs_pg_1?_encoding=UTF8&pg=" + str(page + 1)
                 driver.get(url)
                 amazonpage.random_sleep(3000, 5000)
                 print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
@@ -1014,7 +1014,7 @@ class AmazonSpider():
                     for i in range(0, len(asin_info_array)):
                         tmp_info = asin_info_array[i]
                         if tmp_info['status'] == 'no':
-                            result = self.get_inventory_us(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale, False)
+                            result = self.get_inventory_uk(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale, False)
                             if result == False:
                                 asin_info_remove_array.append(asin_info_array[i])
                                 tmp_info['status'] = 'err'
@@ -1054,6 +1054,11 @@ class AmazonSpider():
                 if len(asin_info_array) != len(inventory_array):
                     print(len(asin_info_array), flush=True)
                     print(len(inventory_array), flush=True)
+
+            for asin_info in asin_info_array:
+                print(asin_info, flush=True)
+
+            return False
 
 
             for i in range(0, len(asin_info_array)):
@@ -3032,7 +3037,8 @@ def amspider_test(sqlmgr):
     amazonspider = AmazonSpider()
     try:
         # status = amazonspider.get_inventory_us(sqlmgr, False, 'B07H2V7637', ips_array, 'Solid-Inc', True, False)
-        status = amazonspider.get_inventory_uk(sqlmgr, False, 'B01GCEY2IS', ips_array, 'IKICH', True, False) #   B00G4QSNYY
+        # status = amazonspider.get_inventory_uk(sqlmgr, False, 'B01GCEY2IS', ips_array, 'IKICH', True, False) #   B00G4QSNYY
+        status = amazonspider.uk_node_gather(sqlmgr, '1098231031', 'Stereo Jack Cables', type, 2, ips_array, True)
     except Exception as e:
         print(str(e), flush=True)
 
