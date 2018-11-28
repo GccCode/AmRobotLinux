@@ -2129,7 +2129,9 @@ class AmazonSpider():
                 data['seller'] = 1
             else:
                 print("get seller count in failure..", flush=True)
-                status = -222
+                # status = -222
+                status = -111
+                input("wait")
                 return status
 
             if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
@@ -2138,9 +2140,7 @@ class AmazonSpider():
             elif data['shipping'] == 'AB':
                 data['seller_name'] = 'Amazon'
             else:
-                # status = -222
-                status = -111
-                input("wait")
+                status = -222
                 return status
 
             if data['shipping'] == 'FBM' and seller_name == False:
@@ -2150,7 +2150,7 @@ class AmazonSpider():
             if is_sale:
                 # if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon' or new_page_version_flag:
                 status = amazonasinpage.add_cart_uk(5000, 8000)
-                print("get_inventory_us + " + asin, flush=True)
+                print("get_inventory_uk + " + asin, flush=True)
 
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
