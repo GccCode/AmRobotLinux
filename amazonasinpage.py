@@ -85,6 +85,37 @@ class AmazonAsinPage(AmazonPage):
                 self.driver.get(url)
                 self.random_sleep(begin, end)
 
+    def select_size_uk(self, asin, begin, end):
+        if self.is_element_exsist(*self.locator.SELECT_SIZE_JP):
+            OPTIONS_JP_PREFIX = 'native_size_name_'
+            option_array = []
+            total = 0
+            url = ''
+            for total in range(0, 20):
+                try:
+                    element = self.driver.find_element_by_id(OPTIONS_JP_PREFIX + str(total))
+                    option_array.append(element)
+                except NoSuchElementException as msg:
+                    break
+
+            for index in range(0, total):
+                value = option_array[index].get_attribute('value').split(',')
+                if asin == value[1]:
+                    if option_array[index].get_attribute('class') == 'dropdownAvailable':
+                        # print("return the original aisn", flush=True)
+                        url = 'https://www.amazon.co.uk/dp/' + asin + '?th=1&psc=1'
+                        break
+
+            if url == '':
+                for index in range(0, total):
+                    value = option_array[index].get_attribute('value').split(',')
+                    if option_array[index].get_attribute('class') == 'dropdownAvailable':
+                        # print("find another asin to replace..", flush=True)
+                        url = 'https://www.amazon.co.uk/dp/' + value[1] + '?th=1&psc=1'
+                        break
+            if url != '':
+                self.driver.get(url)
+                self.random_sleep(begin, end)
 
     def ask_qa(self, content, begin, end):
         country = self.cf.get("account", "country")
