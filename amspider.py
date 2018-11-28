@@ -28,6 +28,7 @@ INEXSISTED_FLAG_JP = (By.CSS_SELECTOR, 'img[alt=\'Amazon\']')
 INEXSISTED_FLAG_US = (By.CSS_SELECTOR, 'img[alt=\'Dogs of Amazon\']')
 INEXSISTED_FLAG_UK = (By.CSS_SELECTOR, 'img[alt=\'Dogs of Amazon\']')
 UNKNOWN_NODE_US = (By.XPATH, '//*[@id=\'zg-center-div\']/h4')
+UNKNOWN_NODE_UK = (By.XPATH, '//*[@id=\'zg-center-div\']/h4')
 
 BIG_IMG_DIV_US = (By.XPATH, '//*[@id=\'imgTagWrapperId\']')
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
@@ -102,16 +103,23 @@ CRITICAL_TITLE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/a[position()
 CRITICAL_TITLE_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
 CRITICAL_TITLE_POSTFIX_US = ']/span/div/span/a[position()=1]'
 
+CRITICAL_TITLE_PREFIX_UK = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_TITLE_POSTFIX_UK = ']/span/div/span/a[position()=1]'
+
 CRITICAL_FBA_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_FBA_POSTFIX = '2]/div[position()=1]/div/div[position()=2]/div[position()=3]/a[position()=1]/span/span'
 
 CRITICAL_FBA_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
 CRITICAL_FBA_POSTFIX_US = ']/span/div/span/div[position()=2]/span'
+CRITICAL_FBA_PREFIX_UK = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_FBA_POSTFIX_UK = ']/span/div/span/div[position()=2]/span'
 
 CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[position()=3]/a[position()=1]/span/span'
 CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
 CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX_US = ']/span/div/span/div[position()=2]/a[position()=1]/span/span'
+CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX_UK = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX_UK = ']/span/div/span/div[position()=2]/a[position()=1]/span/span'
 CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[position()=3]/a/span/span'
 CRITICAL_NO_REVIEW_FBA_PRICE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
@@ -123,18 +131,26 @@ CRITICAL_REVIEWS_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_REVIEWS_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[position()=2]/a[position()=2]'
 CRITICAL_REVIEWS_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
 CRITICAL_REVIEWS_POSTFIX_US = ']/span/div/span/div[position()=1]/a[position()=2]'
+CRITICAL_REVIEWS_PREFIX_UK = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_REVIEWS_POSTFIX_UK = ']/span/div/span/div[position()=1]/a[position()=2]'
 CRITICAL_RATE_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_RATE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[position()=2]/a[position()=1]'
 CRITICAL_RATE_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
 CRITICAL_RATE_POSTFIX_US = ']/span/div/span/div[position()=1]/a[position()=1]'
+CRITICAL_RATE_PREFIX_UK = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_RATE_POSTFIX_UK = ']/span/div/span/div[position()=1]/a[position()=1]'
 CRITICAL_IMGSRC_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_IMGSRC_POSTFIX = ']/div[position()=1]/div/div[position()=1]/a/img'
 CRITICAL_IMGSRC_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
 CRITICAL_IMGSRC_POSTFIX_US = ']/span/div/span/a[position()=1]/span[position()=1]/div/img'
+CRITICAL_IMGSRC_PREFIX_UK = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_IMGSRC_POSTFIX_UK = ']/span/div/span/a[position()=1]/span[position()=1]/div/img'
 CRITICAL_RANK_PREFIX = '//*[@id=\'zg_critical\']/div[position()='
 CRITICAL_RANK_POSTFIX = ']/div[position()=1]/div/div[position()=2]/div[position()=1]/span[position()='
 CRITICAL_RANK_PREFIX_US = '//*[@id=\'zg-ordered-list\']/li[position()='
 CRITICAL_RANK_POSTFIX_US = ']/span/div/div[position()=1]/span[position()=1]/span'
+CRITICAL_RANK_PREFIX_UK = '//*[@id=\'zg-ordered-list\']/li[position()='
+CRITICAL_RANK_POSTFIX_UK = ']/span/div/div[position()=1]/span[position()=1]/span'
 
 NON_CRITICAL_TITLE_PREFIX = '//*[@id=\'zg_nonCritical\']/div[position()='
 NON_CRITICAL_TITLE_POSTFIX = ']/div[position()=1]/div/div[position()=2]/a[position()=1]'
@@ -911,89 +927,89 @@ class AmazonSpider():
                 print("Start gathering page: <" + str(page + 1) + "> ##########", flush=True)
 
                 for i in range(0, 50):
-                    tmp_symbol = CRITICAL_TITLE_PREFIX_US + str(i + 1) + CRITICAL_TITLE_POSTFIX_US
+                    tmp_symbol = CRITICAL_TITLE_PREFIX_UK + str(i + 1) + CRITICAL_TITLE_POSTFIX_UK
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
                         asin_info_data['asin'] = getasinfromhref(element.get_attribute('href'))
-                        print("Asin is: " + asin_info_data['asin'], flush=True)
+                        # print("Asin is: " + asin_info_data['asin'], flush=True)
                     else:
-                        if amazonpage.is_element_exsist(*UNKNOWN_NODE_US) and i == 0:
-                            element = driver.find_element(*UNKNOWN_NODE_US)
+                        if amazonpage.is_element_exsist(*UNKNOWN_NODE_UK) and i == 0:
+                            element = driver.find_element(*UNKNOWN_NODE_UK)
                             if 'no Best Sellers' in element.text:
                                 status = False
                                 return status
                         else:
                             continue
 
-                    tmp_symbol = CRITICAL_REVIEWS_PREFIX_US + str(i + 1) + CRITICAL_REVIEWS_POSTFIX_US
+                    tmp_symbol = CRITICAL_REVIEWS_PREFIX_UK + str(i + 1) + CRITICAL_REVIEWS_POSTFIX_UK
                     has_review = amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol))
                     if has_review:
                         element = driver.find_element_by_xpath(tmp_symbol)
-                        print("Review Count is: " + element.text, flush=True)
+                        # print("Review Count is: " + element.text, flush=True)
                         asin_info_data['review'] = int(element.text.strip().replace(',', ''))
-                        tmp_symbol = CRITICAL_RATE_PREFIX_US + str(i + 1) + CRITICAL_RATE_POSTFIX_US
+                        tmp_symbol = CRITICAL_RATE_PREFIX_UK + str(i + 1) + CRITICAL_RATE_POSTFIX_UK
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
                             # print(element.get_attribute('title'), flush=True)
                             # print(element.get_attribute('title').split(' ')[0], flush=True)
                             asin_info_data['rate'] = float(element.get_attribute('title').split(' ')[0])
-                            print("Rate is: " + element.get_attribute('title').split(' ')[0], flush=True)
+                            # print("Rate is: " + element.get_attribute('title').split(' ')[0], flush=True)
                     else:
                         asin_info_data['review'] = 0
-                        print("Review Count is: 0", flush=True)
+                        # print("Review Count is: 0", flush=True)
                         asin_info_data['rate'] = 0
-                        print("Rate is: 0", flush=True)
+                        # print("Rate is: 0", flush=True)
                     if has_review:
-                        tmp_symbol = CRITICAL_FBA_PREFIX_US + str(i + 1) + CRITICAL_FBA_POSTFIX_US
+                        tmp_symbol = CRITICAL_FBA_PREFIX_UK + str(i + 1) + CRITICAL_FBA_POSTFIX_UK
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             asin_info_data['shipping'] = 'FBA'
-                            print("FBA", flush=True)
-                            tmp_symbol = CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX_US + str(i + 1) + CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX_US
+                            # print("FBA", flush=True)
+                            tmp_symbol = CRITICAL_HAS_REVIEW_FBA_PRICE_PREFIX_UK + str(i + 1) + CRITICAL_HAS_REVIEW_FBA_PRICE_POSTFIX_UK
                         else:
                             asin_info_data['shipping'] = 'FBM'
-                            print("FBM", flush=True)
+                            # print("FBM", flush=True)
                             tmp_symbol = CRITICAL_HAS_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + CRITICAL_HAS_REVIEW_FBM_PRICE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
-                            print("Price is : " + element.text.strip('$ ').replace(',', ''), flush=True)
+                            # print("Price is : " + element.text.strip('$ ').replace(',', ''), flush=True)
                             asin_info_data['price'] = getprice_uk(element.text)
                             # if asin_info_data['price'] < 12:
                             #     continue
                         else:
                             continue
                     else:
-                        tmp_symbol = CRITICAL_FBA_PREFIX_US + str(i + 1) + CRITICAL_FBA_POSTFIX_US
+                        tmp_symbol = CRITICAL_FBA_PREFIX_UK + str(i + 1) + CRITICAL_FBA_POSTFIX_UK
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             asin_info_data['shipping'] = 'FBA'
-                            print("FBA", flush=True)
+                            # print("FBA", flush=True)
                             tmp_symbol = CRITICAL_NO_REVIEW_FBA_PRICE_PREFIX + str(i + 1) + CRITICAL_NO_REVIEW_FBA_PRICE_POSTFIX
                         else:
                             asin_info_data['shipping'] = 'FBM'
-                            print("FBM", flush=True)
+                            # print("FBM", flush=True)
                             tmp_symbol = CRITICAL_NO_REVIEW_FBM_PRICE_PREFIX + str(i + 1) + CRITICAL_NO_REVIEW_FBM_PRICE_POSTFIX
                         if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                             element = driver.find_element_by_xpath(tmp_symbol)
-                            print("Price is : " + element.text.strip('$ ').replace(',', ''), flush=True)
+                            # print("Price is : " + element.text.strip('$ ').replace(',', ''), flush=True)
                             asin_info_data['price'] = getprice_uk(element.text)
                             # if int(asin_info_data['price']) < 12:
                             #     continue
                         else:
                             continue
 
-                    tmp_symbol = CRITICAL_IMGSRC_PREFIX_US + str(i + 1) + CRITICAL_IMGSRC_POSTFIX_US
+                    tmp_symbol = CRITICAL_IMGSRC_PREFIX_UK + str(i + 1) + CRITICAL_IMGSRC_POSTFIX_UK
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
                         #  https://images-na.ssl-images-amazon.com/images/I/61EHMhJe1YL._SL500_SR160,160_.jpg
                         #  https://images-na.ssl-images-amazon.com/images/I/51-29ux0dCL._AC_UL200_SR200,200_.jpg
-                        print("ImgSrc is: " + element.get_attribute('src'), flush=True)
+                        # print("ImgSrc is: " + element.get_attribute('src'), flush=True)
                         asin_info_data['img_url'] = getimgidfromhref(element.get_attribute('src'))
                     else:
                         print("ImgSrc can't be found", flush=True)
 
-                    tmp_symbol = CRITICAL_RANK_PREFIX_US + str(i + 1) + CRITICAL_RANK_POSTFIX_US
+                    tmp_symbol = CRITICAL_RANK_PREFIX_UK + str(i + 1) + CRITICAL_RANK_POSTFIX_UK
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
                         element = driver.find_element_by_xpath(tmp_symbol)
-                        print("Top Rank is: " + element.text.strip().replace('#', ''), flush=True)
+                        # print("Top Rank is: " + element.text.strip().replace('#', ''), flush=True)
                         asin_info_data['rank'] = int(element.text.strip().replace('#', ''))
 
                         asin_info_array.append(copy.deepcopy(asin_info_data))
@@ -1003,7 +1019,6 @@ class AmazonSpider():
                         print("Rank can't be found", flush=True)
                         continue
                 amazonpage.random_sleep(2000, 5000)
-                input("wait")
             except NoSuchElementException as msg:
                 status = False
                 print("Except: NoSuchElementException", flush=True)
@@ -1017,121 +1032,121 @@ class AmazonSpider():
                     return False
 
 
-        #     status = True
-        #     inventory_array = []
-        #     asin_info_remove_array = []
-        #     try:
-        #         while self.is_all_asin_ok(asin_info_array) == False:
-        #             for i in range(0, len(asin_info_array)):
-        #                 tmp_info = asin_info_array[i]
-        #                 if tmp_info['status'] == 'no':
-        #                     result = self.get_inventory_uk(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale, False)
-        #                     if result == False:
-        #                         asin_info_remove_array.append(asin_info_array[i])
-        #                         tmp_info['status'] = 'err'
-        #                     elif result == -111:
-        #                         print("ip problems...", flush=True)
-        #                         tmp_info['status'] = 'no'
-        #                     elif result == -222:
-        #                         # print("overweight " + tmp_info['asin'], flush=True)
-        #                         tmp_info['limited'] = 'yes'
-        #                         tmp_info['status'] = 'err'
-        #                         asin_info_remove_array.append(asin_info_array[i])
-        #                     else:
-        #                         tmp_info['shipping'] = result['shipping']
-        #                         tmp_info['seller'] = result['seller']
-        #                         tmp_info['qa'] = result['qa']
-        #                         tmp_info['limited'] = result['limited']
-        #                         tmp_info['status'] = 'ok'
-        #                         tmp_info['seller_name'] = result['seller_name']
-        #                         tmp_info['size'] = result['size']
-        #                         tmp_info['weight'] = result['weight']
-        #                         total_count += 1
-        #
-        #
-        #                         if is_sale == True:
-        #                             inventory_array.append(copy.deepcopy(result))
-        #     except Exception as e:
-        #         status = False
-        #         print(traceback.format_exc(), flush=True)
-        #     finally:
-        #         if status == False:
-        #             return False
-        #
-        #     if is_sale == True:
-        #         for i in range(0, len(asin_info_remove_array)):
-        #             asin_info_array.remove(asin_info_remove_array[i])
-        #
-        #         if len(asin_info_array) != len(inventory_array):
-        #             print(len(asin_info_array), flush=True)
-        #             print(len(inventory_array), flush=True)
-        #
-        #
-        #     for i in range(0, len(asin_info_array)):
-        #         asin = asin_info_array[i]['asin']
-        #         node_table = node + '_' + type
-        #         status = sqlmgr.ad_sale_data.create_node_table(node_table)
-        #         if status == True:
-        #             status = sqlmgr.ad_sale_data.insert_node_data(node_table, asin_info_array[i])
-        #             if status == True:
-        #                 if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] > 0 and asin_info_array[i]['seller'] < 4 and asin_info_array[i]['price'] >= 12 and is_sale:
-        #                     inventory_table = 'INVENTORY_' + asin
-        #                     status = sqlmgr.ad_sale_data.create_inventory_table(inventory_table)
-        #                     if status == True:
-        #                         cur_date = date.today()
-        #                         data = {
-        #                             'date': cur_date,
-        #                             'inventory': inventory_array[i]['inventory']
-        #                         }
-        #                         status = sqlmgr.ad_sale_data.insert_inventory_data(inventory_table, data)
-        #                         if status == True:
-        #                             condition = 'asin=\'' + asin + '\''
-        #                             value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
-        #                             status = sqlmgr.ad_sale_data.update_data(node_table, 'inventory_date', value, condition)
-        #                             if status == True:
-        #                                 task_data = {
-        #                                     'node': node,
-        #                                     'status': 'ok',
-        #                                     'last_date': cur_date,
-        #                                     'node_name': node_name
-        #                                 }
-        #                                 status = insert_task_node(sqlmgr.ad_sale_task, amazonglobal.table_sale_task_us, task_data)
-        #                                 if status == False:
-        #                                     print("insert task node in failure... + " + node, flush=True)
-        #                                 status = sqlmgr.ad_sale_data.get_yesterday_sale(inventory_table)
-        #                                 if status != -999:
-        #                                     yesterday = date.today() + timedelta(days=-1)
-        #                                     data = {
-        #                                         'date': yesterday,
-        #                                         'sale': copy.deepcopy(status)
-        #                                     }
-        #                                     sale_table = 'SALE_' + asin
-        #                                     status = sqlmgr.ad_sale_data.create_sale_table(sale_table)
-        #                                     if status == True:
-        #                                         status = sqlmgr.ad_sale_data.insert_sale_data(sale_table, data)
-        #                                         if status == True:
-        #                                             avg_sale = sqlmgr.ad_sale_data.get_column_avg(sale_table, 'sale')
-        #                                             if avg_sale != -999:
-        #                                                 status = sqlmgr.ad_sale_data.update_data(node_table, 'avg_sale', avg_sale, condition)
-        #                                                 if status == False:
-        #                                                     print("avg_sale update fail.. + " + node_table, flush=True)
-        #                                         else:
-        #                                             print("sale_data insert fail... + " + sale_table, flush=True)
-        #                                     else:
-        #                                         print("sale_table create fail.. + " + sale_table, flush=True)
-        #                             else:
-        #                                 print("invetory_date update fail.. + " + node_table, flush=True)
-        #                         else:
-        #                             print("inventory data insert fail.. + " + inventory_table, flush=True)
-        #                     else:
-        #                         print("inventory_table create fail + " + inventory_table, flush=True)
-        #             else:
-        #                 print("asin_info_data inserted fail.. + " + node_table, flush=True)
-        #         else:
-        #             print("node_table create fail + " + node_table, flush=True)
-        #
-        # t2 = time.time()
-        # print("Asin_Count-Time_Consumed：" + str(total_count) + '-'+ format(t2 - t1), flush=True)
+            status = True
+            inventory_array = []
+            asin_info_remove_array = []
+            try:
+                while self.is_all_asin_ok(asin_info_array) == False:
+                    for i in range(0, len(asin_info_array)):
+                        tmp_info = asin_info_array[i]
+                        if tmp_info['status'] == 'no':
+                            result = self.get_inventory_uk(sqlmgr, False, tmp_info['asin'], ips_array, False, is_sale, False)
+                            if result == False:
+                                asin_info_remove_array.append(asin_info_array[i])
+                                tmp_info['status'] = 'err'
+                            elif result == -111:
+                                print("ip problems...", flush=True)
+                                tmp_info['status'] = 'no'
+                            elif result == -222:
+                                # print("overweight " + tmp_info['asin'], flush=True)
+                                tmp_info['limited'] = 'yes'
+                                tmp_info['status'] = 'err'
+                                asin_info_remove_array.append(asin_info_array[i])
+                            else:
+                                tmp_info['shipping'] = result['shipping']
+                                tmp_info['seller'] = result['seller']
+                                tmp_info['qa'] = result['qa']
+                                tmp_info['limited'] = result['limited']
+                                tmp_info['status'] = 'ok'
+                                tmp_info['seller_name'] = result['seller_name']
+                                tmp_info['size'] = result['size']
+                                tmp_info['weight'] = result['weight']
+                                total_count += 1
+
+
+                                if is_sale == True:
+                                    inventory_array.append(copy.deepcopy(result))
+            except Exception as e:
+                status = False
+                print(traceback.format_exc(), flush=True)
+            finally:
+                if status == False:
+                    return False
+
+            if is_sale == True:
+                for i in range(0, len(asin_info_remove_array)):
+                    asin_info_array.remove(asin_info_remove_array[i])
+
+                if len(asin_info_array) != len(inventory_array):
+                    print(len(asin_info_array), flush=True)
+                    print(len(inventory_array), flush=True)
+
+
+            for i in range(0, len(asin_info_array)):
+                asin = asin_info_array[i]['asin']
+                node_table = node + '_' + type
+                status = sqlmgr.ad_sale_data.create_node_table(node_table)
+                if status == True:
+                    status = sqlmgr.ad_sale_data.insert_node_data(node_table, asin_info_array[i])
+                    if status == True:
+                        if asin_info_array[i]['limited'] == 'no' and asin_info_array[i]['status'] != 'err' and asin_info_array[i]['seller'] > 0 and asin_info_array[i]['seller'] < 4 and asin_info_array[i]['price'] >= 12 and is_sale:
+                            inventory_table = 'INVENTORY_' + asin
+                            status = sqlmgr.ad_sale_data.create_inventory_table(inventory_table)
+                            if status == True:
+                                cur_date = date.today()
+                                data = {
+                                    'date': cur_date,
+                                    'inventory': inventory_array[i]['inventory']
+                                }
+                                status = sqlmgr.ad_sale_data.insert_inventory_data(inventory_table, data)
+                                if status == True:
+                                    condition = 'asin=\'' + asin + '\''
+                                    value = '\'' + cur_date.strftime("%Y-%m-%d") + '\''
+                                    status = sqlmgr.ad_sale_data.update_data(node_table, 'inventory_date', value, condition)
+                                    if status == True:
+                                        task_data = {
+                                            'node': node,
+                                            'status': 'ok',
+                                            'last_date': cur_date,
+                                            'node_name': node_name
+                                        }
+                                        status = insert_task_node(sqlmgr.ad_sale_task, amazonglobal.table_sale_task_us, task_data)
+                                        if status == False:
+                                            print("insert task node in failure... + " + node, flush=True)
+                                        status = sqlmgr.ad_sale_data.get_yesterday_sale(inventory_table)
+                                        if status != -999:
+                                            yesterday = date.today() + timedelta(days=-1)
+                                            data = {
+                                                'date': yesterday,
+                                                'sale': copy.deepcopy(status)
+                                            }
+                                            sale_table = 'SALE_' + asin
+                                            status = sqlmgr.ad_sale_data.create_sale_table(sale_table)
+                                            if status == True:
+                                                status = sqlmgr.ad_sale_data.insert_sale_data(sale_table, data)
+                                                if status == True:
+                                                    avg_sale = sqlmgr.ad_sale_data.get_column_avg(sale_table, 'sale')
+                                                    if avg_sale != -999:
+                                                        status = sqlmgr.ad_sale_data.update_data(node_table, 'avg_sale', avg_sale, condition)
+                                                        if status == False:
+                                                            print("avg_sale update fail.. + " + node_table, flush=True)
+                                                else:
+                                                    print("sale_data insert fail... + " + sale_table, flush=True)
+                                            else:
+                                                print("sale_table create fail.. + " + sale_table, flush=True)
+                                    else:
+                                        print("invetory_date update fail.. + " + node_table, flush=True)
+                                else:
+                                    print("inventory data insert fail.. + " + inventory_table, flush=True)
+                            else:
+                                print("inventory_table create fail + " + inventory_table, flush=True)
+                    else:
+                        print("asin_info_data inserted fail.. + " + node_table, flush=True)
+                else:
+                    print("node_table create fail + " + node_table, flush=True)
+
+        t2 = time.time()
+        print("Asin_Count-Time_Consumed：" + str(total_count) + '-'+ format(t2 - t1), flush=True)
 
         return status
 
