@@ -31,7 +31,7 @@ UNKNOWN_NODE_US = (By.XPATH, '//*[@id=\'zg-center-div\']/h4')
 
 BIG_IMG_DIV_US = (By.XPATH, '//*[@id=\'imgTagWrapperId\']')
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
-BUYER_COUNT_UK = (By.XPATH, '//*[@id=\'olp-sl-new\']/span/a')
+BUYER_COUNT_UK = (By.XPATH, '//*[@id=\'olp-new\']/span/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
 REVIEW_COUNT_US = (By.ID, 'acrCustomerReviewText')
 PRICE_US = (By.ID, 'priceblock_ourprice')
