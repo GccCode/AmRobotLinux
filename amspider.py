@@ -34,8 +34,11 @@ BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a'
 BUYER_COUNT_UK = (By.XPATH, '//*[@id=\'olp-new\']/span/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
 REVIEW_COUNT_US = (By.ID, 'acrCustomerReviewText')
+REVIEW_COUNT_UK = (By.ID, 'acrCustomerReviewText')
 PRICE_US = (By.ID, 'priceblock_ourprice')
+PRICE_UK = (By.ID, 'priceblock_ourprice')
 IMGSRC_US = (By.CSS_SELECTOR, 'img[id=\'landingImage\']')
+IMGSRC_UK = (By.CSS_SELECTOR, 'img[id=\'landingImage\']')
 FBA_FLAG = (By.ID, "SSOFpopoverLink")
 AB_FLAG_JP = (By.XPATH, '//*[@id=\'merchant-info\']/a[position()=1]')
 # AB_FLAG_US = (By.XPATH, '//*[@id=\'merchant-info\']/text()[position()=1]')
@@ -221,13 +224,22 @@ def getqa_us(template):
 def get_review_us(template):
     return template.split(' ')[0].strip('+')
 
+def get_review_uk(template):
+    return template.split(' ')[0].strip('+')
+
 def get_price_us(template):
     return template.replace('$', '').replace(',', '')
+
+def get_price_uk(template):
+    return template.replace('£', '').replace(',', '')
 
 def get_imgsrc_us(element):
     url = element.get_attribute('data-a-dynamic-image')
     return url.split('I/')[1].split('.j')[0]
 
+def get_imgsrc_uk(element):
+    url = element.get_attribute('data-a-dynamic-image')
+    return url.split('I/')[1].split('.j')[0]
 
 def getprice_jp(price):
     if '-' in price:
@@ -1997,21 +2009,21 @@ class AmazonSpider():
                 data['qa'] = 0
 
             if enhance is True:
-                if amazonasinpage.is_element_exsist(*REVIEW_COUNT_US):
-                    element = driver.find_element(*REVIEW_COUNT_US)
-                    data['review'] = int(get_review_us(element.text))
+                if amazonasinpage.is_element_exsist(*REVIEW_COUNT_UK):
+                    element = driver.find_element(*REVIEW_COUNT_UK)
+                    data['review'] = int(get_review_uk(element.text))
                 else:
                     data['review'] = 0
 
-                if amazonasinpage.is_element_exsist(*PRICE_US):
-                    element = driver.find_element(*PRICE_US)
-                    data['price'] = float(get_price_us(element.text))
+                if amazonasinpage.is_element_exsist(*PRICE_UK):
+                    element = driver.find_element(*PRICE_UK)
+                    data['price'] = float(get_price_uk(element.text))
                 else:
                     data['price'] = 0
 
-                if amazonasinpage.is_element_exsist(*IMGSRC_US):
+                if amazonasinpage.is_element_exsist(*IMGSRC_UK):
                     element = driver.find_element(*IMGSRC_US)
-                    data['imgsrc'] = get_imgsrc_us(element)
+                    data['imgsrc'] = get_imgsrc_uk(element)
 
             overweight_flag = False
             size_weight_td_array = driver.find_elements(*SIZE_WEIGHT_TD_US)
