@@ -204,6 +204,12 @@ def getseller_us(template):
     except:
         return 0
 
+def getseller_uk(template):
+    try:
+        return template.split(' ')[0]
+    except:
+        return 0
+
 def getqa_jp(template):
     rule = r'(.*?)人'
     slotList = re.findall(rule, template)
@@ -2103,7 +2109,7 @@ class AmazonSpider():
 
             if amazonasinpage.is_element_exsist(*BUYER_COUNT_UK):
                 element = driver.find_element(*BUYER_COUNT_UK)
-                data['seller'] = int(getseller_us(element.text))
+                data['seller'] = int(getseller_uk(element.text))
 
                 print("seller is: " + str(data['seller']))
                 print(element.text, flush=True)
