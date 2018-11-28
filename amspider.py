@@ -3071,7 +3071,7 @@ def amspider_test(sqlmgr):
     try:
         # status = amazonspider.get_inventory_us(sqlmgr, False, 'B07H2V7637', ips_array, 'Solid-Inc', True, False)
         # status = amazonspider.get_inventory_uk(sqlmgr, False, 'B01GCEY2IS', ips_array, 'IKICH', True, False) #   B00G4QSNYY
-        status = amazonspider.uk_node_gather(sqlmgr, '1098231031', 'Stereo Jack Cables', type, 2, ips_array, True)
+        status = amazonspider.uk_node_gather(sqlmgr, '1098231031', 'Stereo Jack Cables', 'BS', 2, ips_array, True)
     except Exception as e:
         print(str(e), flush=True)
 
