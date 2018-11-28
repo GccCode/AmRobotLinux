@@ -2204,7 +2204,8 @@ class AmazonSpider():
                             if (fba_flag and prime_checkbox_flag == False) or prime_checkbox_flag:
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_UK) or amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_AB_IMG_UK):
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_UK)
-                                    print(seller_name_element.text, flush=True)
+                                    if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_AB_IMG_UK) is False:
+                                        print(seller_name_element.text, flush=True)
                                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_AB_IMG_UK):
                                         print("kjlkjdsf", flush=True)
                                         tmp_element = maindiv_element.find_element(*SELLER_NAME_AB_IMG_UK)
