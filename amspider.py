@@ -2170,7 +2170,7 @@ class AmazonSpider():
                 return status
 
             if is_sale:
-                if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon' or new_page_version_flag:
+                if seller_name == False: # or data['seller_name'] == 'Amazon' or seller_name == 'Amazon' or new_page_version_flag:
                     status = amazonasinpage.add_cart_uk(5000, 8000)
                     print("get_inventory_uk + " + asin, flush=True)
                 else:
