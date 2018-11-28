@@ -1940,7 +1940,7 @@ class AmazonSpider():
             'limited': 'no'
         }
         try:
-            url = 'https://www.amazon.com/dp/' + asin
+            url = 'https://www.amazon.co.uk/dp/' + asin
             driver.get(url)
             amazonasinpage = AmazonAsinPage(driver)
 
@@ -2341,7 +2341,7 @@ class AmazonSpider():
             'limited': 'no'
         }
         try:
-            url = 'https://www.amazon.com/dp/' + asin
+            url = 'https://www.amazon.de/dp/' + asin
             driver.get(url)
             amazonasinpage = AmazonAsinPage(driver)
 
