@@ -987,6 +987,8 @@ class AmazonSpider():
                         #  https://images-na.ssl-images-amazon.com/images/I/51-29ux0dCL._AC_UL200_SR200,200_.jpg
                         print("ImgSrc is: " + element.get_attribute('src'), flush=True)
                         asin_info_data['img_url'] = getimgidfromhref(element.get_attribute('src'))
+                    else:
+                        print("ImgSrc can't be found", flush=True)
 
                     tmp_symbol = CRITICAL_RANK_PREFIX_US + str(i + 1) + CRITICAL_RANK_POSTFIX_US
                     if amazonpage.is_element_exsist(*(By.XPATH, tmp_symbol)):
@@ -998,6 +1000,7 @@ class AmazonSpider():
                         # print(asin_info_data['asin'], flush=True)
                         # print("** ------------------- **", flush=True)
                     else:
+                        print("Rank can't be found", flush=True)
                         continue
                 amazonpage.random_sleep(2000, 5000)
                 input("wait")
