@@ -32,6 +32,7 @@ UNKNOWN_NODE_US = (By.XPATH, '//*[@id=\'zg-center-div\']/h4')
 BIG_IMG_DIV_US = (By.XPATH, '//*[@id=\'imgTagWrapperId\']')
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 BUYER_COUNT_UK = (By.XPATH, '//*[@id=\'olp-new\']/span/a')
+BUYER_COUNT1_UK = (By.XPATH, '//*[@id=\'olp-sl-new\']/span/a')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
 REVIEW_COUNT_US = (By.ID, 'acrCustomerReviewText')
 REVIEW_COUNT_UK = (By.ID, 'acrCustomerReviewText')
@@ -2121,6 +2122,12 @@ class AmazonSpider():
 
             if amazonasinpage.is_element_exsist(*BUYER_COUNT_UK):
                 element = driver.find_element(*BUYER_COUNT_UK)
+                data['seller'] = int(getseller_uk(element.text))
+
+                # print("seller is: " + str(data['seller']))
+                # print(element.text, flush=True)
+            elif amazonasinpage.is_element_exsist(*BUYER_COUNT1_UK):
+                element = driver.find_element(*BUYER_COUNT1_UK)
                 data['seller'] = int(getseller_uk(element.text))
 
                 # print("seller is: " + str(data['seller']))
