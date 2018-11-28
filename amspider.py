@@ -2204,6 +2204,8 @@ class AmazonSpider():
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_UK):
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_UK)
                                     print(seller_name_element.text, flush=True)
+                                    if seller_name_element.text == '':
+                                        print("33333333333", flush=True)
                                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *USED_UK):
                                         continue
                                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *LIKE_NEW_UK):
