@@ -86,6 +86,7 @@ class AmazonAsinPage(AmazonPage):
                 self.random_sleep(begin, end)
 
     def select_size_uk(self, asin, begin, end):
+        status = False
         if self.is_element_exsist(*self.locator.SELECT_SIZE_JP):
             OPTIONS_JP_PREFIX = 'native_size_name_'
             option_array = []
@@ -114,8 +115,11 @@ class AmazonAsinPage(AmazonPage):
                         url = 'https://www.amazon.co.uk/dp/' + value[1] + '?th=1&psc=1'
                         break
             if url != '':
+                status = True
                 self.driver.get(url)
                 self.random_sleep(begin, end)
+
+        return status
 
     def ask_qa(self, content, begin, end):
         country = self.cf.get("account", "country")

@@ -1974,7 +1974,11 @@ class AmazonSpider():
                 status = -111
                 return -111
 
-            amazonasinpage.select_size_uk(asin, 1000, 2000)
+            status = amazonasinpage.select_size_uk(asin, 1000, 2000)
+            if status is True:
+                data['limited'] = 'yes'
+                status = data
+                return status
 
             big_img_div_position_y = 0
             if amazonasinpage.is_element_exsist(*BIG_IMG_DIV_US):
