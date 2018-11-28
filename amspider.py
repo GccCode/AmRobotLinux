@@ -226,7 +226,7 @@ def get_review_us(template):
     return template.split(' ')[0].strip('+')
 
 def get_review_uk(template):
-    return template.split(' ')[0].strip('+')
+    return template.split(' ')[0].strip('+').replace(',', '')
 
 def get_price_us(template):
     return template.replace('$', '').replace(',', '')
