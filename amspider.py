@@ -2188,6 +2188,11 @@ class AmazonSpider():
                 status = -222
                 return status
 
+            if data['seller'] > 3:
+                data['limited'] = 'yes'
+                status = data
+                return status
+
             if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
                 element = driver.find_element(*SELLER_NAME_US)
                 data['seller_name'] = element.text.strip().replace('\'', '')
@@ -2267,8 +2272,6 @@ class AmazonSpider():
                                             status = False
                                 else:
                                     status = False
-
-                input("wait")
 
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
