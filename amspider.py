@@ -50,13 +50,24 @@ MULTI_SELLERS_DIV_US = (By.XPATH, '//*[@id=\'olpOfferList\']/div/div[position()=
 SELLER_IS_FBA_FLAG1_US = (By.ID, 'fulfilledByAmazonPopOver2')
 SELLER_IS_FBA_FLAG2_US = (By.CSS_SELECTOR, 'div[class=\'olpBadge\']')
 SELLER_IS_FBA_FLAG3_US = (By.CSS_SELECTOR, 'div[id=\'a-popover-fbaPopover\']')
+MULTI_SELLERS_DIV_UK = (By.XPATH, '//*[@id=\'olpOfferList\']/div/div[position()=1]/div')
+SELLER_IS_FBA_FLAG1_UK = (By.ID, 'fulfilledByAmazonPopOver2')
+SELLER_IS_FBA_FLAG2_UK = (By.CSS_SELECTOR, 'div[class=\'olpBadge\']')
+SELLER_IS_FBA_FLAG3_UK = (By.CSS_SELECTOR, 'div[id=\'a-popover-fbaPopover\']')
 PRIME_CHECKBOX_US = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_primeEligible\']')
+PRIME_CHECKBOX_UK = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_primeEligible\']')
 NEW_CHECKBOX_US = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_new\']')
+NEW_CHECKBOX_UK = (By.CSS_SELECTOR, 'input[name=\'olpCheckbox_new\']')
 NEW_US = (By.CSS_SELECTOR, 'span[id=\'olpNew\']')
+NEW_UK = (By.CSS_SELECTOR, 'span[id=\'olpNew\']')
 REFURBISHED_US = (By.CSS_SELECTOR, 'span[id=\'olpRefurbished\']')
+REFURBISHED_UK = (By.CSS_SELECTOR, 'span[id=\'olpRefurbished\']')
 USED_US = (By.CSS_SELECTOR, 'span[id=\'olpUsed\']')
+USED_UK = (By.CSS_SELECTOR, 'span[id=\'olpUsed\']')
 LIKE_NEW_US = (By.CSS_SELECTOR, 'span[id=\'offerSubCondition\']')
+LIKE_NEW_UK = (By.CSS_SELECTOR, 'span[id=\'offerSubCondition\']')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
+SELLER_NAME_DIV_UK = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
 SIZE_WEIGHT_TD_US = (By.CSS_SELECTOR, 'td[class=\'a-size-base\']')
 PRODUCT_DETAILS_UL_US = (By.XPATH, '//*[@class=\'content\']/ul')
 SIZE_WEIGHT_LI_US = (By.XPATH, '//*[@class=\'content\']/ul/li')
@@ -2159,9 +2170,61 @@ class AmazonSpider():
                 return status
 
             if is_sale:
-                # if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon' or new_page_version_flag:
-                status = amazonasinpage.add_cart_uk(5000, 8000)
-                print("get_inventory_uk + " + asin, flush=True)
+                if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon' or new_page_version_flag:
+                    status = amazonasinpage.add_cart_uk(5000, 8000)
+                    print("get_inventory_uk + " + asin, flush=True)
+                else:
+                    print("get_inventory_uk from multi seller + " + asin, flush=True)
+                    if amazonasinpage.is_element_exsist(*BUYER_COUNT_UK):
+                        amazonasinpage.click(*BUYER_COUNT_UK)
+                    elif amazonasinpage.is_element_exsist(*BUYER_COUNT1_UK):
+                        amazonasinpage.click(*BUYER_COUNT1_UK)
+                    amazonasinpage.random_sleep(1000, 2000)
+                    prime_checkbox_flag = False
+                    if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_UK) and driver.find_element(*PRIME_CHECKBOX_UK).is_selected() == False:
+                        amazonasinpage.click(*PRIME_CHECKBOX_UK)
+                        prime_checkbox_flag = True
+                        amazonasinpage.random_sleep(1000, 2000)
+                        # print("select the prime checkbox", flush=True)
+
+                    if amazonasinpage.is_element_exsist(*NEW_CHECKBOX_UK) and driver.find_element(*NEW_CHECKBOX_UK).is_selected() == False:
+                        amazonasinpage.click(*NEW_CHECKBOX_UK)
+                        amazonasinpage.random_sleep(1000, 2000)
+
+                    maindiv_element_array = driver.find_elements(*MULTI_SELLERS_DIV_UK)
+                    index = 0
+                    for maindiv_element in maindiv_element_array:
+                        index += 1
+                        ADDCART_BUTTON_FROM_SELLER = (By.CSS_SELECTOR, 'input[name=\'submit.addToCart\']')
+                        if (index - 1) == 0:
+                            continue
+                        else:
+                            fba_flag = False
+                            if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG1_UK) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG3_UK):
+                                fba_flag = True
+                            if (fba_flag and prime_checkbox_flag == False) or prime_checkbox_flag:
+                                if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_UK):
+                                    seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_UK)
+                                    if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *USED_UK):
+                                        continue
+                                    if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *LIKE_NEW_UK):
+                                        element = driver.find_element(*LIKE_NEW_UK)
+                                        if 'like' in element.text:
+                                            print(element.text.strip(), flush=True)
+                                            continue
+                                    if seller_name in seller_name_element.text:
+                                        if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *NEW_UK) == False and amazonasinpage.is_element_exsist_from_parent(maindiv_element, *REFURBISHED_UK) == False:
+                                            print("why??????", flush=True)
+                                        if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
+                                            maindiv_element.find_element(*ADDCART_BUTTON_FROM_SELLER).click()
+                                            amazonasinpage.random_sleep(1000, 2000)
+                                            status = True
+                                            break
+                                        else:
+                                            print("can't find the addart button in sellers page..", flush=True)
+                                            status = False
+                                else:
+                                    status = False
 
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
@@ -2960,7 +3023,7 @@ def amspider_test(sqlmgr):
     amazonspider = AmazonSpider()
     try:
         # status = amazonspider.get_inventory_us(sqlmgr, False, 'B07H2V7637', ips_array, 'Solid-Inc', True, False)
-        status = amazonspider.get_inventory_uk(sqlmgr, False, 'B00G4QSNYY', ips_array, 'Wigoo', True, True) #  B01GCEY2IS
+        status = amazonspider.get_inventory_uk(sqlmgr, False, 'B00G4QSNYY', ips_array, 'Amazon', True, True) #  B01GCEY2IS
     except Exception as e:
         print(str(e), flush=True)
 
