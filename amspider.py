@@ -2112,6 +2112,8 @@ class AmazonSpider():
             else:
                 print("get seller count in failure..", flush=True)
                 status = -222
+                input("wait")
+                exit()
                 return status
 
             if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
