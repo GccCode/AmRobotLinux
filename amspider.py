@@ -1992,12 +1992,12 @@ class AmazonSpider():
                 shipping_element_position_y = element.location['y']
                 # print(shipping_element_position_y, flush=True)
                 data['shipping'] = 'FBA'
-            elif amazonasinpage.is_element_exsist(*AB_FLAG_US):
-                element = driver.find_element(*AB_FLAG_US)
+            elif amazonasinpage.is_element_exsist(*AB_FLAG_UK):
+                element = driver.find_element(*AB_FLAG_UK)
                 shipping_element_position_y = element.location['y']
                 # print(shipping_element_position_y, flush=True)
                 # print(element.text, flush=True)
-                if 'Ships from and sold by Amazon.com' in element.text:
+                if 'Dispatched from and sold by Amazon' in element.text:
                     # print("sold by Amazon Basic..", flush=True)
                     data['shipping'] = 'AB'
             else:
@@ -2960,7 +2960,7 @@ def amspider_test(sqlmgr):
     amazonspider = AmazonSpider()
     try:
         # status = amazonspider.get_inventory_us(sqlmgr, False, 'B07H2V7637', ips_array, 'Solid-Inc', True, False)
-        status = amazonspider.get_inventory_uk(sqlmgr, False, 'B01N0SVRLG', ips_array, 'Wigoo', True, True) #  B01GCEY2IS
+        status = amazonspider.get_inventory_uk(sqlmgr, False, 'B00G4QSNYY', ips_array, 'Wigoo', True, True) #  B01GCEY2IS
     except Exception as e:
         print(str(e), flush=True)
 
