@@ -2206,6 +2206,7 @@ class AmazonSpider():
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_UK)
                                     print(seller_name_element.text, flush=True)
                                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_AB_IMG_UK):
+                                        print("kjlkjdsf", flush=True)
                                         tmp_element = maindiv_element.find_element(*SELLER_NAME_AB_IMG_UK)
                                         print(tmp_element.get_attribute('alt'), flush=True)
                                         if tmp_element.get_attribute('alt') == 'Amazon.co.uk':
