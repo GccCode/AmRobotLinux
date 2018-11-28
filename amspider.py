@@ -2151,9 +2151,7 @@ class AmazonSpider():
                 data['seller'] = 1
             else:
                 print("get seller count in failure..", flush=True)
-                # status = -222
-                status = -111
-                input("wait")
+                status = -222
                 return status
 
             if amazonasinpage.is_element_exsist(*SELLER_NAME_US):
@@ -2204,6 +2202,7 @@ class AmazonSpider():
                                 fba_flag = True
                             if (fba_flag and prime_checkbox_flag == False) or prime_checkbox_flag:
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_UK):
+                                    print("111111111111", flush=True)
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_UK)
                                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *USED_UK):
                                         continue
@@ -2224,6 +2223,7 @@ class AmazonSpider():
                                             print("can't find the addart button in sellers page..", flush=True)
                                             status = False
                                 else:
+                                    print("2222222", flush=True)
                                     status = False
 
                 if status == True:
