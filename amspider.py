@@ -2385,7 +2385,7 @@ class AmazonSpider():
             if driver_upper == False:
                 driver.quit()
 
-            print(status, flush=True)
+            # print(status, flush=True)
 
             return status
 
