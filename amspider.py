@@ -34,6 +34,7 @@ BIG_IMG_DIV_US = (By.XPATH, '//*[@id=\'imgTagWrapperId\']')
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
 BUYER_COUNT_UK = (By.XPATH, '//*[@id=\'olp-new\']/span/a')
 BUYER_COUNT1_UK = (By.XPATH, '//*[@id=\'olp-sl-new\']/span/a')
+BUYER_COUNT2_UK = (By.XPATH, '//*[@id=\'olp-sl-new-used\']/span[position()=1]/a[position()=1]')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
 REVIEW_COUNT_US = (By.ID, 'acrCustomerReviewText')
 REVIEW_COUNT_UK = (By.ID, 'acrCustomerReviewText')
@@ -2174,6 +2175,12 @@ class AmazonSpider():
 
                 # print("seller is: " + str(data['seller']))
                 # print(element.text, flush=True)
+            elif amazonasinpage.is_element_exsist(*BUYER_COUNT2_UK):
+                element = driver.find_element(*BUYER_COUNT2_UK)
+                data['seller'] = int(getseller_uk(element.text))
+
+                # print("seller is: " + str(data['seller']))
+                # print(element.text, flush=True)
             elif new_page_version_flag == True:
                 data['seller'] = 1
             else:
@@ -2204,6 +2211,8 @@ class AmazonSpider():
                         amazonasinpage.click(*BUYER_COUNT_UK)
                     elif amazonasinpage.is_element_exsist(*BUYER_COUNT1_UK):
                         amazonasinpage.click(*BUYER_COUNT1_UK)
+                    elif amazonasinpage.is_element_exsist(*BUYER_COUNT2_UK):
+                        amazonasinpage.click(*BUYER_COUNT2_UK)
                     amazonasinpage.random_sleep(1000, 2000)
                     prime_checkbox_flag = False
                     if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_UK) and driver.find_element(*PRIME_CHECKBOX_UK).is_selected() == False:
