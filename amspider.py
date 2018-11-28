@@ -2202,8 +2202,8 @@ class AmazonSpider():
                                 fba_flag = True
                             if (fba_flag and prime_checkbox_flag == False) or prime_checkbox_flag:
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_UK):
-                                    print("111111111111", flush=True)
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_UK)
+                                    print(seller_name_element.text, flush=True)
                                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *USED_UK):
                                         continue
                                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *LIKE_NEW_UK):
@@ -2223,7 +2223,6 @@ class AmazonSpider():
                                             print("can't find the addart button in sellers page..", flush=True)
                                             status = False
                                 else:
-                                    print("2222222", flush=True)
                                     status = False
 
                 if status == True:
