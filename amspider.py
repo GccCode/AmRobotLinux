@@ -68,6 +68,7 @@ LIKE_NEW_US = (By.CSS_SELECTOR, 'span[id=\'offerSubCondition\']')
 LIKE_NEW_UK = (By.CSS_SELECTOR, 'span[id=\'offerSubCondition\']')
 SELLER_NAME_DIV_US = (By.XPATH, './/div[position()=4]/h3[position()=1]/span/a')
 SELLER_NAME_DIV_UK = (By.XPATH, './/div[position()=3]/h3[position()=1]/span/a')
+SELLER_NAME_AB_IMG_UK = (By.XPATH, './/div[position()=2]/div[position()=3]/h3/img')
 SIZE_WEIGHT_TD_US = (By.CSS_SELECTOR, 'td[class=\'a-size-base\']')
 PRODUCT_DETAILS_UL_US = (By.XPATH, '//*[@class=\'content\']/ul')
 SIZE_WEIGHT_LI_US = (By.XPATH, '//*[@class=\'content\']/ul/li')
@@ -2204,8 +2205,10 @@ class AmazonSpider():
                                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_UK):
                                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_UK)
                                     print(seller_name_element.text, flush=True)
-                                    if seller_name_element.text == '':
-                                        print("33333333333", flush=True)
+                                    if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_AB_IMG_UK):
+                                        tmp_element = maindiv_element.find_element(*SELLER_NAME_AB_IMG_UK)
+                                        if tmp_element.get_attribute('alt') == 'Amazon.co.uk':
+                                            print("xxxxxxxxxxxxxx", flush=True)
                                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *USED_UK):
                                         continue
                                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *LIKE_NEW_UK):
