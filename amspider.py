@@ -1000,6 +1000,7 @@ class AmazonSpider():
                     else:
                         continue
                 amazonpage.random_sleep(2000, 5000)
+                input("wait")
             except NoSuchElementException as msg:
                 status = False
                 print("Except: NoSuchElementException", flush=True)
@@ -1012,7 +1013,6 @@ class AmazonSpider():
                 if status == False:
                     return False
 
-            input("wait")
             return False
 
             status = True
