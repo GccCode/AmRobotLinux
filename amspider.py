@@ -2292,7 +2292,7 @@ class AmazonSpider():
             if driver_upper == False:
                 driver.quit()
 
-            # print(status, flush=True)
+            print(status, flush=True)
 
             return status
 
@@ -3055,8 +3055,9 @@ if __name__ == "__main__":
         print("SqlMgr initialized in failure", flush=True)
         exit()
 
-    # amspider_test(sqlmgr)
-    # exit()
+    if type == '9':
+        amspider_test(sqlmgr)
+        exit()
 
     if node_file != '0' and node_file != '1':
         if sys.argv[4] == '1':
