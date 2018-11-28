@@ -2128,58 +2128,59 @@ class AmazonSpider():
                 return status
 
             if is_sale:
-                if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon' or new_page_version_flag:
+                if new_page_version_flag:
+                    # if seller_name == False or data['seller_name'] == 'Amazon' or seller_name == 'Amazon' or new_page_version_flag:
                     status = amazonasinpage.add_cart(5000, 8000)
                     print("get_inventory_us + " + asin, flush=True)
-                else:
-                    print("get_inventory_us from multi seller + " + asin, flush=True)
-                    amazonasinpage.click(*BUYER_COUNT)
-                    amazonasinpage.random_sleep(1000, 2000)
-                    prime_checkbox_flag = False
-                    if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_US) and driver.find_element(*PRIME_CHECKBOX_US).is_selected() == False:
-                        amazonasinpage.click(*PRIME_CHECKBOX_US)
-                        prime_checkbox_flag = True
-                        amazonasinpage.random_sleep(1000, 2000)
-                        # print("select the prime checkbox", flush=True)
-
-                    if amazonasinpage.is_element_exsist(*NEW_CHECKBOX_US) and driver.find_element(*NEW_CHECKBOX_US).is_selected() == False:
-                        amazonasinpage.click(*NEW_CHECKBOX_US)
-                        amazonasinpage.random_sleep(1000, 2000)
-
-                    maindiv_element_array = driver.find_elements(*MULTI_SELLERS_DIV_US)
-                    index = 0
-                    for maindiv_element in maindiv_element_array:
-                        index += 1
-                        ADDCART_BUTTON_FROM_SELLER = (By.CSS_SELECTOR, 'input[name=\'submit.addToCart\']')
-                        if (index - 1) == 0:
-                            continue
-                        else:
-                            fba_flag = False
-                            if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG1_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG3_US):
-                                fba_flag = True
-                            if (fba_flag and prime_checkbox_flag == False) or prime_checkbox_flag:
-                                if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
-                                    seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
-                                    if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *USED_US):
-                                        continue
-                                    if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *LIKE_NEW_US):
-                                        element = driver.find_element(*LIKE_NEW_US)
-                                        if 'like' in element.text:
-                                            print(element.text.strip(), flush=True)
-                                            continue
-                                    if seller_name in seller_name_element.text:
-                                        if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *NEW_US) == False and amazonasinpage.is_element_exsist_from_parent(maindiv_element, *REFURBISHED_US) == False:
-                                            print("why??????", flush=True)
-                                        if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
-                                            maindiv_element.find_element(*ADDCART_BUTTON_FROM_SELLER).click()
-                                            amazonasinpage.random_sleep(1000, 2000)
-                                            status = True
-                                            break
-                                        else:
-                                            print("can't find the addart button in sellers page..", flush=True)
-                                            status = False
-                                else:
-                                    status = False
+                # else:
+                #     print("get_inventory_us from multi seller + " + asin, flush=True)
+                #     amazonasinpage.click(*BUYER_COUNT)
+                #     amazonasinpage.random_sleep(1000, 2000)
+                #     prime_checkbox_flag = False
+                #     if amazonasinpage.is_element_exsist(*PRIME_CHECKBOX_US) and driver.find_element(*PRIME_CHECKBOX_US).is_selected() == False:
+                #         amazonasinpage.click(*PRIME_CHECKBOX_US)
+                #         prime_checkbox_flag = True
+                #         amazonasinpage.random_sleep(1000, 2000)
+                #         # print("select the prime checkbox", flush=True)
+                #
+                #     if amazonasinpage.is_element_exsist(*NEW_CHECKBOX_US) and driver.find_element(*NEW_CHECKBOX_US).is_selected() == False:
+                #         amazonasinpage.click(*NEW_CHECKBOX_US)
+                #         amazonasinpage.random_sleep(1000, 2000)
+                #
+                #     maindiv_element_array = driver.find_elements(*MULTI_SELLERS_DIV_US)
+                #     index = 0
+                #     for maindiv_element in maindiv_element_array:
+                #         index += 1
+                #         ADDCART_BUTTON_FROM_SELLER = (By.CSS_SELECTOR, 'input[name=\'submit.addToCart\']')
+                #         if (index - 1) == 0:
+                #             continue
+                #         else:
+                #             fba_flag = False
+                #             if amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG1_US) or amazonasinpage.is_element_exsist(*SELLER_IS_FBA_FLAG3_US):
+                #                 fba_flag = True
+                #             if (fba_flag and prime_checkbox_flag == False) or prime_checkbox_flag:
+                #                 if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *SELLER_NAME_DIV_US):
+                #                     seller_name_element = maindiv_element.find_element(*SELLER_NAME_DIV_US)
+                #                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *USED_US):
+                #                         continue
+                #                     if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *LIKE_NEW_US):
+                #                         element = driver.find_element(*LIKE_NEW_US)
+                #                         if 'like' in element.text:
+                #                             print(element.text.strip(), flush=True)
+                #                             continue
+                #                     if seller_name in seller_name_element.text:
+                #                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *NEW_US) == False and amazonasinpage.is_element_exsist_from_parent(maindiv_element, *REFURBISHED_US) == False:
+                #                             print("why??????", flush=True)
+                #                         if amazonasinpage.is_element_exsist_from_parent(maindiv_element, *ADDCART_BUTTON_FROM_SELLER):
+                #                             maindiv_element.find_element(*ADDCART_BUTTON_FROM_SELLER).click()
+                #                             amazonasinpage.random_sleep(1000, 2000)
+                #                             status = True
+                #                             break
+                #                         else:
+                #                             print("can't find the addart button in sellers page..", flush=True)
+                #                             status = False
+                #                 else:
+                #                     status = False
                 if status == True:
                     if amazonasinpage.is_element_exsist(*NO_THANKS) == True:
                         amazonasinpage.click(*NO_THANKS)
