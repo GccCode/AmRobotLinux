@@ -2929,7 +2929,7 @@ def amspider_test(sqlmgr):
     amazonspider = AmazonSpider()
     try:
         # status = amazonspider.get_inventory_us(sqlmgr, False, 'B07H2V7637', ips_array, 'Solid-Inc', True, False)
-        status = amazonspider.get_inventory_uk(sqlmgr, False, 'B07JJ6M78W', ips_array, 'Wigoo', True, False)
+        status = amazonspider.get_inventory_uk(sqlmgr, False, 'B01GCEY2IS', ips_array, 'Wigoo', True, False) # B07JJ6M78W
     except Exception as e:
         print(str(e), flush=True)
 
