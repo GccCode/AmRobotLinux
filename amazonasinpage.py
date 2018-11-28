@@ -35,6 +35,24 @@ class AmazonAsinPage(AmazonPage):
         finally:
             return status
 
+    def add_cart_uk(self, begin, end):
+        status = True
+        try:
+            if self.is_element_exsist(*self.locator.ADDCARTBUTTON):
+                self.click(*self.locator.ADDCARTBUTTON)
+                self.random_sleep(begin, end)
+                print(("**** Add Cart..."), flush=True)
+                if self.is_element_exsist(*self.locator.NOTHANKSAFTERCART) == True:
+                    self.click(*self.locator.NOTHANKSAFTERCART)
+            else:
+                status = False
+                print("Addcart element can't find..", flush=True)
+        except:
+            print("Addcart element error..", flush=True)
+            status = False
+        finally:
+            return status
+
     def select_size(self, asin, begin, end):
         if self.is_element_exsist(*self.locator.SELECT_SIZE_JP):
             OPTIONS_JP_PREFIX = 'native_size_name_'
