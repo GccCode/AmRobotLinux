@@ -46,6 +46,15 @@ class SqlMgr():
             self.db_name_node_info = amazonglobal.db_name_node_info_jp
             self.db_name_ip_info = amazonglobal.db_name_ip_info_jp
             self.db_name_amkiller = amazonglobal.db_name_amkiller_jp
+        elif self.country == 'uk':
+            self.db_name_sale_task = amazonglobal.db_name_task
+            self.db_name_token = amazonglobal.db_name_token
+            self.db_name_rank_task = amazonglobal.db_name_rank_task
+            self.db_name_rank_data = amazonglobal.db_name_rank_data_uk
+            self.db_name_sale_data = amazonglobal.db_name_data_uk
+            self.db_name_node_info = amazonglobal.db_name_node_info_uk
+            self.db_name_ip_info = amazonglobal.db_name_ip_info_uk
+            self.db_name_amkiller = amazonglobal.db_name_amkiller_uk
 
     def set_current_table(self, node_table):
         self.node_table = node_table
