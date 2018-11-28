@@ -31,7 +31,7 @@ UNKNOWN_NODE_US = (By.XPATH, '//*[@id=\'zg-center-div\']/h4')
 
 BIG_IMG_DIV_US = (By.XPATH, '//*[@id=\'imgTagWrapperId\']')
 BUYER_COUNT = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
-BUYER_COUNT_UK = (By.XPATH, '//*[@id=\'olp_feature_div\']/div/span[position()=1]/a')
+BUYER_COUNT_UK = (By.XPATH, '//*[@id=\'olp-sl-new\']/span/a[position()=1]')
 QA_COUNT = (By.XPATH, '//*[@id=\'askATFLink\']/span')
 REVIEW_COUNT_US = (By.ID, 'acrCustomerReviewText')
 PRICE_US = (By.ID, 'priceblock_ourprice')
@@ -2101,8 +2101,8 @@ class AmazonSpider():
                 if data['weight'] > 4:
                     overweight_flag = True
 
-            if amazonasinpage.is_element_exsist(*BUYER_COUNT):
-                element = driver.find_element(*BUYER_COUNT)
+            if amazonasinpage.is_element_exsist(*BUYER_COUNT_UK):
+                element = driver.find_element(*BUYER_COUNT_UK)
                 data['seller'] = int(getseller_us(element.text))
 
                 # print("seller is: " + str(data['seller']))
