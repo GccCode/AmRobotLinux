@@ -175,6 +175,15 @@ def customized_broswer():
         elif host_type == '2':
             proxy_socks_argument = '--proxy-server=https://' + host_port
             option.add_argument(proxy_socks_argument)
+        elif host_type == '3':
+            proxyauth_plugin_path = chrome_create_proxyauth_extension(
+                proxy_host=host_port.split(':')[0],
+                proxy_port=host_port.split(':')[1],
+                proxy_username=host_port.split(':')[2],
+                proxy_password=host_port.split(':')[3]
+            )
+
+            option.add_extension(proxyauth_plugin_path)
         else:
             print("代理IP设置出错。", flush=True)
             exit(-1)
