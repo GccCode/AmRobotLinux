@@ -105,6 +105,22 @@ def get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type, page):
             if status == False:
                 print("update rank task status in failure..", flush=True)
 
+def is_keyword_rank_unavailable(sqlmgr, keyword, type):
+    cur_date = date.today().strftime("%Y_%m_%d")
+    if sqlmgr.country == 'us':
+        task_table = 'task_us'
+    elif sqlmgr.country == 'jp':
+        task_table = 'task_jp'
+    status = 'keyword = \'' + keyword + '\' and type = \'' + type + '\''
+    rank = amazonwrapper.get_all_data(sqlmgr.ad_rank_data, task_table, cur_date, status)
+    if rank is not False:
+        if rank[0][0] == '2050':
+            return True
+        else:
+            return False
+    else:
+        return True
+
 if __name__ == "__main__":
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -154,7 +170,9 @@ if __name__ == "__main__":
                 # print(asin, flush=True)
                 print(keyword, flush=True)
                 # print(entry_type, flush=True)
-                get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type, page)
+                for i in range(3):
+                    if is_keyword_rank_unavailable(sqlmgr, keyword, type):
+                        get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type, page)
                 rank_task = amazonwrapper.get_one_data(sqlmgr.ad_rank_task, task_table, status_condition)
     except:
         print(traceback.format_exc(), flush=True)
