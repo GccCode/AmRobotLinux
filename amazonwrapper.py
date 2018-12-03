@@ -810,6 +810,7 @@ def get_all_data(amazondata, table_name, column, condition):
             sql = 'select ' + column + ' from ' +table_name
         else:
             sql = 'select ' + column + ' from ' + table_name + ' where ' + condition
+    print(sql, flush=True)
     cursor = amazondata.query(sql)
     if cursor != False:
         if cursor.rowcount > 0:
