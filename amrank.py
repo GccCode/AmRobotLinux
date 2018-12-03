@@ -169,7 +169,7 @@ if __name__ == "__main__":
                 else:
                     page = rank_task[5]
                 # print(asin, flush=True)
-                print(keyword, flush=True)
+                # print(keyword, flush=True)
                 # print(entry_type, flush=True)
                 for i in range(3):
                     if is_keyword_rank_unavailable(sqlmgr, keyword, entry_type):
