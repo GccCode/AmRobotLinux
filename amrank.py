@@ -108,9 +108,9 @@ def get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type, page):
 def is_keyword_rank_unavailable(sqlmgr, keyword, type):
     cur_date = date.today().strftime("%Y_%m_%d")
     if sqlmgr.country == 'us':
-        task_table = 'task_us'
+        task_table = 'data_us'
     elif sqlmgr.country == 'jp':
-        task_table = 'task_jp'
+        task_table = 'data_jp'
     status = 'keyword = \'' + keyword + '\' and type = \'' + type + '\''
     rank = amazonwrapper.get_all_data(sqlmgr.ad_rank_data, task_table, cur_date, status)
     print(rank, flush=True)
