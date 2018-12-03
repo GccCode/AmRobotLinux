@@ -137,7 +137,11 @@ if __name__ == "__main__":
             if is_flush == '1':
                 yesterday = date.today() + timedelta(days=-1)
                 amazonwrapper.update_all_rank_task_date_status(yesterday.strftime("%Y-%m-%d"), sqlmgr)
-            status_condition = 'status<>\'no\' and last_date<>' + value
+            is_specificed = sys.argv[4]
+            if is_specificed == '0':
+                status_condition = 'status<>\'no\' and last_date<>' + value
+            else:
+                status_condition = is_specificed
             rank_task = amazonwrapper.get_one_data(sqlmgr.ad_rank_task, task_table, status_condition)
             while rank_task != False:
                 asin = rank_task[2]
