@@ -172,7 +172,7 @@ if __name__ == "__main__":
                 print(keyword, flush=True)
                 # print(entry_type, flush=True)
                 for i in range(3):
-                    if is_keyword_rank_unavailable(sqlmgr, keyword, type):
+                    if is_keyword_rank_unavailable(sqlmgr, keyword, entry_type):
                         get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type, page)
                 rank_task = amazonwrapper.get_one_data(sqlmgr.ad_rank_task, task_table, status_condition)
     except:
