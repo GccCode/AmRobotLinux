@@ -158,7 +158,7 @@ if __name__ == "__main__":
             if is_specificed == '0':
                 status_condition = 'status<>\'no\' and last_date<>' + value
             else:
-                status_condition = is_specificed
+                status_condition = is_specificed + ' and status<>\'no\' and last_date<>' + value
             rank_task = amazonwrapper.get_one_data(sqlmgr.ad_rank_task, task_table, status_condition)
             while rank_task != False:
                 asin = rank_task[2]
