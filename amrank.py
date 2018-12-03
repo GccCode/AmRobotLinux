@@ -113,12 +113,10 @@ def is_keyword_rank_unavailable(sqlmgr, keyword, type):
         task_table = 'data_jp'
     status = 'keyword = \'' + keyword + '\' and type = \'' + type + '\''
     rank = amazonwrapper.get_all_data(sqlmgr.ad_rank_data, task_table, cur_date, status)
-    print(rank, flush=True)
     if rank is not False:
         if rank[0][0] == 2050:
             return True
         else:
-            print(rank[0][0], flush=True)
             return False
     else:
         return True
@@ -173,8 +171,7 @@ if __name__ == "__main__":
                 # print(keyword, flush=True)
                 # print(entry_type, flush=True)
                 for i in range(3):
-                    status = is_keyword_rank_unavailable(sqlmgr, keyword, entry_type)
-                    if status is True:
+                    if is_keyword_rank_unavailable(sqlmgr, keyword, entry_type):
                         get_rank_data(ips_array, sqlmgr, asin, keyword, entry_type, page)
 
                 status = amazonwrapper.update_rank_task_date(sqlmgr.ad_rank_task, keyword, entry_type)
